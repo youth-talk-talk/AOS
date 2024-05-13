@@ -19,7 +19,6 @@ jobs:
                     distribution: 'temurin'
                     cache: gradle
             - name: Get Android version
-              id: android_version
               run: |
                   echo "::set_output name=VERSION_NAME::$(${{github.workspace}}/gradlew -q printVersionName)"
             - name: Get Version
