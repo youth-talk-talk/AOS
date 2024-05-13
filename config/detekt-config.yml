@@ -1,0 +1,43 @@
+build:
+    # 설정된 개수 이상의 문제가 발생되면 더 이상 분석을 하지 않고 빌드를 캔슬한다.
+    maxIssues: 0
+
+config:
+    #경고도 전부 에러로 간주하여 빌드를 실패시킬 지 여부
+    warningsAsErrors: true
+
+complexity:
+    active: true
+    TooManyFunctions:
+        #한 파일에 몇 개까지의 함수를 허용할 지 결정
+        thresholdInFiles: 30
+        #클래스에 몇 개까지의 함수를 허용할 지 결정
+        thresholdInClasses: 20
+        #private 접근 제어자가 설정된 함수를 카운트에서 제외할지 결정
+        ignorePrivate: true
+        #인터페이스에 몇 개까지 함수를 허용할 지 결정한다.
+        thresholdInInterfaces: 10
+        #오브젝트에 몇 개까지의 함수를 허용할지 결정한다.
+        thresholdInObjects: 20
+        #열거형에 몇 개 까지의 함수를 허용할지 결정한다.
+        thresholdInEnums: 5
+        #@Deprecated 어노테이션이 설정된 함수를 카운트에서 제외할 지 결정한다.
+        ignoreDeprecated: true
+        #상위 클래스의 함수를 오버라이드한 함수를 카운트에서 제외할지 결정한다.
+        ignoreOverridden: false
+
+output-reports:
+    active: true
+#    exclude:
+#        - 'TxtOutputReport'
+#        - 'XmlOutputReport'
+#        - 'MdOutputReport'
+
+naming:
+    TopLevelPropertyNaming:
+        constantPattern: '[a-zA-Z][A-Za-z0-9]*'
+    FunctionNaming:
+        ignoreAnnotated: [ 'Composable' ]
+
+style:
+    active: false

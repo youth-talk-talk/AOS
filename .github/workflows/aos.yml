@@ -1,148 +1,197 @@
 name: Android CI
 
-on:   
-  pull_request:
-    branches: [ "develop", "compose", "android-xml" ]
-    
-  workflow_dispatch:
+on:
+    pull_request:
+        branches: [ "compose", "jetpack" ]
+
+    workflow_dispatch:
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+    ktlint:
+        name: Check Code Quality(ktlint)
+        runs-on: ubuntu-latest
 
-    steps:
-    - uses: actions/checkout@v4
-    - name: set up JDK 17
-      uses: actions/setup-java@v4
-      with:
-        java-version: '17'
-        distribution: 'temurin'
-        cache: gradle
+        steps:
+            -   name: Clone repo
+                uses: actions/checkout@master
+                with:
+                    fetch-depth: 1
+            -   name: ktlint
+                uses: ScaCap/action-ktlint@master
+                with:
+                    github_token: ${{ secrets.github_token }}
+                    reporter: github-pr-review # Change reporter
 
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
-    - name: Build with Gradle
-      run: ./gradlew build
+    detekt:
+        name: Check Code Quality(detekt)
+        runs-on: ubuntu-latest
+
+        steps:
+            -   name: Clone repo
+                uses: actions/checkout@v4
+                with:
+                    fetch-depth: 1
+                    ref: ${{ github.head_ref }}
+
+            -   name: detekt
+                uses: alaegin/Detekt-Action@v1.23.6
+                with:
+                    github_token: ${{ secrets.github_token }}
+                    detekt_config: config/detekt-config.yml # Change config path
+
+    build:
+        name: check Build
+        runs-on: ubuntu-latest
+        steps:
+            -   uses: actions/checkout@v4
+            -   name: set up JDK 17
+                uses: actions/setup-java@v4
+                with:
+                    java-version: '17'
+                    distribution: 'temurin'
+                    cache: gradle
+
+            -   name: Setup Android SDK
+                uses: android-actions/setup-android@v3
+
+            -   name: Gradle Caching
+                uses: actions/cache@v4
+                with:
+                    path: |
+                        ~/.gradle/caches
+                        ~/.gradle/wrapper
+                    key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+                    restore-keys: |
+                        ${{ runner.os }}-gradle-
+
+            #      - name: Grant execute permission for gradlew
+            #        run: |
+            #            echo sdk.dir=~/Android/Sdk >> local.properties
+            #            echo api_key=\"${{ secrets.API_KEY }}\" >> local.properties
+            #            chmod +x gradlew
+
+            -   name: Grant execute permission for gradlew
+                run: chmod +x gradlew
+            -   name: Build with Gradle
+                run: ./gradlew build
+
+        # name: Android CI
+
+        # on:
+        #     pull_request:
+        #         branches: [ "main" ]
+        #     workflow_dispatch:
+
+        # jobs:
+        #     ktlint:
+        #         permissions: write-all
+        #         name: Check ktlint
+        #         runs-on: ubuntu-latest
+
+        #         steps:
+        #             -   name: Clone repo
+        #                 uses: actions/checkout@master
+        #                 with:
+        #                     fetch-depth: 1
+        #             -   name: ktlint
+        #                 uses: ScaCap/action-ktlint@master
+        #                 with:
+        #                     github_token: ${{ secrets.github_token }}
+        #                     reporter: github-pr-review # Change reporter
+
+        #     check-unit-test:
+        #         name: Check App Test
+        #         runs-on: ubuntu-latest
+        #         steps:
+        #             - name: Checkout the code
+        #               uses: actions/checkout@v4
+
+        #             -   name: set up JDK 17
+        #                 uses: actions/setup-java@v4
+        #                 with:
+        #                     java-version: '17'
+        #                     distribution: 'temurin'
+        #                     cache: gradle
+
+        #             - name: Run tests
+        #               run: |
+        #                 echo sdk.dir=~/Android/Sdk >> local.properties
+        #                 echo api_key=\"${{ secrets.API_KEY }}\" >> local.properties
+        #                 ./gradlew test
+
+        #             - name: Upload test report
+        #               uses: actions/upload-artifact@v4
+        #               with:
+        #                   name: test_report
+        #                   path: app/build/reports/tests/testDebugUnitTest/
+        #               if: always()
+
+        # instrumentation-test:
+        #     name: check UI test(instrumentation-test)
+        #     runs-on: macos-latest
+        #     strategy:
+        #         matrix:
+        #             api-level: [ 29 ]
+        #             target: [ google_apis ]
+        #     steps:
+        #         - name: Checkout the code
+        #           uses: actions/checkout@v4
+
+        #         -   name: set up JDK 17
+        #             uses: actions/setup-java@v4
+        #             with:
+        #                 java-version: '17'
+        #                 distribution: 'temurin'
+        #                 cache: gradle
+
+        #         - name: Run espresso tests
+        #           uses: reactivecircus/android-emulator-runner@v2
+        #           with:
+        #               api-level: ${{ matrix.api-level }}
+        #               target: ${{ matrix.target }}
+        #               emulator-build: 7425822
+        #               arch: x86_64
+        #               script: ./gradlew connectedCheck
+
+        #         - name: Upload report
+        #           uses: actions/upload-artifact@v4
+        #           with:
+        #               name: instrumentation_test_report
+        #               path: app/build/reports/androidTests/connected/
+        #           if: always()
 
 
+        # build:
+        #     name: check Build
+        #     needs: [ktlint]
+        #     runs-on: ubuntu-latest
+        #     steps:
+        #         -   uses: actions/checkout@v4
+        #         -   name: set up JDK 17
+        #             uses: actions/setup-java@v4
+        #             with:
+        #                 java-version: '17'
+        #                 distribution: 'temurin'
+        #                 cache: gradle
 
-# name: Android CI
+        #         -   name: Setup Android SDK
+        #             uses: android-actions/setup-android@v3
 
-# on:
-#     pull_request:
-#         branches: [ "main" ]
-#     workflow_dispatch:
+        #         -   name: Gradle Caching
+        #             uses: actions/cache@v4
+        #             with:
+        #                 path: |
+        #                     ~/.gradle/caches
+        #                     ~/.gradle/wrapper
+        #                 key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+        #                 restore-keys: |
+        #                     ${{ runner.os }}-gradle-
 
-# jobs:
-#     ktlint:
-#         permissions: write-all
-#         name: Check ktlint
-#         runs-on: ubuntu-latest
-
-#         steps:
-#             -   name: Clone repo
-#                 uses: actions/checkout@master
-#                 with:
-#                     fetch-depth: 1
-#             -   name: ktlint
-#                 uses: ScaCap/action-ktlint@master
-#                 with:
-#                     github_token: ${{ secrets.github_token }}
-#                     reporter: github-pr-review # Change reporter
-
-#     check-unit-test:
-#         name: Check App Test
-#         runs-on: ubuntu-latest
-#         steps:
-#             - name: Checkout the code
-#               uses: actions/checkout@v4
-
-#             -   name: set up JDK 17
-#                 uses: actions/setup-java@v4
-#                 with:
-#                     java-version: '17'
-#                     distribution: 'temurin'
-#                     cache: gradle
-
-#             - name: Run tests
-#               run: |
-#                 echo sdk.dir=~/Android/Sdk >> local.properties
-#                 echo api_key=\"${{ secrets.API_KEY }}\" >> local.properties
-#                 ./gradlew test
-
-#             - name: Upload test report
-#               uses: actions/upload-artifact@v4
-#               with:
-#                   name: test_report
-#                   path: app/build/reports/tests/testDebugUnitTest/
-#               if: always()
-
-    # instrumentation-test:
-    #     name: check UI test(instrumentation-test)
-    #     runs-on: macos-latest
-    #     strategy:
-    #         matrix:
-    #             api-level: [ 29 ]
-    #             target: [ google_apis ]
-    #     steps:
-    #         - name: Checkout the code
-    #           uses: actions/checkout@v4
-
-    #         -   name: set up JDK 17
-    #             uses: actions/setup-java@v4
-    #             with:
-    #                 java-version: '17'
-    #                 distribution: 'temurin'
-    #                 cache: gradle
-
-    #         - name: Run espresso tests
-    #           uses: reactivecircus/android-emulator-runner@v2
-    #           with:
-    #               api-level: ${{ matrix.api-level }}
-    #               target: ${{ matrix.target }}
-    #               emulator-build: 7425822
-    #               arch: x86_64
-    #               script: ./gradlew connectedCheck
-
-    #         - name: Upload report
-    #           uses: actions/upload-artifact@v4
-    #           with:
-    #               name: instrumentation_test_report
-    #               path: app/build/reports/androidTests/connected/
-    #           if: always()
-
-
-    # build:
-    #     name: check Build
-    #     needs: [ktlint]
-    #     runs-on: ubuntu-latest
-    #     steps:
-    #         -   uses: actions/checkout@v4
-    #         -   name: set up JDK 17
-    #             uses: actions/setup-java@v4
-    #             with:
-    #                 java-version: '17'
-    #                 distribution: 'temurin'
-    #                 cache: gradle
-
-    #         -   name: Setup Android SDK
-    #             uses: android-actions/setup-android@v3
-
-    #         -   name: Gradle Caching
-    #             uses: actions/cache@v4
-    #             with:
-    #                 path: |
-    #                     ~/.gradle/caches
-    #                     ~/.gradle/wrapper
-    #                 key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-    #                 restore-keys: |
-    #                     ${{ runner.os }}-gradle-
-
-    #         -   name: Grant execute permission for gradlew
-    #             run: |
-    #                 echo sdk.dir=~/Android/Sdk >> local.properties
-    #                 echo api_key=\"${{ secrets.API_KEY }}\" >> local.properties
-    #                 chmod +x gradlew
-    #         -   name: Build with Gradle
-    #             run: |
-    #                 ./gradlew build
+        #         -   name: Grant execute permission for gradlew
+        #             run: |
+        #                 echo sdk.dir=~/Android/Sdk >> local.properties
+        #                 echo api_key=\"${{ secrets.API_KEY }}\" >> local.properties
+        #                 chmod +x gradlew
+        #         -   name: Build with Gradle
+        #             run: |
+        #                 ./gradlew build
