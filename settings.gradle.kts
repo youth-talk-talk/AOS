@@ -1,4 +1,5 @@
 pluginManagement {
+
     repositories {
         google {
             content {
@@ -18,7 +19,6 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-
 rootProject.name = "YongProject"
 include(":app")
 include(":presentation")

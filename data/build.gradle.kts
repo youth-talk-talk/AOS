@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.jetbrainsKotlinAndroid)
     alias(libs.plugins.kspPlugins)
     alias(libs.plugins.hiltPlugins)
+    id("org.jlleitschuh.gradle.ktlint") version "12.1.1"
 }
 
 android {
@@ -42,8 +43,8 @@ dependencies {
 
     implementation(project(":domain"))
 
-    //hilt
+    // hilt
     implementation(libs.hilt.android)
-    ksp (libs.dagger.compiler) // Dagger compiler
-    ksp (libs.hilt.compiler)   // Hilt compiler
+    ksp(libs.dagger.compiler) // Dagger compiler
+    ksp(libs.hilt.compiler) // Hilt compiler
 }
