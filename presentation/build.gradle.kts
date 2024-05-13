@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.jetbrainsKotlinAndroid)
     alias(libs.plugins.kspPlugins)
+    alias(libs.plugins.hiltPlugins)
 }
 
 android {
@@ -57,4 +58,9 @@ dependencies {
     implementation(libs.androidx.runtime)
 
     implementation(project(":domain"))
+
+    //hilt
+    implementation(libs.hilt.android)
+    ksp (libs.dagger.compiler) // Dagger compiler
+    ksp (libs.hilt.compiler)   // Hilt compiler
 }
