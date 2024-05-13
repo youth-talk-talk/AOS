@@ -22,6 +22,22 @@ jobs:
                     github_token: ${{ secrets.github_token }}
                     reporter: github-pr-review # Change reporter
 
+    detekt:
+        name: Check Code Quality(detekt)
+        runs-on: ubuntu-latest
+
+        steps:
+            -   name: Clone repo
+                uses: actions/checkout@v2
+                with:
+                    fetch-depth: 1
+                    ref: ${{ github.head_ref }}
+
+            -   name: detekt
+                uses: alaegin/Detekt-Action@v1.23.6
+                with:
+                    github_token: ${{ secrets.github_token }}
+                    detekt_config: config/detekt-config.yml # Change config path
 
     build:
         name: check Build
