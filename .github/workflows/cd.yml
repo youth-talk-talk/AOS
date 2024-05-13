@@ -20,7 +20,7 @@ jobs:
                     cache: gradle
             - name: Get Android version
               id: test
-              uses: ltDino/android-get-version-action@v4.0
+              uses: ltDino/android-get-version-action@v2.0
               with:
                   gradlePath: app/build.gradle.kts # or app/build.gradle.kts
             - name: Get the output
