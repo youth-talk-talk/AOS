@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kspPlugins)
     alias(libs.plugins.hiltPlugins)
     id("org.jlleitschuh.gradle.ktlint") version "12.1.1"
+    id("io.gitlab.arturbosch.detekt")
 }
 
 android {
@@ -24,11 +25,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
 }
 
@@ -45,4 +46,7 @@ dependencies {
     implementation(libs.hilt.android)
     ksp(libs.dagger.compiler) // Dagger compiler
     ksp(libs.hilt.compiler) // Hilt compiler
+
+    // detekt
+    detektPlugins(libs.detekt.rules.ruleauthors)
 }
