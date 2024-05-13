@@ -35,7 +35,6 @@ fun Greeting(
         text = "Hello $name!",
         modifier = modifier,
     )
-    Text(text = "change")
 }
 
 @Preview(showBackground = true)
