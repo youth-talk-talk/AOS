@@ -12,7 +12,7 @@ complexity:
         #한 파일에 몇 개까지의 함수를 허용할 지 결정
         thresholdInFiles: 30
         #클래스에 몇 개까지의 함수를 허용할 지 결정
-        thresholdInClasses: 20
+        thresholdInClasses: 0
         #private 접근 제어자가 설정된 함수를 카운트에서 제외할지 결정
         ignorePrivate: true
         #인터페이스에 몇 개까지 함수를 허용할 지 결정한다.
@@ -34,7 +34,7 @@ output-reports:
 
 naming:
     TopLevelPropertyNaming:
-        constantPattern: '[A-Z][A-Za-z0-9]*'
+        constantPattern: '[a-zA-Z][A-Za-z0-9]*'
     FunctionNaming:
         ignoreAnnotated: [ 'Composable' ]
 
