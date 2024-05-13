@@ -12,6 +12,7 @@ appcompat = "1.6.1"
 material = "1.11.0"
 runtime = "1.6.7"
 ui = "1.6.7"
+ksp = "1.9.23-1.0.20"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -37,4 +38,5 @@ compose-ui = { module = "androidx.compose.ui:ui", version.ref = "ui" }
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 jetbrainsKotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
+kspPlugins = {id = "com.google.devtools.ksp", version.ref = "ksp"}
 
