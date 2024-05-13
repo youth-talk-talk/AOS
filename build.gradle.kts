@@ -35,7 +35,7 @@ allprojects {
     }
 
     val reportMerge by tasks.registering(io.gitlab.arturbosch.detekt.report.ReportMergeTask::class) {
-        output.set(rootProject.layout.buildDirectory.file("reports/detekt/merge.xml")) // or "reports/detekt/merge.xml"
+        output.set(rootProject.layout.buildDirectory.file("reports/detekt/detekt_report.xml")) // or "reports/detekt/merge.xml"
     }
 
     subprojects {
