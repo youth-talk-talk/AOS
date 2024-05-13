@@ -19,11 +19,9 @@ jobs:
                     distribution: 'temurin'
                     cache: gradle
             - name: Get Android version
-              id: test
-              uses: ltDino/android-get-version-action@v4.0
-              with:
-                  gradlePath: app/build.gradle.kts # or app/build.gradle.kts
-            - name: Get the output
+              id: android_version
               run: |
-                  echo "The versionCode was ${{ steps.test.outputs.versionCode }}"
-                  echo "The versionName was ${{ steps.test.outputs.versionName }}"
+                  echo "::set_output name=VERSION_NAME::$(${{github.workspace}}/gradlew -q printVersionName)"
+            - name: Get Version
+              run: |
+                  echo "version_name=${{steps.android_version.output.VERSION_NAME}}" >> $GITHUB_ENV
