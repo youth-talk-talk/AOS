@@ -27,10 +27,11 @@ complexity:
         ignoreOverridden: false
 
 output-reports:
-    exclude:
-        - 'TxtOutputReport'
-        - 'XmlOutputReport'
-        - 'MdOutputReport'
+    active: true
+#    exclude:
+#        - 'TxtOutputReport'
+#        - 'XmlOutputReport'
+#        - 'MdOutputReport'
 
 naming:
     TopLevelPropertyNaming:
