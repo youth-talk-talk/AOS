@@ -21,7 +21,8 @@ jobs:
                     java-version: '17'
                     distribution: 'temurin'
                     cache: gradle
-
+            -   name: build release
+                run: ./gradlew assembleRelease
             -   uses: r0adkll/sign-android-release@v1
                 name: Sign app APK
                 # ID used to access action output
