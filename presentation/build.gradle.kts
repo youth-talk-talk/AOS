@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.hiltPlugins)
     id("org.jlleitschuh.gradle.ktlint") version "12.1.1"
     id("io.gitlab.arturbosch.detekt")
+    id("com.google.gms.google-services")
 }
 
 android {

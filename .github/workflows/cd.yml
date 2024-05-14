@@ -36,7 +36,6 @@ jobs:
                     # override default build-tools version (33.0.0) -- optional
                     BUILD_TOOLS_VERSION: "34.0.0"
 
-
             # Example use of `signedReleaseFile` output -- not needed
             -   uses: actions/upload-artifact@v2
                 with:
@@ -49,7 +48,7 @@ jobs:
                 appId: ${{secrets.FIREBASE_APP_ID}}
                 serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
                 groups: testers
-                file: app/build/outputs/apk/release/app-release-unsigned.apk
+                file: ${{ steps.sign_app.outputs.signedReleaseFile }}
 
 #    get-version:
 #        needs: [ single-apk ]

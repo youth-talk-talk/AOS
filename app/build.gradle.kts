@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.hiltPlugins)
     id("org.jlleitschuh.gradle.ktlint") version "12.1.1"
     id("io.gitlab.arturbosch.detekt")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -70,6 +71,9 @@ dependencies {
 
     // detekt
     detektPlugins(libs.detekt.rules.ruleauthors)
+
+    implementation(platform("com.google.firebase:firebase-bom:33.0.0"))
+    implementation("com.google.firebase:firebase-analytics")
 }
 
 task("printVersionName") {

@@ -10,6 +10,7 @@ plugins {
     alias(libs.plugins.hiltPlugins) apply false
     id("org.jlleitschuh.gradle.ktlint") version "12.1.1"
     id("io.gitlab.arturbosch.detekt") version "1.23.3"
+    id("com.google.gms.google-services") version "4.4.1" apply false
 }
 
 allprojects {
