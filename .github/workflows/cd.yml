@@ -7,14 +7,11 @@ on:
         branches:
             - "develop"
 
-    pull_request:
-        types: [ opened, reopened, synchronize ]
-
     workflow_dispatch:
 
 jobs:
     get-version:
-        name: get android version
+        name: create release
         runs-on: ubuntu-latest
 
         permissions:
@@ -38,7 +35,7 @@ jobs:
             - name: check version
               run: |
                   echo "${{ env.version_name }}"
-                              - uses: actions/checkout@v3
+            - uses: actions/checkout@v3
             - uses: ncipollo/release-action@v1
               with:
                   bodyFile: "body.md"
