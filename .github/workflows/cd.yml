@@ -39,6 +39,7 @@ jobs:
             - uses: ncipollo/release-action@v1
               with:
                   bodyFile: "body.md"
+                  tag: "v${{ env.version_name }}"
 
 #    update_release_draft:
 #        needs: [get-version]
