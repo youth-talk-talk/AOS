@@ -24,7 +24,7 @@ jobs:
 
             - name: add google_service.json
               run: |
-                  echo "${{ secrets.GOOGLE_SERVICE_KEY }}" >> ./app/google-services.json
+                  echo '${{ secrets.GOOGLE_SERVICE_KEY }}' >> ${{ github.workspace }}/app/google-services.json
             -   name: build release
                 run: ./gradlew assembleRelease
             -   uses: r0adkll/sign-android-release@v1
