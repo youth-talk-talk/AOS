@@ -57,6 +57,7 @@ jobs:
                     serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
                     groups: testers
                     file: ${{ steps.sign_app.outputs.signedReleaseFile }}
+                    releaseNoteFile: ${{ github.workspace }}/.github/releaseNote.txt
 
 #    get-version:
 #        needs: [ single-apk ]
