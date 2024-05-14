@@ -10,36 +10,78 @@ on:
     workflow_dispatch:
 
 jobs:
-    get-version:
-        name: create release
+    single-apk:
+        name: Sign app APK
         runs-on: ubuntu-latest
-
-        permissions:
-            contents: write
-
         steps:
-            - uses: actions/checkout@v4
+            -   uses: actions/checkout@v4
             -   name: set up JDK 17
                 uses: actions/setup-java@v4
                 with:
                     java-version: '17'
                     distribution: 'temurin'
                     cache: gradle
-            - name: Get Android version
-              run: |
-                  echo "VERSION_NAME=$(${{github.workspace}}/gradlew -q printVersionName)" >> $GITHUB_OUTPUT
-              id: android_version
-            - name: Get Version
-              run: |
-                  echo "version_name=${{steps.android_version.outputs.VERSION_NAME}}" >> $GITHUB_ENV
-            - name: check version
-              run: |
-                  echo "${{ env.version_name }}"
-            - uses: actions/checkout@v3
-            - uses: ncipollo/release-action@v1
+
+            -   uses: r0adkll/sign-android-release@v1
+                name: Sign app APK
+                # ID used to access action output
+                id: sign_app
+                with:
+                    releaseDirectory: app/build/outputs/apk/release
+                    signingKeyBase64: ${{ secrets.SIGNING_KEY }}
+                    alias: ${{ secrets.ALIAS }}
+                    keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
+                    keyPassword: ${{ secrets.KEY_PASSWORD }}
+                env:
+                    # override default build-tools version (33.0.0) -- optional
+                    BUILD_TOOLS_VERSION: "34.0.0"
+
+
+            # Example use of `signedReleaseFile` output -- not needed
+            -   uses: actions/upload-artifact@v2
+                with:
+                    name: Signed app bundle
+                    path: ${{steps.sign_app.outputs.signedReleaseFile}}
+
+            - name: upload artifact to Firebase App Distribution
+              uses: wzieba/Firebase-Distribution-Github-Action@v1
               with:
-                  bodyFile: "${{ github.workspace}}/.github/body.md"
-                  tag: "v${{ env.version_name }}"
+                appId: ${{secrets.FIREBASE_APP_ID}}
+                serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
+                groups: testers
+                file: app/build/outputs/apk/release/app-release-unsigned.apk
+
+#    get-version:
+#        needs: [ single-apk ]
+#        name: create release
+#        runs-on: ubuntu-latest
+#
+#        permissions:
+#            contents: write
+#
+#        steps:
+#            -   uses: actions/checkout@v4
+#            -   name: set up JDK 17
+#                uses: actions/setup-java@v4
+#                with:
+#                    java-version: '17'
+#                    distribution: 'temurin'
+#                    cache: gradle
+#            -   name: Get Android version
+#                run: |
+#                    echo "VERSION_NAME=$(${{github.workspace}}/gradlew -q printVersionName)" >> $GITHUB_OUTPUT
+#                id: android_version
+#            -   name: Get Version
+#                run: |
+#                    echo "version_name=${{steps.android_version.outputs.VERSION_NAME}}" >> $GITHUB_ENV
+#            -   name: check version
+#                run: |
+#                    echo "${{ env.version_name }}"
+#            -   uses: actions/checkout@v4
+#            -   uses: ncipollo/release-action@v1
+#                with:
+#                    bodyFile: "${{ github.workspace}}/.github/body.md"
+#                    tag: "v${{ env.version_name }}"
 
 #    update_release_draft:
 #        needs: [get-version]
