@@ -70,6 +70,9 @@ jobs:
             #            echo sdk.dir=~/Android/Sdk >> local.properties
             #            echo api_key=\"${{ secrets.API_KEY }}\" >> local.properties
             #            chmod +x gradlew
+            -   name: add google_service.json
+                run: |
+                    echo '${{ secrets.GOOGLE_SERVICE_KEY }}' >> ${{ github.workspace }}/app/google-services.json
 
             -   name: Grant execute permission for gradlew
                 run: chmod +x gradlew
