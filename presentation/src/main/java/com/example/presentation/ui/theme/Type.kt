@@ -45,7 +45,6 @@ val Typography =
                 fontSize = 12.sp,
                 lineHeight = 16.sp,
                 letterSpacing = 0.5.sp,
-                color = Color.Black,
             ),
         titleLarge =
             TextStyle(

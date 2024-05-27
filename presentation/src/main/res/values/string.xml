@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">YongProject</string>
+    <string name="app_name">청년톡톡</string>
+    <string name="top_name">청년톡톡</string>
 </resources>

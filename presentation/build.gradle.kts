@@ -69,4 +69,7 @@ dependencies {
 
     // detekt
     detektPlugins(libs.detekt.rules.ruleauthors)
+
+    // navHost
+    implementation(libs.androidx.navigation.compose)
 }
