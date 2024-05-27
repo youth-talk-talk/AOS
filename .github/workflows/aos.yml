@@ -8,6 +8,7 @@ on:
 
 jobs:
     ktlint:
+        permissions: write-all
         name: Check Code Quality(ktlint)
         runs-on: ubuntu-latest
 
