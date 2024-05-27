@@ -1,6 +1,7 @@
 package com.example.presentation.ui.theme
 
 import androidx.compose.material3.Typography
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -26,6 +27,7 @@ val Typography =
                 fontSize = 16.sp,
                 lineHeight = 24.sp,
                 letterSpacing = 0.5.sp,
+                color = Color.Black,
             ),
         bodyMedium =
             TextStyle(
@@ -34,6 +36,7 @@ val Typography =
                 fontSize = 14.sp,
                 lineHeight = 20.sp,
                 letterSpacing = 0.5.sp,
+                color = Color.Black,
             ),
         bodySmall =
             TextStyle(
@@ -42,6 +45,7 @@ val Typography =
                 fontSize = 12.sp,
                 lineHeight = 16.sp,
                 letterSpacing = 0.5.sp,
+                color = Color.Black,
             ),
         titleLarge =
             TextStyle(
@@ -50,6 +54,7 @@ val Typography =
                 fontSize = 36.sp,
                 lineHeight = 44.sp,
                 letterSpacing = 0.5.sp,
+                color = Color.Black,
             ),
         titleMedium =
             TextStyle(
@@ -58,6 +63,7 @@ val Typography =
                 fontSize = 24.sp,
                 lineHeight = 32.sp,
                 letterSpacing = 0.5.sp,
+                color = Color.Black,
             ),
         titleSmall =
             TextStyle(
@@ -66,6 +72,7 @@ val Typography =
                 fontSize = 20.sp,
                 lineHeight = 32.sp,
                 letterSpacing = 0.5.sp,
+                color = Color.Black,
             ),
         displayLarge =
             TextStyle(
@@ -74,6 +81,7 @@ val Typography =
                 fontSize = 18.sp,
                 lineHeight = 24.sp,
                 letterSpacing = 0.5.sp,
+                color = Color.Black,
             ),
         displayMedium =
             TextStyle(
@@ -82,5 +90,6 @@ val Typography =
                 fontSize = 16.sp,
                 lineHeight = 24.sp,
                 letterSpacing = 0.5.sp,
+                color = Color.Black,
             ),
     )

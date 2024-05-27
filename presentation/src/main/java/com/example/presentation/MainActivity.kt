@@ -34,6 +34,7 @@ fun Greeting(
     Text(
         text = "Hello $name!",
         modifier = modifier,
+        style = MaterialTheme.typography.bodyLarge,
     )
 }
 
