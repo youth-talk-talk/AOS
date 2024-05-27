@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -29,6 +30,7 @@ import com.example.presentation.ui.main.HomeScreen
 import com.example.presentation.ui.main.MyPageScreen
 import com.example.presentation.ui.theme.YongProjectTheme
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen() {
     val navHostController = rememberNavController()
@@ -37,7 +39,10 @@ fun MainScreen() {
 
     Scaffold(
         bottomBar = {
-            BottomBar(navHostController = navHostController, currentRoute = currentRoute)
+            BottomBar(
+                navHostController = navHostController,
+                currentRoute = currentRoute,
+            )
         },
         content = {
             Column(modifier = Modifier.padding(it)) {
@@ -48,10 +53,7 @@ fun MainScreen() {
 }
 
 @Composable
-fun NavHostScreen(
-    navController: NavHostController,
-    modifier: Modifier = Modifier,
-) {
+fun NavHostScreen(navController: NavHostController) {
     NavHost(navController = navController, startDestination = MainNav.Home.route) {
         composable(route = MainNav.Home.route) {
             HomeScreen()
@@ -71,6 +73,7 @@ fun NavHostScreen(
 fun BottomBar(
     navHostController: NavHostController,
     currentRoute: String?,
+    modifier: Modifier = Modifier,
 ) {
     val bottomNavigation =
         listOf(
@@ -81,6 +84,7 @@ fun BottomBar(
 
     NavigationBar(
         containerColor = MaterialTheme.colorScheme.background,
+        modifier = modifier,
     ) {
         bottomNavigation.forEachIndexed { _, mainNav ->
             NavigationBarItem(
