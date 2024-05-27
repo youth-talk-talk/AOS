@@ -1,6 +1,7 @@
 [versions]
 agp = "8.3.2"
 detektRulesLibraries = "1.23.6"
+firebaseBom = "33.0.0"
 hiltAndroid = "2.48"
 kotlin = "1.9.0"
 coreKtx = "1.13.0"
@@ -22,6 +23,7 @@ androidx-runtime = { module = "androidx.compose.runtime:runtime", version.ref = 
 dagger-compiler = { module = "com.google.dagger:dagger-compiler", version.ref = "hiltAndroid" }
 detekt-rules-libraries = { module = "io.gitlab.arturbosch.detekt:detekt-rules-libraries", version.ref = "detektRulesLibraries" }
 detekt-rules-ruleauthors = { module = "io.gitlab.arturbosch.detekt:detekt-rules-ruleauthors", version.ref = "detektRulesLibraries" }
+firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
 hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hiltAndroid" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }

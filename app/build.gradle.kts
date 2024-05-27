@@ -72,7 +72,8 @@ dependencies {
     // detekt
     detektPlugins(libs.detekt.rules.ruleauthors)
 
-    implementation(platform("com.google.firebase:firebase-bom:33.0.0"))
+    implementation(platform(libs.firebase.bom))
+    //noinspection UseTomlInstead
     implementation("com.google.firebase:firebase-analytics")
 }
 
