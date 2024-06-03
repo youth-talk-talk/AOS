@@ -1,19 +1,25 @@
 package com.example.presentation
 
-import androidx.compose.foundation.background
+import android.annotation.SuppressLint
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -42,6 +48,7 @@ fun MainScreen() {
             BottomBar(
                 navHostController = navHostController,
                 currentRoute = currentRoute,
+                modifier = Modifier.height(56.dp),
             )
         },
         content = {
@@ -69,6 +76,7 @@ fun NavHostScreen(navController: NavHostController) {
     }
 }
 
+@SuppressLint("UnrememberedMutableInteractionSource")
 @Composable
 fun BottomBar(
     navHostController: NavHostController,
@@ -82,42 +90,70 @@ fun BottomBar(
             MainNav.MyPage,
         )
 
-    NavigationBar(
-        containerColor = MaterialTheme.colorScheme.background,
-        modifier = modifier,
+    Row(
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(horizontal = 4.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
     ) {
-        bottomNavigation.forEachIndexed { _, mainNav ->
-            NavigationBarItem(
-                selected = currentRoute == mainNav.route,
-                onClick = {
+        bottomNavigation.forEach { mainNav ->
+            val color = if (mainNav.route == currentRoute) Color.Black else Color.Gray
+            BottomIcon(
+                navHostController = navHostController,
+                mainNav = mainNav,
+                color = color,
+            )
+        }
+    }
+}
+
+@Composable
+fun RowScope.BottomIcon(
+    navHostController: NavHostController,
+    mainNav: MainNav,
+    color: Color,
+) {
+    Box(
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .weight(1f)
+                .align(Alignment.CenterVertically)
+                .clickable {
                     navHostController.navigate(mainNav.route) {
                         popUpTo(MainNav.Home.route)
-                        restoreState = true
                         launchSingleTop = true
+                        restoreState = true
                     }
                 },
-                icon = {
-                    Icon(
-                        painter = painterResource(id = mainNav.icon),
-                        contentDescription = mainNav.title,
-                        modifier = Modifier.size(24.dp),
-                    )
-                },
-                label = {
-                    Text(
-                        text = mainNav.title,
-                        style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Bold),
-                    )
-                },
-                colors =
-                    NavigationBarItemDefaults.colors(
-                        indicatorColor = MaterialTheme.colorScheme.background,
-                        selectedIconColor = Color.Black,
-                        selectedTextColor = Color.Black,
-                        unselectedIconColor = Color.Gray,
-                        unselectedTextColor = Color.Gray,
-                    ),
-                modifier = Modifier.background(color = MaterialTheme.colorScheme.background),
+    ) {
+        Column(
+            modifier = Modifier.align(Alignment.Center),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+        ) {
+            Box(
+                modifier =
+                    Modifier
+                        .size(24.dp),
+            ) {
+                Icon(
+                    modifier =
+                        Modifier
+                            .align(Alignment.Center)
+                            .size(24.dp),
+                    painter = painterResource(id = mainNav.icon),
+                    contentDescription = mainNav.title,
+                    tint = color,
+                )
+            }
+            Text(
+                text = mainNav.title,
+                style =
+                    MaterialTheme.typography.bodySmall
+                        .copy(color = color, fontWeight = FontWeight.Bold),
             )
         }
     }
