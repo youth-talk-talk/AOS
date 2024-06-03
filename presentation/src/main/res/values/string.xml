@@ -2,4 +2,6 @@
 <resources>
     <string name="app_name">청년톡톡</string>
     <string name="top_name">청년톡톡</string>
+    <string name="login_screen_description">한눈에 보는 청년정책, 청년톡톡과 함께하세요!</string>
+    <string name="kakao_description">카카오 로그인 이미지</string>
 </resources>
