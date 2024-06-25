@@ -21,17 +21,20 @@ dependencyResolutionManagement {
 }
 rootProject.name = "YongProject"
 include(":app")
-include(":presentation")
-include(":data")
-include(":domain")
 include(
     ":core",
     ":core:data",
     ":core:data-api",
     "core:designsystem",
-    "core:model"
+    "core:model",
 )
 include(
     ":feature",
-    ":feature:main"
+    ":feature:main",
 )
+include(":core:domain")
+include(":core:navigation")
+include(":feature:home")
+include(":feature:community")
+include(":feature:mypage")
+include(":feature:login")

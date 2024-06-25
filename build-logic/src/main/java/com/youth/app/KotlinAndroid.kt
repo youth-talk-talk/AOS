@@ -10,7 +10,10 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 internal fun Project.configureKotlinAndroid() {
     //plugins
-    pluginManager.apply("org.jetbrains.kotlin.android")
+    with(pluginManager) {
+        apply("org.jetbrains.kotlin.android")
+    }
+    configureVerifyKtLint()
 
     androidExtension.apply {
 
@@ -27,8 +30,8 @@ internal fun Project.configureKotlinAndroid() {
             }
         }
         compileOptions {
-            sourceCompatibility = JavaVersion.VERSION_17
-            targetCompatibility = JavaVersion.VERSION_17
+            sourceCompatibility = JavaVersion.VERSION_19
+            targetCompatibility = JavaVersion.VERSION_19
         }
 
     }
@@ -45,7 +48,7 @@ internal fun Project.configureKotlinAndroid() {
 internal fun Project.configureKotlin() {
     tasks.withType<KotlinCompile>().configureEach {
         compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_17)
+            jvmTarget.set(JvmTarget.JVM_19)
             // Treat all Kotlin warnings as errors (disabled by default)
             // Override by setting warningsAsErrors=true in your ~/.gradle/gradle.properties
             val warningsAsErrors: String? by project

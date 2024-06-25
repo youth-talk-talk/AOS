@@ -28,10 +28,6 @@ complexity:
 
 output-reports:
     active: true
-#    exclude:
-#        - 'TxtOutputReport'
-#        - 'XmlOutputReport'
-#        - 'MdOutputReport'
 
 naming:
     TopLevelPropertyNaming:
@@ -40,4 +36,7 @@ naming:
         ignoreAnnotated: [ 'Composable' ]
 
 style:
+    active: false
+
+formatting:
     active: false

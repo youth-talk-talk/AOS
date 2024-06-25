@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">청년톡톡</string>
+    <string name="login_screen_description">로그인 화면</string>
+    <string name="kakao_description">카카오 로그인</string>
+</resources>
