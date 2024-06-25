@@ -76,7 +76,6 @@ fun NavHostScreen(navController: NavHostController) {
     }
 }
 
-@SuppressLint("UnrememberedMutableInteractionSource")
 @Composable
 fun BottomBar(
     navHostController: NavHostController,
