@@ -1,6 +1,7 @@
 package com.youthtalk.di
 
 import com.google.gson.Gson
+import com.youth.app.core.data.BuildConfig
 import com.youthtalk.data.LoginService
 import com.youthtalk.model.CommonResponse
 import com.youthtalk.model.TokenResponse
@@ -65,7 +66,7 @@ object ApiModule {
     @Singleton
     fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("http://43.200.231.244")
+            .baseUrl(BuildConfig.SERVER_KEY)
             .addConverterFactory(GsonConverterFactory.create())
             .client(okHttpClient)
             .build()

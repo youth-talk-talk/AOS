@@ -29,6 +29,7 @@ internal fun Project.configureKotlinAndroid() {
             minSdk = 26
 
             buildConfigField("String", "KAKAO_API_KEY", getApiKey("kakao.api.key"))
+            buildConfigField("String", "SERVER_KEY", getApiKey("server_key"))
             addManifestPlaceholders(mapOf("KAKAO_API_KEY" to getApiKey("kakao.api.key")))
         }
 
