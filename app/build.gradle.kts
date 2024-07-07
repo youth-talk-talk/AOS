@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    setNamespace("com.youth.yongproject.app")
+    setNamespace("yongproject")
 
     defaultConfig {
         applicationId = "com.youth.yongproject.app"
