@@ -2,11 +2,18 @@ import com.youth.app.setNamespace
 
 plugins {
     id("youth.android.feature")
-    id("youth.android.compose")
+    alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.jetbrainsCompose)
 }
 
 android {
     setNamespace("feature.login")
+    kotlinOptions {
+        jvmTarget = "19"
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.1"
+    }
 }
 
 dependencies {

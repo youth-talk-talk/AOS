@@ -18,8 +18,8 @@ internal fun Project.configureComposeAndroid() {
             add("androidTestImplementation", platform(bom))
 
             add("implementation", libs.findLibrary("androidx.ui").get())
+            add("implementation", libs.findLibrary("androidx.activity.compose").get())
             add("implementation", libs.findLibrary("androidx.ui.graphics").get())
-            add("implementation", libs.findLibrary("androidx.ui.tooling").get())
             add("implementation", libs.findLibrary("androidx.ui.tooling-preview").get())
             add("implementation", libs.findLibrary("androidx.material3").get())
 

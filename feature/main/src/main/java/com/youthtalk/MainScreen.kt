@@ -30,10 +30,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.community.CommunityScreen
-import com.example.home.HomeScreen
-import com.example.mypage.MyPageScreen
-import com.example.navigation.MainNav
+import com.core.community.CommunityScreen
+import com.core.home.HomeScreen
+import com.core.mypage.MyPageScreen
+import com.core.navigation.MainNav
 import com.youthtalk.designsystem.YongProjectTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -158,7 +158,7 @@ fun RowScope.BottomIcon(
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 private fun MainScreenPreview() {
     YongProjectTheme {

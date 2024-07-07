@@ -13,11 +13,15 @@ android {
 dependencies {
     implementation(projects.core.model)
     implementation(projects.core.dataApi)
+    implementation(projects.core.exception)
 
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.material)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
+    implementation(libs.retrofit)
+    implementation(libs.okhttp)
+    implementation(platform(libs.okhttp.bom))
+    implementation(libs.okhttp3.okhttp)
+    implementation(libs.logging.interceptor)
 }

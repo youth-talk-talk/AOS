@@ -3,4 +3,10 @@
     <string name="app_name">청년톡톡</string>
     <string name="login_screen_description">로그인 화면</string>
     <string name="kakao_description">카카오 로그인</string>
+    <string name="yes">예</string>
+    <string name="no">아니요</string>
+    <string name="agree_subtitle">청년톡톡 서비스 약관에 동의하겠습니까?</string>
+    <string name="agree_subtitle2">약관 미동의 시 서비스 이용이 불가능합니다.</string>
+
+
 </resources>

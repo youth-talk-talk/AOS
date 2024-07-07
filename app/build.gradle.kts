@@ -1,10 +1,4 @@
 plugins {
-//    alias(libs.plugins.androidApplication)
-//    alias(libs.plugins.jetbrainsKotlinAndroid)
-//    alias(libs.plugins.kspPlugins)
-//    alias(libs.plugins.hiltPlugins)
-//    id("org.jlleitschuh.gradle.ktlint") version "12.1.1"
-//    id("io.gitlab.arturbosch.detekt")
     id("youth.android.application")
     id("com.google.gms.google-services")
 }
