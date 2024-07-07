@@ -49,8 +49,8 @@ val Typography =
         titleLarge =
             TextStyle(
                 fontFamily = preTendFont,
-                fontWeight = FontWeight.Normal,
-                fontSize = 36.sp,
+                fontWeight = FontWeight.W400,
+                fontSize = 28.sp,
                 lineHeight = 44.sp,
                 letterSpacing = 0.5.sp,
                 color = Color.Black,

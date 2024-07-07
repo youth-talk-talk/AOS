@@ -17,6 +17,7 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven { url = java.net.URI("https://devrepo.kakao.com/nexus/content/groups/public/") }
     }
 }
 rootProject.name = "YongProject"
@@ -24,17 +25,18 @@ include(":app")
 include(
     ":core",
     ":core:data",
-    ":core:data-api",
+    ":core:dataApi",
     "core:designsystem",
     "core:model",
+    "core:domain",
+    ":core:navigation",
+    ":core:exception",
 )
 include(
     ":feature",
     ":feature:main",
+    ":feature:home",
+    ":feature:community",
+    ":feature:mypage",
+    ":feature:login",
 )
-include(":core:domain")
-include(":core:navigation")
-include(":feature:home")
-include(":feature:community")
-include(":feature:mypage")
-include(":feature:login")
