@@ -1,7 +1,7 @@
-package com.core.domain.exception
+package com.core.exception
 
 //401 에러 Exception
-class UnauthorizedException(
+class UnAuthorizedException(
     private val errorMessage : String
 ) : Exception() {
     override val message: String?

@@ -1,10 +1,12 @@
+import com.youth.app.setNamespace
+
 plugins {
     id("youth.android.application")
     id("com.google.gms.google-services")
 }
 
 android {
-    namespace = "com.youth.yongproject.app"
+    setNamespace("com.youth.yongproject.app")
 
     defaultConfig {
         applicationId = "com.youth.yongproject.app"

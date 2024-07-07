@@ -10,7 +10,7 @@ android {
     setNamespace("feature.mypage")
 
     kotlinOptions {
-        jvmTarget = "19"
+        jvmTarget = "17"
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"

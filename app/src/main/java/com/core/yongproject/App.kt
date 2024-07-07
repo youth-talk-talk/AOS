@@ -2,7 +2,7 @@ package com.core.yongproject
 
 import android.app.Application
 import com.kakao.sdk.common.KakaoSdk
-import com.youth.yongproject.app.BuildConfig
+import com.youth.app.com.youth.yongproject.app.BuildConfig
 import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp

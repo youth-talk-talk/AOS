@@ -9,7 +9,7 @@ plugins {
 android {
     setNamespace("feature.community")
     kotlinOptions {
-        jvmTarget = "19"
+        jvmTarget = "17"
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"

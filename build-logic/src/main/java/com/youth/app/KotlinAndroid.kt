@@ -39,8 +39,8 @@ internal fun Project.configureKotlinAndroid() {
             }
         }
         compileOptions {
-            sourceCompatibility = JavaVersion.VERSION_19
-            targetCompatibility = JavaVersion.VERSION_19
+            sourceCompatibility = JavaVersion.VERSION_17
+            targetCompatibility = JavaVersion.VERSION_17
         }
         buildFeatures {
             buildConfig = true
@@ -65,7 +65,7 @@ internal fun Project.configureKotlinAndroid() {
 internal fun Project.configureKotlin() {
     tasks.withType<KotlinCompile>().configureEach {
         compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_19)
+            jvmTarget.set(JvmTarget.JVM_17)
             // Treat all Kotlin warnings as errors (disabled by default)
             // Override by setting warningsAsErrors=true in your ~/.gradle/gradle.properties
             val warningsAsErrors: String? by project
