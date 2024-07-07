@@ -15,5 +15,9 @@ insert_final_newline = true
 #최대 길이 150으로 설정
 max_line_length = 150
 ij_kotlin_code_style_defaults = KOTLIN_OFFICIAL
-ktlint_code_stype=android_studio
+ktlint_code_style = intellij_idea
+ij_any_class_annotation_wrap = off
+#클래스에 어노테이션이 있을 경우 한칸 내리는 상황 제거
+ktlint_standard_annotation = disabled
+ij_c_class_constructor_init_list_align_multiline = false
 ktlint_function_naming_ignore_when_annotated_with=Composable

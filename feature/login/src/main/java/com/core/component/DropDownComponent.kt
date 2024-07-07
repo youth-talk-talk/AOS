@@ -52,8 +52,8 @@ fun DropDownComponent(
 
     Column(
         modifier =
-            modifier
-                .onGloballyPositioned { rowSize = it.size.toSize() },
+        modifier
+            .onGloballyPositioned { rowSize = it.size.toSize() },
     ) {
         DropBar(expanded = expanded, selectedRegion = selectedRegion) {
             expanded = true
@@ -61,10 +61,10 @@ fun DropDownComponent(
 
         DropdownMenu(
             modifier =
-                Modifier
-                    .width(with(LocalDensity.current) { rowSize.width.toDp() })
-                    .height(300.dp)
-                    .background(MaterialTheme.colorScheme.background),
+            Modifier
+                .width(with(LocalDensity.current) { rowSize.width.toDp() })
+                .height(300.dp)
+                .background(MaterialTheme.colorScheme.background),
             expanded = expanded,
             onDismissRequest = { expanded = false },
         ) {
@@ -82,23 +82,19 @@ fun DropDownComponent(
 }
 
 @Composable
-fun DropBar(
-    expanded: Boolean,
-    selectedRegion: String?,
-    onClick: () -> Unit,
-) {
+fun DropBar(expanded: Boolean, selectedRegion: String?, onClick: () -> Unit) {
     Box(
         modifier =
-            Modifier
-                .fillMaxWidth()
-                .padding(5.dp)
-                .background(color = MaterialTheme.colorScheme.background)
-                .border(
-                    shape = RoundedCornerShape(8.dp),
-                    width = 1.dp,
-                    color = Color.Gray,
-                )
-                .clickable { onClick() },
+        Modifier
+            .fillMaxWidth()
+            .padding(5.dp)
+            .background(color = MaterialTheme.colorScheme.background)
+            .border(
+                shape = RoundedCornerShape(8.dp),
+                width = 1.dp,
+                color = Color.Gray,
+            )
+            .clickable { onClick() },
     ) {
         Row(
             modifier = Modifier.padding(8.dp),
@@ -107,17 +103,17 @@ fun DropBar(
             Text(
                 text = selectedRegion ?: "전체 지역",
                 modifier =
-                    Modifier
-                        .weight(1f)
-                        .padding(start = 8.dp),
+                Modifier
+                    .weight(1f)
+                    .padding(start = 8.dp),
                 style =
-                    MaterialTheme.typography.displayMedium.copy(Color.Gray),
+                MaterialTheme.typography.displayMedium.copy(Color.Gray),
             )
 
             Icon(
                 modifier = Modifier.size(24.dp),
                 imageVector =
-                    if (expanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
+                if (expanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
                 contentDescription = "키 다운",
                 tint = Color.Gray,
             )

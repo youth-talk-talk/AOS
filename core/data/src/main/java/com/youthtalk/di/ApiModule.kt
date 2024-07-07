@@ -1,5 +1,9 @@
 package com.youthtalk.di
 
+import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
 import com.google.gson.Gson
 import com.youth.app.core.data.BuildConfig
 import com.youthtalk.data.LoginService
@@ -8,6 +12,7 @@ import com.youthtalk.model.TokenResponse
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -20,6 +25,8 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object ApiModule {
+    private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "youths")
+
     @Provides
     @Singleton
     fun provideOkHttp(): OkHttpClient {
@@ -75,4 +82,8 @@ object ApiModule {
     @Provides
     @Singleton
     fun provideLoginService(retrofit: Retrofit): LoginService = retrofit.create(LoginService::class.java)
+
+    @Provides
+    @Singleton
+    fun provideDataStore(@ApplicationContext context: Context): DataStore<Preferences> = context.dataStore
 }

@@ -53,10 +53,10 @@ fun HomeScreen() {
     Surface {
         Column(
             modifier =
-                Modifier
-                    .fillMaxSize()
-                    .background(Color.White)
-                    .nestedScroll(topAppbarState.nestedScrollConnection),
+            Modifier
+                .fillMaxSize()
+                .background(Color.White)
+                .nestedScroll(topAppbarState.nestedScrollConnection),
         ) {
             HomeScreenAppBar(topAppbarState = topAppbarState)
 
@@ -75,9 +75,9 @@ fun HomeScreen() {
                 item {
                     Row(
                         modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .padding(8.dp),
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp),
                         horizontalArrangement = Arrangement.SpaceAround,
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
@@ -97,23 +97,20 @@ fun HomeScreen() {
 }
 
 @Composable
-private fun CardView(
-    r: Dp,
-    count: Int,
-) {
+private fun CardView(r: Dp, count: Int) {
     Box(
         modifier =
-            Modifier
-                .fillMaxWidth()
-                .background(
-                    color = MaterialTheme.colorScheme.tertiary,
-                    shape =
-                        RoundedCornerShape(
-                            topEnd = r,
-                            topStart = r,
-                        ),
-                )
-                .padding(top = 16.dp, start = 8.dp, end = 8.dp),
+        Modifier
+            .fillMaxWidth()
+            .background(
+                color = MaterialTheme.colorScheme.tertiary,
+                shape =
+                RoundedCornerShape(
+                    topEnd = r,
+                    topStart = r,
+                ),
+            )
+            .padding(top = 16.dp, start = 8.dp, end = 8.dp),
     ) {
         Text(text = "HomeScreen $count")
     }
@@ -151,10 +148,10 @@ private fun HomeScreenAppBar(topAppbarState: TopAppBarScrollBehavior) {
         },
         scrollBehavior = topAppbarState,
         colors =
-            TopAppBarDefaults.topAppBarColors(
-                containerColor = MaterialTheme.colorScheme.background,
-                scrolledContainerColor = MaterialTheme.colorScheme.background,
-            ),
+        TopAppBarDefaults.topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.background,
+            scrolledContainerColor = MaterialTheme.colorScheme.background,
+        ),
     )
 }
 

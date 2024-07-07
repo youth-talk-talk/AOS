@@ -27,19 +27,19 @@ import com.youthtalk.designsystem.YongProjectTheme
 fun AgreeScreen() {
     Column(
         modifier =
-            Modifier
-                .fillMaxSize()
-                .background(Color.White),
+        Modifier
+            .fillMaxSize()
+            .background(Color.White),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(
             modifier = Modifier.padding(top = 14.dp),
             text = "약관동의",
             style =
-                MaterialTheme.typography.displayLarge.copy(
-                    fontWeight = FontWeight.W700,
-                    color = Color.Black,
-                ),
+            MaterialTheme.typography.displayLarge.copy(
+                fontWeight = FontWeight.W700,
+                color = Color.Black,
+            ),
         )
 
         // 약관 동의 글
@@ -57,9 +57,9 @@ fun AgreeScreen() {
 private fun AgreeScreenButton() {
     Row(
         modifier =
-            Modifier
-                .padding(top = 14.dp, bottom = 21.dp)
-                .padding(horizontal = 25.dp),
+        Modifier
+            .padding(top = 14.dp, bottom = 21.dp)
+            .padding(horizontal = 25.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         RoundButton(
@@ -83,17 +83,17 @@ private fun DetailAgreeTextQuestion() {
         Text(
             text = stringResource(id = R.string.agree_subtitle),
             style =
-                MaterialTheme.typography.bodyMedium
-                    .copy(fontWeight = FontWeight.W700),
+            MaterialTheme.typography.bodyMedium
+                .copy(fontWeight = FontWeight.W700),
         )
         Text(
             text = stringResource(id = R.string.agree_subtitle2),
             style =
-                MaterialTheme.typography.bodySmall
-                    .copy(
-                        fontWeight = FontWeight.W400,
-                        color = Color(0xFF929292),
-                    ),
+            MaterialTheme.typography.bodySmall
+                .copy(
+                    fontWeight = FontWeight.W400,
+                    color = Color(0xFF929292),
+                ),
         )
     }
 }
@@ -102,11 +102,11 @@ private fun DetailAgreeTextQuestion() {
 private fun ColumnScope.DetailAgreeText() {
     Box(
         modifier =
-            Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 30.dp, vertical = 21.dp)
-                .background(color = Color(0xFFf3f3f3))
-                .weight(1f),
+        Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 30.dp, vertical = 21.dp)
+            .background(color = Color(0xFFf3f3f3))
+            .weight(1f),
     ) {
         Text(
             modifier = Modifier.align(Alignment.Center),
