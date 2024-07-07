@@ -77,11 +77,7 @@ fun NavHostScreen(navController: NavHostController) {
 }
 
 @Composable
-fun BottomBar(
-    navHostController: NavHostController,
-    currentRoute: String?,
-    modifier: Modifier = Modifier,
-) {
+fun BottomBar(navHostController: NavHostController, currentRoute: String?, modifier: Modifier = Modifier) {
     val bottomNavigation =
         listOf(
             MainNav.Community,
@@ -91,9 +87,9 @@ fun BottomBar(
 
     Row(
         modifier =
-            modifier
-                .fillMaxWidth()
-                .padding(horizontal = 4.dp),
+        modifier
+            .fillMaxWidth()
+            .padding(horizontal = 4.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(4.dp),
     ) {
@@ -109,24 +105,20 @@ fun BottomBar(
 }
 
 @Composable
-fun RowScope.BottomIcon(
-    navHostController: NavHostController,
-    mainNav: MainNav,
-    color: Color,
-) {
+fun RowScope.BottomIcon(navHostController: NavHostController, mainNav: MainNav, color: Color) {
     Box(
         modifier =
-            Modifier
-                .fillMaxSize()
-                .weight(1f)
-                .align(Alignment.CenterVertically)
-                .clickable {
-                    navHostController.navigate(mainNav.route) {
-                        popUpTo(MainNav.Home.route)
-                        launchSingleTop = true
-                        restoreState = true
-                    }
-                },
+        Modifier
+            .fillMaxSize()
+            .weight(1f)
+            .align(Alignment.CenterVertically)
+            .clickable {
+                navHostController.navigate(mainNav.route) {
+                    popUpTo(MainNav.Home.route)
+                    launchSingleTop = true
+                    restoreState = true
+                }
+            },
     ) {
         Column(
             modifier = Modifier.align(Alignment.Center),
@@ -135,14 +127,14 @@ fun RowScope.BottomIcon(
         ) {
             Box(
                 modifier =
-                    Modifier
-                        .size(24.dp),
+                Modifier
+                    .size(24.dp),
             ) {
                 Icon(
                     modifier =
-                        Modifier
-                            .align(Alignment.Center)
-                            .size(24.dp),
+                    Modifier
+                        .align(Alignment.Center)
+                        .size(24.dp),
                     painter = painterResource(id = mainNav.icon),
                     contentDescription = mainNav.title,
                     tint = color,
@@ -151,8 +143,8 @@ fun RowScope.BottomIcon(
             Text(
                 text = mainNav.title,
                 style =
-                    MaterialTheme.typography.bodySmall
-                        .copy(color = color, fontWeight = FontWeight.Bold),
+                MaterialTheme.typography.bodySmall
+                    .copy(color = color, fontWeight = FontWeight.Bold),
             )
         }
     }

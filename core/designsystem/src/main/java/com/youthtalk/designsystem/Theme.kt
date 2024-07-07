@@ -45,10 +45,7 @@ private val LightColorScheme =
     )
 
 @Composable
-fun YongProjectTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    content: @Composable () -> Unit,
-) {
+fun YongProjectTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
     val colorScheme =
         when {
             darkTheme -> DarkColorScheme

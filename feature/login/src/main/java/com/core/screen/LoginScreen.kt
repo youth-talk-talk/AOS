@@ -46,7 +46,7 @@ import com.youthtalk.model.Token
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
-fun LoginScreen(viewModel: LoginViewModel = hiltViewModel()) {
+fun LoginScreen(viewModel: LoginViewModel) {
     val context = LocalContext.current
 
     val token by viewModel.token.collectAsState()
@@ -71,10 +71,7 @@ fun LoginScreen(viewModel: LoginViewModel = hiltViewModel()) {
     )
 }
 
-private fun kakaoLogin(
-    context: Context,
-    onSuccess: (Long) -> Unit,
-) {
+private fun kakaoLogin(context: Context, onSuccess: (Long) -> Unit) {
 // 카카오계정으로 로그인 공통 callback 구성
 // 카카오톡으로 로그인 할 수 없어 카카오계정으로 로그인할 경우 사용됨
     val callback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
@@ -133,20 +130,17 @@ private fun kakaoLogin(
 }
 
 @Composable
-fun LoginScreen(
-    onClick: () -> Unit,
-    token: Token?,
-) {
+fun LoginScreen(onClick: () -> Unit, token: Token?) {
     Surface(
         modifier =
-            Modifier
-                .fillMaxSize(),
+        Modifier
+            .fillMaxSize(),
     ) {
         Box(
             modifier =
-                Modifier
-                    .fillMaxSize()
-                    .background(color = MaterialTheme.colorScheme.background),
+            Modifier
+                .fillMaxSize()
+                .background(color = MaterialTheme.colorScheme.background),
         ) {
             LogoText(token)
             KaKaoImage(onClick = onClick)
@@ -158,8 +152,8 @@ fun LoginScreen(
 private fun LogoText(token: Token?) {
     Column(
         modifier =
-            Modifier
-                .fillMaxSize(),
+        Modifier
+            .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
@@ -176,8 +170,8 @@ private fun LogoText(token: Token?) {
         Text(
             text = stringResource(id = R.string.login_screen_description),
             style =
-                MaterialTheme.typography.bodySmall
-                    .copy(color = Color.Black),
+            MaterialTheme.typography.bodySmall
+                .copy(color = Color.Black),
         )
 
         Text(text = "${token?.accessToken} ${token?.refreshToken}")
@@ -188,15 +182,15 @@ private fun LogoText(token: Token?) {
 fun BoxScope.KaKaoImage(onClick: () -> Unit) {
     Image(
         modifier =
-            Modifier
-                .align(Alignment.BottomCenter)
-                .fillMaxWidth()
-                .padding(horizontal = 8.dp, vertical = 16.dp)
-                .clickable { onClick() },
+        Modifier
+            .align(Alignment.BottomCenter)
+            .fillMaxWidth()
+            .padding(horizontal = 8.dp, vertical = 16.dp)
+            .clickable { onClick() },
         painter =
-            painterResource(
-                id = R.drawable.kakao_login_large_wide,
-            ),
+        painterResource(
+            id = R.drawable.kakao_login_large_wide,
+        ),
         contentScale = ContentScale.FillWidth,
         contentDescription = stringResource(id = R.string.kakao_description),
     )
@@ -205,7 +199,8 @@ fun BoxScope.KaKaoImage(onClick: () -> Unit) {
 @Preview
 @Composable
 private fun LoginScreenPreview() {
+    val viewModel: LoginViewModel = hiltViewModel()
     YongProjectTheme {
-        LoginScreen()
+        LoginScreen(viewModel)
     }
 }

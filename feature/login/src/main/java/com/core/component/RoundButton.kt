@@ -15,16 +15,12 @@ import androidx.compose.ui.unit.dp
 import com.youthtalk.designsystem.YongProjectTheme
 
 @Composable
-fun RoundButton(
-    modifier: Modifier = Modifier,
-    text: String,
-    color: Color,
-) {
+fun RoundButton(modifier: Modifier = Modifier, text: String, color: Color) {
     Box(
         modifier =
-            modifier
-                .background(color, shape = RoundedCornerShape(48.dp))
-                .padding(vertical = 16.dp),
+        modifier
+            .background(color, shape = RoundedCornerShape(48.dp))
+            .padding(vertical = 16.dp),
     ) {
         Text(
             modifier = Modifier.align(Alignment.Center),

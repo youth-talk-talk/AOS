@@ -24,4 +24,7 @@ dependencies {
     implementation(platform(libs.okhttp.bom))
     implementation(libs.okhttp3.okhttp)
     implementation(libs.logging.interceptor)
+
+    implementation(libs.androidx.datastore.preferences.core)
+    implementation(libs.androidx.datastore.preferences)
 }

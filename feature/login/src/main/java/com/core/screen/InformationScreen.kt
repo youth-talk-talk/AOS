@@ -27,19 +27,19 @@ import com.youthtalk.designsystem.YongProjectTheme
 fun InformationScreen() {
     Column(
         modifier =
-            Modifier
-                .fillMaxSize()
-                .background(Color.White),
+        Modifier
+            .fillMaxSize()
+            .background(Color.White),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         InformationTitleScreen()
 
         Column(
             modifier =
-                Modifier
-                    .fillMaxSize()
-                    .padding(top = 58.dp)
-                    .weight(1f),
+            Modifier
+                .fillMaxSize()
+                .padding(top = 58.dp)
+                .weight(1f),
             horizontalAlignment = Alignment.Start,
             verticalArrangement = Arrangement.spacedBy(6.dp),
         ) {
@@ -49,10 +49,10 @@ fun InformationScreen() {
 
         RoundButton(
             modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 76.dp)
-                    .padding(horizontal = 24.dp),
+            Modifier
+                .fillMaxWidth()
+                .padding(bottom = 76.dp)
+                .padding(horizontal = 24.dp),
             text = "시작하기",
             color = Color(0xFFE3E5E5),
         )
@@ -82,10 +82,10 @@ private fun NickNameScreen() {
     )
     BasicTextField(
         modifier =
-            Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 23.dp)
-                .border(width = 1.dp, shape = RoundedCornerShape(8.dp), color = Color(0xFFCDCFD0)),
+        Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 23.dp)
+            .border(width = 1.dp, shape = RoundedCornerShape(8.dp), color = Color(0xFFCDCFD0)),
         value = "123",
         textStyle = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.W700),
         onValueChange = {},
@@ -94,9 +94,9 @@ private fun NickNameScreen() {
 
         Row(
             modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(start = 25.dp, top = 10.dp, bottom = 10.dp),
+            Modifier
+                .fillMaxWidth()
+                .padding(start = 25.dp, top = 10.dp, bottom = 10.dp),
         ) {
             innerTextField()
         }
@@ -112,12 +112,12 @@ private fun NickNameScreen() {
 private fun InformationTitleScreen() {
     Text(
         modifier =
-            Modifier
-                .padding(top = 35.dp),
+        Modifier
+            .padding(top = 35.dp),
         text = "청년톡톡과 함께할 정보를 입력해주세요",
         style =
-            MaterialTheme.typography.displayLarge
-                .copy(fontWeight = FontWeight.W700),
+        MaterialTheme.typography.displayLarge
+            .copy(fontWeight = FontWeight.W700),
     )
 }
 
