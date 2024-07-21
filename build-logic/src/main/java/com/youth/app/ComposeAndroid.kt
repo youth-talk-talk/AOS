@@ -6,6 +6,7 @@ import org.gradle.kotlin.dsl.getByType
 import org.jetbrains.kotlin.compose.compiler.gradle.ComposeCompilerGradlePluginExtension
 
 internal fun Project.configureComposeAndroid() {
+
     with(plugins) {
         apply("org.jetbrains.kotlin.plugin.compose")
     }

@@ -1,63 +1,78 @@
 package com.youthtalk.di
 
-import android.content.Context
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.preferencesDataStore
-import com.google.gson.Gson
+import android.util.Log
+import com.core.dataapi.repository.LoginRepository
+import com.core.datastore.datasource.DataStoreDataSource
 import com.youth.app.core.data.BuildConfig
 import com.youthtalk.data.LoginService
-import com.youthtalk.model.CommonResponse
-import com.youthtalk.model.TokenResponse
+import com.youthtalk.data.UserService
+import com.youthtalk.repository.LoginRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json
+import okhttp3.Authenticator
 import okhttp3.Interceptor
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
-import okhttp3.ResponseBody.Companion.toResponseBody
 import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Converter.Factory
 import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.kotlinx.serialization.asConverterFactory
+import javax.inject.Qualifier
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 object ApiModule {
-    private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "youths")
+
+    @Qualifier
+    @Retention(AnnotationRetention.RUNTIME)
+    annotation class Login
+
+    @Qualifier
+    @Retention(AnnotationRetention.RUNTIME)
+    annotation class Main
 
     @Provides
     @Singleton
-    fun provideOkHttp(): OkHttpClient {
+    fun provideJson(): Json = Json {
+        ignoreUnknownKeys = true
+        coerceInputValues = true
+    }
+
+    @Provides
+    @Singleton
+    fun provideConverterFactory(json: Json): Factory {
+        return json.asConverterFactory("application/json".toMediaType())
+    }
+
+    @Singleton
+    @Provides
+    @Login
+    fun provideOkHttp(dataStoreDataSource: DataStoreDataSource): OkHttpClient {
         val interceptor =
             Interceptor { chain ->
-
-                val request =
-                    chain.request().newBuilder()
-                        .addHeader("Content-Type", "application/json")
-                        .build()
+                val request = chain.request().newBuilder()
+                    .addHeader("Content-Type", "application/json")
+                    .build()
 
                 val response = chain.proceed(request)
-
-                val commonResponse = Gson().fromJson(response.body?.string(), CommonResponse::class.java)
-
                 val token = response.headers["Authorization"]
                 val refreshToken = response.headers["Authorization-refresh"]
                 if (token != null && refreshToken != null) {
-                    val tokenResponse = TokenResponse(token, refreshToken)
-
-                    val newResponseBody = CommonResponse(commonResponse.status, commonResponse.message, commonResponse.code, tokenResponse)
-                    response.newBuilder()
-                        .code(response.code)
-                        .body(newResponseBody.toResponseBody())
-                        .build()
-                } else {
-                    response.newBuilder()
-                        .code(response.code)
-                        .body(commonResponse.toResponseBody())
-                        .build()
+                    Log.d("YOON-CHAN", "token $ refreshToken Saved \n $token \n $refreshToken")
+                    CoroutineScope(Dispatchers.IO).launch {
+                        dataStoreDataSource.saveAccessToken(token)
+                        dataStoreDataSource.saveRefreshToken(refreshToken)
+                    }
                 }
+
+                response
             }
 
         val httpLoggingInterceptor = HttpLoggingInterceptor()
@@ -71,19 +86,61 @@ object ApiModule {
 
     @Provides
     @Singleton
-    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
+    @Main
+    fun provideAuthInterceptor(dataStoreDataSource: DataStoreDataSource): AuthInterceptor = AuthInterceptor(dataStoreDataSource)
+
+    @Provides
+    @Singleton
+    @Main
+    fun provideAuthAuthenticator(dataStoreDataSource: DataStoreDataSource): Authenticator = AuthAuthenticator(dataStoreDataSource)
+
+    @Provides
+    @Singleton
+    @Main
+    fun provideMainOkHttpClient(@Main authInterceptor: AuthInterceptor, @Main authenticator: Authenticator): OkHttpClient {
+        val httpLoggingInterceptor = HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.BODY
+        }
+
+        return OkHttpClient.Builder()
+            .addInterceptor(authInterceptor)
+            .addInterceptor(httpLoggingInterceptor)
+            .authenticator(authenticator)
+            .build()
+    }
+
+    @Singleton
+    @Provides
+    @Login
+    fun provideLoginRetrofit(@Login okHttpClient: OkHttpClient, converterFactory: Factory): Retrofit {
         return Retrofit.Builder()
             .baseUrl(BuildConfig.SERVER_KEY)
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(converterFactory)
             .client(okHttpClient)
             .build()
     }
 
     @Provides
     @Singleton
-    fun provideLoginService(retrofit: Retrofit): LoginService = retrofit.create(LoginService::class.java)
+    @Main
+    fun provideMainRetrofit(@Main okHttpClient: OkHttpClient, converterFactory: Factory): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl(BuildConfig.SERVER_KEY)
+            .addConverterFactory(converterFactory)
+            .client(okHttpClient)
+            .build()
+    }
 
     @Provides
     @Singleton
-    fun provideDataStore(@ApplicationContext context: Context): DataStore<Preferences> = context.dataStore
+    fun provideLoginService(@Login retrofit: Retrofit): LoginService = retrofit.create(LoginService::class.java)
+
+    @Provides
+    @Singleton
+    fun provideUserService(@Main retrofit: Retrofit): UserService = retrofit.create(UserService::class.java)
+
+    @Provides
+    @Singleton
+    fun bindsLoginRepository(loginService: LoginService, dataStoreDataSource: DataStoreDataSource): LoginRepository =
+        LoginRepositoryImpl(loginService, dataStoreDataSource)
 }

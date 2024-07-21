@@ -1,18 +1,16 @@
 package com.youthtalk.model
 
-import com.google.gson.Gson
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.serializer
 import okhttp3.ResponseBody.Companion.toResponseBody
 
+@Serializable
 data class CommonResponse<T>(
-    @SerializedName("status")
     val status: Int,
-    @SerializedName("message")
     val message: String,
-    @SerializedName("code")
     val code: String,
-    @SerializedName("data")
-    val data: T,
-) {
-    fun toResponseBody() = Gson().toJson(this).toResponseBody()
-}
+    val data: T?,
+)
+
+inline fun <reified T> toResponseBody(request: CommonResponse<T>) = Json.encodeToString(serializer<CommonResponse<T>>(), request).toResponseBody()

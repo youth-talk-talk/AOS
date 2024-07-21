@@ -26,6 +26,9 @@ complexity:
         #상위 클래스의 함수를 오버라이드한 함수를 카운트에서 제외할지 결정한다.
         ignoreOverridden: false
 
+    CyclomaticComplexMethod:
+        threshold: 20
+
 output-reports:
     active: true
 

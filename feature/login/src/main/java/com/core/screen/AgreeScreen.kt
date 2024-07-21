@@ -24,7 +24,7 @@ import com.youth.app.feature.login.R
 import com.youthtalk.designsystem.YongProjectTheme
 
 @Composable
-fun AgreeScreen() {
+fun AgreeScreen(clickCancel: () -> Unit, clickNext: () -> Unit) {
     Column(
         modifier =
         Modifier
@@ -49,12 +49,15 @@ fun AgreeScreen() {
         DetailAgreeTextQuestion()
 
         // 예 아니요 선택 버튼
-        AgreeScreenButton()
+        AgreeScreenButton(
+            clickCancel = clickCancel,
+            clickNext = clickNext,
+        )
     }
 }
 
 @Composable
-private fun AgreeScreenButton() {
+private fun AgreeScreenButton(clickCancel: () -> Unit, clickNext: () -> Unit) {
     Row(
         modifier =
         Modifier
@@ -65,12 +68,14 @@ private fun AgreeScreenButton() {
         RoundButton(
             modifier = Modifier.weight(1f),
             text = stringResource(id = R.string.no),
-            color = MaterialTheme.colorScheme.surface,
+            color = Color(0xFFE3E5E5),
+            onClick = clickCancel,
         )
         RoundButton(
             modifier = Modifier.weight(1f),
             text = stringResource(id = R.string.yes),
             color = MaterialTheme.colorScheme.primary,
+            onClick = clickNext,
         )
     }
 }
@@ -119,6 +124,9 @@ private fun ColumnScope.DetailAgreeText() {
 @Composable
 private fun AgreeScreenPreview() {
     YongProjectTheme {
-        AgreeScreen()
+        AgreeScreen(
+            clickCancel = {},
+            clickNext = {},
+        )
     }
 }

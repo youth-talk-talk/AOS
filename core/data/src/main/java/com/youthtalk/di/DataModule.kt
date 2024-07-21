@@ -1,9 +1,9 @@
 package com.youthtalk.di
 
-import com.core.dataapi.repository.DataStoreRepository
-import com.core.dataapi.repository.LoginRepository
-import com.youthtalk.repository.DataStoreRepositoryImpl
-import com.youthtalk.repository.LoginRepositoryImpl
+import com.core.dataapi.repository.UserRepository
+import com.core.datastore.datasource.DataSource
+import com.core.datastore.datasource.DataStoreDataSource
+import com.youthtalk.repository.UserRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -12,9 +12,10 @@ import dagger.hilt.components.SingletonComponent
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class DataModule {
-    @Binds
-    abstract fun bindsLoginRepository(repository: LoginRepositoryImpl): LoginRepository
 
     @Binds
-    abstract fun bindsDataStoreRepository(repository: DataStoreRepositoryImpl): DataStoreRepository
+    abstract fun bindsDataSource(dataStoreDataSource: DataStoreDataSource): DataSource
+
+    @Binds
+    abstract fun bindsUserRepository(repository: UserRepositoryImpl): UserRepository
 }

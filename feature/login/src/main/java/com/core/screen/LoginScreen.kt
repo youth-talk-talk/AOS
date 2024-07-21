@@ -2,6 +2,7 @@ package com.core.screen
 
 import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -22,8 +23,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -35,25 +34,42 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
+import com.core.exception.UnAuthorizedException
 import com.core.login.LoginViewModel
+import com.core.navigation.LoginRouteName
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
 import com.youth.app.feature.login.R
 import com.youthtalk.designsystem.YongProjectTheme
-import com.youthtalk.model.Token
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
-fun LoginScreen(viewModel: LoginViewModel) {
+fun LoginScreen(navHostController: NavHostController, viewModel: LoginViewModel) {
     val context = LocalContext.current
 
-    val token by viewModel.token.collectAsState()
-
-    LaunchedEffect(key1 = viewModel.error) {
+    LaunchedEffect(Unit) {
         viewModel.error.collectLatest {
-            Log.d("YOON-CHAN", "LOGINSCREEN $it")
+            Log.d("YOON-CHAN", "LoginScreen error $it")
+            when (it) {
+                is UnAuthorizedException -> {
+                    navHostController.navigate(LoginRouteName.AGREE_SCREEN) {
+                        popUpTo(LoginRouteName.LOGIN_SCREEN) {
+                            inclusive = true
+                        }
+                        launchSingleTop = true
+                    }
+                }
+                else -> {
+                    Toast.makeText(context, "${it.message}", Toast.LENGTH_SHORT).show()
+                }
+            }
+            UserApiClient.instance.logout {
+                Log.d("YOON-CHAN", "Kakao Login 실패")
+            }
         }
     }
 
@@ -67,7 +83,6 @@ fun LoginScreen(viewModel: LoginViewModel) {
                 },
             )
         },
-        token,
     )
 }
 
@@ -95,14 +110,10 @@ private fun kakaoLogin(context: Context, onSuccess: (Long) -> Unit) {
         UserApiClient.instance.loginWithKakaoTalk(context) { token, error ->
             if (error != null) {
                 Log.e("LOGINSCREEN", "카카오톡으로 로그인 실패", error)
-
-                // 사용자가 카카오톡 설치 후 디바이스 권한 요청 화면에서 로그인을 취소한 경우,
-                // 의도적인 로그인 취소로 보고 카카오계정으로 로그인 시도 없이 로그인 취소로 처리 (예: 뒤로 가기)
                 if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
                     return@loginWithKakaoTalk
                 }
 
-                // 카카오톡에 연결된 카카오계정이 없는 경우, 카카오계정으로 로그인 시도
                 UserApiClient.instance.loginWithKakaoAccount(context, callback = callback)
             } else if (token != null) {
                 Log.i("LOGINSCREEN", "카카오톡으로 로그인 성공 ${token.accessToken} ${token.accessTokenExpiresAt}")
@@ -110,15 +121,6 @@ private fun kakaoLogin(context: Context, onSuccess: (Long) -> Unit) {
                     if (error != null) {
                         Log.e("LOGINSCREEN", "사용자 정보 요청 실패", error)
                     } else if (user != null) {
-                        Log.i(
-                            "LOGINSCREEN",
-                            "사용자 정보 요청 성공" +
-                                "\n회원번호: ${user.id}" +
-                                "\n이메일: ${user.kakaoAccount?.email}" +
-                                "\n닉네임: ${user.kakaoAccount?.profile?.nickname}" +
-                                "\n프로필사진: ${user.kakaoAccount?.profile?.thumbnailImageUrl}",
-                        )
-
                         onSuccess(user.id ?: -1)
                     }
                 }
@@ -130,7 +132,7 @@ private fun kakaoLogin(context: Context, onSuccess: (Long) -> Unit) {
 }
 
 @Composable
-fun LoginScreen(onClick: () -> Unit, token: Token?) {
+fun LoginScreen(onClick: () -> Unit) {
     Surface(
         modifier =
         Modifier
@@ -142,14 +144,14 @@ fun LoginScreen(onClick: () -> Unit, token: Token?) {
                 .fillMaxSize()
                 .background(color = MaterialTheme.colorScheme.background),
         ) {
-            LogoText(token)
+            LogoText()
             KaKaoImage(onClick = onClick)
         }
     }
 }
 
 @Composable
-private fun LogoText(token: Token?) {
+private fun LogoText() {
     Column(
         modifier =
         Modifier
@@ -173,8 +175,6 @@ private fun LogoText(token: Token?) {
             MaterialTheme.typography.bodySmall
                 .copy(color = Color.Black),
         )
-
-        Text(text = "${token?.accessToken} ${token?.refreshToken}")
     }
 }
 
@@ -199,8 +199,12 @@ fun BoxScope.KaKaoImage(onClick: () -> Unit) {
 @Preview
 @Composable
 private fun LoginScreenPreview() {
+    val navHostController = rememberNavController()
     val viewModel: LoginViewModel = hiltViewModel()
     YongProjectTheme {
-        LoginScreen(viewModel)
+        LoginScreen(
+            navHostController,
+            viewModel,
+        )
     }
 }

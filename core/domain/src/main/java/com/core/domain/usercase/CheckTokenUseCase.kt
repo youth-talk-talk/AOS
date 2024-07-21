@@ -1,10 +1,10 @@
 package com.core.domain.usercase
 
-import com.core.dataapi.repository.DataStoreRepository
+import com.core.dataapi.repository.LoginRepository
 import javax.inject.Inject
 
 class CheckTokenUseCase @Inject constructor(
-    private val dataStoreRepository: DataStoreRepository,
+    private val loginRepository: LoginRepository,
 ) {
-    operator fun invoke() = dataStoreRepository.hasToken()
+    operator fun invoke() = loginRepository.hasToken()
 }

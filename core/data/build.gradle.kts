@@ -3,7 +3,8 @@ import com.youth.app.setNamespace
 plugins {
     id("youth.android.library")
     id("youth.android.hilt")
-//    id("kotlinx-serialization")
+    id("kotlinx-serialization")
+    kotlin("plugin.serialization")
 }
 
 android {
@@ -14,6 +15,7 @@ dependencies {
     implementation(projects.core.model)
     implementation(projects.core.dataApi)
     implementation(projects.core.exception)
+    implementation(projects.core.datastore)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -24,7 +26,6 @@ dependencies {
     implementation(platform(libs.okhttp.bom))
     implementation(libs.okhttp3.okhttp)
     implementation(libs.logging.interceptor)
-
-    implementation(libs.androidx.datastore.preferences.core)
-    implementation(libs.androidx.datastore.preferences)
+    implementation(libs.retrofit.kotlin.serialization)
+    implementation(libs.kotlinx.serialization.json)
 }
