@@ -1,7 +1,7 @@
-package com.core.dataapi.repository
+package com.core.datastore.datasource
 
 import kotlinx.coroutines.flow.Flow
 
-interface DataStoreRepository {
+interface DataSource {
     fun hasToken(): Flow<Boolean>
 }

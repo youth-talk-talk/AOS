@@ -40,3 +40,4 @@ include(
     ":feature:mypage",
     ":feature:login",
 )
+include(":core:datastore")

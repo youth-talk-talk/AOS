@@ -32,6 +32,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
@@ -41,9 +42,10 @@ import com.youthtalk.designsystem.YongProjectTheme
 fun DropDownComponent(
     modifier: Modifier = Modifier,
     dropDownList: List<String> = listOf(),
-    dropDownClick: () -> Unit,
-    selectedRegion: String? = null,
+    dropDownClick: (String) -> Unit,
+    selectedRegion: String,
 ) {
+    val keyboardController = LocalSoftwareKeyboardController.current
     var expanded by remember {
         mutableStateOf(false)
     }
@@ -56,6 +58,7 @@ fun DropDownComponent(
             .onGloballyPositioned { rowSize = it.size.toSize() },
     ) {
         DropBar(expanded = expanded, selectedRegion = selectedRegion) {
+            keyboardController?.hide()
             expanded = true
         }
 
@@ -72,7 +75,10 @@ fun DropDownComponent(
                 Column(modifier = Modifier.padding(horizontal = 8.dp)) {
                     DropdownMenuItem(
                         text = { Text(text = it) },
-                        onClick = dropDownClick,
+                        onClick = {
+                            dropDownClick(it)
+                            expanded = false
+                        },
                     )
                     HorizontalDivider(color = Color(0xFF72777A))
                 }
@@ -82,7 +88,7 @@ fun DropDownComponent(
 }
 
 @Composable
-fun DropBar(expanded: Boolean, selectedRegion: String?, onClick: () -> Unit) {
+fun DropBar(expanded: Boolean, selectedRegion: String, onClick: () -> Unit) {
     Box(
         modifier =
         Modifier
@@ -101,13 +107,16 @@ fun DropBar(expanded: Boolean, selectedRegion: String?, onClick: () -> Unit) {
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
-                text = selectedRegion ?: "전체 지역",
+                text = selectedRegion,
                 modifier =
                 Modifier
                     .weight(1f)
                     .padding(start = 8.dp),
-                style =
-                MaterialTheme.typography.displayMedium.copy(Color.Gray),
+                style = if (selectedRegion == "전체지역") {
+                    MaterialTheme.typography.displayMedium.copy(Color.Gray)
+                } else {
+                    MaterialTheme.typography.displayMedium.copy(Color.Black)
+                },
             )
 
             Icon(
@@ -127,6 +136,8 @@ private fun DropDownComponentPreview() {
     YongProjectTheme {
         DropDownComponent(
             dropDownClick = {},
+            selectedRegion = "",
+            dropDownList = listOf(),
         )
     }
 }

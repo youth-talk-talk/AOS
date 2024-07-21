@@ -1,15 +1,13 @@
 package com.youthtalk.model
 
-import com.google.gson.Gson
-import com.google.gson.annotations.SerializedName
-import okhttp3.RequestBody
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import okhttp3.RequestBody.Companion.toRequestBody
 
+@Serializable
 data class LoginRequest(
-    @SerializedName("username")
     val username: String,
 ) {
-    fun toRequestBody(): RequestBody {
-        return Gson().toJson(this).toRequestBody()
-    }
+    fun toRequestBody() = Json.encodeToString(this).toRequestBody()
 }

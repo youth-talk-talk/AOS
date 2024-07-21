@@ -8,5 +8,23 @@
     <string name="agree_subtitle">청년톡톡 서비스 약관에 동의하겠습니까?</string>
     <string name="agree_subtitle2">약관 미동의 시 서비스 이용이 불가능합니다.</string>
 
-
+    <string-array name="regions">
+        <item>서울특별시</item>
+        <item>경기도</item>
+        <item>인천광역시</item>
+        <item>세종특별자치시</item>
+        <item>대전광역시</item>
+        <item>충척북도</item>
+        <item>충청남도</item>
+        <item>강원도</item>
+        <item>경상북도</item>
+        <item>경상남도</item>
+        <item>대구광역시</item>
+        <item>울산광역시</item>
+        <item>부산광역시</item>
+        <item>광주광역시</item>
+        <item>전라북도</item>
+        <item>전라남도</item>
+        <item>제주특별자치도</item>
+    </string-array>
 </resources>

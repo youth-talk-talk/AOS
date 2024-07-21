@@ -1,9 +1,11 @@
 package com.core.domain.usercase.di
 
-import com.core.dataapi.repository.DataStoreRepository
 import com.core.dataapi.repository.LoginRepository
+import com.core.dataapi.repository.UserRepository
 import com.core.domain.usercase.CheckTokenUseCase
+import com.core.domain.usercase.GetUserUserCase
 import com.core.domain.usercase.PostLoginUseCase
+import com.core.domain.usercase.PostSignUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,5 +21,13 @@ object UseCaseModule {
 
     @Provides
     @Singleton
-    fun provideCheckTokenUseCase(repository: DataStoreRepository) = CheckTokenUseCase(repository)
+    fun provideCheckTokenUseCase(repository: LoginRepository) = CheckTokenUseCase(repository)
+
+    @Provides
+    @Singleton
+    fun provideSignUpUseCase(repository: LoginRepository) = PostSignUseCase(repository)
+
+    @Provides
+    @Singleton
+    fun provideGetUserUseCase(repository: UserRepository) = GetUserUserCase(repository)
 }

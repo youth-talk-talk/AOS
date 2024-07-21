@@ -8,12 +8,6 @@ plugins {
 
 android {
     setNamespace("feature.home")
-    kotlinOptions {
-        jvmTarget = "17"
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
-    }
 }
 
 dependencies {
