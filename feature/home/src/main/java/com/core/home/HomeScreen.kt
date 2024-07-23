@@ -5,91 +5,62 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.TopAppBarScrollBehavior
-import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.core.home.component.DropDownComponent
+import com.core.home.component.CategoryCard
+import com.core.home.component.HomeAppBar
+import com.core.home.component.PolicyCard
+import com.core.home.component.PolicyCheckBox
+import com.core.home.component.PopularCard
+import com.core.home.component.SearchScreen
 import com.youth.app.feature.home.R
 import com.youthtalk.designsystem.YongProjectTheme
 import com.youthtalk.model.Category
+import com.youthtalk.model.CategoryInfo
+import com.youthtalk.model.Policy
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen() {
-    val scrollState = rememberLazyListState()
-    val topAppbarState =
-        TopAppBarDefaults
-            .enterAlwaysScrollBehavior(rememberTopAppBarState())
-
     val categoryList = getCategories()
-
+    val top5Policies = getTop5Policies()
+    val policies = policies()
     Surface {
         Column(
             modifier =
             Modifier
                 .fillMaxSize()
-                .background(Color.White)
-                .nestedScroll(topAppbarState.nestedScrollConnection),
+                .background(Color.White),
         ) {
-            HomeScreenAppBar(topAppbarState = topAppbarState)
-
+            HomeAppBar()
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
-                state = scrollState,
             ) {
-                item {
-                    DropDownComponent(
-                        modifier = Modifier.padding(horizontal = 8.dp),
-                        dropDownClick = {},
-                        dropDownList = listOf("1", "2", "3"),
-                    )
-                }
-
-                item {
-                    Row(
-                        modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(8.dp),
-                        horizontalArrangement = Arrangement.SpaceAround,
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        categoryList.forEach { category ->
-                            HomeScreenCategory(category = category)
-                        }
-                    }
-                }
-
-                items(count = 100) {
-                    val r = if (it == 0) 20.dp else 0.dp
-                    CardView(r = r, count = it)
+                item { SearchScreen() }
+                item { CategoryScreen(categoryList) }
+                item { PopularTitle() }
+                item(
+                    key = top5Policies,
+                ) { PopularPolicyScreen(top5Policies) }
+                item { UpdateTitle() }
+                items(
+                    items = policies,
+                ) { policy ->
+                    UpdatePolicyScreen(policy)
                 }
             }
         }
@@ -97,87 +68,232 @@ fun HomeScreen() {
 }
 
 @Composable
-private fun CardView(r: Dp, count: Int) {
+private fun PopularPolicyScreen(top5Policies: List<Policy>) {
+    LazyRow(
+        modifier = Modifier
+            .fillMaxWidth()
+            .aspectRatio(2.2f)
+            .background(color = MaterialTheme.colorScheme.onSecondaryContainer)
+            .padding(horizontal = 17.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        items(
+            items = top5Policies,
+            key = { item: Policy -> item.policyId },
+        ) { policy ->
+            PopularCard(
+                modifier = Modifier
+                    .aspectRatio(14 / 15f),
+                policy = policy,
+            )
+        }
+    }
+}
+
+@Composable
+private fun PopularTitle() {
     Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
+            )
+            .padding(
+                horizontal = 17.dp,
+                vertical = 12.dp,
+            ),
+    ) {
+        Text(
+            text = "인기 정책",
+            style = MaterialTheme.typography.headlineSmall,
+        )
+    }
+}
+
+@Composable
+private fun UpdatePolicyScreen(policy: Policy) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(color = MaterialTheme.colorScheme.onSecondaryContainer)
+            .padding(horizontal = 17.dp),
+    ) {
+        PolicyCard(
+            modifier = Modifier.padding(bottom = 12.dp),
+            policy = policy,
+        )
+    }
+}
+
+@Composable
+private fun UpdateTitle() {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
+            )
+            .padding(
+                horizontal = 17.dp,
+                vertical = 12.dp,
+            ),
+        verticalAlignment = Alignment.Top,
+        horizontalArrangement = Arrangement.SpaceBetween,
+    ) {
+        Text(
+            text = "최근 업데이트",
+            style = MaterialTheme.typography.headlineSmall,
+        )
+
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            PolicyCheckBox(
+                isCheck = true,
+                title = "일자리",
+                onCheckChange = {},
+            )
+            PolicyCheckBox(
+                isCheck = false,
+                title = "교육",
+                onCheckChange = {},
+            )
+            PolicyCheckBox(
+                isCheck = false,
+                title = "생활지원",
+                onCheckChange = {},
+            )
+            PolicyCheckBox(
+                isCheck = true,
+                title = "참여",
+                onCheckChange = {},
+            )
+        }
+    }
+}
+
+@Composable
+private fun CategoryScreen(categoryList: List<CategoryInfo>) {
+    Row(
         modifier =
         Modifier
             .fillMaxWidth()
-            .background(
-                color = MaterialTheme.colorScheme.tertiary,
-                shape =
-                RoundedCornerShape(
-                    topEnd = r,
-                    topStart = r,
-                ),
-            )
-            .padding(top = 16.dp, start = 8.dp, end = 8.dp),
+            .padding(8.dp),
+        horizontalArrangement = Arrangement.SpaceEvenly,
+        verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text(text = "HomeScreen $count")
+        categoryList.forEach { category ->
+            CategoryCard(category = category)
+        }
     }
 }
 
-@Composable
-private fun HomeScreenCategory(category: Category) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        Icon(
-            modifier = Modifier.size(24.dp),
-            painter = painterResource(id = category.icon),
-            contentDescription = category.description,
-            tint = MaterialTheme.colorScheme.primary,
-        )
-        Text(text = category.description)
-    }
-}
+private fun getTop5Policies(): List<Policy> = listOf(
+    Policy(
+        policyId = "R2023081716945",
+        category = Category.JOB,
+        title = "국민 취업지원 제도1",
+        deadlineStatus = "",
+        hostDep = "국토교통부",
+        scrap = false,
+    ),
+    Policy(
+        policyId = "R2023081716946",
+        category = Category.JOB,
+        title = "국민 취업지원 제도2",
+        deadlineStatus = "",
+        hostDep = "국토교통부",
+        scrap = false,
+    ),
+    Policy(
+        policyId = "R2023081716947",
+        category = Category.JOB,
+        title = "국민 취업지원 제도3",
+        deadlineStatus = "",
+        hostDep = "국토교통부",
+        scrap = false,
+    ),
+    Policy(
+        policyId = "R2023081716948",
+        category = Category.JOB,
+        title = "국민 취업지원 제도4",
+        deadlineStatus = "",
+        hostDep = "국토교통부",
+        scrap = false,
+    ),
+    Policy(
+        policyId = "R2023081716949",
+        category = Category.JOB,
+        title = "국민 취업지원 제도5",
+        deadlineStatus = "",
+        hostDep = "국토교통부",
+        scrap = false,
+    ),
+)
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun HomeScreenAppBar(topAppbarState: TopAppBarScrollBehavior) {
-    CenterAlignedTopAppBar(
-        title = {
-            Text(
-                text = stringResource(id = R.string.top_name),
-                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-            )
-        },
-        actions = {
-            IconButton(onClick = { /*TODO*/ }) {
-                Icon(imageVector = Icons.Filled.Search, contentDescription = "검색", tint = Color.Black)
-            }
-        },
-        scrollBehavior = topAppbarState,
-        colors =
-        TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.background,
-            scrolledContainerColor = MaterialTheme.colorScheme.background,
-        ),
-    )
-}
+private fun policies(): List<Policy> = listOf(
+    Policy(
+        policyId = "R2023081716945",
+        category = Category.JOB,
+        title = "국민 취업지원 제도1",
+        deadlineStatus = "",
+        hostDep = "국토교통부",
+        scrap = false,
+    ),
+    Policy(
+        policyId = "R2023081716946",
+        category = Category.JOB,
+        title = "국민 취업지원 제도2",
+        deadlineStatus = "",
+        hostDep = "국토교통부",
+        scrap = false,
+    ),
+    Policy(
+        policyId = "R2023081716947",
+        category = Category.JOB,
+        title = "국민 취업지원 제도3",
+        deadlineStatus = "",
+        hostDep = "국토교통부",
+        scrap = false,
+    ),
+    Policy(
+        policyId = "R2023081716948",
+        category = Category.JOB,
+        title = "국민 취업지원 제도4",
+        deadlineStatus = "",
+        hostDep = "국토교통부",
+        scrap = false,
+    ),
+    Policy(
+        policyId = "R2023081716949",
+        category = Category.JOB,
+        title = "국민 취업지원 제도5",
+        deadlineStatus = "",
+        hostDep = "국토교통부",
+        scrap = false,
+    ),
+)
 
-@Composable
-private fun getCategories(): List<Category> {
+private fun getCategories(): List<CategoryInfo> {
     val categoryList =
         listOf(
-            Category(
+            CategoryInfo(
                 icon = R.drawable.recruit,
-                description = "취업",
+                description = Category.JOB,
             ),
-            Category(
-                icon = R.drawable.room,
-                description = "공간",
-            ),
-            Category(
+            CategoryInfo(
                 icon = R.drawable.teacher,
-                description = "교육",
+                description = Category.EDUCATION,
             ),
-            Category(
+            CategoryInfo(
                 icon = R.drawable.book,
-                description = "문화",
+                description = Category.LIFE,
             ),
-            Category(
+            CategoryInfo(
                 icon = R.drawable.participation,
-                description = "취업",
+                description = Category.PARTICIPATION,
             ),
         )
     return categoryList
