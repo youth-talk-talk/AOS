@@ -130,5 +130,13 @@ val Typography =
             lineHeight = 24.sp,
             color = Color.Black,
         ),
+        // P/14/Regular
+        headlineLarge = TextStyle(
+            fontFamily = preTendFont,
+            fontWeight = FontWeight.W600,
+            fontSize = 14.sp,
+            lineHeight = 24.sp,
+            color = Color.Black,
+        ),
 
     )

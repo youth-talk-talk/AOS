@@ -9,9 +9,13 @@ plugins {
 
 android {
     setNamespace("core.designsystem")
+    buildFeatures {
+        compose = true
+    }
 }
 
 dependencies {
+    implementation(projects.core.model)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
 }

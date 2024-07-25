@@ -1,4 +1,4 @@
-package com.core.home.component
+package com.youthtalk.component
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -17,7 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.youth.app.feature.home.R
+import com.youth.app.core.designsystem.R
 import com.youthtalk.designsystem.YongProjectTheme
 import com.youthtalk.model.Category
 import com.youthtalk.model.Policy
@@ -32,31 +32,36 @@ fun PolicyCard(modifier: Modifier = Modifier, policy: Policy) {
                 shape = RoundedCornerShape(10.dp),
             )
             .padding(horizontal = 11.dp, vertical = 13.dp),
+        verticalArrangement = Arrangement.SpaceBetween,
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.Bottom,
-        ) {
-            Text(
-                text = policy.hostDep,
-                style = MaterialTheme.typography.displaySmall,
-            )
-            if (policy.deadlineStatus.isNotEmpty()) {
+        Column {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.Bottom,
+            ) {
                 Text(
-                    text = policy.deadlineStatus,
-                    style = MaterialTheme.typography.titleLarge.copy(
-                        color = MaterialTheme.colorScheme.onTertiary,
-                    ),
+                    text = policy.hostDep,
+                    style = MaterialTheme.typography.displaySmall,
                 )
+                if (policy.deadlineStatus.isNotEmpty()) {
+                    Text(
+                        text = policy.deadlineStatus,
+                        style = MaterialTheme.typography.titleLarge.copy(
+                            color = MaterialTheme.colorScheme.onTertiary,
+                        ),
+                    )
+                }
             }
+            Text(
+                modifier = Modifier,
+                text = policy.title,
+                style = MaterialTheme.typography.bodyMedium,
+            )
         }
-        Text(
-            text = policy.title,
-            style = MaterialTheme.typography.bodyMedium,
-        )
         Box(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth(),
         ) {
             Text(
                 modifier = Modifier.align(Alignment.BottomStart),
