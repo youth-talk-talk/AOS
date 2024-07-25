@@ -24,11 +24,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.core.home.component.CategoryCard
 import com.core.home.component.HomeAppBar
-import com.core.home.component.PolicyCard
 import com.core.home.component.PolicyCheckBox
-import com.core.home.component.PopularCard
 import com.core.home.component.SearchScreen
 import com.youth.app.feature.home.R
+import com.youthtalk.component.PolicyCard
+import com.youthtalk.component.PopularCard
 import com.youthtalk.designsystem.YongProjectTheme
 import com.youthtalk.model.Category
 import com.youthtalk.model.CategoryInfo

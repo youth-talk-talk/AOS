@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="favorite_tab_icon">즐겨찾기 아이콘</string>
+    <string-array name="favorites">
+        <item>스크랩한 정책</item>
+        <item>스크랩한 게시물</item>
+        <item>작성한 게시물</item>
+        <item>작성한 댓글</item>
+        <item>좋아요한 댓글</item>
+    </string-array>
+
+    <string-array name="etc">
+        <item>공지사항</item>
+        <item>1:1 문의</item>
+    </string-array>
+</resources>

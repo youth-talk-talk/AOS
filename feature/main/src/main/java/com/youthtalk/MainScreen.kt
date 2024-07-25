@@ -69,7 +69,7 @@ fun NavHostScreen(navController: NavHostController) {
         }
 
         composable(route = MainNav.MyPage.route) {
-            MyPageScreen()
+            MyPageScreen(listOf())
         }
     }
 }
