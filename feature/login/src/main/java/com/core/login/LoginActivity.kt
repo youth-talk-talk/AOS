@@ -12,7 +12,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.core.screen.LoginNavHostScreen
-import com.kakao.sdk.user.UserApiClient
 import com.youthtalk.MainActivity
 import com.youthtalk.designsystem.YongProjectTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -45,13 +44,13 @@ class LoginActivity : ComponentActivity() {
                     splashScreen.setKeepOnScreenCondition { false }
                     Log.d("YOON-CHAN", "MainActivity memberId $it")
                     goToMain()
-                    UserApiClient.instance.logout { logout ->
-                        if (logout != null) {
-                            Log.d("YOON-CHAN", "Kakao Logout 실패 ${logout.message}")
-                        } else {
-                            Log.d("YOON-CHAN", "Kakao Logout 성공")
-                        }
-                    }
+//                    UserApiClient.instance.logout { logout ->
+//                        if (logout != null) {
+//                            Log.d("YOON-CHAN", "Kakao Logout 실패 ${logout.message}")
+//                        } else {
+//                            Log.d("YOON-CHAN", "Kakao Logout 성공")
+//                        }
+//                    }
                 }
             }
         }

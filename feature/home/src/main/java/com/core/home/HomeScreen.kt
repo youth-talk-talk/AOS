@@ -24,10 +24,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.core.home.component.CategoryCard
 import com.core.home.component.HomeAppBar
-import com.core.home.component.PolicyCheckBox
 import com.core.home.component.SearchScreen
 import com.youth.app.feature.home.R
 import com.youthtalk.component.PolicyCard
+import com.youthtalk.component.PolicyCheckBox
 import com.youthtalk.component.PopularCard
 import com.youthtalk.designsystem.YongProjectTheme
 import com.youthtalk.model.Category
@@ -153,21 +153,37 @@ private fun UpdateTitle() {
             PolicyCheckBox(
                 isCheck = true,
                 title = "일자리",
+                spaceBy = Arrangement.spacedBy(3.dp),
+                textStyle = MaterialTheme.typography.displaySmall.copy(
+                    color = MaterialTheme.colorScheme.onPrimary,
+                ),
                 onCheckChange = {},
             )
             PolicyCheckBox(
                 isCheck = false,
                 title = "교육",
+                spaceBy = Arrangement.spacedBy(3.dp),
+                textStyle = MaterialTheme.typography.displaySmall.copy(
+                    color = MaterialTheme.colorScheme.onPrimary,
+                ),
                 onCheckChange = {},
             )
             PolicyCheckBox(
                 isCheck = false,
                 title = "생활지원",
+                spaceBy = Arrangement.spacedBy(3.dp),
+                textStyle = MaterialTheme.typography.displaySmall.copy(
+                    color = MaterialTheme.colorScheme.onPrimary,
+                ),
                 onCheckChange = {},
             )
             PolicyCheckBox(
                 isCheck = true,
                 title = "참여",
+                spaceBy = Arrangement.spacedBy(3.dp),
+                textStyle = MaterialTheme.typography.displaySmall.copy(
+                    color = MaterialTheme.colorScheme.onPrimary,
+                ),
                 onCheckChange = {},
             )
         }

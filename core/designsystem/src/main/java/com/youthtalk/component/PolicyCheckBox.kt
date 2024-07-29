@@ -1,4 +1,4 @@
-package com.core.home.component
+package com.youthtalk.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -20,18 +20,26 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.youth.app.feature.home.R
+import com.youth.app.core.designsystem.R
 import com.youthtalk.designsystem.YongProjectTheme
 import com.youthtalk.designsystem.gray
 
 @Composable
-fun PolicyCheckBox(modifier: Modifier = Modifier, isCheck: Boolean, title: String, onCheckChange: () -> Unit) {
+fun PolicyCheckBox(
+    modifier: Modifier = Modifier,
+    spaceBy: Arrangement.HorizontalOrVertical,
+    isCheck: Boolean,
+    title: String,
+    textStyle: TextStyle,
+    onCheckChange: () -> Unit,
+) {
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(3.dp),
+        horizontalArrangement = spaceBy,
     ) {
         Box(
             modifier = Modifier
@@ -52,9 +60,7 @@ fun PolicyCheckBox(modifier: Modifier = Modifier, isCheck: Boolean, title: Strin
         }
         Text(
             text = title,
-            style = MaterialTheme.typography.displaySmall.copy(
-                color = MaterialTheme.colorScheme.onPrimary,
-            ),
+            style = textStyle,
         )
     }
 }
@@ -80,6 +86,10 @@ private fun PolicyCheckBoxPreview() {
         PolicyCheckBox(
             isCheck = isCheck,
             title = "일자리",
+            spaceBy = Arrangement.spacedBy(3.dp),
+            textStyle = MaterialTheme.typography.displaySmall.copy(
+                color = MaterialTheme.colorScheme.onPrimary,
+            ),
             onCheckChange = {
                 isCheck = !isCheck
             },
