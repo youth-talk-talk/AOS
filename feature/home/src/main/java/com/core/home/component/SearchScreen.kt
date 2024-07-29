@@ -19,6 +19,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.youth.app.feature.home.R
+import com.youthtalk.designsystem.YongProjectTheme
 import com.youthtalk.designsystem.mainHomeActionBarColor
 
 @Composable
@@ -59,5 +60,7 @@ fun SearchScreen(modifier: Modifier = Modifier) {
 @Preview
 @Composable
 private fun SearchScreenPreview() {
-    SearchScreen()
+    YongProjectTheme {
+        SearchScreen()
+    }
 }

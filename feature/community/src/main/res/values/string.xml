@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="tabs">
+        <item>후기게시판</item>
+        <item>자유게시판</item>
+    </string-array>
+
+    <string-array name="policies">
+        <item>일자리</item>
+        <item>교육</item>
+        <item>생활지원</item>
+        <item>참여</item>
+    </string-array>
+
+    <string name="popular_post">인기 게시물</string>
+    <string name="recent_post">최신 게시물</string>
+</resources>

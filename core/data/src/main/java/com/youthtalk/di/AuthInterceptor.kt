@@ -31,11 +31,14 @@ class AuthInterceptor @Inject constructor(
             dataStoreDataSource.getAccessToken().first()
         } ?: return errorResponse(chain.request())
 
-        val request = chain.request().newBuilder().header(AUTHORIZATION, "Bearer $token").build()
+        val request = chain.request().newBuilder()
+            .addHeader("Content-Type", "application/json")
+            .addHeader(AUTHORIZATION, "Bearer $token")
+            .build()
 
         val response = chain.proceed(request)
 
-        Log.d("YOON-CHAN", "AuthInterceptor response code ${response.code}")
+        Log.d("YOON-CHAN", "AuthInterceptor response code ${response.code} $token")
         if (response.code == HTTP_OK) {
             val newAccessToken: String = response.header(AUTHORIZATION, null) ?: return response
             val newRefreshToken: String = response.header(AUTHORIZATION_REFRESH, null) ?: return response
@@ -49,6 +52,11 @@ class AuthInterceptor @Inject constructor(
                     Log.d("YOON-CHAN", "save new Access Token")
                 }
             }
+        } else {
+            // Log.d("YOON-CHAN", "not 200")
+//            if(response.code == 403) {
+//                return response.
+//            }
         }
 
         return response

@@ -29,6 +29,12 @@ complexity:
     CyclomaticComplexMethod:
         threshold: 20
 
+    LongParameterList:
+        functionThreshold: 12
+        constructorThreshold: 12
+    LongMethod:
+        threshold: 100
+
 output-reports:
     active: true
 

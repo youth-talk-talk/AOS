@@ -1,5 +1,6 @@
 package com.youthtalk.di
 
+import android.util.Log
 import com.core.datastore.datasource.DataStoreDataSource
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
@@ -21,14 +22,14 @@ class AuthAuthenticator @Inject constructor(
         val refreshToken = runBlocking {
             dataStoreDataSource.getRefreshToken().first()
         }
-
+        Log.d("YOON-CHAN", "AuthAuthenticator refreshToken $refreshToken")
         if (refreshToken == null) {
             response.close()
             return null
         }
 
         return response.request.newBuilder()
-            .header(AUTHORIZATION, "Bearer $refreshToken")
+            .addHeader(AUTHORIZATION, "Bearer $refreshToken")
             .build()
     }
 }
