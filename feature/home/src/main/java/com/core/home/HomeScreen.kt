@@ -17,28 +17,36 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.core.home.component.CategoryCard
 import com.core.home.component.HomeAppBar
 import com.core.home.component.SearchScreen
+import com.core.home.model.HomeUiState
 import com.youth.app.feature.home.R
 import com.youthtalk.component.PolicyCard
 import com.youthtalk.component.PolicyCheckBox
 import com.youthtalk.component.PopularCard
 import com.youthtalk.designsystem.YongProjectTheme
 import com.youthtalk.model.Category
-import com.youthtalk.model.CategoryInfo
 import com.youthtalk.model.Policy
+import kotlinx.collections.immutable.ImmutableList
 
 @Composable
-fun HomeScreen() {
-    val categoryList = getCategories()
+fun HomeScreen(viewModel: HomeViewModel = hiltViewModel()) {
     val top5Policies = getTop5Policies()
     val policies = policies()
+
+    val uiState by viewModel.uiState.collectAsState()
+    val success = (uiState as? HomeUiState.Success) ?: HomeUiState.Success()
     Surface {
         Column(
             modifier =
@@ -51,14 +59,19 @@ fun HomeScreen() {
                 modifier = Modifier.fillMaxSize(),
             ) {
                 item { SearchScreen() }
-                item { CategoryScreen(categoryList) }
+                item { CategoryScreen() }
                 item { PopularTitle() }
                 item { PopularPolicyScreen(top5Policies) }
-                item { UpdateTitle() }
+                item {
+                    UpdateTitle(
+                        categoryFilters = success.categoryList,
+                        onCheck = viewModel::setCategoryCheck,
+                    )
+                }
                 items(
-                    items = policies,
-                ) { policy ->
-                    UpdatePolicyScreen(policy)
+                    count = policies.size,
+                ) { index ->
+                    UpdatePolicyScreen(policies[index])
                 }
             }
         }
@@ -125,7 +138,7 @@ private fun UpdatePolicyScreen(policy: Policy) {
 }
 
 @Composable
-private fun UpdateTitle() {
+private fun UpdateTitle(categoryFilters: ImmutableList<Category>, onCheck: (Category?) -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -148,48 +161,24 @@ private fun UpdateTitle() {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            PolicyCheckBox(
-                isCheck = true,
-                title = "일자리",
-                spaceBy = Arrangement.spacedBy(3.dp),
-                textStyle = MaterialTheme.typography.displaySmall.copy(
-                    color = MaterialTheme.colorScheme.onPrimary,
-                ),
-                onCheckChange = {},
-            )
-            PolicyCheckBox(
-                isCheck = false,
-                title = "교육",
-                spaceBy = Arrangement.spacedBy(3.dp),
-                textStyle = MaterialTheme.typography.displaySmall.copy(
-                    color = MaterialTheme.colorScheme.onPrimary,
-                ),
-                onCheckChange = {},
-            )
-            PolicyCheckBox(
-                isCheck = false,
-                title = "생활지원",
-                spaceBy = Arrangement.spacedBy(3.dp),
-                textStyle = MaterialTheme.typography.displaySmall.copy(
-                    color = MaterialTheme.colorScheme.onPrimary,
-                ),
-                onCheckChange = {},
-            )
-            PolicyCheckBox(
-                isCheck = true,
-                title = "참여",
-                spaceBy = Arrangement.spacedBy(3.dp),
-                textStyle = MaterialTheme.typography.displaySmall.copy(
-                    color = MaterialTheme.colorScheme.onPrimary,
-                ),
-                onCheckChange = {},
-            )
+            stringArrayResource(id = R.array.categories).forEach {
+                PolicyCheckBox(
+                    isCheck = categoryFilters
+                        .any { category: Category -> category.categoryName == it },
+                    title = it,
+                    textStyle = MaterialTheme.typography.displaySmall.copy(
+                        color = MaterialTheme.colorScheme.onPrimary,
+                    ),
+                ) {
+                    onCheck(Category.entries.find { category: Category -> category.categoryName == it })
+                }
+            }
         }
     }
 }
 
 @Composable
-private fun CategoryScreen(categoryList: List<CategoryInfo>) {
+private fun CategoryScreen() {
     Row(
         modifier =
         Modifier
@@ -198,8 +187,16 @@ private fun CategoryScreen(categoryList: List<CategoryInfo>) {
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        categoryList.forEach { category ->
-            CategoryCard(category = category)
+        Category.entries.forEach { category ->
+            CategoryCard(
+                category = category.categoryName,
+                painter = when (category) {
+                    Category.JOB -> painterResource(id = R.drawable.recruit)
+                    Category.EDUCATION -> painterResource(id = R.drawable.teacher)
+                    Category.LIFE -> painterResource(id = R.drawable.book)
+                    Category.PARTICIPATION -> painterResource(id = R.drawable.participation)
+                },
+            )
         }
     }
 }
@@ -289,29 +286,6 @@ private fun policies(): List<Policy> = listOf(
         scrap = false,
     ),
 )
-
-private fun getCategories(): List<CategoryInfo> {
-    val categoryList =
-        listOf(
-            CategoryInfo(
-                icon = R.drawable.recruit,
-                description = Category.JOB,
-            ),
-            CategoryInfo(
-                icon = R.drawable.teacher,
-                description = Category.EDUCATION,
-            ),
-            CategoryInfo(
-                icon = R.drawable.book,
-                description = Category.LIFE,
-            ),
-            CategoryInfo(
-                icon = R.drawable.participation,
-                description = Category.PARTICIPATION,
-            ),
-        )
-    return categoryList
-}
 
 @Preview
 @Composable

@@ -56,6 +56,9 @@ kakaoUser = "2.20.1"
 #Serialization
 kotlinxSerializationJson = "1.7.0"
 
+#Immutable
+kotlinxCollectionsImmutable = "0.3.7"
+
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
@@ -137,6 +140,9 @@ androidx-datastore-preferences = { module = "androidx.datastore:datastore-prefer
 
 #Serialization
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
+
+#Immutable
+kotlinx-collections-immutable = { module = "org.jetbrains.kotlinx:kotlinx-collections-immutable", version.ref = "kotlinxCollectionsImmutable" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

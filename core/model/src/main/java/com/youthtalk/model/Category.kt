@@ -1,13 +1,11 @@
 package com.youthtalk.model
 
-import androidx.annotation.DrawableRes
+import kotlinx.serialization.Serializable
 
-data class CategoryInfo(
-    @DrawableRes val icon: Int,
-    val description: Category,
-)
-
-enum class Category(val categoryName: String) {
+@Serializable
+enum class Category(
+    val categoryName: String
+) {
     JOB("일자리"),
     EDUCATION("교육"),
     LIFE("생활지원"),

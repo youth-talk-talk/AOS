@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="top_name">청년톡톡</string>
+    <string-array name="categories">
+        <item>일자리</item>
+        <item>교육</item>
+        <item>생활지원</item>
+        <item>참여</item>
+    </string-array>
 </resources>

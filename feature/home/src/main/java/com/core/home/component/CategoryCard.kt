@@ -11,6 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -18,11 +19,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.youth.app.feature.home.R
 import com.youthtalk.designsystem.YongProjectTheme
-import com.youthtalk.model.Category
-import com.youthtalk.model.CategoryInfo
 
 @Composable
-fun CategoryCard(modifier: Modifier = Modifier, category: CategoryInfo) {
+fun CategoryCard(modifier: Modifier = Modifier, category: String, painter: Painter) {
     Column(
         modifier = modifier.background(MaterialTheme.colorScheme.background),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -33,13 +32,13 @@ fun CategoryCard(modifier: Modifier = Modifier, category: CategoryInfo) {
                 .padding(top = 9.dp)
                 .padding(horizontal = 9.dp)
                 .size(33.dp),
-            painter = painterResource(id = category.icon),
-            contentDescription = category.description.categoryName,
+            painter = painter,
+            contentDescription = category,
             tint = MaterialTheme.colorScheme.primary,
         )
         Text(
             modifier = Modifier.padding(bottom = 7.dp),
-            text = category.description.categoryName,
+            text = category,
             style = MaterialTheme.typography.titleSmall.copy(
                 fontWeight = FontWeight.W700,
                 fontSize = 14.sp,
@@ -54,10 +53,8 @@ fun CategoryCard(modifier: Modifier = Modifier, category: CategoryInfo) {
 private fun CategoryCardPreview() {
     YongProjectTheme {
         CategoryCard(
-            category = CategoryInfo(
-                icon = R.drawable.book,
-                description = Category.EDUCATION,
-            ),
+            category = "교육",
+            painter = painterResource(id = R.drawable.teacher),
         )
     }
 }
