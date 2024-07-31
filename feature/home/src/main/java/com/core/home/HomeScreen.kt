@@ -53,9 +53,7 @@ fun HomeScreen() {
                 item { SearchScreen() }
                 item { CategoryScreen(categoryList) }
                 item { PopularTitle() }
-                item(
-                    key = top5Policies,
-                ) { PopularPolicyScreen(top5Policies) }
+                item { PopularPolicyScreen(top5Policies) }
                 item { UpdateTitle() }
                 items(
                     items = policies,

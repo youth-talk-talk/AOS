@@ -1,5 +1,6 @@
 package com.youthtalk.repository
 
+import android.util.Log
 import com.core.dataapi.repository.UserRepository
 import com.core.datastore.datasource.DataStoreDataSource
 import com.youthtalk.data.UserService
@@ -17,11 +18,13 @@ class UserRepositoryImpl @Inject constructor(
     override fun getUser(): Flow<User> = flow {
         runCatching { userService.getUser() }
             .onSuccess { response ->
+                Log.d("YOON-CHAN", "getUser Success ${response.data}")
                 response.data?.let { userResponse ->
                     emit(userResponse.toData())
                 }
             }
             .onFailure {
+                Log.d("YOON-CHAN", "getUser Error ${it.message}")
                 throw it
             }
     }
