@@ -1,5 +1,6 @@
 package com.core.datastore.datasource
 
+import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
@@ -59,6 +60,7 @@ class DataStoreDataSource @Inject constructor(
 
     override suspend fun setCategoryFilter(categories: List<Category>) {
         val listToString = Json.encodeToJsonElement<List<Category>>(categories)
+        Log.d("YOON-CHAN", "setCategory")
         dataStore.edit { prefs ->
             prefs[CATEGORIES] = listToString.toString()
         }

@@ -1,12 +1,11 @@
 package com.youthtalk.di
 
 import android.util.Log
-import com.core.dataapi.repository.LoginRepository
 import com.core.datastore.datasource.DataStoreDataSource
 import com.youth.app.core.data.BuildConfig
+import com.youthtalk.data.HomeService
 import com.youthtalk.data.LoginService
 import com.youthtalk.data.UserService
-import com.youthtalk.repository.LoginRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -133,14 +132,13 @@ object ApiModule {
 
     @Provides
     @Singleton
+    fun provideHomeService(@Main retrofit: Retrofit): HomeService = retrofit.create(HomeService::class.java)
+
+    @Provides
+    @Singleton
     fun provideLoginService(@Login retrofit: Retrofit): LoginService = retrofit.create(LoginService::class.java)
 
     @Provides
     @Singleton
     fun provideUserService(@Main retrofit: Retrofit): UserService = retrofit.create(UserService::class.java)
-
-    @Provides
-    @Singleton
-    fun bindsLoginRepository(loginService: LoginService, dataStoreDataSource: DataStoreDataSource): LoginRepository =
-        LoginRepositoryImpl(loginService, dataStoreDataSource)
 }

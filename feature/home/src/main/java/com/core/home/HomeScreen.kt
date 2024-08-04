@@ -1,5 +1,7 @@
 package com.core.home
 
+import android.util.Log
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -10,14 +12,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,6 +30,8 @@ import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.core.home.component.CategoryCard
 import com.core.home.component.HomeAppBar
 import com.core.home.component.SearchScreen
@@ -41,12 +46,23 @@ import com.youthtalk.model.Policy
 import kotlinx.collections.immutable.ImmutableList
 
 @Composable
-fun HomeScreen(viewModel: HomeViewModel = hiltViewModel()) {
-    val top5Policies = getTop5Policies()
-    val policies = policies()
+fun HomeScreen(viewModel: HomeViewModel = hiltViewModel(), homeLazyListScrollState: LazyListState) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    if (uiState !is HomeUiState.Success) {
+        Log.d("YOON-CHAN", "Loading")
+    } else {
+        HomeMain(
+            uiState = uiState as HomeUiState.Success,
+            homeLazyListScrollState = homeLazyListScrollState,
+            onCheck = viewModel::changeCategoryCheck,
+        )
+    }
+}
 
-    val uiState by viewModel.uiState.collectAsState()
-    val success = (uiState as? HomeUiState.Success) ?: HomeUiState.Success()
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun HomeMain(uiState: HomeUiState.Success, homeLazyListScrollState: LazyListState, onCheck: (Category?) -> Unit) {
+    val allPolicies = uiState.allPolicies.collectAsLazyPagingItems()
     Surface {
         Column(
             modifier =
@@ -56,22 +72,30 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel()) {
         ) {
             HomeAppBar()
             LazyColumn(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(
+                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+                    ),
+                state = homeLazyListScrollState,
             ) {
                 item { SearchScreen() }
                 item { CategoryScreen() }
                 item { PopularTitle() }
-                item { PopularPolicyScreen(top5Policies) }
+                item { PopularPolicyScreen(uiState.popularPolicies) }
                 item {
                     UpdateTitle(
-                        categoryFilters = success.categoryList,
-                        onCheck = viewModel::setCategoryCheck,
+                        categoryFilters = uiState.categoryList,
+                        onCheck = onCheck,
                     )
                 }
                 items(
-                    count = policies.size,
+                    count = allPolicies.itemCount,
                 ) { index ->
-                    UpdatePolicyScreen(policies[index])
+                    UpdatePolicyScreen(
+                        modifier = Modifier.animateItemPlacement(),
+                        allPolicies[index],
+                    )
                 }
             }
         }
@@ -103,37 +127,41 @@ private fun PopularPolicyScreen(top5Policies: List<Policy>) {
 
 @Composable
 private fun PopularTitle() {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(
-                color = MaterialTheme.colorScheme.onSecondaryContainer,
-                shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
+    Box(modifier = Modifier.background(Color.White)) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(
+                    color = MaterialTheme.colorScheme.onSecondaryContainer,
+                    shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
+                )
+                .padding(
+                    horizontal = 17.dp,
+                    vertical = 12.dp,
+                ),
+        ) {
+            Text(
+                text = "인기 정책",
+                style = MaterialTheme.typography.headlineSmall,
             )
-            .padding(
-                horizontal = 17.dp,
-                vertical = 12.dp,
-            ),
-    ) {
-        Text(
-            text = "인기 정책",
-            style = MaterialTheme.typography.headlineSmall,
-        )
+        }
     }
 }
 
 @Composable
-private fun UpdatePolicyScreen(policy: Policy) {
+private fun UpdatePolicyScreen(modifier: Modifier = Modifier, policy: Policy?) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .background(color = MaterialTheme.colorScheme.onSecondaryContainer)
             .padding(horizontal = 17.dp),
     ) {
-        PolicyCard(
-            modifier = Modifier.padding(bottom = 12.dp),
-            policy = policy,
-        )
+        policy?.let {
+            PolicyCard(
+                modifier = Modifier.padding(bottom = 12.dp),
+                policy = policy,
+            )
+        }
     }
 }
 
@@ -183,6 +211,7 @@ private fun CategoryScreen() {
         modifier =
         Modifier
             .fillMaxWidth()
+            .background(Color.White)
             .padding(8.dp),
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically,
@@ -201,96 +230,12 @@ private fun CategoryScreen() {
     }
 }
 
-private fun getTop5Policies(): List<Policy> = listOf(
-    Policy(
-        policyId = "R2023081716945",
-        category = Category.JOB,
-        title = "국민 취업지원 제도1",
-        deadlineStatus = "",
-        hostDep = "국토교통부",
-        scrap = false,
-    ),
-    Policy(
-        policyId = "R2023081716946",
-        category = Category.JOB,
-        title = "국민 취업지원 제도2",
-        deadlineStatus = "",
-        hostDep = "국토교통부",
-        scrap = false,
-    ),
-    Policy(
-        policyId = "R2023081716947",
-        category = Category.JOB,
-        title = "국민 취업지원 제도3",
-        deadlineStatus = "",
-        hostDep = "국토교통부",
-        scrap = false,
-    ),
-    Policy(
-        policyId = "R2023081716948",
-        category = Category.JOB,
-        title = "국민 취업지원 제도4",
-        deadlineStatus = "",
-        hostDep = "국토교통부",
-        scrap = false,
-    ),
-    Policy(
-        policyId = "R2023081716949",
-        category = Category.JOB,
-        title = "국민 취업지원 제도5",
-        deadlineStatus = "",
-        hostDep = "국토교통부",
-        scrap = false,
-    ),
-)
-
-private fun policies(): List<Policy> = listOf(
-    Policy(
-        policyId = "R2023081716945",
-        category = Category.JOB,
-        title = "국민 취업지원 제도1",
-        deadlineStatus = "",
-        hostDep = "국토교통부",
-        scrap = false,
-    ),
-    Policy(
-        policyId = "R2023081716946",
-        category = Category.JOB,
-        title = "국민 취업지원 제도2",
-        deadlineStatus = "",
-        hostDep = "국토교통부",
-        scrap = false,
-    ),
-    Policy(
-        policyId = "R2023081716947",
-        category = Category.JOB,
-        title = "국민 취업지원 제도3",
-        deadlineStatus = "",
-        hostDep = "국토교통부",
-        scrap = false,
-    ),
-    Policy(
-        policyId = "R2023081716948",
-        category = Category.JOB,
-        title = "국민 취업지원 제도4",
-        deadlineStatus = "",
-        hostDep = "국토교통부",
-        scrap = false,
-    ),
-    Policy(
-        policyId = "R2023081716949",
-        category = Category.JOB,
-        title = "국민 취업지원 제도5",
-        deadlineStatus = "",
-        hostDep = "국토교통부",
-        scrap = false,
-    ),
-)
-
 @Preview
 @Composable
 private fun HomeScreenPreview() {
     YongProjectTheme {
-        HomeScreen()
+        HomeScreen(
+            homeLazyListScrollState = rememberLazyListState(),
+        )
     }
 }

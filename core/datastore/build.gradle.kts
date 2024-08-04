@@ -15,4 +15,8 @@ dependencies {
     implementation(libs.androidx.datastore.preferences.core)
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.kotlinx.serialization.json)
+
+    // Paging3
+    implementation(libs.androidx.paging.runtime)
+    testImplementation(libs.androidx.paging.common)
 }

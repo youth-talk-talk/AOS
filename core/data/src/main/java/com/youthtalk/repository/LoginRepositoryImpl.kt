@@ -8,10 +8,10 @@ import com.core.exception.NetworkErrorException
 import com.core.exception.NoDataException
 import com.core.exception.UnAuthorizedException
 import com.youthtalk.data.LoginService
-import com.youthtalk.model.CommonResponse
-import com.youthtalk.model.LoginRequest
-import com.youthtalk.model.SignErrorResponse
-import com.youthtalk.model.SignRequest
+import com.youthtalk.dto.CommonResponse
+import com.youthtalk.dto.LoginRequest
+import com.youthtalk.dto.SignErrorResponse
+import com.youthtalk.dto.SignRequest
 import com.youthtalk.model.toRegion
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow

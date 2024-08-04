@@ -28,4 +28,15 @@ dependencies {
     implementation(libs.logging.interceptor)
     implementation(libs.retrofit.kotlin.serialization)
     implementation(libs.kotlinx.serialization.json)
+
+    // Paging3
+    implementation(libs.androidx.paging.runtime)
+    testImplementation(libs.androidx.paging.common)
+
+    // Room
+    implementation(libs.androidx.room.runtime)
+    annotationProcessor(libs.androidx.room.room.compiler)
+    ksp(libs.androidx.room.room.compiler)
+    implementation(libs.androidx.room.paging)
+    implementation(libs.androidx.room.ktx)
 }

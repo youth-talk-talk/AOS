@@ -1,5 +1,6 @@
 package com.youth.app
 
+import gradle.kotlin.dsl.accessors._2fb5859a04200edaf14b854c40b2e363.implementation
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.getByType
@@ -23,6 +24,8 @@ internal fun Project.configureComposeAndroid() {
             add("implementation", libs.findLibrary("androidx.ui.graphics").get())
             add("implementation", libs.findLibrary("androidx.ui.tooling-preview").get())
             add("implementation", libs.findLibrary("androidx.material3").get())
+            add("implementation", libs.findLibrary("androidx.paging.compose").get())
+            add("implementation", libs.findLibrary("androidx.lifecycle.runtime.compose").get())
 
             add("androidTestImplementation", libs.findLibrary("androidx.espresso.core").get())
             add("androidTestImplementation", libs.findLibrary("androidx.test.ext").get())

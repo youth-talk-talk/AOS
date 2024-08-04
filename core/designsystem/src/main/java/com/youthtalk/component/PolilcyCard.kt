@@ -38,9 +38,10 @@ fun PolicyCard(modifier: Modifier = Modifier, policy: Policy) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.Bottom,
+                verticalAlignment = Alignment.Top,
             ) {
                 Text(
+                    modifier = Modifier.weight(1f),
                     text = policy.hostDep,
                     style = MaterialTheme.typography.displaySmall,
                 )
@@ -86,7 +87,7 @@ private fun PolicyCardPreview() {
         policyId = "R2023081716945",
         category = Category.JOB,
         title = "국민 취업지원 제도",
-        deadlineStatus = "",
+        deadlineStatus = "123",
         hostDep = "국토교통부",
         scrap = false,
     )

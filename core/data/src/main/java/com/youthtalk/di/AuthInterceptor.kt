@@ -2,8 +2,8 @@ package com.youthtalk.di
 
 import android.util.Log
 import com.core.datastore.datasource.DataStoreDataSource
-import com.youthtalk.model.CommonResponse
-import com.youthtalk.model.toResponseBody
+import com.youthtalk.dto.CommonResponse
+import com.youthtalk.dto.toResponseBody
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first

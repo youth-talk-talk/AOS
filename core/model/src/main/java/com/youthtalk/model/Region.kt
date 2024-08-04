@@ -1,7 +1,5 @@
 package com.youthtalk.model
 
-import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.json.JsonNames
 import kotlinx.serialization.Serializable
 
 @Serializable

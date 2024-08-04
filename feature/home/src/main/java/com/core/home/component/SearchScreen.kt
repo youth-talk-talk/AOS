@@ -25,7 +25,7 @@ import com.youthtalk.designsystem.mainHomeActionBarColor
 @Composable
 fun SearchScreen(modifier: Modifier = Modifier) {
     Box(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth().background(color = Color.White),
     ) {
         Box(
             modifier = Modifier
