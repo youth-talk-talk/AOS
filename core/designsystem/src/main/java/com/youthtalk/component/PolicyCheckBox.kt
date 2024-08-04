@@ -30,10 +30,10 @@ import com.youthtalk.designsystem.gray
 @Composable
 fun PolicyCheckBox(
     modifier: Modifier = Modifier,
-    spaceBy: Arrangement.HorizontalOrVertical,
     isCheck: Boolean,
     title: String,
     textStyle: TextStyle,
+    spaceBy: Arrangement.HorizontalOrVertical = Arrangement.spacedBy(3.dp),
     onCheckChange: () -> Unit,
 ) {
     Row(

@@ -25,7 +25,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
+        kotlinCompilerExtensionVersion = "1.5.14"
     }
 }
 
@@ -45,4 +45,5 @@ dependencies {
 
     implementation(libs.findLibrary("androidx.lifecycle.viewModelCompose").get())
     implementation(libs.findLibrary("androidx.lifecycle.runtime.ktx").get())
+    implementation(libs.findLibrary("kotlinx.collections.immutable").get())
 }

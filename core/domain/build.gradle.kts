@@ -12,10 +12,15 @@ dependencies {
 
     implementation(projects.core.data)
     implementation(projects.core.dataApi)
+    implementation(projects.core.model)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
+    // Paging3
+    implementation(libs.androidx.paging.runtime)
+    testImplementation(libs.androidx.paging.common)
 }

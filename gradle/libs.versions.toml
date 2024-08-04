@@ -9,6 +9,7 @@ gson = "2.11.0"
 kotlin = "2.0.0"
 coreKtx = "1.13.1"
 espressoCore = "3.6.0"
+lifecycleRuntimeCompose = "2.8.4"
 lifecycleRuntimeKtx = "2.8.2"
 activityCompose = "1.9.0"
 composeBom = "2024.05.00"
@@ -55,6 +56,17 @@ kakaoUser = "2.20.1"
 # https://github.com/Kotlin/kotlinx.serialization
 #Serialization
 kotlinxSerializationJson = "1.7.0"
+
+#Immutable
+kotlinxCollectionsImmutable = "0.3.7"
+
+#Paging3
+pagingRuntime = "3.3.1"
+pagingCompose = "3.3.1"
+pagingCommonAndroid = "3.3.1"
+
+#Room
+roomRuntime = "2.6.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -118,6 +130,7 @@ oss-licenses = { group = "com.google.android.gms", name = "play-services-oss-lic
 #lifecycle
 androidx-lifecycle-viewModelCompose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "lifecycleRuntimeKtx" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
+androidx-lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycleRuntimeCompose" }
 
 #kakao-login
 kakao-v2-user = { module = "com.kakao.sdk:v2-user", version.ref = "kakaoUser" }
@@ -138,6 +151,19 @@ androidx-datastore-preferences = { module = "androidx.datastore:datastore-prefer
 #Serialization
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 
+#Immutable
+kotlinx-collections-immutable = { module = "org.jetbrains.kotlinx:kotlinx-collections-immutable", version.ref = "kotlinxCollectionsImmutable" }
+
+#Paging3
+androidx-paging-common = { module = "androidx.paging:paging-common", version.ref = "pagingRuntime" }
+androidx-paging-runtime = { module = "androidx.paging:paging-runtime", version.ref = "pagingRuntime" }
+androidx-paging-compose = { module = "androidx.paging:paging-compose", version.ref = "pagingCompose" }
+
+#Room
+androidx-room-paging = { module = "androidx.room:room-paging", version.ref = "roomRuntime" }
+androidx-room-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomRuntime" }
+androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }
+androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomRuntime" }
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
