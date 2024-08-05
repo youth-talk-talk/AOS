@@ -29,9 +29,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.core.component.DropDownComponent
-import com.core.component.RoundButton
 import com.core.login.LoginViewModel
 import com.youth.app.feature.login.R
+import com.youthtalk.component.RoundButton
 import com.youthtalk.designsystem.YongProjectTheme
 
 @Composable
