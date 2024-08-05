@@ -1,4 +1,4 @@
-package com.core.component
+package com.youthtalk.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -38,7 +38,7 @@ fun RoundButton(modifier: Modifier = Modifier, text: String, color: Color, enabl
         Text(
             modifier = Modifier.align(Alignment.Center),
             text = text,
-            style = MaterialTheme.typography.bodyMedium,
+            style = MaterialTheme.typography.titleSmall,
         )
     }
 }

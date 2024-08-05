@@ -52,6 +52,7 @@ fun DDayPolicy(modifier: Modifier = Modifier, policies: List<Policy>) {
                 PolicyCard(
                     modifier = Modifier.aspectRatio(3.14f),
                     policy = policies[index],
+                    onClickDetailPolicy = {},
                 )
             }
         }

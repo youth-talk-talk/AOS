@@ -21,9 +21,10 @@ import com.youth.app.core.designsystem.R
 import com.youthtalk.designsystem.YongProjectTheme
 import com.youthtalk.model.Category
 import com.youthtalk.model.Policy
+import com.youthtalk.util.clickableSingle
 
 @Composable
-fun PolicyCard(modifier: Modifier = Modifier, policy: Policy) {
+fun PolicyCard(modifier: Modifier = Modifier, policy: Policy, onClickDetailPolicy: (String) -> Unit) {
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -31,6 +32,9 @@ fun PolicyCard(modifier: Modifier = Modifier, policy: Policy) {
                 color = MaterialTheme.colorScheme.background,
                 shape = RoundedCornerShape(10.dp),
             )
+            .clickableSingle {
+                onClickDetailPolicy(policy.policyId)
+            }
             .padding(horizontal = 11.dp, vertical = 13.dp),
         verticalArrangement = Arrangement.SpaceBetween,
     ) {
@@ -95,6 +99,7 @@ private fun PolicyCardPreview() {
     YongProjectTheme {
         PolicyCard(
             policy = policy,
+            onClickDetailPolicy = {},
         )
     }
 }

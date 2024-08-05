@@ -31,6 +31,7 @@ include(
     "core:domain",
     ":core:navigation",
     ":core:exception",
+    ":core:datastore",
 )
 include(
     ":feature",
@@ -39,5 +40,5 @@ include(
     ":feature:community",
     ":feature:mypage",
     ":feature:login",
+    ":feature:policydetail",
 )
-include(":core:datastore")

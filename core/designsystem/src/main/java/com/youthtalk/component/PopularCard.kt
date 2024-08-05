@@ -23,13 +23,17 @@ import com.youth.app.core.designsystem.R
 import com.youthtalk.designsystem.YongProjectTheme
 import com.youthtalk.model.Category
 import com.youthtalk.model.Policy
+import com.youthtalk.util.clickableSingle
 
 @Composable
-fun PopularCard(modifier: Modifier = Modifier, policy: Policy) {
+fun PopularCard(modifier: Modifier = Modifier, policy: Policy, onClickDetailPolicy: (String) -> Unit) {
     Column(
         modifier = modifier
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.background, shape = RoundedCornerShape(10.dp))
+            .clickableSingle {
+                onClickDetailPolicy(policy.policyId)
+            }
             .padding(horizontal = 11.dp, vertical = 15.dp),
     ) {
         Text(
@@ -81,6 +85,7 @@ private fun PopularCardPreview() {
         PopularCard(
             modifier = Modifier.aspectRatio(15 / 14f),
             policy = policy,
+            onClickDetailPolicy = {},
         )
     }
 }

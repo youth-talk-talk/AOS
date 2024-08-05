@@ -1,6 +1,5 @@
 package com.core.home
 
-import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -17,6 +16,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -31,11 +31,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.core.home.component.CategoryCard
 import com.core.home.component.HomeAppBar
 import com.core.home.component.SearchScreen
 import com.core.home.model.HomeUiState
+import com.core.navigation.Nav
 import com.youth.app.feature.home.R
 import com.youthtalk.component.PolicyCard
 import com.youthtalk.component.PolicyCheckBox
@@ -46,22 +49,32 @@ import com.youthtalk.model.Policy
 import kotlinx.collections.immutable.ImmutableList
 
 @Composable
-fun HomeScreen(viewModel: HomeViewModel = hiltViewModel(), homeLazyListScrollState: LazyListState) {
+fun HomeScreen(viewModel: HomeViewModel = hiltViewModel(), navController: NavController, homeLazyListScrollState: LazyListState) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     if (uiState !is HomeUiState.Success) {
-        Log.d("YOON-CHAN", "Loading")
+        Box(modifier = Modifier.fillMaxSize()) {
+            CircularProgressIndicator()
+        }
     } else {
         HomeMain(
             uiState = uiState as HomeUiState.Success,
             homeLazyListScrollState = homeLazyListScrollState,
             onCheck = viewModel::changeCategoryCheck,
+            onClickDetailPolicy = { policyId ->
+                navController.navigate("${Nav.PolicyDetail.route}/$policyId")
+            },
         )
     }
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun HomeMain(uiState: HomeUiState.Success, homeLazyListScrollState: LazyListState, onCheck: (Category?) -> Unit) {
+private fun HomeMain(
+    uiState: HomeUiState.Success,
+    homeLazyListScrollState: LazyListState,
+    onCheck: (Category?) -> Unit,
+    onClickDetailPolicy: (String) -> Unit,
+) {
     val allPolicies = uiState.allPolicies.collectAsLazyPagingItems()
     Surface {
         Column(
@@ -82,7 +95,12 @@ private fun HomeMain(uiState: HomeUiState.Success, homeLazyListScrollState: Lazy
                 item { SearchScreen() }
                 item { CategoryScreen() }
                 item { PopularTitle() }
-                item { PopularPolicyScreen(uiState.popularPolicies) }
+                item {
+                    PopularPolicyScreen(
+                        uiState.popularPolicies,
+                        onClickDetailPolicy,
+                    )
+                }
                 item {
                     UpdateTitle(
                         categoryFilters = uiState.categoryList,
@@ -95,6 +113,7 @@ private fun HomeMain(uiState: HomeUiState.Success, homeLazyListScrollState: Lazy
                     UpdatePolicyScreen(
                         modifier = Modifier.animateItemPlacement(),
                         allPolicies[index],
+                        onClickDetailPolicy = onClickDetailPolicy,
                     )
                 }
             }
@@ -103,7 +122,7 @@ private fun HomeMain(uiState: HomeUiState.Success, homeLazyListScrollState: Lazy
 }
 
 @Composable
-private fun PopularPolicyScreen(top5Policies: List<Policy>) {
+private fun PopularPolicyScreen(top5Policies: List<Policy>, onClickDetailPolicy: (String) -> Unit) {
     LazyRow(
         modifier = Modifier
             .fillMaxWidth()
@@ -120,6 +139,7 @@ private fun PopularPolicyScreen(top5Policies: List<Policy>) {
                 modifier = Modifier
                     .aspectRatio(14 / 15f),
                 policy = policy,
+                onClickDetailPolicy = onClickDetailPolicy,
             )
         }
     }
@@ -149,7 +169,7 @@ private fun PopularTitle() {
 }
 
 @Composable
-private fun UpdatePolicyScreen(modifier: Modifier = Modifier, policy: Policy?) {
+private fun UpdatePolicyScreen(modifier: Modifier = Modifier, policy: Policy?, onClickDetailPolicy: (String) -> Unit) {
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -160,6 +180,7 @@ private fun UpdatePolicyScreen(modifier: Modifier = Modifier, policy: Policy?) {
             PolicyCard(
                 modifier = Modifier.padding(bottom = 12.dp),
                 policy = policy,
+                onClickDetailPolicy = onClickDetailPolicy,
             )
         }
     }
@@ -235,6 +256,7 @@ private fun CategoryScreen() {
 private fun HomeScreenPreview() {
     YongProjectTheme {
         HomeScreen(
+            navController = rememberNavController(),
             homeLazyListScrollState = rememberLazyListState(),
         )
     }
