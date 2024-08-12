@@ -2,6 +2,7 @@ package com.example.policydetail.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -66,25 +67,26 @@ fun CommentTextField(modifier: Modifier = Modifier) {
             ),
         ) { innerTextField ->
 
-            Box(
+            Row(
                 modifier = Modifier
                     .padding(horizontal = 13.dp),
-                contentAlignment = Alignment.CenterStart,
+                verticalAlignment = Alignment.CenterVertically,
             ) {
-                innerTextField()
-                if (text.isEmpty()) {
-                    Text(
-                        text = "댓글을 달아보세요",
-                        style = MaterialTheme.typography.titleMedium.copy(
-                            color = gray50,
-                        ),
-                    )
+                Box(modifier = Modifier.weight(1f)) {
+                    innerTextField()
+                    if (text.isEmpty()) {
+                        Text(
+                            text = "댓글을 달아보세요",
+                            style = MaterialTheme.typography.titleMedium.copy(
+                                color = gray50,
+                            ),
+                        )
+                    }
                 }
 
                 Icon(
                     modifier = Modifier
-                        .padding(vertical = 13.dp)
-                        .align(Alignment.CenterEnd),
+                        .padding(vertical = 13.dp),
                     painter = painterResource(id = R.drawable.arrow_up_icon),
                     contentDescription = "댓글 등록",
                     tint = Color.Black,
