@@ -67,9 +67,8 @@ jobs:
 
             - name: Grant execute permission for gradlew
               run: |
-                echo sdk.dir=~/Android/Sdk >> local.properties
-                echo kakao.api.key=\"${{ secrets.KAKAO_API_KEY }}\" >> local.properties
-                echo server_key=\"${{ secrets.SERVER_KEY }}\" >> local.properties
+                echo sdk.dir=${{ env.ANDROID_HOME }} >> local.properties
+                echo '${{ secrets.LOCAL_PROPERTIES }}' >> local.properties
                 chmod +x gradlew
 
             -   name: add google_service.json
