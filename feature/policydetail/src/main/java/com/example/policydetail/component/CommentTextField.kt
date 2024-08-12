@@ -30,7 +30,7 @@ import com.youthtalk.designsystem.YongProjectTheme
 import com.youthtalk.designsystem.gray50
 
 @Composable
-fun Comment(modifier: Modifier = Modifier) {
+fun CommentTextField(modifier: Modifier = Modifier) {
     val focusManager = LocalFocusManager.current
 
     var text by remember {
@@ -98,6 +98,6 @@ fun Comment(modifier: Modifier = Modifier) {
 @Composable
 private fun CommentScreenPreview() {
     YongProjectTheme {
-        Comment()
+        CommentTextField()
     }
 }

@@ -25,7 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.policydetail.component.Comment
+import com.example.policydetail.component.CommentTextField
 import com.example.policydetail.component.PolicyDetail
 import com.example.policydetail.component.PolicyDetailTopAppBar
 import com.example.policydetail.component.PolicyTitle
@@ -60,6 +60,8 @@ fun PolicyDetailScreen(policyId: String, viewModel: PolicyDetailViewModel = hilt
 @Composable
 private fun PolicyDetailSuccessScreen(uiState: PolicyDetailUiState.Success) {
     val policyDetail = uiState.policyDetail
+    val comments = uiState.comments
+    val user = uiState.myInfo
 
     Column(
         modifier = Modifier
@@ -115,7 +117,7 @@ private fun PolicyDetailSuccessScreen(uiState: PolicyDetailUiState.Success) {
                         style = MaterialTheme.typography.displayLarge,
                     )
                     Text(
-                        text = "7",
+                        text = comments.size.toString(),
                         style = MaterialTheme.typography.titleSmall.copy(
                             color = gray50,
                         ),
@@ -124,19 +126,21 @@ private fun PolicyDetailSuccessScreen(uiState: PolicyDetailUiState.Success) {
             }
 
             items(
-                count = 7,
+                count = comments.size,
             ) { index: Int ->
                 CommentScreen(
                     modifier = Modifier
                         .padding(horizontal = 17.dp)
                         .padding(bottom = 12.dp)
                         .shadow(3.dp),
-                    isMine = (index + 1) % 6 == 0,
+                    nickname = comments[index].nickname,
+                    content = comments[index].content,
+                    isMine = user.nickname == comments[index].nickname,
                 )
             }
         }
 
-        Comment(
+        CommentTextField(
             modifier = Modifier
                 .imePadding(),
         )

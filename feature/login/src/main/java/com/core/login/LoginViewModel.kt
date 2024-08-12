@@ -3,7 +3,7 @@ package com.core.login
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.core.domain.usercase.GetUserUserCase
+import com.core.domain.usercase.GetUserUseCase
 import com.core.domain.usercase.PostLoginUseCase
 import com.core.domain.usercase.PostSignUseCase
 import com.youthtalk.model.User
@@ -18,7 +18,7 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val postLoginUseCase: PostLoginUseCase,
-    private val getUserUserCase: GetUserUserCase,
+    private val getUserUseCase: GetUserUseCase,
     private val postSignUseCase: PostSignUseCase,
 ) : ViewModel() {
 
@@ -39,7 +39,7 @@ class LoginViewModel @Inject constructor(
 
     private fun checkToken() {
         viewModelScope.launch {
-            getUserUserCase()
+            getUserUseCase()
                 .catch {
                     Log.d("YOON-CHAN", "checkToken error $it")
                     _user.emit(null)

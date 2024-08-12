@@ -6,7 +6,7 @@ import com.core.dataapi.repository.UserRepository
 import com.core.domain.usercase.ChangeCategoriesUseCase
 import com.core.domain.usercase.CheckTokenUseCase
 import com.core.domain.usercase.GetCategoriesUseCase
-import com.core.domain.usercase.GetUserUserCase
+import com.core.domain.usercase.GetUserUseCase
 import com.core.domain.usercase.PostLoginUseCase
 import com.core.domain.usercase.PostSignUseCase
 import dagger.Module
@@ -32,7 +32,7 @@ object UseCaseModule {
 
     @Provides
     @Singleton
-    fun provideGetUserUseCase(repository: UserRepository) = GetUserUserCase(repository)
+    fun provideGetUserUseCase(repository: UserRepository) = GetUserUseCase(repository)
 
     @Provides
     @Singleton
