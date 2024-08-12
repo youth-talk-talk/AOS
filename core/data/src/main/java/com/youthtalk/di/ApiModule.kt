@@ -3,8 +3,8 @@ package com.youthtalk.di
 import android.util.Log
 import com.core.datastore.datasource.DataStoreDataSource
 import com.youth.app.core.data.BuildConfig
-import com.youthtalk.data.HomeService
 import com.youthtalk.data.LoginService
+import com.youthtalk.data.PolicyService
 import com.youthtalk.data.UserService
 import dagger.Module
 import dagger.Provides
@@ -132,7 +132,7 @@ object ApiModule {
 
     @Provides
     @Singleton
-    fun provideHomeService(@Main retrofit: Retrofit): HomeService = retrofit.create(HomeService::class.java)
+    fun providePolicyService(@Main retrofit: Retrofit): PolicyService = retrofit.create(PolicyService::class.java)
 
     @Provides
     @Singleton

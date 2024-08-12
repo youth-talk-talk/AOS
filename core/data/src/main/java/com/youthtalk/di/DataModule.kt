@@ -2,11 +2,13 @@ package com.youthtalk.di
 
 import com.core.dataapi.repository.HomeRepository
 import com.core.dataapi.repository.LoginRepository
+import com.core.dataapi.repository.PolicyDetailRepository
 import com.core.dataapi.repository.UserRepository
 import com.core.datastore.datasource.DataSource
 import com.core.datastore.datasource.DataStoreDataSource
 import com.youthtalk.repository.HomeRepositoryImpl
 import com.youthtalk.repository.LoginRepositoryImpl
+import com.youthtalk.repository.PolicyDetailRepositoryImpl
 import com.youthtalk.repository.UserRepositoryImpl
 import dagger.Binds
 import dagger.Module
@@ -28,4 +30,7 @@ abstract class DataModule {
 
     @Binds
     abstract fun bindsLoginRepository(repository: LoginRepositoryImpl): LoginRepository
+
+    @Binds
+    abstract fun bindsPolicyDetailRepository(repository: PolicyDetailRepositoryImpl): PolicyDetailRepository
 }

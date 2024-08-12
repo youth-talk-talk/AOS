@@ -3,7 +3,7 @@ package com.youthtalk.datasource.home
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.core.datastore.datasource.DataStoreDataSource
-import com.youthtalk.data.HomeService
+import com.youthtalk.data.PolicyService
 import com.youthtalk.mapper.toData
 import com.youthtalk.model.Policy
 import kotlinx.coroutines.flow.first
@@ -12,7 +12,7 @@ import java.io.IOException
 import javax.inject.Inject
 
 class HomePagingSource @Inject constructor(
-    private val homeService: HomeService,
+    private val policyService: PolicyService,
     private val dataSource: DataStoreDataSource,
 ) : PagingSource<Int, Policy>() {
 
@@ -28,7 +28,7 @@ class HomePagingSource @Inject constructor(
             val pageNumber = params.key ?: 0
             val getCategories: List<String> = dataSource.getCategoryFilter().first().map { it.name }
 
-            val response = homeService.getPolices(
+            val response = policyService.getPolices(
                 categories = getCategories,
                 page = pageNumber,
                 size = params.loadSize,

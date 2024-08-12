@@ -18,11 +18,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
         enableEdgeToEdge()
-//        ViewCompat.setOnApplyWindowInsetsListener(findViewById(android.R.id.content)) { view, insets ->
-//            val bottom = insets.getInsets(WindowInsetsCompat.Type.ime()).bottom
-//            view.updatePadding(bottom = bottom)
-//            insets
-//        }
         setContent {
             YongProjectTheme {
                 // A surface container using the 'background' color from the theme

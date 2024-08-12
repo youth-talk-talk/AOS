@@ -15,50 +15,79 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.LineBreak
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.policydetail.model.PolicyDetailUiState
 import com.youth.app.feature.policydetail.R
 import com.youthtalk.designsystem.YongProjectTheme
 import com.youthtalk.designsystem.gray50
+import com.youthtalk.model.PolicyDetail
 
 @Composable
-fun PolicyDetail(modifier: Modifier = Modifier) {
+fun PolicyDetail(modifier: Modifier = Modifier, policyDetail: PolicyDetail) {
     Column(
         modifier = modifier.background(color = Color.White),
         verticalArrangement = Arrangement.spacedBy(24.dp),
     ) {
-        SummaryCheck()
-        ApplyUser()
-        ApplyMethod()
-        MoreScreen()
+        with(policyDetail) {
+            SummaryCheck(
+                supportDetail = supportDetail,
+                applyTerm = applyTerm,
+                operateTerm = operationTerm,
+            )
+            ApplyUser(
+                age = age,
+                addrIncome = addrIncome,
+                education = education,
+                major = major,
+                employment = employment,
+                specialization = specialization,
+                applyLimit = applLimit,
+                addition = addition,
+            )
+            ApplyMethod(
+                applyStep = applStep,
+                evaluation = evaluation,
+                applyUrl = applUrl,
+                submitDoc = submitDoc,
+            )
+            MoreScreen(
+                etc = etc,
+                hostDep = hostDep,
+                operatingOrg = operatingOrg,
+                refUrl1 = refUrl1,
+                refUrl2 = refUrl2,
+            )
+        }
     }
 }
 
 @Composable
-private fun MoreScreen() {
+private fun MoreScreen(etc: String, hostDep: String, operatingOrg: String, refUrl1: String, refUrl2: String) {
     Column(
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         PolicyIconTitle(
             icon = painterResource(id = R.drawable.add_icon),
-            title = "더 자세한 정보를 알려주세요",
+            title = stringResource(id = R.string.apply_more_title),
         )
 
         Column(
             verticalArrangement = Arrangement.spacedBy(4.dp),
         ) {
             Text(
-                text = "기타 정보",
+                text = stringResource(id = R.string.apply_more_etc),
                 style = MaterialTheme.typography.titleLarge.copy(
                     color = gray50,
                 ),
             )
 
             Text(
-                text = "기타 정보란",
+                text = etc,
                 style = MaterialTheme.typography.headlineLarge.copy(
                     fontWeight = FontWeight.W400,
                     color = Color.Black,
@@ -70,14 +99,14 @@ private fun MoreScreen() {
             verticalArrangement = Arrangement.spacedBy(4.dp),
         ) {
             Text(
-                text = "주관기간 및 운영기관",
+                text = stringResource(id = R.string.apply_more_host_dep),
                 style = MaterialTheme.typography.titleLarge.copy(
                     color = gray50,
                 ),
             )
 
             Text(
-                text = "-주관 기간: 국토교통부\n-운영기관: 국토교통부",
+                text = "-주관 기간: ${hostDep}\n-운영기관: $operatingOrg",
                 style = MaterialTheme.typography.headlineLarge.copy(
                     fontWeight = FontWeight.W400,
                     color = Color.Black,
@@ -89,7 +118,7 @@ private fun MoreScreen() {
             verticalArrangement = Arrangement.spacedBy(4.dp),
         ) {
             Text(
-                text = "참고 사이트",
+                text = stringResource(id = R.string.apply_more_ref_site),
                 style = MaterialTheme.typography.titleLarge.copy(
                     color = gray50,
                 ),
@@ -104,7 +133,7 @@ private fun MoreScreen() {
             )
 
             Text(
-                text = "    ${Typography.middleDot} https://nhuf.molit.go.kr/FP/FP07/FP0701/FP07010301.jsp",
+                text = "    ${Typography.middleDot} $refUrl1",
                 style = MaterialTheme.typography.headlineLarge.copy(
                     fontWeight = FontWeight.W400,
                     color = Color.Black,
@@ -120,7 +149,7 @@ private fun MoreScreen() {
                 ),
             )
             Text(
-                text = "    ${"\u00B7"} https://www.korea.kr/news/policyNewsView.do?newsId=148926066",
+                text = "    ${Typography.middleDot} $refUrl2",
                 style = MaterialTheme.typography.headlineLarge.copy(
                     fontWeight = FontWeight.W400,
                     color = Color.Black,
@@ -132,129 +161,130 @@ private fun MoreScreen() {
 }
 
 @Composable
-private fun ApplyMethod() {
+private fun ApplyMethod(applyStep: String, evaluation: String, applyUrl: String, submitDoc: String) {
     Column(
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         PolicyIconTitle(
             icon = painterResource(id = R.drawable.question_icon),
-            title = "신청방법이 궁금해요",
+            title = stringResource(id = R.string.apply_method_title),
         )
 
         Column(
             verticalArrangement = Arrangement.spacedBy(4.dp),
         ) {
-            Text(
-                text = "신청절차",
-                style = MaterialTheme.typography.titleLarge.copy(
-                    color = gray50,
-                ),
+            DetailedConditions(
+                title = stringResource(id = R.string.apply_method_apply_step),
+                content = applyStep,
             )
 
-            Text(
-                text = "심사 및 발표",
-                style = MaterialTheme.typography.titleLarge.copy(
-                    color = gray50,
-                ),
+            DetailedConditions(
+                title = stringResource(id = R.string.apply_method_apply_evaluation),
+                content = evaluation,
             )
 
-            Text(
-                text = "신청 사이트",
-                style = MaterialTheme.typography.titleLarge.copy(
-                    color = gray50,
-                ),
+            DetailedConditions(
+                title = stringResource(id = R.string.apply_method_apply_url),
+                content = applyUrl,
             )
 
-            Text(
-                text = "제출 서류",
-                style = MaterialTheme.typography.titleLarge.copy(
-                    color = gray50,
-                ),
+            DetailedConditions(
+                title = stringResource(id = R.string.apply_method_submit_doc),
+                content = submitDoc,
             )
         }
     }
 }
 
 @Composable
-private fun ApplyUser() {
+private fun ApplyUser(
+    age: String,
+    addrIncome: String,
+    education: String,
+    major: String,
+    employment: String,
+    specialization: String,
+    applyLimit: String,
+    addition: String,
+) {
     Column(
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         PolicyIconTitle(
             icon = painterResource(id = R.drawable.person_icon),
-            title = "누구를 위한 정책인가요",
+            title = stringResource(id = R.string.apply_user_title),
         )
 
         Column(
             verticalArrangement = Arrangement.spacedBy(4.dp),
         ) {
             DetailedConditions(
-                title = "연령",
-                content = "만 19세 ~ 34세",
+                title = stringResource(id = R.string.age),
+                content = age,
             )
 
             DetailedConditions(
-                title = "거주지 및 소득",
-                content = "청년 주택드림 청약통장 소득 기준: 연 5,000만원 이하",
+                title = stringResource(id = R.string.addr_income),
+                content = addrIncome,
             )
 
             DetailedConditions(
-                title = "학력",
-                content = "제한없음",
+                title = stringResource(id = R.string.education),
+                content = education,
             )
 
             DetailedConditions(
-                title = "전공",
-                content = "제한없음",
+                title = stringResource(id = R.string.major),
+                content = major,
             )
 
             DetailedConditions(
-                title = "취업상태",
-                content = "제한없음",
+                title = stringResource(id = R.string.employment),
+                content = employment,
             )
 
             DetailedConditions(
-                title = "특화분야",
-                content = "제한없음",
+                title = stringResource(id = R.string.specialization),
+                content = specialization,
             )
 
             DetailedConditions(
-                title = "참여제한",
-                content = "제한없음",
+                title = stringResource(id = R.string.apply_limit),
+                content = applyLimit,
             )
 
             DetailedConditions(
-                title = "추가조항",
-                content = "제한없음",
+                title = stringResource(id = R.string.addition),
+                content = addition,
             )
         }
     }
 }
 
 @Composable
-private fun SummaryCheck() {
+private fun SummaryCheck(supportDetail: String, applyTerm: String, operateTerm: String) {
     Column(
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         PolicyIconTitle(
             icon = painterResource(id = R.drawable.apply_icon),
-            title = "한눈에 보는 정책 요약",
+            title = stringResource(id = R.string.apply_summary_title),
         )
 
         PolicyContent(
-            contentTitle = "지원내용",
-            contentDetail = "222222222222",
+            contentTitle = stringResource(id = R.string.apply_content_title),
+            contentDetail = supportDetail,
         )
 
         PolicyContent(
-            contentTitle = "신청기간",
-            contentDetail = "2024년 02월 21일 ~ 2024년 12월 31일",
+            contentTitle = stringResource(id = R.string.apply_date_title),
+            contentDetail = applyTerm,
         )
 
         PolicyContent(
             modifier = Modifier.padding(bottom = 9.dp),
-            contentTitle = "운영기간",
-            contentDetail = "-",
+            contentTitle = stringResource(id = R.string.apply_operate_title),
+            contentDetail = operateTerm,
         )
     }
 }
@@ -326,7 +356,11 @@ fun PolicyContent(modifier: Modifier = Modifier, contentTitle: String, contentDe
 @Preview
 @Composable
 private fun PolicyDetailPreview() {
+    val defaultPolicyDetail =
+        PolicyDetailUiState.Success.defaultDetail
     YongProjectTheme {
-        PolicyDetail()
+        PolicyDetail(
+            policyDetail = defaultPolicyDetail,
+        )
     }
 }
