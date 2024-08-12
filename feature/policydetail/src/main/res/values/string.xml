@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="apply_btn_name">지원하기</string>
+    <string name="apply_summary_title">한눈에 보는 정책 요약</string>
+    <string name="apply_content_title">지원내용</string>
+    <string name="apply_date_title">신청기간</string>
+    <string name="apply_operate_title">운영기간</string>
+    <string name="apply_user_title">누구를 위한 정책인가요</string>
+    <string name="apply_method_title">신청방법이 궁금해요</string>
+    <string name="apply_method_apply_step">신청절차</string>
+    <string name="apply_method_apply_evaluation">심사 및 발표</string>
+    <string name="apply_method_apply_url">신청 사이트</string>
+    <string name="apply_method_submit_doc">제출서류</string>
+    <string name="apply_more_title">더 자세한 정보를 알려주세요</string>
+    <string name="apply_more_etc">기타 정보</string>
+    <string name="apply_more_host_dep">주관기간 및 운영기관</string>
+    <string name="apply_more_ref_site">참고 사이트</string>
+
+    <string name="age">연령</string>
+    <string name="addr_income">거주지 및 소득</string>
+    <string name="education">학력</string>
+    <string name="major">전공</string>
+    <string name="employment">취업상태</string>
+    <string name="specialization">특화분야</string>
+    <string name="apply_limit">참여제한</string>
+    <string name="addition">추가조항</string>
+</resources>

@@ -40,7 +40,7 @@ sealed class MainNav(
 
         fun includeMainNav(route: String?): String {
             return when (route) {
-                MAIN_HOME, POLICY_DETAIL -> MAIN_HOME
+                MAIN_HOME -> MAIN_HOME
                 MAIN_COMMUNITY -> MAIN_COMMUNITY
                 MAIN_MY_PAGE -> MAIN_MY_PAGE
                 else -> MAIN_HOME

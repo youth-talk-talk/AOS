@@ -11,11 +11,9 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -59,18 +57,19 @@ fun MainScreen() {
     val navBackStackEntry by navHostController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
     val homeLazyListScrollState = rememberLazyListState()
-    val keyboard = WindowInsets.isImeVisible
     Scaffold(
         bottomBar = {
-            BottomBar(
-                modifier = Modifier
-                    .padding(top = 8.dp, bottom = 6.dp)
-                    .height(IntrinsicSize.Min)
-                    .navigationBarsPadding(),
-                navHostController = navHostController,
-                currentRoute = currentRoute,
-                homeLazyListScrollState = homeLazyListScrollState,
-            )
+            if (MainNav.isMainNavigation(currentRoute)) {
+                BottomBar(
+                    modifier = Modifier
+                        .padding(top = 8.dp, bottom = 6.dp)
+                        .height(IntrinsicSize.Min)
+                        .navigationBarsPadding(),
+                    navHostController = navHostController,
+                    currentRoute = currentRoute,
+                    homeLazyListScrollState = homeLazyListScrollState,
+                )
+            }
         },
         content = {
             Column(modifier = Modifier.padding(it)) {

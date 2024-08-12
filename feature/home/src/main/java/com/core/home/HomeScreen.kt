@@ -52,7 +52,11 @@ import kotlinx.collections.immutable.ImmutableList
 fun HomeScreen(viewModel: HomeViewModel = hiltViewModel(), navController: NavController, homeLazyListScrollState: LazyListState) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     if (uiState !is HomeUiState.Success) {
-        Box(modifier = Modifier.fillMaxSize()) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize(),
+            contentAlignment = Alignment.Center,
+        ) {
             CircularProgressIndicator()
         }
     } else {

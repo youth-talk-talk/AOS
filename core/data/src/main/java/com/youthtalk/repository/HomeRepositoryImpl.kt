@@ -4,13 +4,12 @@ import android.util.Log
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import androidx.paging.map
 import com.core.dataapi.repository.HomeRepository
 import com.core.datastore.datasource.DataStoreDataSource
 import com.core.exception.InvalidValueException
 import com.core.exception.NetworkErrorException
 import com.core.exception.NoDataException
-import com.youthtalk.data.HomeService
+import com.youthtalk.data.PolicyService
 import com.youthtalk.datasource.home.HomePagingSource
 import com.youthtalk.dto.CommonResponse
 import com.youthtalk.dto.SignErrorResponse
@@ -19,13 +18,12 @@ import com.youthtalk.model.Policy
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
 import kotlinx.serialization.json.Json
 import retrofit2.HttpException
 import javax.inject.Inject
 
 class HomeRepositoryImpl @Inject constructor(
-    private val homeService: HomeService,
+    private val policyService: PolicyService,
     private val dataSource: DataStoreDataSource,
 ) : HomeRepository {
 
@@ -37,7 +35,7 @@ class HomeRepositoryImpl @Inject constructor(
                 ),
                 pagingSourceFactory = {
                     HomePagingSource(
-                        homeService = homeService,
+                        policyService = policyService,
                         dataSource = dataSource,
                     )
                 },
@@ -48,7 +46,7 @@ class HomeRepositoryImpl @Inject constructor(
     override fun getTop5Polices(): Flow<List<Policy>> = flow {
         val categories = dataSource.getCategoryFilter().first().map { it.name }
         runCatching {
-            homeService.getPolices(categories, 0, 0)
+            policyService.getPolices(categories, 0, 0)
         }
             .onSuccess { response ->
                 response.data?.let { homePolices ->

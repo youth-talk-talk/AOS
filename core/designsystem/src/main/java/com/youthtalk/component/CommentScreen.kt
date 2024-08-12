@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -27,7 +28,7 @@ import com.youth.app.core.designsystem.R
 import com.youthtalk.designsystem.YongProjectTheme
 
 @Composable
-fun CommentScreen(modifier: Modifier = Modifier, isMine: Boolean) {
+fun CommentScreen(modifier: Modifier = Modifier, nickname: String, content: String, isMine: Boolean) {
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -45,12 +46,12 @@ fun CommentScreen(modifier: Modifier = Modifier, isMine: Boolean) {
             modifier = Modifier.weight(1f),
         ) {
             Text(
-                text = "놀고픈 청년",
+                text = nickname,
                 style = MaterialTheme.typography.displayMedium,
             )
 
             Text(
-                text = "댓글내용입니다댓글내용입니다댓글내용입니다댓글내용입니다댓글내용입니다댓글내용입니다댓글내용입니다댓글내용입니다댓글내용입니다댓글내용입니다댓글내용입니다댓글내용입니다",
+                text = content,
                 style = MaterialTheme.typography.displaySmall.copy(
                     fontWeight = FontWeight.W400,
                 ),
@@ -68,14 +69,14 @@ fun CommentScreen(modifier: Modifier = Modifier, isMine: Boolean) {
                 ) {
                     Text(
                         modifier = Modifier.width(21.dp),
-                        text = "수정",
+                        text = stringResource(id = R.string.modify),
                         style = MaterialTheme.typography.labelLarge.copy(
                             color = MaterialTheme.colorScheme.onTertiary,
                         ),
                     )
                     Text(
                         modifier = Modifier.width(21.dp),
-                        text = "삭제",
+                        text = stringResource(id = R.string.remove),
                         style = MaterialTheme.typography.labelLarge.copy(
                             color = MaterialTheme.colorScheme.onTertiary,
                         ),
@@ -87,16 +88,9 @@ fun CommentScreen(modifier: Modifier = Modifier, isMine: Boolean) {
                         .padding(start = 29.dp)
                         .align(Alignment.CenterEnd),
                     painter = painterResource(id = R.drawable.favorite_icon),
-                    contentDescription = "좋아요",
+                    contentDescription = stringResource(id = R.string.favorite),
                     tint = Color.Black,
                 )
-
-//                Icon(
-//                    modifier = Modifier
-//                        .align(Alignment.Center),
-//                    painter = painterResource(id = R.drawable.fixed_icon),
-//                    contentDescription = "고정"
-//                )
             }
         }
     }
@@ -107,6 +101,8 @@ fun CommentScreen(modifier: Modifier = Modifier, isMine: Boolean) {
 private fun CommentScreenIsMinePreview() {
     YongProjectTheme {
         CommentScreen(
+            nickname = "놀고픈 청년",
+            content = "댓글내용입니다댓글내용입니다댓글내용입니다댓글내용입니다댓글내용입니다댓글내용입니다댓글내용입니다댓글내용입니다댓글내용입니다댓글내용입니다댓글내용입니다댓글내용입니다",
             isMine = true,
         )
     }
@@ -117,6 +113,8 @@ private fun CommentScreenIsMinePreview() {
 private fun CommentScreenOtherPreview() {
     YongProjectTheme {
         CommentScreen(
+            nickname = "놀고픈 청년",
+            content = "댓글내용입니다댓글내용입니다댓글내용입니다댓글내용입니다댓글내용입니다댓글내용입니다댓글내용입니다댓글내용입니다댓글내용입니다댓글내용입니다댓글내용입니다댓글내용입니다",
             isMine = false,
         )
     }
