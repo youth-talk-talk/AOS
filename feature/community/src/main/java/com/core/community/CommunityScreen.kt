@@ -16,6 +16,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -37,19 +38,55 @@ import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.core.community.component.SearchBarComponent
+import com.core.community.model.CommunityUiState
 import com.youth.app.feature.community.R
 import com.youthtalk.component.PolicyCheckBox
 import com.youthtalk.component.PostCard
 import com.youthtalk.designsystem.YongProjectTheme
+import com.youthtalk.model.Category
+import kotlinx.collections.immutable.ImmutableList
 
 @Composable
-fun CommunityScreen() {
+fun CommunityScreen(viewModel: CommunityViewModel = hiltViewModel()) {
     val tabNames = stringArrayResource(id = R.array.tabs)
     var tabIndex by rememberSaveable {
         mutableIntStateOf(0)
     }
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+    if (uiState !is CommunityUiState.Success) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize(),
+            contentAlignment = Alignment.Center,
+        ) {
+            CircularProgressIndicator()
+        }
+    } else {
+        CommunitySuccessScreen(
+            tabIndex,
+            tabNames.toList(),
+            uiState as CommunityUiState.Success,
+            changeTab = { index ->
+                tabIndex = index
+            },
+            changeReviewCheckBox = viewModel::setCategories,
+        )
+    }
+}
+
+@Composable
+private fun CommunitySuccessScreen(
+    tabIndex: Int,
+    tabNames: List<String>,
+    uiState: CommunityUiState.Success,
+    changeTab: (Int) -> Unit,
+    changeReviewCheckBox: (Category?) -> Unit,
+) {
+    val categories = uiState.categories
     Surface {
         Box {
             LazyColumn(
@@ -59,7 +96,7 @@ fun CommunityScreen() {
             ) {
                 item {
                     CommunityTab(tabIndex, tabNames.toList()) { newIndex ->
-                        tabIndex = newIndex
+                        changeTab(newIndex)
                     }
                 }
 
@@ -72,7 +109,13 @@ fun CommunityScreen() {
                 }
 
                 when (tabIndex) {
-                    0 -> reviewPost()
+                    0 -> reviewPost(
+                        reviewCategories = categories,
+                        onCheck = { category ->
+                            changeReviewCheckBox(category)
+                        },
+                    )
+
                     1 -> freeBoard()
                 }
             }
@@ -156,7 +199,7 @@ private fun CommunityTab(tabIndex: Int, tabNames: List<String>, onTabClick: (Int
     }
 }
 
-private fun LazyListScope.reviewPost() {
+private fun LazyListScope.reviewPost(reviewCategories: ImmutableList<Category>, onCheck: (Category?) -> Unit) {
     item {
         Row(
             modifier = Modifier
@@ -165,15 +208,19 @@ private fun LazyListScope.reviewPost() {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
-            stringArrayResource(id = R.array.policies).forEach {
+            stringArrayResource(id = R.array.policies).forEach { category ->
                 PolicyCheckBox(
                     spaceBy = Arrangement.spacedBy(7.dp),
-                    isCheck = true,
-                    title = it,
+                    isCheck = reviewCategories.any { checkCategory ->
+                        checkCategory.categoryName == category
+                    },
+                    title = category,
                     textStyle = MaterialTheme.typography.displayLarge.copy(
                         color = MaterialTheme.colorScheme.onPrimary,
                     ),
-                    onCheckChange = {},
+                    onCheckChange = {
+                        onCheck(Category.entries.find { it.categoryName == category })
+                    },
                 )
             }
         }

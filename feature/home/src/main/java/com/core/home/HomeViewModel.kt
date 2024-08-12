@@ -37,27 +37,6 @@ class HomeViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<HomeUiState>(HomeUiState.Loading)
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
-//        combine(
-//        getCategoriesUseCase(),
-//        getPopularPoliciesUseCase(),
-//        getAllPoliciesUseCase()
-//    ) { categories, policies, all ->
-//        Log.d("YOON-CHAN", "uiState $policies, $all")
-//        HomeUiState.Success(
-//            categoryList = categories.toPersistentList(),
-//            popularPolicies = policies.toPersistentList(),
-//            allPolicies = all.cachedIn(viewModelScope),
-//        )
-//    }
-//        .catch {
-//            Log.d("YOON-CHAN", "Home Init error ${it.message}")
-//        }
-//        .stateIn(
-//            scope = viewModelScope,
-//            started = SharingStarted.WhileSubscribed(5_000),
-//            initialValue = HomeUiState.Loading
-//        )
-
     init {
         viewModelScope.launch {
             combine(

@@ -35,4 +35,12 @@ class UserRepositoryImpl @Inject constructor(
     override suspend fun setCategoryList(categories: List<Category>) {
         dataSource.setCategoryFilter(categories)
     }
+
+    override fun getReviewCategoryList(): Flow<List<Category>> {
+        return dataSource.getReviewCategoryFilter()
+    }
+
+    override suspend fun setReviewCategoryList(categories: List<Category>) {
+        dataSource.setReviewCategoryFilter(categories)
+    }
 }
