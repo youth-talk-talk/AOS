@@ -8,6 +8,8 @@ interface UserRepository {
     fun getUser(): Flow<User>
 
     fun getCategoryList(): Flow<List<Category>>
+    fun getReviewCategoryList(): Flow<List<Category>>
 
     suspend fun setCategoryList(categories: List<Category>)
+    suspend fun setReviewCategoryList(categories: List<Category>)
 }

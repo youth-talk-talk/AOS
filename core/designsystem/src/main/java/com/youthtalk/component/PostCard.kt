@@ -22,7 +22,8 @@ import com.youth.app.core.designsystem.R
 import com.youthtalk.designsystem.YongProjectTheme
 
 @Composable
-fun PostCard(modifier: Modifier = Modifier) {
+fun PostCard(modifier: Modifier = Modifier, policyTitle: String, title: String, scraps: Int, comments: Int, scrap: Boolean) {
+    val bookmark = if (scrap) painterResource(id = R.drawable.bookmark_check) else painterResource(id = R.drawable.bookmark)
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -33,13 +34,13 @@ fun PostCard(modifier: Modifier = Modifier) {
             .padding(horizontal = 11.dp, vertical = 13.dp),
     ) {
         Text(
-            text = "[대전] 미래두배 청년통장",
+            text = policyTitle,
             style = MaterialTheme.typography.displaySmall.copy(
                 color = MaterialTheme.colorScheme.onTertiary,
             ),
         )
         Text(
-            text = "사용자 설정 타이틀 사용자 설정 타이틀 사용자 설정 타이틀",
+            text = title,
             style = MaterialTheme.typography.bodyMedium,
         )
 
@@ -53,12 +54,12 @@ fun PostCard(modifier: Modifier = Modifier) {
             BottomIcon(
                 icon = {
                     Icon(
-                        painter = painterResource(id = R.drawable.bookmark),
+                        painter = bookmark,
                         contentDescription = "북마크",
-                        tint = MaterialTheme.colorScheme.onPrimary,
+                        tint = if (scrap) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onPrimary,
                     )
                 },
-                count = "123",
+                count = "$scraps",
             )
 
             Spacer(modifier = Modifier.padding(start = 6.dp))
@@ -67,11 +68,11 @@ fun PostCard(modifier: Modifier = Modifier) {
                 icon = {
                     Icon(
                         painter = painterResource(id = R.drawable.message_icon),
-                        contentDescription = "북마크",
+                        contentDescription = "메세지",
                         tint = MaterialTheme.colorScheme.onPrimary,
                     )
                 },
-                count = "123",
+                count = "$comments",
             )
         }
     }
@@ -96,10 +97,30 @@ private fun BottomIcon(icon: @Composable () -> Unit, count: String) {
 
 @Preview
 @Composable
-private fun PostCardPreview() {
+private fun PostCardScrapTruePreview() {
     YongProjectTheme {
         PostCard(
             modifier = Modifier.aspectRatio(3.41f),
+            policyTitle = "[대전] 미래두배 청년통장",
+            title = "사용자 설정 타이틀 사용자 설정 타이틀 사용자 설정 타이틀",
+            scraps = 123,
+            comments = 123,
+            scrap = true,
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun PostCardScrapFalsePreview() {
+    YongProjectTheme {
+        PostCard(
+            modifier = Modifier.aspectRatio(3.41f),
+            policyTitle = "[대전] 미래두배 청년통장",
+            title = "사용자 설정 타이틀 사용자 설정 타이틀 사용자 설정 타이틀",
+            scraps = 123,
+            comments = 123,
+            scrap = false,
         )
     }
 }

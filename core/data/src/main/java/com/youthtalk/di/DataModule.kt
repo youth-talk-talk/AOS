@@ -1,6 +1,7 @@
 package com.youthtalk.di
 
 import com.core.dataapi.repository.CommentRepository
+import com.core.dataapi.repository.CommunityRepository
 import com.core.dataapi.repository.HomeRepository
 import com.core.dataapi.repository.LoginRepository
 import com.core.dataapi.repository.PolicyDetailRepository
@@ -8,6 +9,7 @@ import com.core.dataapi.repository.UserRepository
 import com.core.datastore.datasource.DataSource
 import com.core.datastore.datasource.DataStoreDataSource
 import com.youthtalk.repository.CommentRepositoryImpl
+import com.youthtalk.repository.CommunityRepositoryImpl
 import com.youthtalk.repository.HomeRepositoryImpl
 import com.youthtalk.repository.LoginRepositoryImpl
 import com.youthtalk.repository.PolicyDetailRepositoryImpl
@@ -38,4 +40,7 @@ abstract class DataModule {
 
     @Binds
     abstract fun bindsCommentRepository(repository: CommentRepositoryImpl): CommentRepository
+
+    @Binds
+    abstract fun bindsCommunityRepository(repository: CommunityRepositoryImpl): CommunityRepository
 }

@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -37,27 +38,6 @@ class HomeViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<HomeUiState>(HomeUiState.Loading)
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
-//        combine(
-//        getCategoriesUseCase(),
-//        getPopularPoliciesUseCase(),
-//        getAllPoliciesUseCase()
-//    ) { categories, policies, all ->
-//        Log.d("YOON-CHAN", "uiState $policies, $all")
-//        HomeUiState.Success(
-//            categoryList = categories.toPersistentList(),
-//            popularPolicies = policies.toPersistentList(),
-//            allPolicies = all.cachedIn(viewModelScope),
-//        )
-//    }
-//        .catch {
-//            Log.d("YOON-CHAN", "Home Init error ${it.message}")
-//        }
-//        .stateIn(
-//            scope = viewModelScope,
-//            started = SharingStarted.WhileSubscribed(5_000),
-//            initialValue = HomeUiState.Loading
-//        )
-
     init {
         viewModelScope.launch {
             combine(
@@ -71,6 +51,9 @@ class HomeViewModel @Inject constructor(
                     allPolicies = all.cachedIn(viewModelScope),
                 )
             }
+                .map {
+                    it
+                }
                 .catch {
                     Log.d("YOON-CHAN", "Home Init error ${it.message}")
                 }
