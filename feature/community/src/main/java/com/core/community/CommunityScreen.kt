@@ -40,6 +40,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.core.community.component.SearchBarComponent
 import com.core.community.model.CommunityUiState
 import com.youth.app.feature.community.R
@@ -47,6 +49,7 @@ import com.youthtalk.component.PolicyCheckBox
 import com.youthtalk.component.PostCard
 import com.youthtalk.designsystem.YongProjectTheme
 import com.youthtalk.model.Category
+import com.youthtalk.model.ReviewPost
 import kotlinx.collections.immutable.ImmutableList
 
 @Composable
@@ -87,15 +90,21 @@ private fun CommunitySuccessScreen(
     changeReviewCheckBox: (Category?) -> Unit,
 ) {
     val categories = uiState.categories
+    val reviewPosts = uiState.reviewPosts.collectAsLazyPagingItems()
+    val popularReviewPosts = uiState.popularReviewPosts
     Surface {
         Box {
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.background),
+                    .background(MaterialTheme.colorScheme.onSecondaryContainer),
             ) {
                 item {
-                    CommunityTab(tabIndex, tabNames.toList()) { newIndex ->
+                    CommunityTab(
+                        modifier = Modifier.background(MaterialTheme.colorScheme.background),
+                        tabIndex,
+                        tabNames.toList(),
+                    ) { newIndex ->
                         changeTab(newIndex)
                     }
                 }
@@ -103,6 +112,7 @@ private fun CommunitySuccessScreen(
                 item {
                     SearchBarComponent(
                         modifier = Modifier
+                            .background(MaterialTheme.colorScheme.background)
                             .padding(horizontal = 17.dp)
                             .padding(top = 24.dp),
                     )
@@ -111,6 +121,8 @@ private fun CommunitySuccessScreen(
                 when (tabIndex) {
                     0 -> reviewPost(
                         reviewCategories = categories,
+                        popularReviewPosts = popularReviewPosts,
+                        reviewPosts = reviewPosts,
                         onCheck = { category ->
                             changeReviewCheckBox(category)
                         },
@@ -154,9 +166,10 @@ private fun BoxScope.WriteButton() {
 }
 
 @Composable
-private fun CommunityTab(tabIndex: Int, tabNames: List<String>, onTabClick: (Int) -> Unit) {
+private fun CommunityTab(modifier: Modifier = Modifier, tabIndex: Int, tabNames: List<String>, onTabClick: (Int) -> Unit) {
     TabRow(
-        modifier = Modifier
+        modifier = modifier
+            .background(MaterialTheme.colorScheme.background)
             .padding(horizontal = 16.dp)
             .padding(top = 17.dp),
         selectedTabIndex = tabIndex,
@@ -199,30 +212,22 @@ private fun CommunityTab(tabIndex: Int, tabNames: List<String>, onTabClick: (Int
     }
 }
 
-private fun LazyListScope.reviewPost(reviewCategories: ImmutableList<Category>, onCheck: (Category?) -> Unit) {
+private fun LazyListScope.reviewPost(
+    reviewCategories: ImmutableList<Category>,
+    popularReviewPosts: ImmutableList<ReviewPost>,
+    reviewPosts: LazyPagingItems<ReviewPost>,
+    onCheck: (Category?) -> Unit,
+) {
     item {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .background(MaterialTheme.colorScheme.background)
                 .padding(top = 12.dp, start = 23.dp, end = 24.dp, bottom = 24.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
-            stringArrayResource(id = R.array.policies).forEach { category ->
-                PolicyCheckBox(
-                    spaceBy = Arrangement.spacedBy(7.dp),
-                    isCheck = reviewCategories.any { checkCategory ->
-                        checkCategory.categoryName == category
-                    },
-                    title = category,
-                    textStyle = MaterialTheme.typography.displayLarge.copy(
-                        color = MaterialTheme.colorScheme.onPrimary,
-                    ),
-                    onCheckChange = {
-                        onCheck(Category.entries.find { it.categoryName == category })
-                    },
-                )
-            }
+            CheckBoxScreen(reviewCategories, onCheck)
         }
     }
 
@@ -230,6 +235,7 @@ private fun LazyListScope.reviewPost(reviewCategories: ImmutableList<Category>, 
         Column(
             modifier = Modifier
                 .fillMaxWidth()
+                .background(MaterialTheme.colorScheme.background)
                 .background(
                     color = MaterialTheme.colorScheme.onSecondaryContainer,
                     shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
@@ -254,10 +260,16 @@ private fun LazyListScope.reviewPost(reviewCategories: ImmutableList<Category>, 
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
             ) {
                 items(
-                    count = 5,
-                ) {
+                    count = popularReviewPosts.size,
+                ) { index ->
+                    val reviewPost = popularReviewPosts[index]
                     PostCard(
                         modifier = Modifier.aspectRatio(3f),
+                        policyTitle = reviewPost.policyTitle,
+                        title = reviewPost.title,
+                        comments = reviewPost.comments,
+                        scraps = reviewPost.scraps,
+                        scrap = reviewPost.scrap,
                     )
                 }
             }
@@ -284,7 +296,7 @@ private fun LazyListScope.reviewPost(reviewCategories: ImmutableList<Category>, 
     }
 
     items(
-        count = 5,
+        count = reviewPosts.itemCount,
     ) { index ->
         Box(
             modifier = Modifier
@@ -295,10 +307,35 @@ private fun LazyListScope.reviewPost(reviewCategories: ImmutableList<Category>, 
                 .padding(top = 12.dp, bottom = if (index == 4) 12.dp else 0.dp),
 
         ) {
-            PostCard(
-                modifier = Modifier.padding(),
-            )
+            reviewPosts[index]?.let { post ->
+                PostCard(
+                    title = post.title,
+                    comments = post.comments,
+                    scrap = post.scrap,
+                    scraps = post.scraps,
+                    policyTitle = post.policyTitle,
+                )
+            }
         }
+    }
+}
+
+@Composable
+private fun CheckBoxScreen(reviewCategories: ImmutableList<Category>, onCheck: (Category?) -> Unit) {
+    stringArrayResource(id = R.array.policies).forEach { category ->
+        PolicyCheckBox(
+            spaceBy = Arrangement.spacedBy(7.dp),
+            isCheck = reviewCategories.any { checkCategory ->
+                checkCategory.categoryName == category
+            },
+            title = category,
+            textStyle = MaterialTheme.typography.displayLarge.copy(
+                color = MaterialTheme.colorScheme.onPrimary,
+            ),
+            onCheckChange = {
+                onCheck(Category.entries.find { it.categoryName == category })
+            },
+        )
     }
 }
 
@@ -307,6 +344,7 @@ fun LazyListScope.freeBoard() {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
+                .background(color = MaterialTheme.colorScheme.background)
                 .padding(top = 24.dp)
                 .background(
                     color = MaterialTheme.colorScheme.onSecondaryContainer,
@@ -336,6 +374,11 @@ fun LazyListScope.freeBoard() {
                 ) {
                     PostCard(
                         modifier = Modifier.aspectRatio(3f),
+                        policyTitle = "자유",
+                        title = "자유게시만 예시",
+                        scraps = 123,
+                        comments = 123,
+                        scrap = false,
                     )
                 }
             }
@@ -374,7 +417,11 @@ fun LazyListScope.freeBoard() {
 
         ) {
             PostCard(
-                modifier = Modifier.padding(),
+                policyTitle = "자유",
+                title = "자유게시판 예시",
+                scraps = 0,
+                comments = 0,
+                scrap = false,
             )
         }
     }

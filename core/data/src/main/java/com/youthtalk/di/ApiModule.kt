@@ -4,6 +4,7 @@ import android.util.Log
 import com.core.datastore.datasource.DataStoreDataSource
 import com.youth.app.core.data.BuildConfig
 import com.youthtalk.data.CommentService
+import com.youthtalk.data.CommunityService
 import com.youthtalk.data.LoginService
 import com.youthtalk.data.PolicyService
 import com.youthtalk.data.UserService
@@ -146,4 +147,8 @@ object ApiModule {
     @Provides
     @Singleton
     fun provideCommentService(@Main retrofit: Retrofit): CommentService = retrofit.create(CommentService::class.java)
+
+    @Provides
+    @Singleton
+    fun provideCommunityService(@Main retrofit: Retrofit): CommunityService = retrofit.create(CommunityService::class.java)
 }

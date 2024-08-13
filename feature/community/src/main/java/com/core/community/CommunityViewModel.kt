@@ -5,17 +5,18 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.core.community.model.CommunityUiState
 import com.core.domain.usercase.review.GetReviewCategoriesUseCase
+import com.core.domain.usercase.review.PostPopularReviewPostsUseCase
+import com.core.domain.usercase.review.PostReviewPostsUseCase
 import com.core.domain.usercase.review.SetReviewCategoriesUseCase
 import com.youthtalk.model.Category
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -23,34 +24,37 @@ import javax.inject.Inject
 class CommunityViewModel @Inject constructor(
     private val getReviewCategoriesUseCase: GetReviewCategoriesUseCase,
     private val setReviewCategoriesUseCase: SetReviewCategoriesUseCase,
+    private val postReviewPostsUseCase: PostReviewPostsUseCase,
+    private val postPopularReviewPostsUseCase: PostPopularReviewPostsUseCase,
 ) : ViewModel() {
 
     private val _error = MutableSharedFlow<Throwable>()
     val error = _error.asSharedFlow()
 
-    private val _uiState = MutableStateFlow<CommunityUiState>(CommunityUiState.Loading)
-    val uiState = _uiState.asStateFlow()
-
-    init {
-        viewModelScope.launch {
-            getReviewCategoriesUseCase()
-                .map {
-                    CommunityUiState.Success(
-                        categories = it.toPersistentList(),
-                    )
-                }
-                .catch {
-                    Log.d("YOON-CHAN", "CommunityViewModel getReviewCategoriesUseCase error")
-                }
-                .collectLatest { state ->
-                    _uiState.value = state
-                }
-        }
+    val uiState = combine(
+        getReviewCategoriesUseCase(),
+        postPopularReviewPostsUseCase(),
+        postReviewPostsUseCase(),
+    ) {
+            categories, reviewPosts, posts ->
+        CommunityUiState.Success(
+            categories = categories.toPersistentList(),
+            popularReviewPosts = reviewPosts.toPersistentList(),
+            reviewPosts = posts,
+        )
     }
+        .catch {
+            Log.d("YOON-CHAN", "CommunityViewModel getReviewCategoriesUseCase error")
+        }
+        .stateIn(
+            initialValue = CommunityUiState.Loading,
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000L),
+        )
 
     fun setCategories(category: Category?) {
         category?.let {
-            val state = _uiState.value
+            val state = uiState.value
             if (state !is CommunityUiState.Success) return
 
             val categories = state.categories.toMutableList()
