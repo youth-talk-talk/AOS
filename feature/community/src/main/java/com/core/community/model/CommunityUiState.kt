@@ -4,6 +4,7 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
 import androidx.paging.PagingData
 import com.youthtalk.model.Category
+import com.youthtalk.model.Post
 import com.youthtalk.model.ReviewPost
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
@@ -21,5 +22,7 @@ interface CommunityUiState {
         val categories: ImmutableList<Category> = persistentListOf(),
         val popularReviewPosts: ImmutableList<ReviewPost> = persistentListOf(),
         val reviewPosts: Flow<PagingData<ReviewPost>> = emptyFlow(),
+        val popularPosts: ImmutableList<Post> = persistentListOf(),
+        val posts: Flow<PagingData<Post>> = emptyFlow(),
     ) : CommunityUiState
 }

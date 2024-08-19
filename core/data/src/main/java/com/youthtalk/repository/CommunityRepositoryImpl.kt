@@ -8,9 +8,10 @@ import com.core.dataapi.repository.CommunityRepository
 import com.core.datastore.datasource.DataStoreDataSource
 import com.core.exception.NoDataException
 import com.youthtalk.data.CommunityService
+import com.youthtalk.datasource.post.PostPagingSource
 import com.youthtalk.datasource.review.ReviewPostPagingSource
-import com.youthtalk.dto.ReviewPostRequest
 import com.youthtalk.mapper.toData
+import com.youthtalk.model.Post
 import com.youthtalk.model.ReviewPost
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -38,10 +39,10 @@ class CommunityRepositoryImpl @Inject constructor(
     }
 
     override fun postPopularReviewPost(): Flow<List<ReviewPost>> = flow {
-        val categories = dataStoreDataSource.getReviewCategoryFilter().first()
+        val categories = dataStoreDataSource.getReviewCategoryFilter().first().map { it.name }
         runCatching {
             communityService.postReviewPosts(
-                requestBody = ReviewPostRequest(categories).toRequestBody(),
+                categories = categories,
                 size = 0,
                 page = 0,
             )
@@ -54,5 +55,37 @@ class CommunityRepositoryImpl @Inject constructor(
             .onFailure {
                 Log.d("YOON-CHAN", "CommnunityRepository postPopularReviewPost error ${it.message}")
             }
+    }
+
+    override fun getPopularPosts(): Flow<List<Post>> = flow {
+        runCatching {
+            communityService.getPosts(
+                size = 0,
+                page = 0,
+            )
+        }
+            .onSuccess { response ->
+                response.data?.let {
+                    emit(it.popularPosts.map { it.toData() })
+                } ?: throw NoDataException("no Data")
+            }
+            .onFailure {
+                Log.d("YOON-CHAN", "CommnunityRepository postPopularReviewPost error ${it.message}")
+            }
+    }
+
+    override fun getPosts(): Flow<Flow<PagingData<Post>>> = flow {
+        emit(
+            Pager(
+                config = PagingConfig(
+                    pageSize = 10,
+                ),
+                pagingSourceFactory = {
+                    PostPagingSource(
+                        communityService = communityService,
+                    )
+                },
+            ).flow,
+        )
     }
 }

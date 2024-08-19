@@ -4,6 +4,8 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.core.community.model.CommunityUiState
+import com.core.domain.usercase.post.GetPopularPostsUseCase
+import com.core.domain.usercase.post.GetPostsUseCase
 import com.core.domain.usercase.review.GetReviewCategoriesUseCase
 import com.core.domain.usercase.review.PostPopularReviewPostsUseCase
 import com.core.domain.usercase.review.PostReviewPostsUseCase
@@ -26,6 +28,8 @@ class CommunityViewModel @Inject constructor(
     private val setReviewCategoriesUseCase: SetReviewCategoriesUseCase,
     private val postReviewPostsUseCase: PostReviewPostsUseCase,
     private val postPopularReviewPostsUseCase: PostPopularReviewPostsUseCase,
+    private val getPopularPostsUseCase: GetPopularPostsUseCase,
+    private val getPostsUseCase: GetPostsUseCase,
 ) : ViewModel() {
 
     private val _error = MutableSharedFlow<Throwable>()
@@ -35,12 +39,16 @@ class CommunityViewModel @Inject constructor(
         getReviewCategoriesUseCase(),
         postPopularReviewPostsUseCase(),
         postReviewPostsUseCase(),
+        getPopularPostsUseCase(),
+        getPostsUseCase(),
     ) {
-            categories, reviewPosts, posts ->
+            categories, popularReviewPosts, reviewPosts, populorPosts, posts ->
         CommunityUiState.Success(
             categories = categories.toPersistentList(),
-            popularReviewPosts = reviewPosts.toPersistentList(),
-            reviewPosts = posts,
+            popularReviewPosts = popularReviewPosts.toPersistentList(),
+            reviewPosts = reviewPosts,
+            popularPosts = populorPosts.toPersistentList(),
+            posts = posts,
         )
     }
         .catch {

@@ -4,7 +4,7 @@ data class ReviewPost(
     val postId: Long,
     val title: String,
     val content: String,
-    val writerId: Long,
+    val writerId: Long?,
     val scraps: Int,
     val scrap: Boolean,
     val comments: Int,

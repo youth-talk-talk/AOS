@@ -49,6 +49,7 @@ import com.youthtalk.component.PolicyCheckBox
 import com.youthtalk.component.PostCard
 import com.youthtalk.designsystem.YongProjectTheme
 import com.youthtalk.model.Category
+import com.youthtalk.model.Post
 import com.youthtalk.model.ReviewPost
 import kotlinx.collections.immutable.ImmutableList
 
@@ -92,6 +93,9 @@ private fun CommunitySuccessScreen(
     val categories = uiState.categories
     val reviewPosts = uiState.reviewPosts.collectAsLazyPagingItems()
     val popularReviewPosts = uiState.popularReviewPosts
+    val popularPosts = uiState.popularPosts
+    val posts = uiState.posts.collectAsLazyPagingItems()
+
     Surface {
         Box {
             LazyColumn(
@@ -128,7 +132,10 @@ private fun CommunitySuccessScreen(
                         },
                     )
 
-                    1 -> freeBoard()
+                    1 -> freeBoard(
+                        popularPosts = popularPosts,
+                        posts = posts,
+                    )
                 }
             }
             WriteButton()
@@ -339,7 +346,7 @@ private fun CheckBoxScreen(reviewCategories: ImmutableList<Category>, onCheck: (
     }
 }
 
-fun LazyListScope.freeBoard() {
+fun LazyListScope.freeBoard(popularPosts: List<Post>, posts: LazyPagingItems<Post>) {
     item {
         Column(
             modifier = Modifier
@@ -370,15 +377,16 @@ fun LazyListScope.freeBoard() {
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
             ) {
                 items(
-                    count = 5,
-                ) {
+                    count = popularPosts.size,
+                ) { index ->
+                    val popularPost = popularPosts[index]
                     PostCard(
                         modifier = Modifier.aspectRatio(3f),
-                        policyTitle = "자유",
-                        title = "자유게시만 예시",
-                        scraps = 123,
-                        comments = 123,
-                        scrap = false,
+                        policyTitle = popularPost.policyTitle,
+                        title = popularPost.title,
+                        scraps = popularPost.scraps,
+                        comments = popularPost.comments,
+                        scrap = popularPost.scrap,
                     )
                 }
             }
@@ -405,24 +413,26 @@ fun LazyListScope.freeBoard() {
     }
 
     items(
-        count = 5,
+        count = posts.itemCount,
     ) { index ->
-        Box(
-            modifier = Modifier
-                .background(
-                    color = MaterialTheme.colorScheme.onSecondaryContainer,
-                )
-                .padding(horizontal = 17.dp)
-                .padding(top = 12.dp, bottom = if (index == 4) 12.dp else 0.dp),
+        posts[index]?.let { post ->
+            Box(
+                modifier = Modifier
+                    .background(
+                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+                    )
+                    .padding(horizontal = 17.dp)
+                    .padding(top = 12.dp, bottom = if (index == 4) 12.dp else 0.dp),
 
-        ) {
-            PostCard(
-                policyTitle = "자유",
-                title = "자유게시판 예시",
-                scraps = 0,
-                comments = 0,
-                scrap = false,
-            )
+            ) {
+                PostCard(
+                    policyTitle = post.policyTitle,
+                    title = post.title,
+                    scraps = post.scraps,
+                    comments = post.comments,
+                    scrap = post.scrap,
+                )
+            }
         }
     }
 }
