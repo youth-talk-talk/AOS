@@ -22,7 +22,7 @@ import com.youth.app.core.designsystem.R
 import com.youthtalk.designsystem.YongProjectTheme
 
 @Composable
-fun PostCard(modifier: Modifier = Modifier, policyTitle: String, title: String, scraps: Int, comments: Int, scrap: Boolean) {
+fun PostCard(modifier: Modifier = Modifier, policyTitle: String?, title: String, scraps: Int, comments: Int, scrap: Boolean) {
     val bookmark = if (scrap) painterResource(id = R.drawable.bookmark_check) else painterResource(id = R.drawable.bookmark)
     Column(
         modifier = modifier
@@ -33,12 +33,14 @@ fun PostCard(modifier: Modifier = Modifier, policyTitle: String, title: String, 
             )
             .padding(horizontal = 11.dp, vertical = 13.dp),
     ) {
-        Text(
-            text = policyTitle,
-            style = MaterialTheme.typography.displaySmall.copy(
-                color = MaterialTheme.colorScheme.onTertiary,
-            ),
-        )
+        policyTitle?.let {
+            Text(
+                text = policyTitle,
+                style = MaterialTheme.typography.displaySmall.copy(
+                    color = MaterialTheme.colorScheme.onTertiary,
+                ),
+            )
+        }
         Text(
             text = title,
             style = MaterialTheme.typography.bodyMedium,
