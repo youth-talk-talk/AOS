@@ -1,6 +1,5 @@
 package com.youthtalk.util
 
-import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.runtime.Composable
@@ -76,7 +75,7 @@ fun Modifier.clickableSingle(enabled: Boolean = true, onClickLabel: String? = nu
                     onClickLabel = onClickLabel,
                     onClick = { manager.processEvent { onClick() } },
                     role = role,
-                    indication = LocalIndication.current,
+                    indication = null,
                     interactionSource = remember { MutableInteractionSource() },
                 )
             },
