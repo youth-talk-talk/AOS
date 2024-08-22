@@ -26,9 +26,9 @@ include(
     ":core",
     ":core:data",
     ":core:dataApi",
-    "core:designsystem",
-    "core:model",
-    "core:domain",
+    ":core:designsystem",
+    ":core:model",
+    ":core:domain",
     ":core:navigation",
     ":core:exception",
     ":core:datastore",
@@ -41,4 +41,5 @@ include(
     ":feature:mypage",
     ":feature:login",
     ":feature:policydetail",
+    ":feature:specpolicy",
 )

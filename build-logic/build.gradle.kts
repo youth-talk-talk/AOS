@@ -22,3 +22,7 @@ gradlePlugin {
         }
     }
 }
+
+tasks.register(":clean", Delete::class) {
+    delete = setOf(rootProject.layout.buildDirectory)
+}

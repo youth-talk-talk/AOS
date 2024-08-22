@@ -46,6 +46,7 @@ import com.youthtalk.component.PopularCard
 import com.youthtalk.designsystem.YongProjectTheme
 import com.youthtalk.model.Category
 import com.youthtalk.model.Policy
+import com.youthtalk.util.clickableSingle
 import kotlinx.collections.immutable.ImmutableList
 
 @Composable
@@ -67,6 +68,9 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel(), navController: NavCon
             onClickDetailPolicy = { policyId ->
                 navController.navigate("${Nav.PolicyDetail.route}/$policyId")
             },
+            onClickSpecPolicy = {
+                navController.navigate(Nav.SpecPolicy.route)
+            },
         )
     }
 }
@@ -78,6 +82,7 @@ private fun HomeMain(
     homeLazyListScrollState: LazyListState,
     onCheck: (Category?) -> Unit,
     onClickDetailPolicy: (String) -> Unit,
+    onClickSpecPolicy: () -> Unit,
 ) {
     val allPolicies = uiState.allPolicies.collectAsLazyPagingItems()
     Surface {
@@ -97,7 +102,11 @@ private fun HomeMain(
                 state = homeLazyListScrollState,
             ) {
                 item { SearchScreen() }
-                item { CategoryScreen() }
+                item {
+                    CategoryScreen(
+                        goSpecPolicyScreen = onClickSpecPolicy,
+                    )
+                }
                 item { PopularTitle() }
                 item {
                     PopularPolicyScreen(
@@ -231,7 +240,7 @@ private fun UpdateTitle(categoryFilters: ImmutableList<Category>, onCheck: (Cate
 }
 
 @Composable
-private fun CategoryScreen() {
+private fun CategoryScreen(goSpecPolicyScreen: () -> Unit) {
     Row(
         modifier =
         Modifier
@@ -243,6 +252,10 @@ private fun CategoryScreen() {
     ) {
         Category.entries.forEach { category ->
             CategoryCard(
+                modifier = Modifier
+                    .clickableSingle {
+                        goSpecPolicyScreen()
+                    },
                 category = category.categoryName,
                 painter = when (category) {
                     Category.JOB -> painterResource(id = R.drawable.recruit)

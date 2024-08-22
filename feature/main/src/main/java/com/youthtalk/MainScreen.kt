@@ -48,6 +48,7 @@ import com.core.navigation.MainNav
 import com.core.navigation.Nav
 import com.example.policydetail.PolicyDetailScreen
 import com.youthtalk.designsystem.YongProjectTheme
+import com.youthtalk.specpolicy.SpecPolicyScreen
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -116,6 +117,14 @@ fun NavHostScreen(navController: NavHostController, homeLazyListScrollState: Laz
             it.arguments?.getString("policyId")?.let { policyId ->
                 PolicyDetailScreen(policyId = policyId)
             }
+        }
+
+        composable(
+            route = Nav.SpecPolicy.route,
+        ) {
+            SpecPolicyScreen(
+                category = "일자리",
+            )
         }
     }
 }
