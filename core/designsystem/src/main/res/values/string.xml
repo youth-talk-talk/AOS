@@ -3,4 +3,18 @@
     <string name="modify">수정</string>
     <string name="remove">삭제</string>
     <string name="favorite">좋아요</string>
+
+    <string-array name="category">
+        <item>전체선택</item>
+        <item>재직자</item>
+        <item>자영업자</item>
+        <item>미취업자</item>
+        <item>프리랜서</item>
+        <item>일용근로자</item>
+        <item>예비창업자</item>
+        <item>단기근로자</item>
+        <item>영농종사자</item>
+        <item>제한없음</item>
+        <item>기타</item>
+    </string-array>
 </resources>

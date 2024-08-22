@@ -1,4 +1,4 @@
-package com.youthtalk.specpolicy.component
+package com.youthtalk.component.filter
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -36,10 +36,9 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.youth.app.feature.specpolicy.R
+import com.youth.app.core.designsystem.R
 import com.youthtalk.component.CategoryButton
 import com.youthtalk.component.RoundButton
-import com.youthtalk.specpolicy.NonlazyGrid
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)

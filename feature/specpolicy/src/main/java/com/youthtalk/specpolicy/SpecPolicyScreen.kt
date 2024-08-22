@@ -1,7 +1,6 @@
 package com.youthtalk.specpolicy
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -27,12 +26,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.youth.app.feature.specpolicy.R
 import com.youthtalk.component.PolicyCard
+import com.youthtalk.component.SortDropDownComponent
+import com.youthtalk.component.filter.FilterComponent
+import com.youthtalk.component.filter.PolicyFilterBottomSheet
 import com.youthtalk.designsystem.YongProjectTheme
 import com.youthtalk.model.Category
 import com.youthtalk.model.Policy
-import com.youthtalk.specpolicy.component.FilterComponent
-import com.youthtalk.specpolicy.component.PolicyFilterBottomSheet
-import com.youthtalk.specpolicy.component.SortDropDownComponent
 import com.youthtalk.specpolicy.component.SpecPolicyTopBar
 import com.youthtalk.util.clickableSingle
 
@@ -127,35 +126,6 @@ private fun SpecPolicyInfo() {
         SortDropDownComponent(
             modifier = Modifier,
         )
-    }
-}
-
-@Composable
-fun NonlazyGrid(columns: Int, itemCount: Int, modifier: Modifier = Modifier, content: @Composable (Int) -> Unit) {
-    Column(modifier = modifier) {
-        var rows = (itemCount / columns)
-        if (itemCount.mod(columns) > 0) {
-            rows += 1
-        }
-
-        for (rowId in 0 until rows) {
-            val firstIndex = rowId * columns
-
-            Row {
-                for (columnId in 0 until columns) {
-                    val index = firstIndex + columnId
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .weight(1f),
-                    ) {
-                        if (index < itemCount) {
-                            content(index)
-                        }
-                    }
-                }
-            }
-        }
     }
 }
 

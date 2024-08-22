@@ -1,16 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="category">
-        <item>전체선택</item>
-        <item>재직자</item>
-        <item>자영업자</item>
-        <item>미취업자</item>
-        <item>프리랜서</item>
-        <item>일용근로자</item>
-        <item>예비창업자</item>
-        <item>단기근로자</item>
-        <item>영농종사자</item>
-        <item>제한없음</item>
-        <item>기타</item>
-    </string-array>
+
 </resources>

@@ -42,4 +42,5 @@ include(
     ":feature:login",
     ":feature:policydetail",
     ":feature:specpolicy",
+    ":feature:search",
 )
