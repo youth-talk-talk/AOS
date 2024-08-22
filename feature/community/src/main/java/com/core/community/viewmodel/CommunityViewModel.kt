@@ -1,4 +1,4 @@
-package com.core.community
+package com.core.community.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.ViewModel

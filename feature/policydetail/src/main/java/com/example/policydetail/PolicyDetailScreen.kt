@@ -25,13 +25,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.policydetail.component.CommentTextField
 import com.example.policydetail.component.PolicyDetail
 import com.example.policydetail.component.PolicyDetailTopAppBar
 import com.example.policydetail.component.PolicyTitle
 import com.example.policydetail.model.PolicyDetailUiState
 import com.youth.app.feature.policydetail.R
 import com.youthtalk.component.CommentScreen
+import com.youthtalk.component.CommentTextField
 import com.youthtalk.component.RoundButton
 import com.youthtalk.designsystem.YongProjectTheme
 import com.youthtalk.designsystem.gray50

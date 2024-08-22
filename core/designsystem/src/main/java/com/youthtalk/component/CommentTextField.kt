@@ -1,4 +1,4 @@
-package com.example.policydetail.component
+package com.youthtalk.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -26,7 +26,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.youth.app.feature.policydetail.R
+import com.youth.app.core.designsystem.R
 import com.youthtalk.designsystem.YongProjectTheme
 import com.youthtalk.designsystem.gray50
 

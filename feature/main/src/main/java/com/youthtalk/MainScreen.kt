@@ -41,7 +41,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.core.community.CommunityScreen
+import com.core.community.CommunityNavHost
 import com.core.home.HomeScreen
 import com.core.mypage.MyPageScreen
 import com.core.navigation.MainNav
@@ -100,7 +100,7 @@ fun NavHostScreen(navController: NavHostController, homeLazyListScrollState: Laz
         }
 
         composable(route = MainNav.Community.route) {
-            CommunityScreen()
+            CommunityNavHost()
         }
 
         composable(route = MainNav.MyPage.route) {
