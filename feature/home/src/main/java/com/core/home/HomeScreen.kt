@@ -71,6 +71,9 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel(), navController: NavCon
             onClickSpecPolicy = {
                 navController.navigate(Nav.SpecPolicy.route)
             },
+            onClickSearch = {
+                navController.navigate(Nav.Search.route)
+            },
         )
     }
 }
@@ -83,6 +86,7 @@ private fun HomeMain(
     onCheck: (Category?) -> Unit,
     onClickDetailPolicy: (String) -> Unit,
     onClickSpecPolicy: () -> Unit,
+    onClickSearch: () -> Unit,
 ) {
     val allPolicies = uiState.allPolicies.collectAsLazyPagingItems()
     Surface {
@@ -101,7 +105,11 @@ private fun HomeMain(
                     ),
                 state = homeLazyListScrollState,
             ) {
-                item { SearchScreen() }
+                item {
+                    SearchScreen(
+                        onClick = onClickSearch,
+                    )
+                }
                 item {
                     CategoryScreen(
                         goSpecPolicyScreen = onClickSpecPolicy,

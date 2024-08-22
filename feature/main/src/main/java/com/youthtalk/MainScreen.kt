@@ -47,6 +47,7 @@ import com.core.mypage.MyPageScreen
 import com.core.navigation.MainNav
 import com.core.navigation.Nav
 import com.example.policydetail.PolicyDetailScreen
+import com.youth.search.SearchScreen
 import com.youthtalk.designsystem.YongProjectTheme
 import com.youthtalk.specpolicy.SpecPolicyScreen
 import kotlinx.coroutines.launch
@@ -125,6 +126,12 @@ fun NavHostScreen(navController: NavHostController, homeLazyListScrollState: Laz
             SpecPolicyScreen(
                 category = "일자리",
             )
+        }
+
+        composable(
+            route = Nav.Search.route,
+        ) {
+            SearchScreen()
         }
     }
 }

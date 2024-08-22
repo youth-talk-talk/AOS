@@ -1,4 +1,4 @@
-package com.youthtalk.specpolicy.component
+package com.youthtalk.component
 
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.MutableTransitionState
@@ -32,9 +32,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupPositionProvider
 import androidx.compose.ui.window.PopupProperties
-import com.youthtalk.specpolicy.component.AnimationInfo.IN_TRANSITION_DURATION
-import com.youthtalk.specpolicy.component.AnimationInfo.MENU_ELEVATION
-import com.youthtalk.specpolicy.component.AnimationInfo.OUT_TRANSITION_DURATION
+import com.youthtalk.component.AnimationInfo.IN_TRANSITION_DURATION
+import com.youthtalk.component.AnimationInfo.MENU_ELEVATION
+import com.youthtalk.component.AnimationInfo.OUT_TRANSITION_DURATION
 
 // Menu open/close animation.
 object AnimationInfo {

@@ -5,6 +5,7 @@ import com.core.navigation.NavigationRouteName.MAIN_COMMUNITY
 import com.core.navigation.NavigationRouteName.MAIN_HOME
 import com.core.navigation.NavigationRouteName.MAIN_MY_PAGE
 import com.core.navigation.NavigationRouteName.POLICY_DETAIL
+import com.core.navigation.NavigationRouteName.SEARCH
 import com.core.navigation.NavigationRouteName.SPEC_POLICY
 import com.youth.app.core.navigation.R
 
@@ -61,6 +62,10 @@ sealed class Nav(
     data object SpecPolicy : Nav(
         route = SPEC_POLICY,
     )
+
+    data object Search : Nav(
+        route = SEARCH,
+    )
 }
 
 interface Destination {
@@ -81,6 +86,7 @@ object NavigationRouteName {
     const val MAIN_MY_PAGE = "main_my_page"
     const val POLICY_DETAIL = "policy_detail"
     const val SPEC_POLICY = "spec_policy"
+    const val SEARCH = "search"
 }
 
 object NavigationTitle {

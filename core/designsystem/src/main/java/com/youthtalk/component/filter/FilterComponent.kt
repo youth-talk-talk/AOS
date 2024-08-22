@@ -1,4 +1,4 @@
-package com.youthtalk.specpolicy.component
+package com.youthtalk.component.filter
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.youth.app.feature.specpolicy.R
+import com.youth.app.core.designsystem.R
 import com.youthtalk.designsystem.YongProjectTheme
 import com.youthtalk.designsystem.gray
 

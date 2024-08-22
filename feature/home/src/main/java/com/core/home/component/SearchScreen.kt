@@ -21,9 +21,10 @@ import androidx.compose.ui.unit.dp
 import com.youth.app.feature.home.R
 import com.youthtalk.designsystem.YongProjectTheme
 import com.youthtalk.designsystem.mainHomeActionBarColor
+import com.youthtalk.util.clickableSingle
 
 @Composable
-fun SearchScreen(modifier: Modifier = Modifier) {
+fun SearchScreen(modifier: Modifier = Modifier, onClick: () -> Unit) {
     Box(
         modifier = modifier.fillMaxWidth().background(color = Color.White),
     ) {
@@ -45,7 +46,8 @@ fun SearchScreen(modifier: Modifier = Modifier) {
                 .padding(horizontal = 17.dp)
                 .padding(top = 10.dp)
                 .border(width = 1.dp, color = MaterialTheme.colorScheme.onSurface, shape = RoundedCornerShape(43.dp))
-                .background(color = Color.White, shape = RoundedCornerShape(43.dp)),
+                .background(color = Color.White, shape = RoundedCornerShape(43.dp))
+                .clickableSingle { onClick() },
         ) {
             Icon(
                 modifier = Modifier.padding(start = 20.dp, top = 13.dp, bottom = 13.dp),
@@ -61,6 +63,8 @@ fun SearchScreen(modifier: Modifier = Modifier) {
 @Composable
 private fun SearchScreenPreview() {
     YongProjectTheme {
-        SearchScreen()
+        SearchScreen(
+            onClick = {},
+        )
     }
 }

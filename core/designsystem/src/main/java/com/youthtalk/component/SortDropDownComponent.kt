@@ -1,4 +1,4 @@
-package com.youthtalk.specpolicy.component
+package com.youthtalk.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -6,10 +6,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
@@ -28,7 +26,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
-import com.youth.app.feature.specpolicy.R
+import com.youth.app.core.designsystem.R
 import com.youthtalk.designsystem.YongProjectTheme
 import com.youthtalk.designsystem.gray
 import com.youthtalk.util.clickableSingle
