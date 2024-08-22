@@ -32,12 +32,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupPositionProvider
 import androidx.compose.ui.window.PopupProperties
-import com.youthtalk.specpolicy.component.ANIMATIONINFO.IN_TRANSITION_DURATION
-import com.youthtalk.specpolicy.component.ANIMATIONINFO.MENU_ELEVATION
-import com.youthtalk.specpolicy.component.ANIMATIONINFO.OUT_TRANSITION_DURATION
+import com.youthtalk.specpolicy.component.AnimationInfo.IN_TRANSITION_DURATION
+import com.youthtalk.specpolicy.component.AnimationInfo.MENU_ELEVATION
+import com.youthtalk.specpolicy.component.AnimationInfo.OUT_TRANSITION_DURATION
 
 // Menu open/close animation.
-object ANIMATIONINFO {
+object AnimationInfo {
     const val IN_TRANSITION_DURATION = 120
     const val OUT_TRANSITION_DURATION = 75
     val MENU_ELEVATION = 8.dp
