@@ -12,7 +12,6 @@ import com.youthtalk.datasource.post.PostPagingSource
 import com.youthtalk.datasource.review.ReviewPostPagingSource
 import com.youthtalk.mapper.toData
 import com.youthtalk.model.Post
-import com.youthtalk.model.ReviewPost
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
@@ -22,7 +21,7 @@ class CommunityRepositoryImpl @Inject constructor(
     private val communityService: CommunityService,
     private val dataStoreDataSource: DataStoreDataSource,
 ) : CommunityRepository {
-    override fun postReviewPost(): Flow<Flow<PagingData<ReviewPost>>> = flow {
+    override fun postReviewPost(): Flow<Flow<PagingData<Post>>> = flow {
         emit(
             Pager(
                 config = PagingConfig(
@@ -38,7 +37,7 @@ class CommunityRepositoryImpl @Inject constructor(
         )
     }
 
-    override fun postPopularReviewPost(): Flow<List<ReviewPost>> = flow {
+    override fun postPopularReviewPost(): Flow<List<Post>> = flow {
         val categories = dataStoreDataSource.getReviewCategoryFilter().first().map { it.name }
         runCatching {
             communityService.postReviewPosts(
@@ -49,7 +48,7 @@ class CommunityRepositoryImpl @Inject constructor(
         }
             .onSuccess { response ->
                 response.data?.let { popularReviewPosts ->
-                    emit(popularReviewPosts.popularReviewPosts.map { it.toData() })
+                    emit(popularReviewPosts.popularPosts.map { it.toData() })
                 } ?: throw NoDataException("no Data")
             }
             .onFailure {

@@ -1,4 +1,4 @@
-package com.core.community
+package com.core.community.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -44,17 +44,18 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.core.community.component.SearchBarComponent
 import com.core.community.model.CommunityUiState
+import com.core.community.viewmodel.CommunityViewModel
 import com.youth.app.feature.community.R
 import com.youthtalk.component.PolicyCheckBox
 import com.youthtalk.component.PostCard
 import com.youthtalk.designsystem.YongProjectTheme
 import com.youthtalk.model.Category
 import com.youthtalk.model.Post
-import com.youthtalk.model.ReviewPost
+import com.youthtalk.util.clickableSingle
 import kotlinx.collections.immutable.ImmutableList
 
 @Composable
-fun CommunityScreen(viewModel: CommunityViewModel = hiltViewModel()) {
+fun CommunityScreen(viewModel: CommunityViewModel = hiltViewModel(), onClickItem: (Long) -> Unit) {
     val tabNames = stringArrayResource(id = R.array.tabs)
     var tabIndex by rememberSaveable {
         mutableIntStateOf(0)
@@ -78,6 +79,7 @@ fun CommunityScreen(viewModel: CommunityViewModel = hiltViewModel()) {
                 tabIndex = index
             },
             changeReviewCheckBox = viewModel::setCategories,
+            onClickItem = onClickItem,
         )
     }
 }
@@ -89,6 +91,7 @@ private fun CommunitySuccessScreen(
     uiState: CommunityUiState.Success,
     changeTab: (Int) -> Unit,
     changeReviewCheckBox: (Category?) -> Unit,
+    onClickItem: (Long) -> Unit,
 ) {
     val categories = uiState.categories
     val reviewPosts = uiState.reviewPosts.collectAsLazyPagingItems()
@@ -130,11 +133,13 @@ private fun CommunitySuccessScreen(
                         onCheck = { category ->
                             changeReviewCheckBox(category)
                         },
+                        onClickItem = onClickItem,
                     )
 
                     1 -> freeBoard(
                         popularPosts = popularPosts,
                         posts = posts,
+                        onClickItem = onClickItem,
                     )
                 }
             }
@@ -221,9 +226,10 @@ private fun CommunityTab(modifier: Modifier = Modifier, tabIndex: Int, tabNames:
 
 private fun LazyListScope.reviewPost(
     reviewCategories: ImmutableList<Category>,
-    popularReviewPosts: ImmutableList<ReviewPost>,
-    reviewPosts: LazyPagingItems<ReviewPost>,
+    popularReviewPosts: ImmutableList<Post>,
+    reviewPosts: LazyPagingItems<Post>,
     onCheck: (Category?) -> Unit,
+    onClickItem: (Long) -> Unit,
 ) {
     item {
         Row(
@@ -316,6 +322,8 @@ private fun LazyListScope.reviewPost(
         ) {
             reviewPosts[index]?.let { post ->
                 PostCard(
+                    modifier = Modifier
+                        .clickableSingle { onClickItem(post.postId) },
                     title = post.title,
                     comments = post.comments,
                     scrap = post.scrap,
@@ -346,7 +354,7 @@ private fun CheckBoxScreen(reviewCategories: ImmutableList<Category>, onCheck: (
     }
 }
 
-fun LazyListScope.freeBoard(popularPosts: List<Post>, posts: LazyPagingItems<Post>) {
+fun LazyListScope.freeBoard(popularPosts: List<Post>, posts: LazyPagingItems<Post>, onClickItem: (Long) -> Unit) {
     item {
         Column(
             modifier = Modifier
@@ -426,6 +434,8 @@ fun LazyListScope.freeBoard(popularPosts: List<Post>, posts: LazyPagingItems<Pos
 
             ) {
                 PostCard(
+                    modifier = Modifier
+                        .clickableSingle { onClickItem(post.postId) },
                     policyTitle = post.policyTitle,
                     title = post.title,
                     scraps = post.scraps,
@@ -441,6 +451,8 @@ fun LazyListScope.freeBoard(popularPosts: List<Post>, posts: LazyPagingItems<Pos
 @Composable
 private fun CommunityScreenPreview() {
     YongProjectTheme {
-        CommunityScreen()
+        CommunityScreen(
+            onClickItem = {},
+        )
     }
 }
