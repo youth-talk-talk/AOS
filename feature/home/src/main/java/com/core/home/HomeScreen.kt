@@ -72,7 +72,7 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel(), navController: NavCon
                 navController.navigate(Nav.SpecPolicy.route)
             },
             onClickSearch = {
-                navController.navigate(Nav.Search.route)
+                navController.navigate("${Nav.Search.route}/home")
             },
         )
     }

@@ -18,7 +18,7 @@ import com.youthtalk.designsystem.YongProjectTheme
 import com.youthtalk.model.Comment
 
 @Composable
-fun MyPageCommentScreen(isMine: Boolean) {
+fun MyPageCommentScreen(isMine: Boolean, onBack: () -> Unit) {
     val comments = getComments()
 
     Column(
@@ -28,7 +28,10 @@ fun MyPageCommentScreen(isMine: Boolean) {
                 MaterialTheme.colorScheme.onSecondaryContainer,
             ),
     ) {
-        AccountTopBar(title = "좋아요한 댓글")
+        AccountTopBar(
+            title = "좋아요한 댓글",
+            onBack = onBack,
+        )
         HorizontalDivider()
 
         LazyColumn(
@@ -71,6 +74,7 @@ private fun MyPageCommentScreenPreview() {
     YongProjectTheme {
         MyPageCommentScreen(
             isMine = true,
+            onBack = {},
         )
     }
 }

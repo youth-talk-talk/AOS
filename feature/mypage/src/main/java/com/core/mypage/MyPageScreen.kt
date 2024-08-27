@@ -49,11 +49,18 @@ fun MyPageScreen() {
         composable(SettingNavigation.NicknameSetting.route) {
             NicknameSettingScreen(
                 nickname = nickname,
+                onBack = {
+                    navHost.popBackStack()
+                },
             )
         }
 
         composable(SettingNavigation.ScrapPolicy.route) {
-            ScrapPolicyScreen()
+            ScrapPolicyScreen(
+                onBack = {
+                    navHost.popBackStack()
+                },
+            )
         }
 
         composable(
@@ -65,7 +72,12 @@ fun MyPageScreen() {
             ),
         ) {
             val isMine = it.arguments?.getBoolean("me") ?: false
-            MyPagePostScreen(isMine)
+            MyPagePostScreen(
+                isMine = isMine,
+                onBack = {
+                    navHost.popBackStack()
+                },
+            )
         }
 
         composable(
@@ -77,11 +89,20 @@ fun MyPageScreen() {
             ),
         ) {
             val isMine = it.arguments?.getBoolean("me") ?: false
-            MyPageCommentScreen(isMine)
+            MyPageCommentScreen(
+                isMine = isMine,
+                onBack = {
+                    navHost.popBackStack()
+                },
+            )
         }
 
         composable(SettingNavigation.Announce.route) {
-            AnnouncementScreen()
+            AnnouncementScreen(
+                onBack = {
+                    navHost.popBackStack()
+                },
+            )
         }
     }
 }

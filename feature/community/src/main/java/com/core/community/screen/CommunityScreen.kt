@@ -55,7 +55,12 @@ import com.youthtalk.util.clickableSingle
 import kotlinx.collections.immutable.ImmutableList
 
 @Composable
-fun CommunityScreen(viewModel: CommunityViewModel = hiltViewModel(), onClickItem: (Long) -> Unit) {
+fun CommunityScreen(
+    viewModel: CommunityViewModel = hiltViewModel(),
+    onClickItem: (String, Long) -> Unit,
+    writePost: (String) -> Unit,
+    onClickSearch: (String) -> Unit,
+) {
     val tabNames = stringArrayResource(id = R.array.tabs)
     var tabIndex by rememberSaveable {
         mutableIntStateOf(0)
@@ -80,6 +85,8 @@ fun CommunityScreen(viewModel: CommunityViewModel = hiltViewModel(), onClickItem
             },
             changeReviewCheckBox = viewModel::setCategories,
             onClickItem = onClickItem,
+            writePost = writePost,
+            onClickSearch = onClickSearch,
         )
     }
 }
@@ -91,7 +98,9 @@ private fun CommunitySuccessScreen(
     uiState: CommunityUiState.Success,
     changeTab: (Int) -> Unit,
     changeReviewCheckBox: (Category?) -> Unit,
-    onClickItem: (Long) -> Unit,
+    onClickItem: (String, Long) -> Unit,
+    writePost: (String) -> Unit,
+    onClickSearch: (String) -> Unit,
 ) {
     val categories = uiState.categories
     val reviewPosts = uiState.reviewPosts.collectAsLazyPagingItems()
@@ -121,7 +130,14 @@ private fun CommunitySuccessScreen(
                         modifier = Modifier
                             .background(MaterialTheme.colorScheme.background)
                             .padding(horizontal = 17.dp)
-                            .padding(top = 24.dp),
+                            .padding(top = 24.dp)
+                            .clickableSingle {
+                                val type = when (tabIndex) {
+                                    0 -> "review"
+                                    else -> "free"
+                                }
+                                onClickSearch(type)
+                            },
                     )
                 }
 
@@ -133,23 +149,35 @@ private fun CommunitySuccessScreen(
                         onCheck = { category ->
                             changeReviewCheckBox(category)
                         },
-                        onClickItem = onClickItem,
+                        onClickItem = { postId ->
+                            onClickItem("review", postId)
+                        },
                     )
 
                     1 -> freeBoard(
                         popularPosts = popularPosts,
                         posts = posts,
-                        onClickItem = onClickItem,
+                        onClickItem = { postId ->
+                            onClickItem("free", postId)
+                        },
                     )
                 }
             }
-            WriteButton()
+            WriteButton(
+                onClick = {
+                    val type = when (tabIndex) {
+                        1 -> "review"
+                        else -> "free"
+                    }
+                    writePost(type)
+                },
+            )
         }
     }
 }
 
 @Composable
-private fun BoxScope.WriteButton() {
+private fun BoxScope.WriteButton(onClick: () -> Unit) {
     Row(
         modifier = Modifier.Companion
             .align(Alignment.BottomCenter)
@@ -158,6 +186,9 @@ private fun BoxScope.WriteButton() {
                 color = MaterialTheme.colorScheme.primary,
                 shape = RoundedCornerShape(50.dp),
             )
+            .clickableSingle {
+                onClick()
+            }
             .padding(
                 horizontal = 17.dp,
                 vertical = 13.dp,
@@ -260,32 +291,7 @@ private fun LazyListScope.reviewPost(
                 ),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            Text(
-                text = stringResource(id = R.string.popular_post),
-                style = MaterialTheme.typography.headlineSmall.copy(
-                    color = MaterialTheme.colorScheme.onPrimary,
-                ),
-            )
-
-            LazyRow(
-                modifier = Modifier
-                    .aspectRatio(3.14f),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-            ) {
-                items(
-                    count = popularReviewPosts.size,
-                ) { index ->
-                    val reviewPost = popularReviewPosts[index]
-                    PostCard(
-                        modifier = Modifier.aspectRatio(3f),
-                        policyTitle = reviewPost.policyTitle,
-                        title = reviewPost.title,
-                        comments = reviewPost.comments,
-                        scraps = reviewPost.scraps,
-                        scrap = reviewPost.scrap,
-                    )
-                }
-            }
+            PopularPosts(popularReviewPosts, onClickItem)
         }
     }
 
@@ -331,6 +337,40 @@ private fun LazyListScope.reviewPost(
                     policyTitle = post.policyTitle,
                 )
             }
+        }
+    }
+}
+
+@Composable
+private fun PopularPosts(popularReviewPosts: ImmutableList<Post>, onClickItem: (Long) -> Unit) {
+    Text(
+        text = stringResource(id = R.string.popular_post),
+        style = MaterialTheme.typography.headlineSmall.copy(
+            color = MaterialTheme.colorScheme.onPrimary,
+        ),
+    )
+
+    LazyRow(
+        modifier = Modifier
+            .aspectRatio(3.14f),
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        items(
+            count = popularReviewPosts.size,
+        ) { index ->
+            val reviewPost = popularReviewPosts[index]
+            PostCard(
+                modifier = Modifier
+                    .aspectRatio(3f)
+                    .clickableSingle {
+                        onClickItem(reviewPost.postId)
+                    },
+                policyTitle = reviewPost.policyTitle,
+                title = reviewPost.title,
+                comments = reviewPost.comments,
+                scraps = reviewPost.scraps,
+                scrap = reviewPost.scrap,
+            )
         }
     }
 }
@@ -389,7 +429,9 @@ fun LazyListScope.freeBoard(popularPosts: List<Post>, posts: LazyPagingItems<Pos
                 ) { index ->
                     val popularPost = popularPosts[index]
                     PostCard(
-                        modifier = Modifier.aspectRatio(3f),
+                        modifier = Modifier
+                            .aspectRatio(3f)
+                            .clickableSingle { onClickItem(popularPost.postId) },
                         policyTitle = popularPost.policyTitle,
                         title = popularPost.title,
                         scraps = popularPost.scraps,
@@ -452,7 +494,10 @@ fun LazyListScope.freeBoard(popularPosts: List<Post>, posts: LazyPagingItems<Pos
 private fun CommunityScreenPreview() {
     YongProjectTheme {
         CommunityScreen(
-            onClickItem = {},
+            onClickItem = { _, _ ->
+            },
+            writePost = {},
+            onClickSearch = {},
         )
     }
 }

@@ -7,7 +7,6 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
@@ -41,9 +40,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.core.community.CommunityNavHost
+import com.core.community.screen.CommunityDetailScreen
+import com.core.community.screen.CommunityScreen
+import com.core.community.screen.CommunityWriteScreen
 import com.core.home.HomeScreen
 import com.core.mypage.MyPageScreen
+import com.core.navigation.CommunityNavigation
 import com.core.navigation.MainNav
 import com.core.navigation.Nav
 import com.example.policydetail.PolicyDetailScreen
@@ -52,7 +54,6 @@ import com.youthtalk.designsystem.YongProjectTheme
 import com.youthtalk.specpolicy.SpecPolicyScreen
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun MainScreen() {
     val navHostController = rememberNavController()
@@ -100,7 +101,17 @@ fun NavHostScreen(navController: NavHostController, homeLazyListScrollState: Laz
         }
 
         composable(route = MainNav.Community.route) {
-            CommunityNavHost()
+            CommunityScreen(
+                onClickItem = { type, postId ->
+                    navController.navigate("${CommunityNavigation.CommunityDetail.route}/$type/$postId")
+                },
+                writePost = { type ->
+                    navController.navigate("${CommunityNavigation.CommunityWrite.route}/$type")
+                },
+                onClickSearch = { type ->
+                    navController.navigate("${Nav.Search.route}/$type")
+                },
+            )
         }
 
         composable(route = MainNav.MyPage.route) {
@@ -125,13 +136,56 @@ fun NavHostScreen(navController: NavHostController, homeLazyListScrollState: Laz
         ) {
             SpecPolicyScreen(
                 category = "일자리",
+                navController = navController,
             )
         }
 
         composable(
-            route = Nav.Search.route,
+            route = "${Nav.Search.route}/{type}",
+            arguments = listOf(
+                navArgument("type") {
+                    type = NavType.StringType
+                },
+            ),
         ) {
-            SearchScreen()
+            it.arguments?.getString("type")?.let { type ->
+                SearchScreen(
+                    type = type,
+                )
+            }
+        }
+
+        composable(
+            route = "${CommunityNavigation.CommunityDetail.route}/{type}/{postId}",
+            arguments = listOf(
+                navArgument("type") {
+                    type = NavType.StringType
+                },
+                navArgument("postId") {
+                    type = NavType.LongType
+                },
+            ),
+        ) {
+            val postId = it.arguments?.getLong("postId") ?: -1
+            val type = it.arguments?.getString("type") ?: ""
+            CommunityDetailScreen(
+                postId = postId,
+                type = type,
+            )
+        }
+
+        composable(
+            route = "${CommunityNavigation.CommunityWrite.route}/{type}",
+            arguments = listOf(
+                navArgument("type") {
+                    type = NavType.StringType
+                },
+            ),
+        ) {
+            val type = it.arguments?.getString("type") ?: ""
+            CommunityWriteScreen(
+                type = type,
+            )
         }
     }
 }

@@ -67,7 +67,10 @@ fun AccountManageScreen(modifier: Modifier = Modifier, navHost: NavHostControlle
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background),
     ) {
-        AccountTopBar(title = "계정관리")
+        AccountTopBar(
+            title = "계정관리",
+            onBack = { navHost.popBackStack() },
+        )
         HorizontalDivider()
 
         SettingScreen(

@@ -7,12 +7,6 @@ import com.core.navigation.NavigationRouteName.MAIN_MY_PAGE
 import com.core.navigation.NavigationRouteName.POLICY_DETAIL
 import com.core.navigation.NavigationRouteName.SEARCH
 import com.core.navigation.NavigationRouteName.SPEC_POLICY
-import com.core.navigation.SettingRoute.ACCOUNT_MANAGE
-import com.core.navigation.SettingRoute.ANNOUNCE
-import com.core.navigation.SettingRoute.MY_PAGE_COMMENT
-import com.core.navigation.SettingRoute.MY_PAGE_POST
-import com.core.navigation.SettingRoute.NICKNAME_SETTING
-import com.core.navigation.SettingRoute.SCRAP_POLICY
 import com.youth.app.core.navigation.R
 
 sealed class MainNav(
@@ -40,7 +34,7 @@ sealed class MainNav(
 
     companion object {
         fun isMainNavigation(route: String?): Boolean {
-            return isMainRoute(route) || SettingNavigation.includeSetting(route)
+            return isMainRoute(route)
         }
 
         private fun isMainRoute(route: String?): Boolean {
@@ -54,14 +48,7 @@ sealed class MainNav(
             return when (route) {
                 MAIN_HOME -> MAIN_HOME
                 MAIN_COMMUNITY -> MAIN_COMMUNITY
-                MAIN_MY_PAGE,
-                ACCOUNT_MANAGE,
-                NICKNAME_SETTING,
-                SCRAP_POLICY,
-                MY_PAGE_POST,
-                MY_PAGE_COMMENT,
-                ANNOUNCE,
-                -> MAIN_MY_PAGE
+                MAIN_MY_PAGE -> MAIN_MY_PAGE
                 else -> MAIN_HOME
             }
         }

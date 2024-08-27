@@ -28,7 +28,7 @@ import com.youthtalk.designsystem.YongProjectTheme
 import com.youthtalk.designsystem.gray
 
 @Composable
-fun NicknameSettingScreen(modifier: Modifier = Modifier, nickname: String) {
+fun NicknameSettingScreen(modifier: Modifier = Modifier, nickname: String, onBack: () -> Unit) {
     var name by remember {
         mutableStateOf(nickname)
     }
@@ -38,7 +38,10 @@ fun NicknameSettingScreen(modifier: Modifier = Modifier, nickname: String) {
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background),
     ) {
-        AccountTopBar(title = "닉네임 설정")
+        AccountTopBar(
+            title = "닉네임 설정",
+            onBack = onBack,
+        )
         HorizontalDivider()
 
         Text(
@@ -90,6 +93,7 @@ private fun NicknameSettingScreenPreview() {
     YongProjectTheme {
         NicknameSettingScreen(
             nickname = "놀고픈 청년",
+            onBack = {},
         )
     }
 }

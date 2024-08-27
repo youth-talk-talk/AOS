@@ -19,9 +19,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.youth.app.feature.specpolicy.R
 import com.youthtalk.designsystem.YongProjectTheme
+import com.youthtalk.util.clickableSingle
 
 @Composable
-fun SpecPolicyTopBar(title: String) {
+fun SpecPolicyTopBar(title: String, onBack: () -> Unit, onClickSearch: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -30,10 +31,12 @@ fun SpecPolicyTopBar(title: String) {
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Icon(
-            modifier = Modifier.padding(
-                start = 17.dp,
-                end = 12.dp,
-            ),
+            modifier = Modifier
+                .padding(
+                    start = 17.dp,
+                    end = 12.dp,
+                )
+                .clickableSingle { onBack() },
             painter = painterResource(id = R.drawable.left_icon),
             contentDescription = "뒤로가기",
             tint = Color.Black,
@@ -51,7 +54,9 @@ fun SpecPolicyTopBar(title: String) {
         )
 
         Icon(
-            modifier = Modifier.padding(end = 17.dp),
+            modifier = Modifier
+                .padding(end = 17.dp)
+                .clickableSingle { onClickSearch() },
             painter = painterResource(id = R.drawable.search_icon),
             contentDescription = "검색",
             tint = Color.Black,
@@ -63,6 +68,10 @@ fun SpecPolicyTopBar(title: String) {
 @Composable
 private fun SpecPolicyTopBarPreview() {
     YongProjectTheme {
-        SpecPolicyTopBar("일자리")
+        SpecPolicyTopBar(
+            title = "일자리",
+            onBack = {},
+            onClickSearch = {},
+        )
     }
 }

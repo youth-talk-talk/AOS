@@ -8,13 +8,10 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBars
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -56,7 +53,7 @@ import com.youthtalk.util.clickableSingle
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchScreen() {
+fun SearchScreen(type: String) {
     var text by remember {
         mutableStateOf("")
     }
@@ -314,7 +311,6 @@ private fun SearchBar(text: String, onChangeText: (String) -> Unit, searchDone: 
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .windowInsetsPadding(WindowInsets.statusBars)
             .background(MaterialTheme.colorScheme.background),
     ) {
         Row(
@@ -378,6 +374,8 @@ private fun SearchBar(text: String, onChangeText: (String) -> Unit, searchDone: 
 @Composable
 private fun SearchScreenPreview() {
     YongProjectTheme {
-        SearchScreen()
+        SearchScreen(
+            type = "main",
+        )
     }
 }
