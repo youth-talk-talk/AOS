@@ -16,9 +16,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.youth.app.feature.mypage.R
 import com.youthtalk.designsystem.YongProjectTheme
+import com.youthtalk.util.clickableSingle
 
 @Composable
-fun AccountTopBar(modifier: Modifier = Modifier, title: String, icon: (@Composable () -> Unit)? = null) {
+fun AccountTopBar(modifier: Modifier = Modifier, title: String, onBack: () -> Unit, icon: (@Composable () -> Unit)? = null) {
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -26,7 +27,9 @@ fun AccountTopBar(modifier: Modifier = Modifier, title: String, icon: (@Composab
             .padding(horizontal = 18.dp, vertical = 13.dp),
     ) {
         Image(
-            modifier = Modifier.align(Alignment.CenterStart),
+            modifier = Modifier
+                .align(Alignment.CenterStart)
+                .clickableSingle { onBack() },
             painter = painterResource(R.drawable.left_icon),
             contentDescription = "뒤로가기",
         )
@@ -53,6 +56,7 @@ private fun AccountTopBarPreview() {
     YongProjectTheme {
         AccountTopBar(
             title = "계정관리",
+            onBack = {},
         )
     }
 }

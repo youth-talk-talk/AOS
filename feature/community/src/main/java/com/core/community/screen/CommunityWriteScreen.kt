@@ -6,7 +6,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.youthtalk.designsystem.YongProjectTheme
 
 @Composable
-fun CommunityWriteScreen() {
+fun CommunityWriteScreen(type: String) {
     Text(text = "글쓰기 화면")
 }
 
@@ -14,6 +14,8 @@ fun CommunityWriteScreen() {
 @Composable
 private fun CommunityWriteScreenPreview() {
     YongProjectTheme {
-        CommunityWriteScreen()
+        CommunityWriteScreen(
+            type = "free",
+        )
     }
 }

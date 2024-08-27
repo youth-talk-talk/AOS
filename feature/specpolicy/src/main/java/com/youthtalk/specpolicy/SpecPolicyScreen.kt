@@ -24,6 +24,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
+import com.core.navigation.Nav
 import com.youth.app.feature.specpolicy.R
 import com.youthtalk.component.PolicyCard
 import com.youthtalk.component.SortDropDownComponent
@@ -37,7 +40,7 @@ import com.youthtalk.util.clickableSingle
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SpecPolicyScreen(category: String) {
+fun SpecPolicyScreen(category: String, navController: NavHostController = rememberNavController()) {
     val dummyPolicies = getPolicies()
     var showBottomSheet by remember {
         mutableStateOf(false)
@@ -55,6 +58,12 @@ fun SpecPolicyScreen(category: String) {
     ) {
         SpecPolicyTopBar(
             title = category,
+            onBack = {
+                navController.popBackStack()
+            },
+            onClickSearch = {
+                navController.navigate("${Nav.Search.route}/main")
+            },
         )
 
         LazyColumn {
@@ -202,6 +211,8 @@ fun getPolicies(): List<Policy> {
 @Composable
 private fun SpecPolicyScreenPreview() {
     YongProjectTheme {
-        SpecPolicyScreen(category = "일자리")
+        SpecPolicyScreen(
+            category = "일자리",
+        )
     }
 }

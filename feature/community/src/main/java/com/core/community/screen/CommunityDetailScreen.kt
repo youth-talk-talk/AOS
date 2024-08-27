@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.HorizontalDivider
@@ -44,26 +45,7 @@ fun CommunityDetailScreen(postId: Long, type: String) {
         policyTitle = "일자리",
     )
 
-    val comments = listOf(
-        Comment(
-            commentId = 142,
-            nickname = "집가고싶다어",
-            content = "댓글내용수정1",
-            isLikeByMember = false,
-        ),
-        Comment(
-            commentId = 144,
-            nickname = "집가고싶다어",
-            content = "댓글내용수정3",
-            isLikeByMember = false,
-        ),
-        Comment(
-            commentId = 382,
-            nickname = "집가고싶다어",
-            content = "댓글내용수정2",
-            isLikeByMember = false,
-        ),
-    )
+    val comments = getComments()
 
     Column(
         modifier = Modifier
@@ -131,9 +113,32 @@ fun CommunityDetailScreen(postId: Long, type: String) {
             }
         }
 
-        CommentTextField()
+        CommentTextField(
+            modifier = Modifier.imePadding(),
+        )
     }
 }
+
+private fun getComments() = listOf(
+    Comment(
+        commentId = 142,
+        nickname = "집가고싶다어",
+        content = "댓글내용수정1",
+        isLikeByMember = false,
+    ),
+    Comment(
+        commentId = 144,
+        nickname = "집가고싶다어",
+        content = "댓글내용수정3",
+        isLikeByMember = false,
+    ),
+    Comment(
+        commentId = 382,
+        nickname = "집가고싶다어",
+        content = "댓글내용수정2",
+        isLikeByMember = false,
+    ),
+)
 
 @Composable
 fun CommunityTitle(modifier: Modifier = Modifier, policyTitle: String?) {

@@ -18,7 +18,7 @@ import com.core.mypage.component.account.AccountTopBar
 import com.youthtalk.designsystem.YongProjectTheme
 
 @Composable
-fun AnnouncementScreen() {
+fun AnnouncementScreen(onBack: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -26,7 +26,10 @@ fun AnnouncementScreen() {
                 MaterialTheme.colorScheme.background,
             ),
     ) {
-        AccountTopBar(title = "공지사항")
+        AccountTopBar(
+            title = "공지사항",
+            onBack = onBack,
+        )
         HorizontalDivider()
 
         LazyColumn(
@@ -49,6 +52,8 @@ fun AnnouncementScreen() {
 @Composable
 private fun AnnouncementScreenPreview() {
     YongProjectTheme {
-        AnnouncementScreen()
+        AnnouncementScreen(
+            onBack = {},
+        )
     }
 }

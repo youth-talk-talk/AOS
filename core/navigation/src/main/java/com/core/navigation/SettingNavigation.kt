@@ -38,22 +38,6 @@ sealed class SettingNavigation(
     data object Announce : SettingNavigation(
         route = ANNOUNCE,
     )
-
-    companion object {
-        fun includeSetting(route: String?): Boolean {
-            return when (route) {
-                MY_PAGE_HOME,
-                ACCOUNT_MANAGE,
-                NICKNAME_SETTING,
-                SCRAP_POLICY,
-                MY_PAGE_POST,
-                MY_PAGE_COMMENT,
-                ANNOUNCE,
-                -> true
-                else -> false
-            }
-        }
-    }
 }
 
 object SettingRoute {

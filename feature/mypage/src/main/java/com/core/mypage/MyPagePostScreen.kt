@@ -18,7 +18,7 @@ import com.youthtalk.designsystem.YongProjectTheme
 import com.youthtalk.model.Post
 
 @Composable
-fun MyPagePostScreen(isMine: Boolean) {
+fun MyPagePostScreen(isMine: Boolean, onBack: () -> Unit) {
     val getPosts = getPost()
 
     Column(
@@ -28,7 +28,10 @@ fun MyPagePostScreen(isMine: Boolean) {
                 MaterialTheme.colorScheme.onSecondaryContainer,
             ),
     ) {
-        AccountTopBar(title = "스크랩한 게시물")
+        AccountTopBar(
+            title = "스크랩한 게시물",
+            onBack = onBack,
+        )
         HorizontalDivider()
 
         LazyColumn(
@@ -139,6 +142,7 @@ private fun ScrapPostScreenPreview() {
     YongProjectTheme {
         MyPagePostScreen(
             isMine = true,
+            onBack = {},
         )
     }
 }

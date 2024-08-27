@@ -19,7 +19,7 @@ import com.youthtalk.model.Category
 import com.youthtalk.model.Policy
 
 @Composable
-fun ScrapPolicyScreen() {
+fun ScrapPolicyScreen(onBack: () -> Unit) {
     val policies = getPolicies()
 
     Column(
@@ -29,7 +29,10 @@ fun ScrapPolicyScreen() {
                 color = MaterialTheme.colorScheme.onSecondaryContainer,
             ),
     ) {
-        AccountTopBar(title = "스크랩한 정책")
+        AccountTopBar(
+            title = "스크랩한 정책",
+            onBack = onBack,
+        )
         HorizontalDivider()
 
         LazyColumn(
@@ -121,6 +124,8 @@ fun getPolicies(): List<Policy> {
 @Composable
 private fun ScrapPolicyScreenPreview() {
     YongProjectTheme {
-        ScrapPolicyScreen()
+        ScrapPolicyScreen(
+            onBack = {},
+        )
     }
 }
