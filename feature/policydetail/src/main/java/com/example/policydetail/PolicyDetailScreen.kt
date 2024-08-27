@@ -135,6 +135,7 @@ private fun PolicyDetailSuccessScreen(uiState: PolicyDetailUiState.Success) {
                         .shadow(3.dp),
                     nickname = comments[index].nickname,
                     content = comments[index].content,
+                    isLike = comments[index].isLikeByMember,
                     isMine = user.nickname == comments[index].nickname,
                 )
             }

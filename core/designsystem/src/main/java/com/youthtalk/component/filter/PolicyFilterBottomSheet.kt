@@ -258,7 +258,7 @@ private fun FilterCategoryAge() {
 }
 
 @Composable
-private fun FilterCategoryTitle(title: String) {
+fun FilterCategoryTitle(title: String) {
     Row(
         modifier = Modifier
             .padding(

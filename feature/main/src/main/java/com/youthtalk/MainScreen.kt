@@ -104,7 +104,7 @@ fun NavHostScreen(navController: NavHostController, homeLazyListScrollState: Laz
         }
 
         composable(route = MainNav.MyPage.route) {
-            MyPageScreen(listOf())
+            MyPageScreen()
         }
 
         composable(

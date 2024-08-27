@@ -13,4 +13,24 @@
         <item>공지사항</item>
         <item>1:1 문의</item>
     </string-array>
+
+    <string-array name="regions">
+        <item>서울특별시</item>
+        <item>경기도</item>
+        <item>인천광역시</item>
+        <item>세종특별자치시</item>
+        <item>대전광역시</item>
+        <item>충척북도</item>
+        <item>충청남도</item>
+        <item>강원도</item>
+        <item>경상북도</item>
+        <item>경상남도</item>
+        <item>대구광역시</item>
+        <item>울산광역시</item>
+        <item>부산광역시</item>
+        <item>광주광역시</item>
+        <item>전라북도</item>
+        <item>전라남도</item>
+        <item>제주특별자치도</item>
+    </string-array>
 </resources>

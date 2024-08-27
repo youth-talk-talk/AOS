@@ -28,7 +28,7 @@ import com.youth.app.core.designsystem.R
 import com.youthtalk.designsystem.YongProjectTheme
 
 @Composable
-fun CommentScreen(modifier: Modifier = Modifier, nickname: String, content: String, isMine: Boolean) {
+fun CommentScreen(modifier: Modifier = Modifier, nickname: String, content: String, isLike: Boolean, isMine: Boolean) {
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -87,9 +87,9 @@ fun CommentScreen(modifier: Modifier = Modifier, nickname: String, content: Stri
                     modifier = Modifier
                         .padding(start = 29.dp)
                         .align(Alignment.CenterEnd),
-                    painter = painterResource(id = R.drawable.favorite_icon),
+                    painter = if (isLike) painterResource(id = R.drawable.favorite_check_icon) else painterResource(id = R.drawable.favorite_icon),
                     contentDescription = stringResource(id = R.string.favorite),
-                    tint = Color.Black,
+                    tint = if (isLike) MaterialTheme.colorScheme.primary else Color.Black,
                 )
             }
         }
@@ -103,6 +103,7 @@ private fun CommentScreenIsMinePreview() {
         CommentScreen(
             nickname = "놀고픈 청년",
             content = "댓글내용입니다댓글내용입니다댓글내용입니다댓글내용입니다댓글내용입니다댓글내용입니다댓글내용입니다댓글내용입니다댓글내용입니다댓글내용입니다댓글내용입니다댓글내용입니다",
+            isLike = true,
             isMine = true,
         )
     }
@@ -116,6 +117,7 @@ private fun CommentScreenOtherPreview() {
             nickname = "놀고픈 청년",
             content = "댓글내용입니다댓글내용입니다댓글내용입니다댓글내용입니다댓글내용입니다댓글내용입니다댓글내용입니다댓글내용입니다댓글내용입니다댓글내용입니다댓글내용입니다댓글내용입니다",
             isMine = false,
+            isLike = true,
         )
     }
 }
