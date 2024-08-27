@@ -77,7 +77,7 @@ fun PolicyCard(modifier: Modifier = Modifier, policy: Policy, onClickDetailPolic
             )
             Image(
                 modifier = Modifier.align(Alignment.BottomEnd),
-                painter = painterResource(id = R.drawable.bookmark),
+                painter = if (policy.scrap) painterResource(id = R.drawable.bookmark_check) else painterResource(id = R.drawable.bookmark),
                 contentDescription = "스크랩 이미지",
             )
         }

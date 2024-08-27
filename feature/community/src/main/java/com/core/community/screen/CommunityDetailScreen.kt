@@ -125,6 +125,7 @@ fun CommunityDetailScreen(postId: Long, type: String) {
                         ),
                     nickname = comment.nickname,
                     content = comment.content,
+                    isLike = comment.isLikeByMember,
                     isMine = false,
                 )
             }
