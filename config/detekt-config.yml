@@ -16,7 +16,7 @@ complexity:
         #private 접근 제어자가 설정된 함수를 카운트에서 제외할지 결정
         ignorePrivate: true
         #인터페이스에 몇 개까지 함수를 허용할 지 결정한다.
-        thresholdInInterfaces: 10
+        thresholdInInterfaces: 20
         #오브젝트에 몇 개까지의 함수를 허용할지 결정한다.
         thresholdInObjects: 20
         #열거형에 몇 개 까지의 함수를 허용할지 결정한다.

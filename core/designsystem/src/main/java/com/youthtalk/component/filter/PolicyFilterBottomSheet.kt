@@ -26,6 +26,10 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,10 +43,12 @@ import androidx.compose.ui.unit.dp
 import com.youth.app.core.designsystem.R
 import com.youthtalk.component.CategoryButton
 import com.youthtalk.component.RoundButton
+import com.youthtalk.model.EmploymentCode
+import com.youthtalk.model.FilterInfo
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-fun PolicyFilterBottomSheet(showBottomSheet: Boolean, sheetState: SheetState, onDismiss: () -> Unit) {
+fun PolicyFilterBottomSheet(filterInfo: FilterInfo? = null, showBottomSheet: Boolean, sheetState: SheetState, onDismiss: () -> Unit) {
     if (showBottomSheet) {
         ModalBottomSheet(
             modifier = Modifier
@@ -53,7 +59,7 @@ fun PolicyFilterBottomSheet(showBottomSheet: Boolean, sheetState: SheetState, on
             onDismissRequest = onDismiss,
         ) {
             FilterTopBar()
-            FilterInfo()
+            FilterInfo(filterInfo)
             FilterCheckButton()
         }
     }
@@ -143,20 +149,21 @@ private fun FilterTopBar() {
 }
 
 @Composable
-fun ColumnScope.FilterInfo() {
+fun ColumnScope.FilterInfo(filterInfo: FilterInfo?) {
     Column(
         modifier = Modifier
             .weight(1f)
             .verticalScroll(rememberScrollState()),
     ) {
-        FilterCategoryAge()
-        FilterCategoryRecruit()
-        FilterCategoryIsEnd()
+        FilterCategoryAge(filterInfo?.age)
+        FilterCategoryRecruit(filterInfo?.employmentCodeList)
+        FilterCategoryIsEnd(filterInfo?.isFinished)
     }
 }
 
 @Composable
-private fun FilterCategoryIsEnd() {
+private fun FilterCategoryIsEnd(isFinished: Boolean?) {
+    val finish = isFinished ?: false
     FilterCategoryTitle(
         title = "마감여부",
     )
@@ -169,18 +176,18 @@ private fun FilterCategoryIsEnd() {
         CategoryButton(
             modifier = Modifier.weight(1f),
             title = "전체 선택",
-            isSelected = false,
+            isSelected = !finish,
         )
         CategoryButton(
             modifier = Modifier.weight(1f),
             title = "진행중인 정책",
-            isSelected = false,
+            isSelected = finish,
         )
     }
 }
 
 @Composable
-private fun FilterCategoryRecruit() {
+private fun FilterCategoryRecruit(employmentCodes: List<EmploymentCode>?) {
     FilterCategoryTitle(
         title = "취업상태",
     )
@@ -196,19 +203,26 @@ private fun FilterCategoryRecruit() {
         columns = 2,
         itemCount = list.size,
     ) { index ->
+        val name = list[index]
         CategoryButton(
             modifier = Modifier.padding(
                 horizontal = 5.5.dp,
                 vertical = 4.dp,
             ),
-            title = list[index],
-            isSelected = false,
+            title = name,
+            isSelected = checkEmploy(index, employmentCodes, name),
         )
     }
 }
 
+private fun checkEmploy(index: Int, employmentCodes: List<EmploymentCode>?, name: String) =
+    (index == 0 && employmentCodes == null) || (employmentCodes?.any { it.employName == name } ?: false)
+
 @Composable
-private fun FilterCategoryAge() {
+private fun FilterCategoryAge(age: Int?) {
+    var text by remember {
+        mutableStateOf(age?.toString() ?: "")
+    }
     FilterCategoryTitle(
         title = "연령",
     )
@@ -225,8 +239,12 @@ private fun FilterCategoryAge() {
             ),
         )
         BasicTextField(
-            value = "",
-            onValueChange = {},
+            value = text,
+            onValueChange = {
+                if (it.length < 3) {
+                    text = it
+                }
+            },
             singleLine = true,
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Number,

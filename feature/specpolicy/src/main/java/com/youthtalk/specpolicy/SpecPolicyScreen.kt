@@ -1,6 +1,7 @@
 package com.youthtalk.specpolicy
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -9,12 +10,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -24,31 +27,79 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.core.navigation.Nav
 import com.youth.app.feature.specpolicy.R
 import com.youthtalk.component.PolicyCard
-import com.youthtalk.component.SortDropDownComponent
 import com.youthtalk.component.filter.FilterComponent
 import com.youthtalk.component.filter.PolicyFilterBottomSheet
 import com.youthtalk.designsystem.YongProjectTheme
 import com.youthtalk.model.Category
 import com.youthtalk.model.Policy
 import com.youthtalk.specpolicy.component.SpecPolicyTopBar
+import com.youthtalk.specpolicy.model.SpecPolicyUiEvent
+import com.youthtalk.specpolicy.model.SpecPolicyUiState
 import com.youthtalk.util.clickableSingle
+
+@Composable
+fun SpecPolicyScreen(
+    category: Category,
+    viewModel: SpecPolicyViewModel = hiltViewModel(),
+    navController: NavHostController = rememberNavController(),
+) {
+    LaunchedEffect(key1 = category.name) {
+        viewModel.uiEvent(SpecPolicyUiEvent.GetData(category))
+    }
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    when (uiState) {
+        is SpecPolicyUiState.Loading -> {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(
+                        color = MaterialTheme.colorScheme.background,
+                    ),
+                contentAlignment = Alignment.Center,
+            ) {
+                CircularProgressIndicator()
+            }
+        }
+        is SpecPolicyUiState.Success -> {
+            SpecPolicyScreen(
+                category,
+                navController,
+                uiState as SpecPolicyUiState.Success,
+                onClickPolicyDetail = {
+                    navController.navigate("${Nav.PolicyDetail.route}/$it") {
+                        restoreState = true
+                        launchSingleTop = true
+                    }
+                },
+            )
+        }
+    }
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SpecPolicyScreen(category: String, navController: NavHostController = rememberNavController()) {
-    val dummyPolicies = getPolicies()
+private fun SpecPolicyScreen(
+    category: Category,
+    navController: NavHostController,
+    uiState: SpecPolicyUiState.Success,
+    onClickPolicyDetail: (String) -> Unit,
+) {
+    val policies = uiState.polices.collectAsLazyPagingItems()
+    val policyCount = uiState.policyCount
     var showBottomSheet by remember {
         mutableStateOf(false)
     }
     val sheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = true,
     )
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -57,7 +108,7 @@ fun SpecPolicyScreen(category: String, navController: NavHostController = rememb
             ),
     ) {
         SpecPolicyTopBar(
-            title = category,
+            title = category.categoryName,
             onBack = {
                 navController.popBackStack()
             },
@@ -79,24 +130,31 @@ fun SpecPolicyScreen(category: String, navController: NavHostController = rememb
                 )
             }
 
-            item { SpecPolicyInfo() }
+            item {
+                SpecPolicyInfo(
+                    policyCount = policyCount,
+                )
+            }
 
             items(
-                count = dummyPolicies.size,
-                key = { index -> dummyPolicies[index].policyId },
+                count = policies.itemCount,
+                key = { index -> policies.peek(index)?.policyId ?: "" },
             ) { index ->
-                PolicyCard(
-                    modifier = Modifier
-                        .padding(horizontal = 17.dp)
-                        .padding(bottom = 12.dp),
-                    policy = dummyPolicies[index],
-                    onClickDetailPolicy = { },
-                )
+                policies[index]?.let { policy ->
+                    PolicyCard(
+                        modifier = Modifier
+                            .padding(horizontal = 17.dp)
+                            .padding(bottom = 12.dp),
+                        policy = policy,
+                        onClickDetailPolicy = { onClickPolicyDetail(it) },
+                    )
+                }
             }
         }
     }
 
     PolicyFilterBottomSheet(
+        filterInfo = uiState.filterInfo,
         sheetState = sheetState,
         showBottomSheet = showBottomSheet,
         onDismiss = { showBottomSheet = false },
@@ -104,7 +162,7 @@ fun SpecPolicyScreen(category: String, navController: NavHostController = rememb
 }
 
 @Composable
-private fun SpecPolicyInfo() {
+private fun SpecPolicyInfo(policyCount: Int) {
     Row(
         modifier = Modifier
             .background(
@@ -120,7 +178,7 @@ private fun SpecPolicyInfo() {
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
-            text = "총 1234건의 정책이 있어요",
+            text = "총 ${policyCount}건의 정책이 있어요",
             style = MaterialTheme.typography.displayLarge.copy(
                 color = MaterialTheme.colorScheme.onSecondary,
             ),
@@ -132,9 +190,9 @@ private fun SpecPolicyInfo() {
             tint = MaterialTheme.colorScheme.onSecondary,
         )
         Spacer(modifier = Modifier.weight(1f))
-        SortDropDownComponent(
-            modifier = Modifier,
-        )
+//        SortDropDownComponent(
+//            modifier = Modifier,
+//        )
     }
 }
 
@@ -212,7 +270,7 @@ fun getPolicies(): List<Policy> {
 private fun SpecPolicyScreenPreview() {
     YongProjectTheme {
         SpecPolicyScreen(
-            category = "일자리",
+            category = Category.JOB,
         )
     }
 }

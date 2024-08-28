@@ -55,7 +55,6 @@ fun YongProjectTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Compo
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            window.statusBarColor = Color.White.toArgb() // Color.Transparent.toArgb()
             window.navigationBarColor = Color.White.toArgb()
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
         }
