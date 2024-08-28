@@ -1,5 +1,7 @@
 package com.youthtalk
 
+import android.app.Activity
+import android.os.Build
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.clickable
@@ -23,16 +25,20 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -51,6 +57,8 @@ import com.core.navigation.Nav
 import com.example.policydetail.PolicyDetailScreen
 import com.youth.search.SearchScreen
 import com.youthtalk.designsystem.YongProjectTheme
+import com.youthtalk.designsystem.mainHomeActionBarColor
+import com.youthtalk.model.Category
 import com.youthtalk.specpolicy.SpecPolicyScreen
 import kotlinx.coroutines.launch
 
@@ -60,6 +68,14 @@ fun MainScreen() {
     val navBackStackEntry by navHostController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
     val homeLazyListScrollState = rememberLazyListState()
+
+    val view = LocalView.current
+    if (!view.isInEditMode) {
+        SideEffect {
+            val window = (view.context as Activity).window
+            window.statusBarColor = if (currentRoute == MainNav.Home.route) mainHomeActionBarColor.toArgb() else Color.Transparent.toArgb()
+        }
+    }
     Scaffold(
         bottomBar = {
             if (MainNav.isMainNavigation(currentRoute)) {
@@ -93,30 +109,7 @@ fun NavHostScreen(navController: NavHostController, homeLazyListScrollState: Laz
         enterTransition = { EnterTransition.None },
         exitTransition = { ExitTransition.None },
     ) {
-        composable(route = MainNav.Home.route) {
-            HomeScreen(
-                navController = navController,
-                homeLazyListScrollState = homeLazyListScrollState,
-            )
-        }
-
-        composable(route = MainNav.Community.route) {
-            CommunityScreen(
-                onClickItem = { type, postId ->
-                    navController.navigate("${CommunityNavigation.CommunityDetail.route}/$type/$postId")
-                },
-                writePost = { type ->
-                    navController.navigate("${CommunityNavigation.CommunityWrite.route}/$type")
-                },
-                onClickSearch = { type ->
-                    navController.navigate("${Nav.Search.route}/$type")
-                },
-            )
-        }
-
-        composable(route = MainNav.MyPage.route) {
-            MyPageScreen()
-        }
+        mainNavigation(navController, homeLazyListScrollState)
 
         composable(
             route = "${Nav.PolicyDetail.route}/{policyId}",
@@ -132,12 +125,24 @@ fun NavHostScreen(navController: NavHostController, homeLazyListScrollState: Laz
         }
 
         composable(
-            route = Nav.SpecPolicy.route,
+            route = "${Nav.SpecPolicy.route}/{category}",
+            arguments = listOf(
+                navArgument("category") {
+                    type = NavType.EnumType(Category::class.java)
+                },
+            ),
         ) {
-            SpecPolicyScreen(
-                category = "일자리",
-                navController = navController,
-            )
+            val category = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                it.arguments?.getSerializable("category", Category::class.java)
+            } else {
+                it.arguments?.getSerializable("category") as Category
+            }
+            category?.let {
+                SpecPolicyScreen(
+                    category = category,
+                    navController = navController,
+                )
+            }
         }
 
         composable(
@@ -155,38 +160,69 @@ fun NavHostScreen(navController: NavHostController, homeLazyListScrollState: Laz
             }
         }
 
-        composable(
-            route = "${CommunityNavigation.CommunityDetail.route}/{type}/{postId}",
-            arguments = listOf(
-                navArgument("type") {
-                    type = NavType.StringType
-                },
-                navArgument("postId") {
-                    type = NavType.LongType
-                },
-            ),
-        ) {
-            val postId = it.arguments?.getLong("postId") ?: -1
-            val type = it.arguments?.getString("type") ?: ""
-            CommunityDetailScreen(
-                postId = postId,
-                type = type,
-            )
-        }
+        communityNavigation()
+    }
+}
 
-        composable(
-            route = "${CommunityNavigation.CommunityWrite.route}/{type}",
-            arguments = listOf(
-                navArgument("type") {
-                    type = NavType.StringType
-                },
-            ),
-        ) {
-            val type = it.arguments?.getString("type") ?: ""
-            CommunityWriteScreen(
-                type = type,
-            )
-        }
+private fun NavGraphBuilder.communityNavigation() {
+    composable(
+        route = "${CommunityNavigation.CommunityDetail.route}/{type}/{postId}",
+        arguments = listOf(
+            navArgument("type") {
+                type = NavType.StringType
+            },
+            navArgument("postId") {
+                type = NavType.LongType
+            },
+        ),
+    ) {
+        val postId = it.arguments?.getLong("postId") ?: -1
+        val type = it.arguments?.getString("type") ?: ""
+        CommunityDetailScreen(
+            postId = postId,
+            type = type,
+        )
+    }
+
+    composable(
+        route = "${CommunityNavigation.CommunityWrite.route}/{type}",
+        arguments = listOf(
+            navArgument("type") {
+                type = NavType.StringType
+            },
+        ),
+    ) {
+        val type = it.arguments?.getString("type") ?: ""
+        CommunityWriteScreen(
+            type = type,
+        )
+    }
+}
+
+private fun NavGraphBuilder.mainNavigation(navController: NavHostController, homeLazyListScrollState: LazyListState) {
+    composable(route = MainNav.Home.route) {
+        HomeScreen(
+            navController = navController,
+            homeLazyListScrollState = homeLazyListScrollState,
+        )
+    }
+
+    composable(route = MainNav.Community.route) {
+        CommunityScreen(
+            onClickItem = { type, postId ->
+                navController.navigate("${CommunityNavigation.CommunityDetail.route}/$type/$postId")
+            },
+            writePost = { type ->
+                navController.navigate("${CommunityNavigation.CommunityWrite.route}/$type")
+            },
+            onClickSearch = { type ->
+                navController.navigate("${Nav.Search.route}/$type")
+            },
+        )
+    }
+
+    composable(route = MainNav.MyPage.route) {
+        MyPageScreen()
     }
 }
 

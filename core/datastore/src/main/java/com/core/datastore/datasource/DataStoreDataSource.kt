@@ -2,13 +2,19 @@ package com.core.datastore.datasource
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.core.datastore.datasource.DataStoreDataSource.PreferencesKey.ACCESS_TOKEN
+import com.core.datastore.datasource.DataStoreDataSource.PreferencesKey.AGE
 import com.core.datastore.datasource.DataStoreDataSource.PreferencesKey.CATEGORIES
+import com.core.datastore.datasource.DataStoreDataSource.PreferencesKey.EMPLOY_CODE
+import com.core.datastore.datasource.DataStoreDataSource.PreferencesKey.IS_FINISH
 import com.core.datastore.datasource.DataStoreDataSource.PreferencesKey.REFRESH_TOKEN
 import com.core.datastore.datasource.DataStoreDataSource.PreferencesKey.REVIEW_CATEGORIES
 import com.youthtalk.model.Category
+import com.youthtalk.model.EmploymentCode
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.json.Json
@@ -23,6 +29,9 @@ class DataStoreDataSource @Inject constructor(
         val REFRESH_TOKEN = stringPreferencesKey("REFRESH_TOKEN")
         val CATEGORIES = stringPreferencesKey("CATEGORIES")
         val REVIEW_CATEGORIES = stringPreferencesKey("REVIEW_CATEGORIES")
+        val AGE = intPreferencesKey("AGE")
+        val EMPLOY_CODE = stringPreferencesKey("EMPLOY_CODE")
+        val IS_FINISH = booleanPreferencesKey("IS_FINISH")
     }
 
     override fun hasToken(): Flow<Boolean> = dataStore.data.map { preferences ->
@@ -76,6 +85,39 @@ class DataStoreDataSource @Inject constructor(
         val listToString = Json.encodeToJsonElement<List<Category>>(categories)
         dataStore.edit { prefs ->
             prefs[REVIEW_CATEGORIES] = listToString.toString()
+        }
+    }
+
+    override fun getEmployCode(): Flow<List<EmploymentCode>?> = dataStore.data.map { prefs ->
+        prefs[EMPLOY_CODE]?.let { employCode ->
+            Json.decodeFromString<List<EmploymentCode>>(employCode)
+        }
+    }
+
+    override suspend fun setEmployCodeFilter(employmentCodes: List<EmploymentCode>) {
+        val listToString = Json.encodeToJsonElement<List<EmploymentCode>>(employmentCodes)
+        dataStore.edit { prefs ->
+            prefs[EMPLOY_CODE] = listToString.toString()
+        }
+    }
+
+    override fun getAge(): Flow<Int?> = dataStore.data.map { prefs ->
+        prefs[AGE]
+    }
+
+    override suspend fun setAge(age: Int) {
+        dataStore.edit { prefs ->
+            prefs[AGE] = age
+        }
+    }
+
+    override fun getFinish(): Flow<Boolean> = dataStore.data.map { prefs ->
+        prefs[IS_FINISH] ?: false
+    }
+
+    override suspend fun setFinish(isFinish: Boolean) {
+        dataStore.edit { prefs ->
+            prefs[IS_FINISH] = isFinish
         }
     }
 }

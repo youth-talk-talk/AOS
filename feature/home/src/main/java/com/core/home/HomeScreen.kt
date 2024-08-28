@@ -68,8 +68,11 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel(), navController: NavCon
             onClickDetailPolicy = { policyId ->
                 navController.navigate("${Nav.PolicyDetail.route}/$policyId")
             },
-            onClickSpecPolicy = {
-                navController.navigate(Nav.SpecPolicy.route)
+            onClickSpecPolicy = { category ->
+                navController.navigate("${Nav.SpecPolicy.route}/$category") {
+                    restoreState = true
+                    launchSingleTop = true
+                }
             },
             onClickSearch = {
                 navController.navigate("${Nav.Search.route}/home")
@@ -85,7 +88,7 @@ private fun HomeMain(
     homeLazyListScrollState: LazyListState,
     onCheck: (Category?) -> Unit,
     onClickDetailPolicy: (String) -> Unit,
-    onClickSpecPolicy: () -> Unit,
+    onClickSpecPolicy: (Category) -> Unit,
     onClickSearch: () -> Unit,
 ) {
     val allPolicies = uiState.allPolicies.collectAsLazyPagingItems()
@@ -248,7 +251,7 @@ private fun UpdateTitle(categoryFilters: ImmutableList<Category>, onCheck: (Cate
 }
 
 @Composable
-private fun CategoryScreen(goSpecPolicyScreen: () -> Unit) {
+private fun CategoryScreen(goSpecPolicyScreen: (Category) -> Unit) {
     Row(
         modifier =
         Modifier
@@ -262,7 +265,7 @@ private fun CategoryScreen(goSpecPolicyScreen: () -> Unit) {
             CategoryCard(
                 modifier = Modifier
                     .clickableSingle {
-                        goSpecPolicyScreen()
+                        goSpecPolicyScreen(category)
                     },
                 category = category.categoryName,
                 painter = when (category) {
