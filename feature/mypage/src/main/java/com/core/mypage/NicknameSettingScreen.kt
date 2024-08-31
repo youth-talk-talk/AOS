@@ -22,7 +22,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.core.mypage.component.account.AccountTopBar
+import com.youthtalk.component.MiddleTitleTopBar
 import com.youthtalk.component.RoundButton
 import com.youthtalk.designsystem.YongProjectTheme
 import com.youthtalk.designsystem.gray
@@ -38,7 +38,7 @@ fun NicknameSettingScreen(modifier: Modifier = Modifier, nickname: String, onBac
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background),
     ) {
-        AccountTopBar(
+        MiddleTitleTopBar(
             title = "닉네임 설정",
             onBack = onBack,
         )

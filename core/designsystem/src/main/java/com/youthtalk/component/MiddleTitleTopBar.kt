@@ -1,4 +1,4 @@
-package com.core.mypage.component.account
+package com.youthtalk.component
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -14,12 +14,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.youth.app.feature.mypage.R
+import com.youth.app.core.designsystem.R
 import com.youthtalk.designsystem.YongProjectTheme
 import com.youthtalk.util.clickableSingle
 
 @Composable
-fun AccountTopBar(modifier: Modifier = Modifier, title: String, onBack: () -> Unit, icon: (@Composable () -> Unit)? = null) {
+fun MiddleTitleTopBar(modifier: Modifier = Modifier, title: String, onBack: () -> Unit, icon: (@Composable () -> Unit)? = null) {
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -52,9 +52,9 @@ fun AccountTopBar(modifier: Modifier = Modifier, title: String, onBack: () -> Un
 
 @Preview
 @Composable
-private fun AccountTopBarPreview() {
+private fun MiddleTitleTopBarPreview() {
     YongProjectTheme {
-        AccountTopBar(
+        MiddleTitleTopBar(
             title = "계정관리",
             onBack = {},
         )

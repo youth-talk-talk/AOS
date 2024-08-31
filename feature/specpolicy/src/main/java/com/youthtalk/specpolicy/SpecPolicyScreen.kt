@@ -51,10 +51,12 @@ fun SpecPolicyScreen(
     viewModel: SpecPolicyViewModel = hiltViewModel(),
     navController: NavHostController = rememberNavController(),
 ) {
-    LaunchedEffect(key1 = category.name) {
-        viewModel.uiEvent(SpecPolicyUiEvent.GetData(category))
-    }
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    LaunchedEffect(key1 = category.categoryName) {
+        if (uiState is SpecPolicyUiState.Loading) {
+            viewModel.uiEvent(SpecPolicyUiEvent.GetData(category))
+        }
+    }
     when (uiState) {
         is SpecPolicyUiState.Loading -> {
             Box(

@@ -12,7 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.core.mypage.component.account.AccountTopBar
+import com.youthtalk.component.MiddleTitleTopBar
 import com.youthtalk.component.PolicyCard
 import com.youthtalk.designsystem.YongProjectTheme
 import com.youthtalk.model.Category
@@ -29,7 +29,7 @@ fun ScrapPolicyScreen(onBack: () -> Unit) {
                 color = MaterialTheme.colorScheme.onSecondaryContainer,
             ),
     ) {
-        AccountTopBar(
+        MiddleTitleTopBar(
             title = "스크랩한 정책",
             onBack = onBack,
         )

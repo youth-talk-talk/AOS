@@ -160,11 +160,11 @@ fun NavHostScreen(navController: NavHostController, homeLazyListScrollState: Laz
             }
         }
 
-        communityNavigation()
+        communityNavigation(navController)
     }
 }
 
-private fun NavGraphBuilder.communityNavigation() {
+private fun NavGraphBuilder.communityNavigation(navController: NavHostController) {
     composable(
         route = "${CommunityNavigation.CommunityDetail.route}/{type}/{postId}",
         arguments = listOf(
@@ -195,6 +195,7 @@ private fun NavGraphBuilder.communityNavigation() {
         val type = it.arguments?.getString("type") ?: ""
         CommunityWriteScreen(
             type = type,
+            onBack = { navController.popBackStack() },
         )
     }
 }
