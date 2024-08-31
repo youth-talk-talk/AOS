@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.core.mypage.component.AnnouncementComponent
-import com.core.mypage.component.account.AccountTopBar
+import com.youthtalk.component.MiddleTitleTopBar
 import com.youthtalk.designsystem.YongProjectTheme
 
 @Composable
@@ -26,7 +26,7 @@ fun AnnouncementScreen(onBack: () -> Unit) {
                 MaterialTheme.colorScheme.background,
             ),
     ) {
-        AccountTopBar(
+        MiddleTitleTopBar(
             title = "공지사항",
             onBack = onBack,
         )

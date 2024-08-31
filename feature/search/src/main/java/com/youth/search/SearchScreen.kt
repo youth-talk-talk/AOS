@@ -299,7 +299,7 @@ private fun ResentlySearchScreen(searchClick: () -> Unit) {
                         .padding(8.dp)
                         .clickableSingle { searchClick() },
                     shape = RoundedCornerShape(43.dp),
-                    text = "최근 검색${index + 1}",
+                    text = "최근 검색${(Math.random() * 10000000).toInt()}",
                 )
             }
         }

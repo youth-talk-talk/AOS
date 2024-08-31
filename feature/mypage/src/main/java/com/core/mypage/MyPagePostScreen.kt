@@ -12,7 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.core.mypage.component.account.AccountTopBar
+import com.youthtalk.component.MiddleTitleTopBar
 import com.youthtalk.component.PostCard
 import com.youthtalk.designsystem.YongProjectTheme
 import com.youthtalk.model.Post
@@ -28,7 +28,7 @@ fun MyPagePostScreen(isMine: Boolean, onBack: () -> Unit) {
                 MaterialTheme.colorScheme.onSecondaryContainer,
             ),
     ) {
-        AccountTopBar(
+        MiddleTitleTopBar(
             title = "스크랩한 게시물",
             onBack = onBack,
         )

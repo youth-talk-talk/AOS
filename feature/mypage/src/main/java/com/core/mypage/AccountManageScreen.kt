@@ -34,12 +34,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.SecureFlagPolicy
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.core.mypage.component.account.AccountTopBar
 import com.core.mypage.component.account.BorderIconText
 import com.core.navigation.SettingNavigation
 import com.youth.app.feature.mypage.R
 import com.youthtalk.component.CategoryButton
 import com.youthtalk.component.CustomDialog
+import com.youthtalk.component.MiddleTitleTopBar
 import com.youthtalk.component.RoundButton
 import com.youthtalk.component.filter.FilterCategoryTitle
 import com.youthtalk.component.filter.NonlazyGrid
@@ -67,7 +67,7 @@ fun AccountManageScreen(modifier: Modifier = Modifier, navHost: NavHostControlle
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background),
     ) {
-        AccountTopBar(
+        MiddleTitleTopBar(
             title = "계정관리",
             onBack = { navHost.popBackStack() },
         )

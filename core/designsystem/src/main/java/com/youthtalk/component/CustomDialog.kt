@@ -19,7 +19,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.youth.app.core.designsystem.R
-import com.youthtalk.util.clickableSingle
 
 @Composable
 fun CustomDialog(title: String, onCancel: () -> Unit, onSuccess: () -> Unit, onDismiss: () -> Unit) {
@@ -59,19 +58,19 @@ fun CustomDialog(title: String, onCancel: () -> Unit, onSuccess: () -> Unit, onD
             ) {
                 RoundButton(
                     modifier = Modifier
-                        .weight(1f)
-                        .clickableSingle { onCancel() },
+                        .weight(1f),
                     text = "아니요",
                     color = MaterialTheme.colorScheme.onSurface,
                 ) {
+                    onCancel()
                 }
                 RoundButton(
                     modifier = Modifier
-                        .weight(1f)
-                        .clickableSingle { onSuccess() },
+                        .weight(1f),
                     text = "예",
                     color = MaterialTheme.colorScheme.primary,
                 ) {
+                    onSuccess()
                 }
             }
         }
