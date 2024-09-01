@@ -45,7 +45,7 @@ fun ScrapPolicyScreen(onBack: () -> Unit) {
                 PolicyCard(
                     policy = policies[index],
                     onClickDetailPolicy = {},
-                    onClickScrap = {},
+                    onClickScrap = { _, _ -> },
                 )
             }
         }

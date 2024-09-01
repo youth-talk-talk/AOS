@@ -1,6 +1,8 @@
 package com.youthtalk.component
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,6 +18,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -28,7 +31,7 @@ import com.youth.app.core.designsystem.R
 import com.youthtalk.designsystem.YongProjectTheme
 
 @Composable
-fun CommentScreen(modifier: Modifier = Modifier, nickname: String, content: String, isLike: Boolean, isMine: Boolean) {
+fun CommentScreen(modifier: Modifier = Modifier, nickname: String, content: String, isLike: Boolean, isMine: Boolean, deleteComment: () -> Unit) {
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -75,7 +78,14 @@ fun CommentScreen(modifier: Modifier = Modifier, nickname: String, content: Stri
                         ),
                     )
                     Text(
-                        modifier = Modifier.width(21.dp),
+                        modifier = Modifier
+                            .width(21.dp)
+                            .clickable(
+                                interactionSource = remember { MutableInteractionSource() },
+                                indication = null,
+                            ) {
+                                deleteComment()
+                            },
                         text = stringResource(id = R.string.remove),
                         style = MaterialTheme.typography.labelLarge.copy(
                             color = MaterialTheme.colorScheme.onTertiary,
@@ -105,6 +115,7 @@ private fun CommentScreenIsMinePreview() {
             content = "댓글내용입니다댓글내용입니다댓글내용입니다댓글내용입니다댓글내용입니다댓글내용입니다댓글내용입니다댓글내용입니다댓글내용입니다댓글내용입니다댓글내용입니다댓글내용입니다",
             isLike = true,
             isMine = true,
+            deleteComment = {},
         )
     }
 }
@@ -118,6 +129,7 @@ private fun CommentScreenOtherPreview() {
             content = "댓글내용입니다댓글내용입니다댓글내용입니다댓글내용입니다댓글내용입니다댓글내용입니다댓글내용입니다댓글내용입니다댓글내용입니다댓글내용입니다댓글내용입니다댓글내용입니다",
             isMine = false,
             isLike = true,
+            deleteComment = {},
         )
     }
 }

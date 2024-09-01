@@ -12,4 +12,6 @@ interface SpecPolicyRepository {
     fun getFilterInfo(): Flow<FilterInfo>
     fun saveFilterInfo(filterInfo: FilterInfo): Flow<FilterInfo>
     fun postScrap(id: String): Flow<String>
+    fun postAddComment(policyId: String, text: String): Flow<Long>
+    fun postDeleteComment(commentId: Long): Flow<String>
 }

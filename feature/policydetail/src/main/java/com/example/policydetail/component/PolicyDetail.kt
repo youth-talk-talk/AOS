@@ -1,6 +1,9 @@
 package com.example.policydetail.component
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,6 +13,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -68,130 +75,187 @@ fun PolicyDetail(modifier: Modifier = Modifier, policyDetail: PolicyDetail) {
 
 @Composable
 private fun MoreScreen(etc: String, hostDep: String, operatingOrg: String, refUrl1: String, refUrl2: String) {
+    var isExpand by remember {
+        mutableStateOf(false)
+    }
     Column(
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        PolicyIconTitle(
-            icon = painterResource(id = R.drawable.add_icon),
-            title = stringResource(id = R.string.apply_more_title),
-        )
-
-        Column(
-            verticalArrangement = Arrangement.spacedBy(4.dp),
+        Row(
+            modifier = Modifier.fillMaxWidth(),
         ) {
-            Text(
-                text = stringResource(id = R.string.apply_more_etc),
-                style = MaterialTheme.typography.titleLarge.copy(
-                    color = gray50,
-                ),
+            PolicyIconTitle(
+                modifier = Modifier.weight(1f),
+                icon = painterResource(id = R.drawable.add_icon),
+                title = stringResource(id = R.string.apply_more_title),
             )
-
-            Text(
-                text = etc,
-                style = MaterialTheme.typography.headlineLarge.copy(
-                    fontWeight = FontWeight.W400,
-                    color = Color.Black,
-                ),
+            Icon(
+                modifier = Modifier
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null,
+                    ) { isExpand = !isExpand },
+                painter = if (isExpand) painterResource(id = R.drawable.up_icon) else painterResource(id = R.drawable.down_icon),
+                contentDescription = "열기/닫기",
+                tint = Color.Black,
             )
         }
 
-        Column(
-            verticalArrangement = Arrangement.spacedBy(4.dp),
-        ) {
-            Text(
-                text = stringResource(id = R.string.apply_more_host_dep),
-                style = MaterialTheme.typography.titleLarge.copy(
-                    color = gray50,
-                ),
-            )
-
-            Text(
-                text = "-주관 기간: ${hostDep}\n-운영기관: $operatingOrg",
-                style = MaterialTheme.typography.headlineLarge.copy(
-                    fontWeight = FontWeight.W400,
-                    color = Color.Black,
-                ),
-            )
-        }
-
-        Column(
-            verticalArrangement = Arrangement.spacedBy(4.dp),
-        ) {
-            Text(
-                text = stringResource(id = R.string.apply_more_ref_site),
-                style = MaterialTheme.typography.titleLarge.copy(
-                    color = gray50,
-                ),
-            )
-
-            Text(
-                text = "-사업관련 참고 사이트1",
-                style = MaterialTheme.typography.headlineLarge.copy(
-                    fontWeight = FontWeight.W400,
-                    color = Color.Black,
-                ),
-            )
-
-            Text(
-                text = "    ${Typography.middleDot} $refUrl1",
-                style = MaterialTheme.typography.headlineLarge.copy(
-                    fontWeight = FontWeight.W400,
-                    color = Color.Black,
-                    lineBreak = LineBreak.Paragraph,
-                ),
-            )
-
-            Text(
-                text = "-사업관련 참고 사이트 2",
-                style = MaterialTheme.typography.headlineLarge.copy(
-                    fontWeight = FontWeight.W400,
-                    color = Color.Black,
-                ),
-            )
-            Text(
-                text = "    ${Typography.middleDot} $refUrl2",
-                style = MaterialTheme.typography.headlineLarge.copy(
-                    fontWeight = FontWeight.W400,
-                    color = Color.Black,
-                    lineBreak = LineBreak.Paragraph,
-                ),
-            )
+        AnimatedVisibility(visible = isExpand) {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(20.dp),
+            ) {
+                EtcInfo(etc)
+                OperateInfo(hostDep, operatingOrg)
+                RefSiteInfo(refUrl1, refUrl2)
+            }
         }
     }
 }
 
 @Composable
+private fun RefSiteInfo(refUrl1: String, refUrl2: String) {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(4.dp),
+    ) {
+        Text(
+            text = stringResource(id = R.string.apply_more_ref_site),
+            style = MaterialTheme.typography.titleLarge.copy(
+                color = gray50,
+            ),
+        )
+
+        Text(
+            text = "-사업관련 참고 사이트1",
+            style = MaterialTheme.typography.headlineLarge.copy(
+                fontWeight = FontWeight.W400,
+                color = Color.Black,
+            ),
+        )
+
+        Text(
+            text = "    ${Typography.middleDot} $refUrl1",
+            style = MaterialTheme.typography.headlineLarge.copy(
+                fontWeight = FontWeight.W400,
+                color = Color.Black,
+                lineBreak = LineBreak.Paragraph,
+            ),
+        )
+
+        Text(
+            text = "-사업관련 참고 사이트 2",
+            style = MaterialTheme.typography.headlineLarge.copy(
+                fontWeight = FontWeight.W400,
+                color = Color.Black,
+            ),
+        )
+        Text(
+            text = "    ${Typography.middleDot} $refUrl2",
+            style = MaterialTheme.typography.headlineLarge.copy(
+                fontWeight = FontWeight.W400,
+                color = Color.Black,
+                lineBreak = LineBreak.Paragraph,
+            ),
+        )
+    }
+}
+
+@Composable
+private fun OperateInfo(hostDep: String, operatingOrg: String) {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(2.dp),
+    ) {
+        Text(
+            text = stringResource(id = R.string.apply_more_host_dep),
+            style = MaterialTheme.typography.titleLarge.copy(
+                color = gray50,
+            ),
+        )
+
+        Text(
+            text = "-주관 기간: ${hostDep}\n-운영기관: $operatingOrg",
+            style = MaterialTheme.typography.headlineLarge.copy(
+                fontWeight = FontWeight.W400,
+                color = Color.Black,
+            ),
+        )
+    }
+}
+
+@Composable
+private fun EtcInfo(etc: String) {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(4.dp),
+    ) {
+        Text(
+            text = stringResource(id = R.string.apply_more_etc),
+            style = MaterialTheme.typography.titleLarge.copy(
+                color = gray50,
+            ),
+        )
+
+        Text(
+            text = etc,
+            style = MaterialTheme.typography.headlineLarge.copy(
+                fontWeight = FontWeight.W400,
+                color = Color.Black,
+            ),
+        )
+    }
+}
+
+@Composable
 private fun ApplyMethod(applyStep: String, evaluation: String, applyUrl: String, submitDoc: String) {
+    var isExpand by remember {
+        mutableStateOf(false)
+    }
     Column(
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        PolicyIconTitle(
-            icon = painterResource(id = R.drawable.question_icon),
-            title = stringResource(id = R.string.apply_method_title),
-        )
-
-        Column(
-            verticalArrangement = Arrangement.spacedBy(4.dp),
+        Row(
+            modifier = Modifier.fillMaxWidth(),
         ) {
-            DetailedConditions(
-                title = stringResource(id = R.string.apply_method_apply_step),
-                content = applyStep,
+            PolicyIconTitle(
+                modifier = Modifier.weight(1f),
+                icon = painterResource(id = R.drawable.question_icon),
+                title = stringResource(id = R.string.apply_method_title),
             )
+            Icon(
+                modifier = Modifier
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null,
+                    ) { isExpand = !isExpand },
+                painter = if (isExpand) painterResource(id = R.drawable.up_icon) else painterResource(id = R.drawable.down_icon),
+                contentDescription = "열기/닫기",
+                tint = Color.Black,
+            )
+        }
 
-            DetailedConditions(
-                title = stringResource(id = R.string.apply_method_apply_evaluation),
-                content = evaluation,
-            )
+        AnimatedVisibility(visible = isExpand) {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(4.dp),
+            ) {
+                DetailedConditions(
+                    title = stringResource(id = R.string.apply_method_apply_step),
+                    content = applyStep,
+                )
 
-            DetailedConditions(
-                title = stringResource(id = R.string.apply_method_apply_url),
-                content = applyUrl,
-            )
+                DetailedConditions(
+                    title = stringResource(id = R.string.apply_method_apply_evaluation),
+                    content = evaluation,
+                )
 
-            DetailedConditions(
-                title = stringResource(id = R.string.apply_method_submit_doc),
-                content = submitDoc,
-            )
+                DetailedConditions(
+                    title = stringResource(id = R.string.apply_method_apply_url),
+                    content = applyUrl,
+                )
+
+                DetailedConditions(
+                    title = stringResource(id = R.string.apply_method_submit_doc),
+                    content = submitDoc,
+                )
+            }
         }
     }
 }
@@ -207,56 +271,77 @@ private fun ApplyUser(
     applyLimit: String,
     addition: String,
 ) {
+    var isExpand by remember {
+        mutableStateOf(false)
+    }
+
     Column(
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        PolicyIconTitle(
-            icon = painterResource(id = R.drawable.person_icon),
-            title = stringResource(id = R.string.apply_user_title),
-        )
-
-        Column(
-            verticalArrangement = Arrangement.spacedBy(4.dp),
+        Row(
+            modifier = Modifier.fillMaxWidth(),
         ) {
-            DetailedConditions(
-                title = stringResource(id = R.string.age),
-                content = age,
+            PolicyIconTitle(
+                modifier = Modifier.weight(1f),
+                icon = painterResource(id = R.drawable.person_icon),
+                title = stringResource(id = R.string.apply_user_title),
             )
+            Icon(
+                modifier = Modifier
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null,
+                    ) { isExpand = !isExpand },
+                painter = if (isExpand) painterResource(id = R.drawable.up_icon) else painterResource(id = R.drawable.down_icon),
+                contentDescription = "열기/닫기",
+                tint = Color.Black,
+            )
+        }
 
-            DetailedConditions(
-                title = stringResource(id = R.string.addr_income),
-                content = addrIncome,
-            )
+        AnimatedVisibility(visible = isExpand) {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(4.dp),
+            ) {
+                DetailedConditions(
+                    title = stringResource(id = R.string.age),
+                    content = age,
+                )
 
-            DetailedConditions(
-                title = stringResource(id = R.string.education),
-                content = education,
-            )
+                DetailedConditions(
+                    title = stringResource(id = R.string.addr_income),
+                    content = addrIncome,
+                )
 
-            DetailedConditions(
-                title = stringResource(id = R.string.major),
-                content = major,
-            )
+                DetailedConditions(
+                    title = stringResource(id = R.string.education),
+                    content = education,
+                )
 
-            DetailedConditions(
-                title = stringResource(id = R.string.employment),
-                content = employment,
-            )
+                DetailedConditions(
+                    title = stringResource(id = R.string.major),
+                    content = major,
+                )
 
-            DetailedConditions(
-                title = stringResource(id = R.string.specialization),
-                content = specialization,
-            )
+                DetailedConditions(
+                    title = stringResource(id = R.string.employment),
+                    content = employment,
+                )
 
-            DetailedConditions(
-                title = stringResource(id = R.string.apply_limit),
-                content = applyLimit,
-            )
+                DetailedConditions(
+                    title = stringResource(id = R.string.specialization),
+                    content = specialization,
+                )
 
-            DetailedConditions(
-                title = stringResource(id = R.string.addition),
-                content = addition,
-            )
+                DetailedConditions(
+                    title = stringResource(id = R.string.apply_limit),
+                    content = applyLimit,
+                )
+
+                DetailedConditions(
+                    title = stringResource(id = R.string.addition),
+                    content = addition,
+                )
+            }
         }
     }
 }
@@ -284,7 +369,7 @@ private fun SummaryCheck(supportDetail: String, applyTerm: String, operateTerm: 
         PolicyContent(
             modifier = Modifier.padding(bottom = 9.dp),
             contentTitle = stringResource(id = R.string.apply_operate_title),
-            contentDetail = operateTerm,
+            contentDetail = operateTerm.ifEmpty { "-" },
         )
     }
 }
@@ -304,7 +389,7 @@ private fun DetailedConditions(modifier: Modifier = Modifier, title: String, con
         )
 
         Text(
-            modifier = Modifier.weight(3f),
+            modifier = Modifier.weight(4f),
             text = content,
             style = MaterialTheme.typography.headlineLarge.copy(
                 lineHeight = 20.sp,

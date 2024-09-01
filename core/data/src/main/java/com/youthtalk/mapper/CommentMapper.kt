@@ -7,5 +7,5 @@ fun CommentResponse.toDate() = Comment(
     commentId = commentId,
     nickname = nickname,
     content = content,
-    isLikeByMember = isLikeByMember,
+    isLikedByMember = isLikedByMember,
 )

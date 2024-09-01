@@ -29,7 +29,7 @@ import com.youthtalk.model.Policy
 import com.youthtalk.util.clickableSingle
 
 @Composable
-fun PopularCard(modifier: Modifier = Modifier, policy: Policy, onClickDetailPolicy: (String) -> Unit, onClickScrap: (String) -> Unit) {
+fun PopularCard(modifier: Modifier = Modifier, policy: Policy, onClickDetailPolicy: (String) -> Unit, onClickScrap: (String, Boolean) -> Unit) {
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -71,7 +71,7 @@ fun PopularCard(modifier: Modifier = Modifier, policy: Policy, onClickDetailPoli
                         interactionSource = remember { MutableInteractionSource() },
                         indication = null,
                     ) {
-                        onClickScrap(policy.policyId)
+                        onClickScrap(policy.policyId, policy.scrap)
                     },
                 painter = if (policy.scrap) painterResource(id = R.drawable.bookmark_check) else painterResource(id = R.drawable.bookmark),
                 contentDescription = "bookmark",
@@ -98,7 +98,7 @@ private fun PopularCardPreview() {
             modifier = Modifier.aspectRatio(15 / 14f),
             policy = policy,
             onClickDetailPolicy = {},
-            onClickScrap = {},
+            onClickScrap = { _, _ -> },
         )
     }
 }

@@ -107,14 +107,16 @@ fun CommunityDetailScreen(postId: Long, type: String) {
                         ),
                     nickname = comment.nickname,
                     content = comment.content,
-                    isLike = comment.isLikeByMember,
+                    isLike = comment.isLikedByMember,
                     isMine = false,
+                    deleteComment = {},
                 )
             }
         }
 
         CommentTextField(
             modifier = Modifier.imePadding(),
+            addComment = {},
         )
     }
 }
@@ -124,19 +126,19 @@ private fun getComments() = listOf(
         commentId = 142,
         nickname = "집가고싶다어",
         content = "댓글내용수정1",
-        isLikeByMember = false,
+        isLikedByMember = false,
     ),
     Comment(
         commentId = 144,
         nickname = "집가고싶다어",
         content = "댓글내용수정3",
-        isLikeByMember = false,
+        isLikedByMember = false,
     ),
     Comment(
         commentId = 382,
         nickname = "집가고싶다어",
         content = "댓글내용수정2",
-        isLikeByMember = false,
+        isLikedByMember = false,
     ),
 )
 

@@ -81,7 +81,7 @@ fun SpecPolicyScreen(
                 onClickReset = { viewModel.uiEvent(SpecPolicyUiEvent.FilterReset) },
                 onChangeAge = { viewModel.uiEvent(SpecPolicyUiEvent.ChangeAge(it)) },
                 onClickApply = { viewModel.uiEvent(SpecPolicyUiEvent.FilterApply) },
-                onClickScrap = { viewModel.uiEvent(SpecPolicyUiEvent.ClickScrap(it)) },
+                onClickScrap = { id, scrap -> viewModel.uiEvent(SpecPolicyUiEvent.ClickScrap(id, scrap)) },
             )
         }
     }
@@ -99,7 +99,7 @@ private fun SpecPolicyScreen(
     onClickReset: () -> Unit,
     onChangeAge: (String) -> Unit,
     onClickApply: () -> Unit,
-    onClickScrap: (String) -> Unit,
+    onClickScrap: (String, Boolean) -> Unit,
 ) {
     val policies = uiState.polices.collectAsLazyPagingItems()
     val policyCount = uiState.policyCount

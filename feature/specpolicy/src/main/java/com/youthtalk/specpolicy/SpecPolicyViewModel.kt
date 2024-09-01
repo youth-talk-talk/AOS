@@ -48,11 +48,11 @@ class SpecPolicyViewModel @Inject constructor(
             is SpecPolicyUiEvent.FilterReset -> resetFilter()
             is SpecPolicyUiEvent.FilterApply -> applyFilter()
             is SpecPolicyUiEvent.ChangeAge -> changeAge(event.age)
-            is SpecPolicyUiEvent.ClickScrap -> clickScrap(event.id)
+            is SpecPolicyUiEvent.ClickScrap -> clickScrap(event.id, event.scrap)
         }
     }
 
-    private fun clickScrap(id: String) {
+    private fun clickScrap(id: String, scrap: Boolean) {
         val state = _uiState.value
         if (state !is SpecPolicyUiState.Success) return
 
@@ -62,13 +62,13 @@ class SpecPolicyViewModel @Inject constructor(
                     Log.d("YOON-CHAN", "SpecPolicyViewModel clickScrap error ${it.message}")
                 }
                 .collectLatest {
-                    val newSet = if (state.scrap.contains(id)) {
+                    val newScrap = if (state.scrap.contains(id)) {
                         state.scrap - id
                     } else {
-                        state.scrap + id
+                        state.scrap + Pair(id, !scrap)
                     }
                     _uiState.value = state.copy(
-                        scrap = newSet,
+                        scrap = newScrap,
                     )
                 }
         }

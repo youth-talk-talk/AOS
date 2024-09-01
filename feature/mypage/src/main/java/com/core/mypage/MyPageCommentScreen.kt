@@ -45,8 +45,9 @@ fun MyPageCommentScreen(isMine: Boolean, onBack: () -> Unit) {
                 CommentScreen(
                     nickname = comment.nickname,
                     content = comment.content,
-                    isLike = comment.isLikeByMember,
+                    isLike = comment.isLikedByMember,
                     isMine = false,
+                    deleteComment = {},
                 )
             }
         }
@@ -61,7 +62,7 @@ private fun getComments(): List<Comment> {
                 commentId = 0,
                 nickname = "닉네임${index + 1}",
                 content = "컨텐츠${index + 1}",
-                isLikeByMember = true,
+                isLikedByMember = true,
             ),
         )
     }

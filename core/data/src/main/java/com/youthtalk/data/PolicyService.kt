@@ -3,6 +3,7 @@ package com.youthtalk.data
 import com.youthtalk.dto.CommonResponse
 import com.youthtalk.dto.HomePoliciesResponse
 import com.youthtalk.dto.PolicyDetailResponse
+import com.youthtalk.dto.PostAddCommentResponse
 import com.youthtalk.dto.specpolicy.SpecPoliciesResponse
 import okhttp3.RequestBody
 import retrofit2.http.Body
@@ -30,6 +31,9 @@ interface PolicyService {
         @Query("size") size: Int,
     ): CommonResponse<SpecPoliciesResponse>
 
-    @POST("policies/{id}/scrap")
+    @POST("/policies/{id}/scrap")
     suspend fun postPolicyScrap(@Path("id") id: String): CommonResponse<Unit>
+
+    @POST("/policies/comments")
+    suspend fun postAddComment(@Body requestBody: RequestBody): CommonResponse<PostAddCommentResponse>
 }
