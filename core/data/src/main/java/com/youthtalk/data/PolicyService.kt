@@ -29,4 +29,7 @@ interface PolicyService {
         @Query("page") page: Int,
         @Query("size") size: Int,
     ): CommonResponse<SpecPoliciesResponse>
+
+    @POST("policies/{id}/scrap")
+    suspend fun postPolicyScrap(@Path("id") id: String): CommonResponse<Unit>
 }

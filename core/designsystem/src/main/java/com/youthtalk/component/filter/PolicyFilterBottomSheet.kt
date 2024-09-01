@@ -3,6 +3,8 @@ package com.youthtalk.component.filter
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,14 +22,12 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -48,7 +48,17 @@ import com.youthtalk.model.FilterInfo
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-fun PolicyFilterBottomSheet(filterInfo: FilterInfo? = null, showBottomSheet: Boolean, sheetState: SheetState, onDismiss: () -> Unit) {
+fun PolicyFilterBottomSheet(
+    filterInfo: FilterInfo? = null,
+    showBottomSheet: Boolean,
+    sheetState: SheetState,
+    onDismiss: () -> Unit,
+    onClickEmploy: (EmploymentCode) -> Unit,
+    onClickFinished: (Boolean) -> Unit,
+    onClickReset: () -> Unit,
+    onChangeAge: (String) -> Unit,
+    onClickApply: () -> Unit,
+) {
     if (showBottomSheet) {
         ModalBottomSheet(
             modifier = Modifier
@@ -58,15 +68,26 @@ fun PolicyFilterBottomSheet(filterInfo: FilterInfo? = null, showBottomSheet: Boo
             dragHandle = null,
             onDismissRequest = onDismiss,
         ) {
-            FilterTopBar()
-            FilterInfo(filterInfo)
-            FilterCheckButton()
+            FilterTopBar(
+                onDismiss = onDismiss,
+            )
+            FilterInfo(
+                filterInfo,
+                onClickEmploy = onClickEmploy,
+                onClickFinished = onClickFinished,
+                ageChange = onChangeAge,
+            )
+            FilterCheckButton(
+                onClickReset = onClickReset,
+                onClickApply = onClickApply,
+                onDismiss = onDismiss,
+            )
         }
     }
 }
 
 @Composable
-private fun FilterCheckButton() {
+private fun FilterCheckButton(onClickReset: () -> Unit, onClickApply: () -> Unit, onDismiss: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -80,7 +101,13 @@ private fun FilterCheckButton() {
                 .clip(CircleShape)
                 .background(
                     color = MaterialTheme.colorScheme.onSurface,
-                ),
+                )
+                .clickable(
+                    interactionSource = remember {
+                        MutableInteractionSource()
+                    },
+                    indication = null,
+                ) { onClickReset() },
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
         ) {
@@ -98,14 +125,16 @@ private fun FilterCheckButton() {
             modifier = Modifier.fillMaxWidth(),
             text = "적용하기",
             color = MaterialTheme.colorScheme.primary,
-            enabled = false,
-            onClick = {},
+            onClick = {
+                onClickApply()
+                onDismiss()
+            },
         )
     }
 }
 
 @Composable
-private fun FilterTopBar() {
+private fun FilterTopBar(onDismiss: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -120,10 +149,10 @@ private fun FilterTopBar() {
         )
 
         Icon(
-            modifier =
-            Modifier
+            modifier = Modifier
                 .align(Alignment.CenterEnd)
-                .padding(end = 20.dp),
+                .padding(end = 20.dp)
+                .clickable { onDismiss() },
             painter = painterResource(R.drawable.close_icon),
             contentDescription = "닫기",
             tint = MaterialTheme.colorScheme.onSecondary,
@@ -149,20 +178,34 @@ private fun FilterTopBar() {
 }
 
 @Composable
-fun ColumnScope.FilterInfo(filterInfo: FilterInfo?) {
+fun ColumnScope.FilterInfo(
+    filterInfo: FilterInfo?,
+    onClickEmploy: (EmploymentCode) -> Unit,
+    onClickFinished: (Boolean) -> Unit,
+    ageChange: (String) -> Unit,
+) {
     Column(
         modifier = Modifier
             .weight(1f)
             .verticalScroll(rememberScrollState()),
     ) {
-        FilterCategoryAge(filterInfo?.age)
-        FilterCategoryRecruit(filterInfo?.employmentCodeList)
-        FilterCategoryIsEnd(filterInfo?.isFinished)
+        FilterCategoryAge(
+            age = filterInfo?.age,
+            onValueChange = ageChange,
+        )
+        FilterCategoryRecruit(
+            filterInfo?.employmentCodeList,
+            onClick = onClickEmploy,
+        )
+        FilterCategoryIsEnd(
+            filterInfo?.isFinished,
+            onClick = onClickFinished,
+        )
     }
 }
 
 @Composable
-private fun FilterCategoryIsEnd(isFinished: Boolean?) {
+private fun FilterCategoryIsEnd(isFinished: Boolean?, onClick: (Boolean) -> Unit) {
     val finish = isFinished ?: false
     FilterCategoryTitle(
         title = "마감여부",
@@ -177,22 +220,25 @@ private fun FilterCategoryIsEnd(isFinished: Boolean?) {
             modifier = Modifier.weight(1f),
             title = "전체 선택",
             isSelected = !finish,
+            onClick = { onClick(false) },
         )
         CategoryButton(
             modifier = Modifier.weight(1f),
             title = "진행중인 정책",
             isSelected = finish,
+            onClick = { onClick(true) },
         )
     }
 }
 
 @Composable
-private fun FilterCategoryRecruit(employmentCodes: List<EmploymentCode>?) {
+private fun FilterCategoryRecruit(employmentCodes: List<EmploymentCode>?, onClick: (EmploymentCode) -> Unit) {
     FilterCategoryTitle(
         title = "취업상태",
     )
 
-    val list = stringArrayResource(id = R.array.category).toList()
+    val list = stringArrayResource(id = R.array.category)
+        .map { name -> EmploymentCode.entries.find { it.employName == name } ?: EmploymentCode.ALL }
     NonlazyGrid(
         modifier = Modifier.padding(
             start = 11.5.dp,
@@ -203,26 +249,26 @@ private fun FilterCategoryRecruit(employmentCodes: List<EmploymentCode>?) {
         columns = 2,
         itemCount = list.size,
     ) { index ->
-        val name = list[index]
+        val employmentCode = list[index]
         CategoryButton(
             modifier = Modifier.padding(
                 horizontal = 5.5.dp,
                 vertical = 4.dp,
             ),
-            title = name,
-            isSelected = checkEmploy(index, employmentCodes, name),
+            title = employmentCode.employName,
+            isSelected = checkEmploy(index, employmentCodes, employmentCode.employName),
+            onClick = {
+                onClick(employmentCode)
+            },
         )
     }
 }
 
-private fun checkEmploy(index: Int, employmentCodes: List<EmploymentCode>?, name: String) =
-    (index == 0 && employmentCodes == null) || (employmentCodes?.any { it.employName == name } ?: false)
+private fun checkEmploy(index: Int, employmentCodes: List<EmploymentCode>?, name: String) = (index == 0 && employmentCodes.isNullOrEmpty()) ||
+    (employmentCodes?.any { it.employName == name } ?: false)
 
 @Composable
-private fun FilterCategoryAge(age: Int?) {
-    var text by remember {
-        mutableStateOf(age?.toString() ?: "")
-    }
+private fun FilterCategoryAge(age: Int?, onValueChange: (String) -> Unit) {
     FilterCategoryTitle(
         title = "연령",
     )
@@ -239,18 +285,16 @@ private fun FilterCategoryAge(age: Int?) {
             ),
         )
         BasicTextField(
-            value = text,
-            onValueChange = {
-                if (it.length < 3) {
-                    text = it
-                }
-            },
+            value = age?.toString() ?: "",
+            onValueChange = onValueChange,
             singleLine = true,
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Number,
                 imeAction = ImeAction.Go,
             ),
-            textStyle = LocalTextStyle.current.copy(textAlign = TextAlign.Center),
+            textStyle = MaterialTheme.typography.titleMedium.copy(
+                textAlign = TextAlign.Center,
+            ),
         ) { innerTextField ->
             Row(
                 modifier = Modifier

@@ -94,8 +94,8 @@ class DataStoreDataSource @Inject constructor(
         }
     }
 
-    override suspend fun setEmployCodeFilter(employmentCodes: List<EmploymentCode>) {
-        val listToString = Json.encodeToJsonElement<List<EmploymentCode>>(employmentCodes)
+    override suspend fun setEmployCodeFilter(employmentCodes: List<EmploymentCode>?) {
+        val listToString = Json.encodeToJsonElement<List<EmploymentCode>>(employmentCodes ?: listOf())
         dataStore.edit { prefs ->
             prefs[EMPLOY_CODE] = listToString.toString()
         }
@@ -105,9 +105,9 @@ class DataStoreDataSource @Inject constructor(
         prefs[AGE]
     }
 
-    override suspend fun setAge(age: Int) {
+    override suspend fun setAge(age: Int?) {
         dataStore.edit { prefs ->
-            prefs[AGE] = age
+            prefs[AGE] = age ?: 0
         }
     }
 
@@ -115,9 +115,9 @@ class DataStoreDataSource @Inject constructor(
         prefs[IS_FINISH] ?: false
     }
 
-    override suspend fun setFinish(isFinish: Boolean) {
+    override suspend fun setFinish(isFinish: Boolean?) {
         dataStore.edit { prefs ->
-            prefs[IS_FINISH] = isFinish
+            prefs[IS_FINISH] = isFinish ?: false
         }
     }
 }

@@ -205,6 +205,7 @@ private fun UpdatePolicyScreen(modifier: Modifier = Modifier, policy: Policy?, o
                 modifier = Modifier.padding(bottom = 12.dp),
                 policy = policy,
                 onClickDetailPolicy = onClickDetailPolicy,
+                onClickScrap = {},
             )
         }
     }

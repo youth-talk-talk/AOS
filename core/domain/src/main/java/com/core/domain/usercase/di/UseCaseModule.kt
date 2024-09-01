@@ -2,12 +2,14 @@ package com.core.domain.usercase.di
 
 import com.core.dataapi.repository.HomeRepository
 import com.core.dataapi.repository.LoginRepository
+import com.core.dataapi.repository.SpecPolicyRepository
 import com.core.dataapi.repository.UserRepository
 import com.core.domain.usercase.ChangeCategoriesUseCase
 import com.core.domain.usercase.CheckTokenUseCase
 import com.core.domain.usercase.GetCategoriesUseCase
 import com.core.domain.usercase.GetUserUseCase
 import com.core.domain.usercase.PostLoginUseCase
+import com.core.domain.usercase.PostPolicyScrapUseCase
 import com.core.domain.usercase.PostSignUseCase
 import dagger.Module
 import dagger.Provides
@@ -42,4 +44,8 @@ object UseCaseModule {
     @Singleton
     fun provideSetCategoriesUseCase(userRepository: UserRepository, homeRepository: HomeRepository) =
         ChangeCategoriesUseCase(userRepository, homeRepository)
+
+    @Provides
+    @Singleton
+    fun providePostPolicyScrapUseCase(repository: SpecPolicyRepository) = PostPolicyScrapUseCase(repository)
 }
