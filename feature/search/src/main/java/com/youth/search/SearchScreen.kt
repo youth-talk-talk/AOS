@@ -113,9 +113,14 @@ fun SearchScreen(type: String) {
     PolicyFilterBottomSheet(
         showBottomSheet = showBottomSheet,
         sheetState = sheetState,
-    ) {
-        showBottomSheet = false
-    }
+        onDismiss = { showBottomSheet = false },
+        filterInfo = null,
+        onClickEmploy = {},
+        onClickFinished = {},
+        onClickReset = {},
+        onChangeAge = {},
+        onClickApply = {},
+    )
 }
 
 @Composable
@@ -162,6 +167,7 @@ fun SearchResultScreen(showFilterBottomSheet: () -> Unit, isPolicySearch: Boolea
                     .padding(bottom = 12.dp),
                 policy = dummyPolicies[index],
                 onClickDetailPolicy = { },
+                onClickScrap = {},
             )
         }
     }

@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -114,6 +115,7 @@ private fun CommunitySuccessScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(MaterialTheme.colorScheme.onSecondaryContainer),
+                contentPadding = PaddingValues(bottom = 12.dp),
             ) {
                 item {
                     CommunityTab(
@@ -323,7 +325,7 @@ private fun LazyListScope.reviewPost(
                     color = MaterialTheme.colorScheme.onSecondaryContainer,
                 )
                 .padding(horizontal = 17.dp)
-                .padding(top = 12.dp, bottom = if (index == 4) 12.dp else 0.dp),
+                .padding(top = 12.dp),
 
         ) {
             reviewPosts[index]?.let { post ->
@@ -472,7 +474,7 @@ fun LazyListScope.freeBoard(popularPosts: List<Post>, posts: LazyPagingItems<Pos
                         color = MaterialTheme.colorScheme.onSecondaryContainer,
                     )
                     .padding(horizontal = 17.dp)
-                    .padding(top = 12.dp, bottom = if (index == 4) 12.dp else 0.dp),
+                    .padding(top = 12.dp),
 
             ) {
                 PostCard(

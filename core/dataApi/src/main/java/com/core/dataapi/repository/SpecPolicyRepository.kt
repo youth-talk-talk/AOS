@@ -10,4 +10,6 @@ interface SpecPolicyRepository {
     fun getPolicies(categories: List<Category>): Flow<Flow<PagingData<Policy>>>
     fun getCount(categories: List<Category>): Flow<Int>
     fun getFilterInfo(): Flow<FilterInfo>
+    fun saveFilterInfo(filterInfo: FilterInfo): Flow<FilterInfo>
+    fun postScrap(id: String): Flow<String>
 }

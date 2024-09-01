@@ -12,8 +12,8 @@ interface DataSource {
     fun getAge(): Flow<Int?>
     fun getFinish(): Flow<Boolean>
     suspend fun setCategoryFilter(categories: List<Category>)
-    suspend fun setEmployCodeFilter(employmentCodes: List<EmploymentCode>)
+    suspend fun setEmployCodeFilter(employmentCodes: List<EmploymentCode>?)
     suspend fun setReviewCategoryFilter(categories: List<Category>)
-    suspend fun setAge(age: Int)
-    suspend fun setFinish(isFinish: Boolean)
+    suspend fun setAge(age: Int?)
+    suspend fun setFinish(isFinish: Boolean?)
 }

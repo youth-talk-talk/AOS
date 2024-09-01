@@ -6,6 +6,7 @@ import kotlinx.serialization.Serializable
 enum class EmploymentCode(
     val employName: String
 ) {
+    ALL("전체선택"),
     EMPLOYED("재직자"),
     SELF_EMPLOYED("자영업자"),
     UNEMPLOYED("미취업자"),

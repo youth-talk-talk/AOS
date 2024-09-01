@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -39,6 +38,7 @@ import com.youthtalk.component.filter.FilterComponent
 import com.youthtalk.component.filter.PolicyFilterBottomSheet
 import com.youthtalk.designsystem.YongProjectTheme
 import com.youthtalk.model.Category
+import com.youthtalk.model.EmploymentCode
 import com.youthtalk.model.Policy
 import com.youthtalk.specpolicy.component.SpecPolicyTopBar
 import com.youthtalk.specpolicy.model.SpecPolicyUiEvent
@@ -75,12 +75,13 @@ fun SpecPolicyScreen(
                 category,
                 navController,
                 uiState as SpecPolicyUiState.Success,
-                onClickPolicyDetail = {
-                    navController.navigate("${Nav.PolicyDetail.route}/$it") {
-                        restoreState = true
-                        launchSingleTop = true
-                    }
-                },
+                onClickEmploy = { viewModel.uiEvent(SpecPolicyUiEvent.ChangeEmployCode(it)) },
+                onClickFinished = { viewModel.uiEvent(SpecPolicyUiEvent.ChangeFinished(it)) },
+                onClickBottomSheet = { viewModel.uiEvent(SpecPolicyUiEvent.GetFilterInfo) },
+                onClickReset = { viewModel.uiEvent(SpecPolicyUiEvent.FilterReset) },
+                onChangeAge = { viewModel.uiEvent(SpecPolicyUiEvent.ChangeAge(it)) },
+                onClickApply = { viewModel.uiEvent(SpecPolicyUiEvent.FilterApply) },
+                onClickScrap = { viewModel.uiEvent(SpecPolicyUiEvent.ClickScrap(it)) },
             )
         }
     }
@@ -92,7 +93,13 @@ private fun SpecPolicyScreen(
     category: Category,
     navController: NavHostController,
     uiState: SpecPolicyUiState.Success,
-    onClickPolicyDetail: (String) -> Unit,
+    onClickEmploy: (EmploymentCode) -> Unit,
+    onClickFinished: (Boolean) -> Unit,
+    onClickBottomSheet: () -> Unit,
+    onClickReset: () -> Unit,
+    onChangeAge: (String) -> Unit,
+    onClickApply: () -> Unit,
+    onClickScrap: (String) -> Unit,
 ) {
     val policies = uiState.polices.collectAsLazyPagingItems()
     val policyCount = uiState.policyCount
@@ -128,6 +135,7 @@ private fun SpecPolicyScreen(
                         .padding(bottom = 12.dp)
                         .clickableSingle {
                             showBottomSheet = true
+                            onClickBottomSheet()
                         },
                 )
             }
@@ -143,12 +151,23 @@ private fun SpecPolicyScreen(
                 key = { index -> policies.peek(index)?.policyId ?: "" },
             ) { index ->
                 policies[index]?.let { policy ->
+                    val checkScrap = if (uiState.scrap.contains(policy.policyId)) {
+                        policy.copy(scrap = !policy.scrap)
+                    } else {
+                        policy
+                    }
                     PolicyCard(
                         modifier = Modifier
                             .padding(horizontal = 17.dp)
                             .padding(bottom = 12.dp),
-                        policy = policy,
-                        onClickDetailPolicy = { onClickPolicyDetail(it) },
+                        policy = checkScrap,
+                        onClickDetailPolicy = {
+                            navController.navigate("${Nav.PolicyDetail.route}/$it") {
+                                restoreState = true
+                                launchSingleTop = true
+                            }
+                        },
+                        onClickScrap = onClickScrap,
                     )
                 }
             }
@@ -160,6 +179,11 @@ private fun SpecPolicyScreen(
         sheetState = sheetState,
         showBottomSheet = showBottomSheet,
         onDismiss = { showBottomSheet = false },
+        onClickEmploy = onClickEmploy,
+        onClickFinished = onClickFinished,
+        onClickReset = onClickReset,
+        onChangeAge = onChangeAge,
+        onClickApply = onClickApply,
     )
 }
 
@@ -191,10 +215,6 @@ private fun SpecPolicyInfo(policyCount: Int) {
             contentDescription = "스파일 아이콘",
             tint = MaterialTheme.colorScheme.onSecondary,
         )
-        Spacer(modifier = Modifier.weight(1f))
-//        SortDropDownComponent(
-//            modifier = Modifier,
-//        )
     }
 }
 

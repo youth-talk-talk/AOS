@@ -75,4 +75,23 @@ class SpecPolicyRepositoryImpl @Inject constructor(
     ) { age, employCode, isFinished ->
         FilterInfo(age, employCode, isFinished)
     }
+
+    override fun saveFilterInfo(filterInfo: FilterInfo): Flow<FilterInfo> = flow {
+        dataSource.setAge(filterInfo.age)
+        dataSource.setFinish(filterInfo.isFinished)
+        dataSource.setEmployCodeFilter(filterInfo.employmentCodeList)
+        emit(filterInfo)
+    }
+
+    override fun postScrap(id: String): Flow<String> = flow {
+        runCatching {
+            policyService.postPolicyScrap(id)
+        }
+            .onSuccess { response ->
+                emit(response.message)
+            }
+            .onFailure {
+                Log.d("YOON-CHAN", "postScrap error ${it.message}")
+            }
+    }
 }

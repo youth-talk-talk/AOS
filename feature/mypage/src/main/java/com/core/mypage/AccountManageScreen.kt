@@ -201,6 +201,7 @@ private fun RegionBottomSheet(isShowBottomSheet: Boolean, bottomState: SheetStat
                     modifier = Modifier.padding(horizontal = 5.5.dp, vertical = 4.dp),
                     title = regions[index],
                     isSelected = false,
+                    onClick = {},
                 )
             }
             Spacer(modifier = Modifier.weight(1f))

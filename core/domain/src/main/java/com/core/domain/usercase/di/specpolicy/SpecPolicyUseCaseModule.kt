@@ -4,6 +4,7 @@ import com.core.dataapi.repository.SpecPolicyRepository
 import com.core.domain.usercase.specpolicy.GetPolicyCountUseCase
 import com.core.domain.usercase.specpolicy.GetUserFilterInfoUseCase
 import com.core.domain.usercase.specpolicy.PostSpecPoliciesUseCase
+import com.core.domain.usercase.specpolicy.SaveFilterUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -24,4 +25,8 @@ object SpecPolicyUseCaseModule {
     @Provides
     @Singleton
     fun provideGetUserFilterInfoUseCase(repository: SpecPolicyRepository) = GetUserFilterInfoUseCase(repository)
+
+    @Provides
+    @Singleton
+    fun provideSaveFilterUseCase(repository: SpecPolicyRepository) = SaveFilterUseCase(repository)
 }
