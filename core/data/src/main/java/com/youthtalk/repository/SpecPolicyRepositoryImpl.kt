@@ -7,8 +7,10 @@ import androidx.paging.PagingData
 import com.core.dataapi.repository.SpecPolicyRepository
 import com.core.datastore.datasource.DataStoreDataSource
 import com.core.exception.NoDataException
+import com.youthtalk.data.CommentService
 import com.youthtalk.data.PolicyService
 import com.youthtalk.datasource.specpolicy.SpecPolicyPagingSource
+import com.youthtalk.dto.specpolicy.CommentRequest
 import com.youthtalk.dto.specpolicy.FilterInfoRequest
 import com.youthtalk.model.Category
 import com.youthtalk.model.FilterInfo
@@ -21,6 +23,7 @@ import javax.inject.Inject
 
 class SpecPolicyRepositoryImpl @Inject constructor(
     private val policyService: PolicyService,
+    private val commentService: CommentService,
     private val dataSource: DataStoreDataSource,
 ) : SpecPolicyRepository {
     override fun getPolicies(categories: List<Category>): Flow<Flow<PagingData<Policy>>> = flow {
@@ -92,6 +95,34 @@ class SpecPolicyRepositoryImpl @Inject constructor(
             }
             .onFailure {
                 Log.d("YOON-CHAN", "postScrap error ${it.message}")
+            }
+    }
+
+    override fun postAddComment(policyId: String, text: String): Flow<Long> = flow {
+        runCatching {
+            policyService.postAddComment(
+                CommentRequest(policyId, text).toRequestBody(),
+            )
+        }
+            .onSuccess { response ->
+                response.data?.let {
+                    emit(it.commentId)
+                } ?: throw NoDataException("no Data")
+            }
+            .onFailure {
+                Log.d("YOON-CHAN", "postAddComment error ${it.message}")
+            }
+    }
+
+    override fun postDeleteComment(commentId: Long): Flow<String> = flow {
+        runCatching {
+            commentService.postDeleteComment(commentId)
+        }
+            .onSuccess { response ->
+                emit(response.message)
+            }
+            .onFailure {
+                Log.d("YOON-CHAN", "postDeleteComment error ${it.message}")
             }
     }
 }

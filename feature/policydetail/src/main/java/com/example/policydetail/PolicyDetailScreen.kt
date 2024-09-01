@@ -38,10 +38,12 @@ import com.youthtalk.designsystem.gray50
 
 @Composable
 fun PolicyDetailScreen(policyId: String, viewModel: PolicyDetailViewModel = hiltViewModel()) {
-    LaunchedEffect(key1 = null) {
-        viewModel.getData(policyId)
-    }
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    LaunchedEffect(key1 = true) {
+        if (uiState is PolicyDetailUiState.Loading) {
+            viewModel.getData(policyId)
+        }
+    }
     if (uiState !is PolicyDetailUiState.Success) {
         Box(
             modifier = Modifier
@@ -53,12 +55,20 @@ fun PolicyDetailScreen(policyId: String, viewModel: PolicyDetailViewModel = hilt
     } else {
         PolicyDetailSuccessScreen(
             uiState as PolicyDetailUiState.Success,
+            onClickScrap = { viewModel.postScrap(policyId) },
+            addComment = { viewModel.addComment(policyId, it) },
+            deleteComment = { index, id -> viewModel.deleteComment(index, id) },
         )
     }
 }
 
 @Composable
-private fun PolicyDetailSuccessScreen(uiState: PolicyDetailUiState.Success) {
+private fun PolicyDetailSuccessScreen(
+    uiState: PolicyDetailUiState.Success,
+    onClickScrap: () -> Unit,
+    addComment: (String) -> Unit,
+    deleteComment: (Int, Long) -> Unit,
+) {
     val policyDetail = uiState.policyDetail
     val comments = uiState.comments
     val user = uiState.myInfo
@@ -68,7 +78,10 @@ private fun PolicyDetailSuccessScreen(uiState: PolicyDetailUiState.Success) {
             .fillMaxSize()
             .background(color = Color.White),
     ) {
-        PolicyDetailTopAppBar()
+        PolicyDetailTopAppBar(
+            isScrap = policyDetail.isScrap,
+            onClickScrap = onClickScrap,
+        )
 
         LazyColumn(
             modifier = Modifier.weight(1f),
@@ -135,8 +148,9 @@ private fun PolicyDetailSuccessScreen(uiState: PolicyDetailUiState.Success) {
                         .shadow(3.dp),
                     nickname = comments[index].nickname,
                     content = comments[index].content,
-                    isLike = comments[index].isLikeByMember,
+                    isLike = comments[index].isLikedByMember,
                     isMine = user.nickname == comments[index].nickname,
+                    deleteComment = { deleteComment(index, comments[index].commentId) },
                 )
             }
         }
@@ -144,6 +158,7 @@ private fun PolicyDetailSuccessScreen(uiState: PolicyDetailUiState.Success) {
         CommentTextField(
             modifier = Modifier
                 .imePadding(),
+            addComment = addComment,
         )
     }
 }

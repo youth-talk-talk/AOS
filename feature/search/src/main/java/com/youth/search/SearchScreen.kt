@@ -167,7 +167,7 @@ fun SearchResultScreen(showFilterBottomSheet: () -> Unit, isPolicySearch: Boolea
                     .padding(bottom = 12.dp),
                 policy = dummyPolicies[index],
                 onClickDetailPolicy = { },
-                onClickScrap = {},
+                onClickScrap = { _, _ -> },
             )
         }
     }

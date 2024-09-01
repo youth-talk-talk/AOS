@@ -7,7 +7,7 @@ sealed interface SpecPolicyUiEvent {
     data class GetData(val category: Category) : SpecPolicyUiEvent
     data class ChangeEmployCode(val employmentCode: EmploymentCode) : SpecPolicyUiEvent
     data class ChangeFinished(val isFinished: Boolean) : SpecPolicyUiEvent
-    data class ClickScrap(val id: String) : SpecPolicyUiEvent
+    data class ClickScrap(val id: String, val scrap: Boolean) : SpecPolicyUiEvent
     data object GetFilterInfo : SpecPolicyUiEvent
     data object FilterReset : SpecPolicyUiEvent
     data object FilterApply : SpecPolicyUiEvent

@@ -21,6 +21,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -52,6 +53,7 @@ import kotlinx.collections.immutable.ImmutableList
 @Composable
 fun HomeScreen(viewModel: HomeViewModel = hiltViewModel(), navController: NavController, homeLazyListScrollState: LazyListState) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
     if (uiState !is HomeUiState.Success) {
         Box(
             modifier = Modifier
@@ -61,12 +63,20 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel(), navController: NavCon
             CircularProgressIndicator()
         }
     } else {
+        val value = uiState as HomeUiState.Success
+        LaunchedEffect(key1 = value.recentClick) {
+            value.recentClick?.let {
+                viewModel.getPolicy()
+            }
+        }
+
         HomeMain(
-            uiState = uiState as HomeUiState.Success,
+            uiState = value,
             homeLazyListScrollState = homeLazyListScrollState,
             onCheck = viewModel::changeCategoryCheck,
             onClickDetailPolicy = { policyId ->
                 navController.navigate("${Nav.PolicyDetail.route}/$policyId")
+                viewModel.resentClick(policyId)
             },
             onClickSpecPolicy = { category ->
                 navController.navigate("${Nav.SpecPolicy.route}/$category") {
@@ -91,7 +101,7 @@ private fun HomeMain(
     onClickDetailPolicy: (String) -> Unit,
     onClickSpecPolicy: (Category) -> Unit,
     onClickSearch: () -> Unit,
-    onClickScrap: (String) -> Unit,
+    onClickScrap: (String, Boolean) -> Unit,
 ) {
     val allPolicies = uiState.allPolicies.collectAsLazyPagingItems()
     Surface {
@@ -122,7 +132,7 @@ private fun HomeMain(
                 }
                 item { PopularTitle() }
                 item {
-                    val populars = uiState.popularPolicies.map { if (uiState.scrap.contains(it.policyId)) it.copy(scrap = !it.scrap) else it }
+                    val populars = uiState.popularPolicies.map { it.copy(scrap = uiState.scrap[it.policyId] ?: it.scrap) }
                     PopularPolicyScreen(
                         populars,
                         onClickDetailPolicy,
@@ -139,7 +149,7 @@ private fun HomeMain(
                     count = allPolicies.itemCount,
                 ) { index ->
                     allPolicies[index]?.let { policy ->
-                        val checkPolicyScrap = if (uiState.scrap.contains(policy.policyId)) policy.copy(scrap = !policy.scrap) else policy
+                        val checkPolicyScrap = policy.copy(scrap = uiState.scrap[policy.policyId] ?: policy.scrap)
                         UpdatePolicyScreen(
                             modifier = Modifier.animateItemPlacement(),
                             checkPolicyScrap,
@@ -154,7 +164,7 @@ private fun HomeMain(
 }
 
 @Composable
-private fun PopularPolicyScreen(top5Policies: List<Policy>, onClickDetailPolicy: (String) -> Unit, onClickScrap: (String) -> Unit) {
+private fun PopularPolicyScreen(top5Policies: List<Policy>, onClickDetailPolicy: (String) -> Unit, onClickScrap: (String, Boolean) -> Unit) {
     LazyRow(
         modifier = Modifier
             .fillMaxWidth()
@@ -206,7 +216,7 @@ private fun UpdatePolicyScreen(
     modifier: Modifier = Modifier,
     policy: Policy?,
     onClickDetailPolicy: (String) -> Unit,
-    onClickScrap: (String) -> Unit,
+    onClickScrap: (String, Boolean) -> Unit,
 ) {
     Box(
         modifier = modifier

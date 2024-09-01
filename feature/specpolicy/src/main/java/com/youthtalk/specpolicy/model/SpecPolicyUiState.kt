@@ -21,6 +21,6 @@ sealed class SpecPolicyUiState {
         val polices: Flow<PagingData<Policy>> = emptyFlow(),
         val policyCount: Int = 0,
         val filterInfo: FilterInfo,
-        val scrap: Set<String> = setOf(),
+        val scrap: Map<String, Boolean> = mapOf(),
     ) : SpecPolicyUiState()
 }

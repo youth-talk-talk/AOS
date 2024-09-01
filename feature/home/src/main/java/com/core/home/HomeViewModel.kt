@@ -9,6 +9,7 @@ import com.core.domain.usercase.GetCategoriesUseCase
 import com.core.domain.usercase.PostPolicyScrapUseCase
 import com.core.domain.usercase.home.GetAllPoliciesUseCase
 import com.core.domain.usercase.home.GetPopularPoliciesUseCase
+import com.core.domain.usercase.policydetail.GetPolicyDetailUseCase
 import com.core.home.model.HomeUiState
 import com.youthtalk.model.Category
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -32,6 +33,7 @@ class HomeViewModel @Inject constructor(
     private val getAllPoliciesUseCase: GetAllPoliciesUseCase,
     private val getPopularPoliciesUseCase: GetPopularPoliciesUseCase,
     private val postPolicyScrapUseCase: PostPolicyScrapUseCase,
+    private val getPolicyDetailUseCase: GetPolicyDetailUseCase,
 ) : ViewModel() {
 
     private val _errorHandler = MutableSharedFlow<Throwable>()
@@ -86,7 +88,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun postScrap(id: String) {
+    fun postScrap(id: String, isScrap: Boolean) {
         val state = uiState.value
         if (state !is HomeUiState.Success) return
 
@@ -96,11 +98,40 @@ class HomeViewModel @Inject constructor(
                     Log.d("YOON-CHAN", "HomeViewModel postScrap error ${it.message}")
                 }
                 .collectLatest {
-                    val newSet = if (state.scrap.contains(id)) state.scrap - id else state.scrap + id
+                    val newScrap = if (state.scrap.contains(id)) state.scrap - id else state.scrap + Pair(id, !isScrap)
                     _uiState.value = state.copy(
-                        scrap = newSet,
+                        scrap = newScrap,
                     )
                 }
+        }
+    }
+
+    fun resentClick(id: String) {
+        val state = uiState.value
+        if (state !is HomeUiState.Success) return
+
+        _uiState.value = state.copy(
+            recentClick = id,
+        )
+    }
+
+    fun getPolicy() {
+        val state = uiState.value
+        if (state !is HomeUiState.Success) return
+
+        viewModelScope.launch {
+            state.recentClick?.let { policyId ->
+                getPolicyDetailUseCase(policyId)
+                    .catch {
+                        Log.d("YOON-CHAN", "HomeViewModel getPolicy error ${it.message}")
+                    }
+                    .collectLatest {
+                        _uiState.value = state.copy(
+                            scrap = state.scrap + Pair(policyId, it.isScrap),
+                            recentClick = null,
+                        )
+                    }
+            }
         }
     }
 }

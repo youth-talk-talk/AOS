@@ -1,6 +1,8 @@
 package com.youthtalk.component
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -31,7 +33,7 @@ import com.youthtalk.designsystem.YongProjectTheme
 import com.youthtalk.designsystem.gray50
 
 @Composable
-fun CommentTextField(modifier: Modifier = Modifier) {
+fun CommentTextField(modifier: Modifier = Modifier, addComment: (String) -> Unit) {
     val focusManager = LocalFocusManager.current
 
     var text by remember {
@@ -63,6 +65,10 @@ fun CommentTextField(modifier: Modifier = Modifier) {
             keyboardActions = KeyboardActions(
                 onDone = {
                     focusManager.clearFocus()
+                    if (text.isNotEmpty()) {
+                        addComment(text)
+                        text = ""
+                    }
                 },
             ),
         ) { innerTextField ->
@@ -86,7 +92,17 @@ fun CommentTextField(modifier: Modifier = Modifier) {
 
                 Icon(
                     modifier = Modifier
-                        .padding(vertical = 13.dp),
+                        .padding(vertical = 13.dp)
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null,
+                        ) {
+                            focusManager.clearFocus()
+                            if (text.isNotEmpty()) {
+                                addComment(text)
+                                text = ""
+                            }
+                        },
                     painter = painterResource(id = R.drawable.arrow_up_icon),
                     contentDescription = "댓글 등록",
                     tint = Color.Black,
@@ -100,6 +116,8 @@ fun CommentTextField(modifier: Modifier = Modifier) {
 @Composable
 private fun CommentScreenPreview() {
     YongProjectTheme {
-        CommentTextField()
+        CommentTextField(
+            addComment = {},
+        )
     }
 }

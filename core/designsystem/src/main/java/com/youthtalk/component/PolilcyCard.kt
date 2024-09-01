@@ -27,7 +27,7 @@ import com.youthtalk.model.Policy
 import com.youthtalk.util.clickableSingle
 
 @Composable
-fun PolicyCard(modifier: Modifier = Modifier, policy: Policy, onClickDetailPolicy: (String) -> Unit, onClickScrap: (String) -> Unit) {
+fun PolicyCard(modifier: Modifier = Modifier, policy: Policy, onClickDetailPolicy: (String) -> Unit, onClickScrap: (String, Boolean) -> Unit) {
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -86,7 +86,7 @@ fun PolicyCard(modifier: Modifier = Modifier, policy: Policy, onClickDetailPolic
                             MutableInteractionSource()
                         },
                         indication = null,
-                    ) { onClickScrap(policy.policyId) },
+                    ) { onClickScrap(policy.policyId, policy.scrap) },
                 painter = if (policy.scrap) painterResource(id = R.drawable.bookmark_check) else painterResource(id = R.drawable.bookmark),
                 contentDescription = "스크랩 이미지",
             )
@@ -110,7 +110,7 @@ private fun PolicyCardPreview() {
         PolicyCard(
             policy = policy,
             onClickDetailPolicy = {},
-            onClickScrap = {},
+            onClickScrap = { _, _ -> },
         )
     }
 }

@@ -9,6 +9,8 @@ import com.core.domain.usercase.CheckTokenUseCase
 import com.core.domain.usercase.GetCategoriesUseCase
 import com.core.domain.usercase.GetUserUseCase
 import com.core.domain.usercase.PostLoginUseCase
+import com.core.domain.usercase.PostPolicyCommentUseCase
+import com.core.domain.usercase.PostPolicyDeleteCommentUseCase
 import com.core.domain.usercase.PostPolicyScrapUseCase
 import com.core.domain.usercase.PostSignUseCase
 import dagger.Module
@@ -48,4 +50,12 @@ object UseCaseModule {
     @Provides
     @Singleton
     fun providePostPolicyScrapUseCase(repository: SpecPolicyRepository) = PostPolicyScrapUseCase(repository)
+
+    @Provides
+    @Singleton
+    fun providePostPolicyCommentUseCase(repository: SpecPolicyRepository) = PostPolicyCommentUseCase(repository)
+
+    @Provides
+    @Singleton
+    fun providePostPolicyDeleteCommentUseCase(repository: SpecPolicyRepository) = PostPolicyDeleteCommentUseCase(repository)
 }
