@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import com.core.domain.usercase.ChangeCategoriesUseCase
 import com.core.domain.usercase.GetCategoriesUseCase
+import com.core.domain.usercase.PostPolicyScrapUseCase
 import com.core.domain.usercase.home.GetAllPoliciesUseCase
 import com.core.domain.usercase.home.GetPopularPoliciesUseCase
 import com.core.home.model.HomeUiState
@@ -30,6 +31,7 @@ class HomeViewModel @Inject constructor(
     private val changeCategoriesUseCase: ChangeCategoriesUseCase,
     private val getAllPoliciesUseCase: GetAllPoliciesUseCase,
     private val getPopularPoliciesUseCase: GetPopularPoliciesUseCase,
+    private val postPolicyScrapUseCase: PostPolicyScrapUseCase,
 ) : ViewModel() {
 
     private val _errorHandler = MutableSharedFlow<Throwable>()
@@ -81,6 +83,24 @@ class HomeViewModel @Inject constructor(
             viewModelScope.launch {
                 changeCategoriesUseCase(categories)
             }
+        }
+    }
+
+    fun postScrap(id: String) {
+        val state = uiState.value
+        if (state !is HomeUiState.Success) return
+
+        viewModelScope.launch {
+            postPolicyScrapUseCase(id)
+                .catch {
+                    Log.d("YOON-CHAN", "HomeViewModel postScrap error ${it.message}")
+                }
+                .collectLatest {
+                    val newSet = if (state.scrap.contains(id)) state.scrap - id else state.scrap + id
+                    _uiState.value = state.copy(
+                        scrap = newSet,
+                    )
+                }
         }
     }
 }
