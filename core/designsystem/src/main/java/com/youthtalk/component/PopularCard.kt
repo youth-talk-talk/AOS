@@ -1,6 +1,8 @@
 package com.youthtalk.component
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,6 +16,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -26,7 +29,7 @@ import com.youthtalk.model.Policy
 import com.youthtalk.util.clickableSingle
 
 @Composable
-fun PopularCard(modifier: Modifier = Modifier, policy: Policy, onClickDetailPolicy: (String) -> Unit) {
+fun PopularCard(modifier: Modifier = Modifier, policy: Policy, onClickDetailPolicy: (String) -> Unit, onClickScrap: (String) -> Unit) {
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -44,7 +47,9 @@ fun PopularCard(modifier: Modifier = Modifier, policy: Policy, onClickDetailPoli
         )
         Spacer(modifier = Modifier.height(1.dp))
         Text(
-            modifier = Modifier.fillMaxWidth().weight(1f),
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f),
             text = policy.title,
             style = MaterialTheme.typography.bodyMedium,
         )
@@ -61,9 +66,16 @@ fun PopularCard(modifier: Modifier = Modifier, policy: Policy, onClickDetailPoli
             )
 
             Icon(
-                painter = painterResource(id = R.drawable.bookmark),
+                modifier = Modifier
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null,
+                    ) {
+                        onClickScrap(policy.policyId)
+                    },
+                painter = if (policy.scrap) painterResource(id = R.drawable.bookmark_check) else painterResource(id = R.drawable.bookmark),
                 contentDescription = "bookmark",
-                tint = MaterialTheme.colorScheme.onSecondary,
+                tint = if (policy.scrap) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSecondary,
             )
         }
     }
@@ -86,6 +98,7 @@ private fun PopularCardPreview() {
             modifier = Modifier.aspectRatio(15 / 14f),
             policy = policy,
             onClickDetailPolicy = {},
+            onClickScrap = {},
         )
     }
 }

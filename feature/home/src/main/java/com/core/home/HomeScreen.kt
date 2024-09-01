@@ -77,6 +77,7 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel(), navController: NavCon
             onClickSearch = {
                 navController.navigate("${Nav.Search.route}/home")
             },
+            onClickScrap = viewModel::postScrap,
         )
     }
 }
@@ -90,6 +91,7 @@ private fun HomeMain(
     onClickDetailPolicy: (String) -> Unit,
     onClickSpecPolicy: (Category) -> Unit,
     onClickSearch: () -> Unit,
+    onClickScrap: (String) -> Unit,
 ) {
     val allPolicies = uiState.allPolicies.collectAsLazyPagingItems()
     Surface {
@@ -120,9 +122,11 @@ private fun HomeMain(
                 }
                 item { PopularTitle() }
                 item {
+                    val populars = uiState.popularPolicies.map { if (uiState.scrap.contains(it.policyId)) it.copy(scrap = !it.scrap) else it }
                     PopularPolicyScreen(
-                        uiState.popularPolicies,
+                        populars,
                         onClickDetailPolicy,
+                        onClickScrap = onClickScrap,
                     )
                 }
                 item {
@@ -134,11 +138,15 @@ private fun HomeMain(
                 items(
                     count = allPolicies.itemCount,
                 ) { index ->
-                    UpdatePolicyScreen(
-                        modifier = Modifier.animateItemPlacement(),
-                        allPolicies[index],
-                        onClickDetailPolicy = onClickDetailPolicy,
-                    )
+                    allPolicies[index]?.let { policy ->
+                        val checkPolicyScrap = if (uiState.scrap.contains(policy.policyId)) policy.copy(scrap = !policy.scrap) else policy
+                        UpdatePolicyScreen(
+                            modifier = Modifier.animateItemPlacement(),
+                            checkPolicyScrap,
+                            onClickDetailPolicy = onClickDetailPolicy,
+                            onClickScrap = onClickScrap,
+                        )
+                    }
                 }
             }
         }
@@ -146,7 +154,7 @@ private fun HomeMain(
 }
 
 @Composable
-private fun PopularPolicyScreen(top5Policies: List<Policy>, onClickDetailPolicy: (String) -> Unit) {
+private fun PopularPolicyScreen(top5Policies: List<Policy>, onClickDetailPolicy: (String) -> Unit, onClickScrap: (String) -> Unit) {
     LazyRow(
         modifier = Modifier
             .fillMaxWidth()
@@ -164,6 +172,7 @@ private fun PopularPolicyScreen(top5Policies: List<Policy>, onClickDetailPolicy:
                     .aspectRatio(14 / 15f),
                 policy = policy,
                 onClickDetailPolicy = onClickDetailPolicy,
+                onClickScrap = onClickScrap,
             )
         }
     }
@@ -193,7 +202,12 @@ private fun PopularTitle() {
 }
 
 @Composable
-private fun UpdatePolicyScreen(modifier: Modifier = Modifier, policy: Policy?, onClickDetailPolicy: (String) -> Unit) {
+private fun UpdatePolicyScreen(
+    modifier: Modifier = Modifier,
+    policy: Policy?,
+    onClickDetailPolicy: (String) -> Unit,
+    onClickScrap: (String) -> Unit,
+) {
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -205,7 +219,7 @@ private fun UpdatePolicyScreen(modifier: Modifier = Modifier, policy: Policy?, o
                 modifier = Modifier.padding(bottom = 12.dp),
                 policy = policy,
                 onClickDetailPolicy = onClickDetailPolicy,
-                onClickScrap = {},
+                onClickScrap = onClickScrap,
             )
         }
     }
