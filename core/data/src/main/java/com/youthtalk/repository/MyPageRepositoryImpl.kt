@@ -10,9 +10,7 @@ import com.youthtalk.data.PolicyService
 import com.youthtalk.data.UserService
 import com.youthtalk.datasource.PagingSize.MY_PAGE_POSTS_SIZE
 import com.youthtalk.datasource.PagingSize.SCRAP_PAGE_SIZE
-import com.youthtalk.datasource.mypage.MY_PAGE_POSTS_SIZE
 import com.youthtalk.datasource.mypage.MyPagePostsPagingSource
-import com.youthtalk.datasource.mypage.SCRAP_PAGE_SIZE
 import com.youthtalk.datasource.mypage.ScrapPolicyPagingSource
 import com.youthtalk.mapper.toDate
 import com.youthtalk.model.Comment
