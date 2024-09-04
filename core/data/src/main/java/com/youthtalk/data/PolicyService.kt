@@ -5,6 +5,7 @@ import com.youthtalk.dto.HomePoliciesResponse
 import com.youthtalk.dto.PolicyDetailResponse
 import com.youthtalk.dto.PostAddCommentResponse
 import com.youthtalk.dto.specpolicy.SpecPoliciesResponse
+import com.youthtalk.model.PolicyResponse
 import okhttp3.RequestBody
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -36,4 +37,7 @@ interface PolicyService {
 
     @POST("/policies/comments")
     suspend fun postAddComment(@Body requestBody: RequestBody): CommonResponse<PostAddCommentResponse>
+
+    @GET("/policies/scrap")
+    suspend fun getScrapPolicies(@Query("page") page: Int, @Query("size") size: Int): CommonResponse<List<PolicyResponse>>
 }

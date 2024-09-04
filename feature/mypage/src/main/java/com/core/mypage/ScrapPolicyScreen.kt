@@ -1,27 +1,72 @@
 package com.core.mypage
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.PagingData
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
+import com.core.mypage.model.scrappolicy.ScrapPolicyUiEvent
+import com.core.mypage.model.scrappolicy.ScrapPolicyUiState
+import com.core.mypage.viewmodel.ScrapPolicyViewModel
 import com.youthtalk.component.MiddleTitleTopBar
 import com.youthtalk.component.PolicyCard
 import com.youthtalk.designsystem.YongProjectTheme
 import com.youthtalk.model.Category
 import com.youthtalk.model.Policy
+import kotlinx.coroutines.flow.flowOf
 
 @Composable
-fun ScrapPolicyScreen(onBack: () -> Unit) {
-    val policies = getPolicies()
+fun ScrapPolicyScreen(onBack: () -> Unit, viewModel: ScrapPolicyViewModel = hiltViewModel()) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    when (uiState) {
+        is ScrapPolicyUiState.Loading -> {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background),
+                contentAlignment = Alignment.Center,
+            ) {
+                CircularProgressIndicator()
+            }
+        }
+        is ScrapPolicyUiState.Success -> {
+            val state = (uiState as ScrapPolicyUiState.Success)
+            ScrapScreen(
+                policies = state.policies.collectAsLazyPagingItems(),
+                deleteScrap = state.deleteScrapMap,
+                onClickScrap = { id, scrap -> viewModel.uiEvent(ScrapPolicyUiEvent.DeleteScrap(id, scrap)) },
+                onBack,
+            )
+        }
+    }
+}
 
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun ScrapScreen(
+    policies: LazyPagingItems<Policy>,
+    deleteScrap: Map<String, Boolean>,
+    onClickScrap: (String, Boolean) -> Unit,
+    onBack: () -> Unit,
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -36,17 +81,24 @@ fun ScrapPolicyScreen(onBack: () -> Unit) {
         HorizontalDivider()
 
         LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-            contentPadding = PaddingValues(horizontal = 17.dp, vertical = 12.dp),
+            contentPadding = PaddingValues(start = 17.dp, end = 17.dp, top = 12.dp),
         ) {
             items(
-                count = policies.size,
+                count = policies.itemCount,
+                key = { index -> policies.peek(index)?.policyId ?: "" },
             ) { index ->
-                PolicyCard(
-                    policy = policies[index],
-                    onClickDetailPolicy = {},
-                    onClickScrap = { _, _ -> },
-                )
+                policies[index]?.let { policy ->
+                    if (!deleteScrap.containsKey(policy.policyId)) {
+                        PolicyCard(
+                            modifier = Modifier
+                                .animateItemPlacement(),
+                            policy = policy,
+                            onClickDetailPolicy = {},
+                            onClickScrap = onClickScrap,
+                        )
+                        Spacer(modifier = Modifier.height(12.dp))
+                    }
+                }
             }
         }
     }
@@ -125,7 +177,10 @@ fun getPolicies(): List<Policy> {
 @Composable
 private fun ScrapPolicyScreenPreview() {
     YongProjectTheme {
-        ScrapPolicyScreen(
+        ScrapScreen(
+            policies = flowOf(PagingData.from(getPolicies())).collectAsLazyPagingItems(),
+            deleteScrap = mapOf(),
+            onClickScrap = { _, _ -> },
             onBack = {},
         )
     }

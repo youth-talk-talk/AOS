@@ -7,5 +7,5 @@ data class CommentResponse(
     val commentId: Long,
     val nickname: String,
     val content: String,
-    val isLikedByMember: Boolean,
+    val isLikedByMember: Boolean = false,
 )
