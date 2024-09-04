@@ -7,10 +7,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -21,6 +23,10 @@ import com.core.mypage.component.DDayPolicy
 import com.core.mypage.component.EtcTabComponent
 import com.core.mypage.component.FavoritesTabComponent
 import com.core.mypage.component.ProfileCard
+import com.core.mypage.model.comments.MyPageCommentsUiEvent
+import com.core.mypage.model.posts.MyPagePostsUiEvent
+import com.core.mypage.viewmodel.MyPageCommentsViewModel
+import com.core.mypage.viewmodel.MyPagePostViewModel
 import com.core.navigation.SettingNavigation
 import com.youth.app.feature.mypage.R
 import com.youthtalk.designsystem.YongProjectTheme
@@ -64,16 +70,21 @@ fun MyPageScreen() {
         }
 
         composable(
-            route = "${SettingNavigation.MyPagePost.route}/{me}",
+            route = "${SettingNavigation.MyPagePost.route}/{type}",
             arguments = listOf(
-                navArgument("me") {
-                    type = NavType.BoolType
+                navArgument("type") {
+                    type = NavType.StringType
                 },
             ),
         ) {
-            val isMine = it.arguments?.getBoolean("me") ?: false
+            val type = it.arguments?.getString("type") ?: ""
+            val viewModel: MyPagePostViewModel = hiltViewModel()
+            LaunchedEffect(Unit) {
+                viewModel.uiEvent(MyPagePostsUiEvent.GetData(type = type))
+            }
             MyPagePostScreen(
-                isMine = isMine,
+                viewModel = viewModel,
+                type = type,
                 onBack = {
                     navHost.popBackStack()
                 },
@@ -89,11 +100,15 @@ fun MyPageScreen() {
             ),
         ) {
             val isMine = it.arguments?.getBoolean("me") ?: false
+            val viewModel: MyPageCommentsViewModel = hiltViewModel()
+
+            LaunchedEffect(Unit) {
+                viewModel.uiEvent(MyPageCommentsUiEvent.GetData(isMine))
+            }
             MyPageCommentScreen(
                 isMine = isMine,
-                onBack = {
-                    navHost.popBackStack()
-                },
+                viewModel = viewModel,
+                onBack = { navHost.popBackStack() },
             )
         }
 
@@ -127,10 +142,10 @@ private fun MyPageHomeScreen(navHost: NavHostController) {
                     navHost.navigate(SettingNavigation.ScrapPolicy.route)
                 },
                 scrapPost = {
-                    navHost.navigate("${SettingNavigation.MyPagePost.route}/${false}")
+                    navHost.navigate("${SettingNavigation.MyPagePost.route}/scrap")
                 },
                 writePost = {
-                    navHost.navigate("${SettingNavigation.MyPagePost.route}/${true}")
+                    navHost.navigate("${SettingNavigation.MyPagePost.route}/me")
                 },
                 writeComment = {
                     navHost.navigate("${SettingNavigation.MyPageComment.route}/${true}")

@@ -21,7 +21,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,9 +30,11 @@ import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.core.home.component.CategoryCard
 import com.core.home.component.HomeAppBar
@@ -53,7 +54,6 @@ import kotlinx.collections.immutable.ImmutableList
 @Composable
 fun HomeScreen(viewModel: HomeViewModel = hiltViewModel(), navController: NavController, homeLazyListScrollState: LazyListState) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
     if (uiState !is HomeUiState.Success) {
         Box(
             modifier = Modifier
@@ -64,19 +64,24 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel(), navController: NavCon
         }
     } else {
         val value = uiState as HomeUiState.Success
-        LaunchedEffect(key1 = value.recentClick) {
-            value.recentClick?.let {
-                viewModel.getPolicy()
+        val allPolicies = value.allPolicies.collectAsLazyPagingItems()
+
+        LifecycleResumeEffect(
+            key1 = Unit,
+        ) {
+            allPolicies.refresh()
+            viewModel.onResume()
+            onPauseOrDispose {
+                viewModel.clearData()
             }
         }
-
         HomeMain(
             uiState = value,
+            allPolicies = allPolicies,
             homeLazyListScrollState = homeLazyListScrollState,
             onCheck = viewModel::changeCategoryCheck,
             onClickDetailPolicy = { policyId ->
                 navController.navigate("${Nav.PolicyDetail.route}/$policyId")
-                viewModel.resentClick(policyId)
             },
             onClickSpecPolicy = { category ->
                 navController.navigate("${Nav.SpecPolicy.route}/$category") {
@@ -84,9 +89,7 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel(), navController: NavCon
                     launchSingleTop = true
                 }
             },
-            onClickSearch = {
-                navController.navigate("${Nav.Search.route}/home")
-            },
+            onClickSearch = { navController.navigate("${Nav.Search.route}/home") },
             onClickScrap = viewModel::postScrap,
         )
     }
@@ -96,6 +99,7 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel(), navController: NavCon
 @Composable
 private fun HomeMain(
     uiState: HomeUiState.Success,
+    allPolicies: LazyPagingItems<Policy>,
     homeLazyListScrollState: LazyListState,
     onCheck: (Category?) -> Unit,
     onClickDetailPolicy: (String) -> Unit,
@@ -103,7 +107,6 @@ private fun HomeMain(
     onClickSearch: () -> Unit,
     onClickScrap: (String, Boolean) -> Unit,
 ) {
-    val allPolicies = uiState.allPolicies.collectAsLazyPagingItems()
     Surface {
         Column(
             modifier =

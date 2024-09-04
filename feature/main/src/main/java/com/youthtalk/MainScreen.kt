@@ -277,11 +277,13 @@ fun RowScope.BottomIcon(navHostController: NavHostController, mainNav: MainNav, 
                 },
                 indication = null,
             ) {
-                scrollTop()
-                navHostController.navigate(mainNav.route) {
-                    popUpTo(MainNav.Home.route)
-                    launchSingleTop = true
-                    restoreState = true
+                if (navHostController.currentDestination?.route != mainNav.route) {
+                    navHostController.navigate(mainNav.route) {
+                        popUpTo(MainNav.Home.route)
+                        launchSingleTop = true
+                    }
+                } else {
+                    scrollTop()
                 }
             },
     ) {

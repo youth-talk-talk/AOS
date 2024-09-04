@@ -21,7 +21,6 @@ sealed interface HomeUiState {
         val categoryList: ImmutableList<Category> = persistentListOf(),
         val popularPolicies: ImmutableList<Policy> = persistentListOf(),
         val allPolicies: Flow<PagingData<Policy>> = emptyFlow(),
-        val recentClick: String? = null,
         val scrap: Map<String, Boolean> = mapOf(),
     ) : HomeUiState
 }

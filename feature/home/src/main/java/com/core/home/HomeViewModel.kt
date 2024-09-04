@@ -106,32 +106,30 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun resentClick(id: String) {
+    fun onResume() {
         val state = uiState.value
         if (state !is HomeUiState.Success) return
-
-        _uiState.value = state.copy(
-            recentClick = id,
-        )
+        Log.d("YOON-CHAN", "HomeViewModel onResume")
+        viewModelScope.launch {
+            getPopularPoliciesUseCase()
+                .catch {
+                    Log.d("YOON-CHAN", "Home Init error ${it.message}")
+                }
+                .collectLatest {
+                    Log.d("YOON-CHAN", "init CollectLatest")
+                    _uiState.value = state.copy(
+                        popularPolicies = it.toPersistentList(),
+                    )
+                }
+        }
     }
 
-    fun getPolicy() {
+    fun clearData() {
+        Log.d("YOON-CHAN", "HomeViewModel onPause clear")
         val state = uiState.value
         if (state !is HomeUiState.Success) return
-
-        viewModelScope.launch {
-            state.recentClick?.let { policyId ->
-                getPolicyDetailUseCase(policyId)
-                    .catch {
-                        Log.d("YOON-CHAN", "HomeViewModel getPolicy error ${it.message}")
-                    }
-                    .collectLatest {
-                        _uiState.value = state.copy(
-                            scrap = state.scrap + Pair(policyId, it.isScrap),
-                            recentClick = null,
-                        )
-                    }
-            }
-        }
+        _uiState.value = state.copy(
+            scrap = mapOf(),
+        )
     }
 }
