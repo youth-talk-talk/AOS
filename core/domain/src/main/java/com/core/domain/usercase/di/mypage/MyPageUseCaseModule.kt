@@ -1,9 +1,12 @@
 package com.core.domain.usercase.di.mypage
 
 import com.core.dataapi.repository.MyPageRepository
+import com.core.domain.usercase.mypage.GetDeadlinePolicesUseCase
 import com.core.domain.usercase.mypage.GetMyPageCommentsUseCase
 import com.core.domain.usercase.mypage.GetMyPagePostsUseCase
 import com.core.domain.usercase.mypage.GetScrapPoliciesUseCase
+import com.core.domain.usercase.mypage.PostUserLogoutUseCase
+import com.core.domain.usercase.mypage.PostUserUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -24,4 +27,16 @@ object MyPageUseCaseModule {
     @Provides
     @Singleton
     fun provideGetMyPageCommentsUseCase(repository: MyPageRepository) = GetMyPageCommentsUseCase(repository)
+
+    @Provides
+    @Singleton
+    fun provideGetDeadlinePolicesUseCase(repository: MyPageRepository) = GetDeadlinePolicesUseCase(repository)
+
+    @Provides
+    @Singleton
+    fun providePostUserUseCase(repository: MyPageRepository) = PostUserUseCase(repository)
+
+    @Provides
+    @Singleton
+    fun providePostUserLogoutUseCase(repository: MyPageRepository) = PostUserLogoutUseCase(repository)
 }

@@ -63,7 +63,7 @@ import com.youthtalk.specpolicy.SpecPolicyScreen
 import kotlinx.coroutines.launch
 
 @Composable
-fun MainScreen() {
+fun MainScreen(goLogin: () -> Unit) {
     val navHostController = rememberNavController()
     val navBackStackEntry by navHostController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
@@ -95,6 +95,7 @@ fun MainScreen() {
                 NavHostScreen(
                     navController = navHostController,
                     homeLazyListScrollState = homeLazyListScrollState,
+                    goLogin = goLogin,
                 )
             }
         },
@@ -102,14 +103,14 @@ fun MainScreen() {
 }
 
 @Composable
-fun NavHostScreen(navController: NavHostController, homeLazyListScrollState: LazyListState) {
+fun NavHostScreen(navController: NavHostController, homeLazyListScrollState: LazyListState, goLogin: () -> Unit) {
     NavHost(
         navController = navController,
         startDestination = MainNav.Home.route,
         enterTransition = { EnterTransition.None },
         exitTransition = { ExitTransition.None },
     ) {
-        mainNavigation(navController, homeLazyListScrollState)
+        mainNavigation(navController, homeLazyListScrollState, goLogin = goLogin)
 
         composable(
             route = "${Nav.PolicyDetail.route}/{policyId}",
@@ -140,7 +141,16 @@ fun NavHostScreen(navController: NavHostController, homeLazyListScrollState: Laz
             category?.let {
                 SpecPolicyScreen(
                     category = category,
-                    navController = navController,
+                    onClickSearch = {
+                        navController.navigate("${Nav.Search.route}/main")
+                    },
+                    onBack = { navController.popBackStack() },
+                    onClickDetailPolicy = {
+                        navController.navigate("${Nav.PolicyDetail.route}/$it") {
+                            restoreState = true
+                            launchSingleTop = true
+                        }
+                    },
                 )
             }
         }
@@ -200,11 +210,18 @@ private fun NavGraphBuilder.communityNavigation(navController: NavHostController
     }
 }
 
-private fun NavGraphBuilder.mainNavigation(navController: NavHostController, homeLazyListScrollState: LazyListState) {
+private fun NavGraphBuilder.mainNavigation(navController: NavHostController, homeLazyListScrollState: LazyListState, goLogin: () -> Unit) {
     composable(route = MainNav.Home.route) {
         HomeScreen(
-            navController = navController,
             homeLazyListScrollState = homeLazyListScrollState,
+            onClickDetailPolicy = { policyId -> navController.navigate("${Nav.PolicyDetail.route}/$policyId") },
+            onClickSearch = { navController.navigate("${Nav.Search.route}/home") },
+            onClickSpecPolicy = { category ->
+                navController.navigate("${Nav.SpecPolicy.route}/$category") {
+                    restoreState = true
+                    launchSingleTop = true
+                }
+            },
         )
     }
 
@@ -217,13 +234,16 @@ private fun NavGraphBuilder.mainNavigation(navController: NavHostController, hom
                 navController.navigate("${CommunityNavigation.CommunityWrite.route}/$type")
             },
             onClickSearch = { type ->
-                navController.navigate("${Nav.Search.route}/$type")
+                navController.navigate("${CommunityNavigation.CommunityDetail.route}/$type")
             },
         )
     }
 
     composable(route = MainNav.MyPage.route) {
-        MyPageScreen()
+        MyPageScreen(
+            onClickDetailPolicy = { navController.navigate("${Nav.PolicyDetail.route}/$it") },
+            goLogin = goLogin,
+        )
     }
 }
 
@@ -321,6 +341,8 @@ fun RowScope.BottomIcon(navHostController: NavHostController, mainNav: MainNav, 
 @Composable
 private fun MainScreenPreview() {
     YongProjectTheme {
-        MainScreen()
+        MainScreen(
+            goLogin = {},
+        )
     }
 }

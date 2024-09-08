@@ -8,4 +8,6 @@ fun CommentResponse.toDate() = Comment(
     nickname = nickname,
     content = content,
     isLikedByMember = isLikedByMember,
+    policyId = this.policyId,
+    postId = this.postId,
 )

@@ -11,8 +11,8 @@ android {
 }
 
 dependencies {
-
     implementation(projects.feature.home)
+    implementation(projects.feature.login)
     implementation(projects.feature.mypage)
     implementation(projects.feature.community)
     implementation(projects.feature.policydetail)

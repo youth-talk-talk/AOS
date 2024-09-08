@@ -11,8 +11,6 @@ android {
 }
 
 dependencies {
-
-    implementation(projects.feature.main)
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

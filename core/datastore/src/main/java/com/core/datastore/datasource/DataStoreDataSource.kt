@@ -120,4 +120,10 @@ class DataStoreDataSource @Inject constructor(
             prefs[IS_FINISH] = isFinish ?: false
         }
     }
+
+    override suspend fun clearData() {
+        dataStore.edit { prefs ->
+            prefs.clear()
+        }
+    }
 }

@@ -1,6 +1,8 @@
 package com.core.mypage
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,6 +14,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -75,30 +78,24 @@ private fun MyPageComments(isMine: Boolean, comments: ImmutableList<Comment>, on
             ) { index ->
                 val comment = comments[index]
                 CommentScreen(
+                    modifier = Modifier
+                        .clickable(
+                            interactionSource = remember {
+                                MutableInteractionSource()
+                            },
+                            indication = null,
+                        ) {
+                            // TODO: 추후 구현할 예정
+                        },
                     nickname = comment.nickname,
                     content = comment.content,
                     isLike = comment.isLikedByMember,
                     isMine = isMine,
-                    deleteComment = {},
+                    isDetailScreen = false,
                 )
             }
         }
     }
-}
-
-private fun getComments(): List<Comment> {
-    val list = mutableListOf<Comment>()
-    repeat(30) { index ->
-        list.add(
-            Comment(
-                commentId = 0,
-                nickname = "닉네임${index + 1}",
-                content = "컨텐츠${index + 1}",
-                isLikedByMember = true,
-            ),
-        )
-    }
-    return list
 }
 
 @Preview

@@ -17,7 +17,7 @@ sealed class CommunityNavigation(
 }
 
 object CommunityRoute {
-    val COMMUNITY = "community"
-    val COMMUNITY_DETAIL = "community_detail"
-    val COMMUNITY_WRITE = "community_write"
+    const val COMMUNITY = "community"
+    const val COMMUNITY_DETAIL = "community_detail"
+    const val COMMUNITY_WRITE = "community_write"
 }

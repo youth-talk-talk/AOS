@@ -24,7 +24,7 @@ import com.youthtalk.designsystem.gray
 import com.youthtalk.util.clickableSingle
 
 @Composable
-fun ProfileCard(modifier: Modifier = Modifier, onClick: () -> Unit) {
+fun ProfileCard(modifier: Modifier = Modifier, username: String, onClick: () -> Unit) {
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -34,7 +34,7 @@ fun ProfileCard(modifier: Modifier = Modifier, onClick: () -> Unit) {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
-        Text(text = "놀고픈 청년")
+        Text(text = username)
         Row(
             modifier = Modifier
                 .border(width = 1.dp, color = gray, shape = RoundedCornerShape(50.dp))
@@ -63,6 +63,7 @@ fun ProfileCard(modifier: Modifier = Modifier, onClick: () -> Unit) {
 private fun ProfileCardPreview() {
     YongProjectTheme {
         ProfileCard(
+            username = "놀고픈 청년",
             onClick = {},
         )
     }
