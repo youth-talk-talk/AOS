@@ -32,15 +32,12 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.core.home.component.CategoryCard
 import com.core.home.component.HomeAppBar
 import com.core.home.component.SearchScreen
 import com.core.home.model.HomeUiState
-import com.core.navigation.Nav
 import com.youth.app.feature.home.R
 import com.youthtalk.component.PolicyCard
 import com.youthtalk.component.PolicyCheckBox
@@ -52,7 +49,13 @@ import com.youthtalk.util.clickableSingle
 import kotlinx.collections.immutable.ImmutableList
 
 @Composable
-fun HomeScreen(viewModel: HomeViewModel = hiltViewModel(), navController: NavController, homeLazyListScrollState: LazyListState) {
+fun HomeScreen(
+    viewModel: HomeViewModel = hiltViewModel(),
+    onClickDetailPolicy: (String) -> Unit,
+    onClickSpecPolicy: (Category) -> Unit,
+    onClickSearch: () -> Unit,
+    homeLazyListScrollState: LazyListState,
+) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     if (uiState !is HomeUiState.Success) {
         Box(
@@ -80,16 +83,9 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel(), navController: NavCon
             allPolicies = allPolicies,
             homeLazyListScrollState = homeLazyListScrollState,
             onCheck = viewModel::changeCategoryCheck,
-            onClickDetailPolicy = { policyId ->
-                navController.navigate("${Nav.PolicyDetail.route}/$policyId")
-            },
-            onClickSpecPolicy = { category ->
-                navController.navigate("${Nav.SpecPolicy.route}/$category") {
-                    restoreState = true
-                    launchSingleTop = true
-                }
-            },
-            onClickSearch = { navController.navigate("${Nav.Search.route}/home") },
+            onClickDetailPolicy = onClickDetailPolicy,
+            onClickSpecPolicy = onClickSpecPolicy,
+            onClickSearch = onClickSearch,
             onClickScrap = viewModel::postScrap,
         )
     }
@@ -312,8 +308,10 @@ private fun CategoryScreen(goSpecPolicyScreen: (Category) -> Unit) {
 private fun HomeScreenPreview() {
     YongProjectTheme {
         HomeScreen(
-            navController = rememberNavController(),
             homeLazyListScrollState = rememberLazyListState(),
+            onClickSearch = {},
+            onClickDetailPolicy = {},
+            onClickSpecPolicy = {},
         )
     }
 }

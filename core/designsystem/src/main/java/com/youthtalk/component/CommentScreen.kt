@@ -31,7 +31,15 @@ import com.youth.app.core.designsystem.R
 import com.youthtalk.designsystem.YongProjectTheme
 
 @Composable
-fun CommentScreen(modifier: Modifier = Modifier, nickname: String, content: String, isLike: Boolean, isMine: Boolean, deleteComment: () -> Unit) {
+fun CommentScreen(
+    modifier: Modifier = Modifier,
+    nickname: String,
+    content: String,
+    isLike: Boolean,
+    isMine: Boolean,
+    isDetailScreen: Boolean = true,
+    deleteComment: () -> Unit = {},
+) {
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -65,7 +73,7 @@ fun CommentScreen(modifier: Modifier = Modifier, nickname: String, content: Stri
             modifier = Modifier
                 .fillMaxHeight(),
         ) {
-            if (isMine) {
+            if (isMine && isDetailScreen) {
                 Row(
                     modifier = Modifier.align(Alignment.TopEnd),
                     horizontalArrangement = Arrangement.spacedBy(1.dp),
@@ -92,7 +100,9 @@ fun CommentScreen(modifier: Modifier = Modifier, nickname: String, content: Stri
                         ),
                     )
                 }
-            } else {
+            }
+
+            if (!isMine) {
                 Icon(
                     modifier = Modifier
                         .padding(start = 29.dp)

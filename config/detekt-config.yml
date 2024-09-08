@@ -30,7 +30,7 @@ complexity:
         threshold: 20
 
     LongParameterList:
-        functionThreshold: 12
+        functionThreshold: 15
         constructorThreshold: 12
     LongMethod:
         threshold: 100

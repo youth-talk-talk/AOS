@@ -40,4 +40,7 @@ interface PolicyService {
 
     @GET("/policies/scrap")
     suspend fun getScrapPolicies(@Query("page") page: Int, @Query("size") size: Int): CommonResponse<List<PolicyResponse>>
+
+    @GET("/policies/scrapped/upcoming-deadline")
+    suspend fun getDeadLinePolicies(): CommonResponse<List<PolicyResponse>>
 }

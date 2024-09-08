@@ -23,7 +23,7 @@ import com.youthtalk.model.Category
 import com.youthtalk.model.Policy
 
 @Composable
-fun DDayPolicy(modifier: Modifier = Modifier, policies: List<Policy>) {
+fun DDayPolicy(modifier: Modifier = Modifier, policies: List<Policy>, onClickDetailPolicy: (String) -> Unit) {
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -52,7 +52,7 @@ fun DDayPolicy(modifier: Modifier = Modifier, policies: List<Policy>) {
                 PolicyCard(
                     modifier = Modifier.aspectRatio(3.14f),
                     policy = policies[index],
-                    onClickDetailPolicy = {},
+                    onClickDetailPolicy = onClickDetailPolicy,
                     onClickScrap = { _, _ -> },
                 )
             }
@@ -100,6 +100,7 @@ private fun DDayPolicyPreview() {
                     scrap = false,
                 ),
             ),
+            onClickDetailPolicy = {},
         )
     }
 }

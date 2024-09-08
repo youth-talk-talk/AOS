@@ -11,28 +11,79 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.core.mypage.model.home.MyPageHomeUiEffect
+import com.core.mypage.model.home.MyPageHomeUiEvent
+import com.core.mypage.model.home.MyPageHomeUiState
+import com.core.mypage.viewmodel.MyPageHomeViewModel
 import com.youthtalk.component.MiddleTitleTopBar
 import com.youthtalk.component.RoundButton
 import com.youthtalk.designsystem.YongProjectTheme
 import com.youthtalk.designsystem.gray
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
-fun NicknameSettingScreen(modifier: Modifier = Modifier, nickname: String, onBack: () -> Unit) {
-    var name by remember {
-        mutableStateOf(nickname)
-    }
+fun NicknameSettingScreen(viewModel: MyPageHomeViewModel = hiltViewModel(), onBack: () -> Unit) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+    LaunchedEffect(Unit) {
+        viewModel.uiEffect.collectLatest {
+            when {
+                it is MyPageHomeUiEffect.GoBack -> onBack()
+            }
+        }
+    }
+    when (uiState) {
+        is MyPageHomeUiState.Loading -> {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center,
+            ) {
+                CircularProgressIndicator()
+            }
+        }
+        is MyPageHomeUiState.Success -> {
+            val state = (uiState as MyPageHomeUiState.Success)
+            var name by remember {
+                mutableStateOf(state.user.nickname)
+            }
+            NicknameSetting(
+                name = name,
+                onValueChange = {
+                    if (it.length <= 8) {
+                        name = it
+                    }
+                },
+                onBack = onBack,
+                onClickApply = { viewModel.uiEvent(MyPageHomeUiEvent.ChangeNickname(name)) },
+            )
+        }
+    }
+}
+
+@Composable
+private fun NicknameSetting(
+    modifier: Modifier = Modifier,
+    name: String,
+    onValueChange: (String) -> Unit,
+    onClickApply: () -> Unit,
+    onBack: () -> Unit,
+) {
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -59,9 +110,8 @@ fun NicknameSettingScreen(modifier: Modifier = Modifier, nickname: String, onBac
                 .fillMaxWidth()
                 .padding(horizontal = 17.dp),
             value = name,
-            onValueChange = {
-                name = it
-            },
+            onValueChange = onValueChange,
+            singleLine = true,
         ) { innerTextField ->
             Box(
                 modifier = Modifier
@@ -76,14 +126,17 @@ fun NicknameSettingScreen(modifier: Modifier = Modifier, nickname: String, onBac
             }
         }
         Spacer(modifier = Modifier.weight(1f))
+
+        val isMatches = name.matches("""[가-힣][가-힣\s]*""".toRegex())
         RoundButton(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 17.dp, vertical = 12.dp),
             text = "적용하기",
-            color = MaterialTheme.colorScheme.primary,
-        ) {
-        }
+            color = if (isMatches) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSecondaryContainer,
+            enabled = isMatches,
+            onClick = onClickApply,
+        )
     }
 }
 
@@ -92,7 +145,6 @@ fun NicknameSettingScreen(modifier: Modifier = Modifier, nickname: String, onBac
 private fun NicknameSettingScreenPreview() {
     YongProjectTheme {
         NicknameSettingScreen(
-            nickname = "놀고픈 청년",
             onBack = {},
         )
     }

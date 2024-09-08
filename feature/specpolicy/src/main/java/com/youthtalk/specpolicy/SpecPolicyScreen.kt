@@ -28,10 +28,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.core.navigation.Nav
 import com.youth.app.feature.specpolicy.R
 import com.youthtalk.component.PolicyCard
 import com.youthtalk.component.filter.FilterComponent
@@ -49,7 +46,9 @@ import com.youthtalk.util.clickableSingle
 fun SpecPolicyScreen(
     category: Category,
     viewModel: SpecPolicyViewModel = hiltViewModel(),
-    navController: NavHostController = rememberNavController(),
+    onClickSearch: () -> Unit,
+    onBack: () -> Unit,
+    onClickDetailPolicy: (String) -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     LaunchedEffect(key1 = category.categoryName) {
@@ -73,7 +72,6 @@ fun SpecPolicyScreen(
         is SpecPolicyUiState.Success -> {
             SpecPolicyScreen(
                 category,
-                navController,
                 uiState as SpecPolicyUiState.Success,
                 onClickEmploy = { viewModel.uiEvent(SpecPolicyUiEvent.ChangeEmployCode(it)) },
                 onClickFinished = { viewModel.uiEvent(SpecPolicyUiEvent.ChangeFinished(it)) },
@@ -82,6 +80,9 @@ fun SpecPolicyScreen(
                 onChangeAge = { viewModel.uiEvent(SpecPolicyUiEvent.ChangeAge(it)) },
                 onClickApply = { viewModel.uiEvent(SpecPolicyUiEvent.FilterApply) },
                 onClickScrap = { id, scrap -> viewModel.uiEvent(SpecPolicyUiEvent.ClickScrap(id, scrap)) },
+                onClickSearch = onClickSearch,
+                onBack = onBack,
+                onClickDetailPolicy = onClickDetailPolicy,
             )
         }
     }
@@ -91,7 +92,6 @@ fun SpecPolicyScreen(
 @Composable
 private fun SpecPolicyScreen(
     category: Category,
-    navController: NavHostController,
     uiState: SpecPolicyUiState.Success,
     onClickEmploy: (EmploymentCode) -> Unit,
     onClickFinished: (Boolean) -> Unit,
@@ -100,6 +100,9 @@ private fun SpecPolicyScreen(
     onChangeAge: (String) -> Unit,
     onClickApply: () -> Unit,
     onClickScrap: (String, Boolean) -> Unit,
+    onClickSearch: () -> Unit,
+    onBack: () -> Unit,
+    onClickDetailPolicy: (String) -> Unit,
 ) {
     val policies = uiState.polices.collectAsLazyPagingItems()
     val policyCount = uiState.policyCount
@@ -118,12 +121,8 @@ private fun SpecPolicyScreen(
     ) {
         SpecPolicyTopBar(
             title = category.categoryName,
-            onBack = {
-                navController.popBackStack()
-            },
-            onClickSearch = {
-                navController.navigate("${Nav.Search.route}/main")
-            },
+            onBack = onBack,
+            onClickSearch = onClickSearch,
         )
 
         LazyColumn {
@@ -161,12 +160,7 @@ private fun SpecPolicyScreen(
                             .padding(horizontal = 17.dp)
                             .padding(bottom = 12.dp),
                         policy = checkScrap,
-                        onClickDetailPolicy = {
-                            navController.navigate("${Nav.PolicyDetail.route}/$it") {
-                                restoreState = true
-                                launchSingleTop = true
-                            }
-                        },
+                        onClickDetailPolicy = onClickDetailPolicy,
                         onClickScrap = onClickScrap,
                     )
                 }
@@ -293,6 +287,9 @@ private fun SpecPolicyScreenPreview() {
     YongProjectTheme {
         SpecPolicyScreen(
             category = Category.JOB,
+            onClickDetailPolicy = {},
+            onBack = {},
+            onClickSearch = {},
         )
     }
 }

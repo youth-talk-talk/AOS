@@ -16,4 +16,5 @@ interface DataSource {
     suspend fun setReviewCategoryFilter(categories: List<Category>)
     suspend fun setAge(age: Int?)
     suspend fun setFinish(isFinish: Boolean?)
+    suspend fun clearData()
 }

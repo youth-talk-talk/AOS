@@ -127,18 +127,24 @@ private fun getComments() = listOf(
         nickname = "집가고싶다어",
         content = "댓글내용수정1",
         isLikedByMember = false,
+        postId = 0,
+        policyId = "",
     ),
     Comment(
         commentId = 144,
         nickname = "집가고싶다어",
         content = "댓글내용수정3",
         isLikedByMember = false,
+        postId = 0,
+        policyId = "",
     ),
     Comment(
         commentId = 382,
         nickname = "집가고싶다어",
         content = "댓글내용수정2",
         isLikedByMember = false,
+        postId = 0,
+        policyId = "",
     ),
 )
 

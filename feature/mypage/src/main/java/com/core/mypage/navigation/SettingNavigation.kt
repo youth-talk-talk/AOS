@@ -1,12 +1,12 @@
-package com.core.navigation
+package com.core.mypage.navigation
 
-import com.core.navigation.SettingRoute.ACCOUNT_MANAGE
-import com.core.navigation.SettingRoute.ANNOUNCE
-import com.core.navigation.SettingRoute.MY_PAGE_COMMENT
-import com.core.navigation.SettingRoute.MY_PAGE_HOME
-import com.core.navigation.SettingRoute.MY_PAGE_POST
-import com.core.navigation.SettingRoute.NICKNAME_SETTING
-import com.core.navigation.SettingRoute.SCRAP_POLICY
+import com.core.mypage.navigation.SettingRoute.ACCOUNT_MANAGE
+import com.core.mypage.navigation.SettingRoute.ANNOUNCE
+import com.core.mypage.navigation.SettingRoute.MY_PAGE_COMMENT
+import com.core.mypage.navigation.SettingRoute.MY_PAGE_HOME
+import com.core.mypage.navigation.SettingRoute.MY_PAGE_POST
+import com.core.mypage.navigation.SettingRoute.NICKNAME_SETTING
+import com.core.mypage.navigation.SettingRoute.SCRAP_POLICY
 
 sealed class SettingNavigation(
     val route: String,
