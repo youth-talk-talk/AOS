@@ -9,4 +9,5 @@ interface CommunityRepository {
     fun postPopularReviewPost(): Flow<List<Post>>
     fun getPopularPosts(): Flow<List<Post>>
     fun getPosts(): Flow<Flow<PagingData<Post>>>
+    fun postPostScrap(id: Long): Flow<String>
 }

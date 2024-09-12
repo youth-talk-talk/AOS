@@ -26,7 +26,7 @@ class SpecPolicyRepositoryImpl @Inject constructor(
     private val commentService: CommentService,
     private val dataSource: DataStoreDataSource,
 ) : SpecPolicyRepository {
-    override fun getPolicies(categories: List<Category>): Flow<Flow<PagingData<Policy>>> = flow {
+    override fun getPolicies(categories: List<Category>?, keyword: String?): Flow<Flow<PagingData<Policy>>> = flow {
         emit(
             Pager(
                 pagingSourceFactory = {
@@ -34,6 +34,7 @@ class SpecPolicyRepositoryImpl @Inject constructor(
                         policyService = policyService,
                         dataSource = dataSource,
                         category = categories,
+                        keyword = keyword,
                     )
                 },
                 config = PagingConfig(
@@ -45,12 +46,12 @@ class SpecPolicyRepositoryImpl @Inject constructor(
         )
     }
 
-    override fun getCount(categories: List<Category>): Flow<Int> = flow {
+    override fun getCount(categories: List<Category>?, keyword: String?): Flow<Int> = flow {
         val requestBody = FilterInfoRequest(
             age = dataSource.getAge().first(),
             categories = categories,
             employmentCodeList = dataSource.getEmployCode().first(),
-            keyword = null,
+            keyword = keyword,
             isFinished = dataSource.getFinish().first(),
         ).toRequestBody()
 

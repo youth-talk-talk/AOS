@@ -7,8 +7,8 @@ import com.youthtalk.model.Policy
 import kotlinx.coroutines.flow.Flow
 
 interface SpecPolicyRepository {
-    fun getPolicies(categories: List<Category>): Flow<Flow<PagingData<Policy>>>
-    fun getCount(categories: List<Category>): Flow<Int>
+    fun getPolicies(categories: List<Category>?, keyword: String?): Flow<Flow<PagingData<Policy>>>
+    fun getCount(categories: List<Category>?, keyword: String?): Flow<Int>
     fun getFilterInfo(): Flow<FilterInfo>
     fun saveFilterInfo(filterInfo: FilterInfo): Flow<FilterInfo>
     fun postScrap(id: String): Flow<String>

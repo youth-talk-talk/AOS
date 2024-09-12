@@ -1,23 +1,20 @@
-package com.youthtalk.datasource.specpolicy
+package com.youthtalk.datasource.search
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.core.datastore.datasource.DataStoreDataSource
 import com.youthtalk.data.PolicyService
-import com.youthtalk.datasource.PagingSize
+import com.youthtalk.datasource.PagingSize.SEARCH_PAGE_SIZE
 import com.youthtalk.dto.specpolicy.FilterInfoRequest
 import com.youthtalk.mapper.toData
-import com.youthtalk.model.Category
+import com.youthtalk.model.FilterInfo
 import com.youthtalk.model.Policy
-import kotlinx.coroutines.flow.first
 import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
 
-class SpecPolicyPagingSource @Inject constructor(
+class SearchPolicyPagingSource @Inject constructor(
     private val policyService: PolicyService,
-    private val dataSource: DataStoreDataSource,
-    private val category: List<Category>? = null,
+    private val filterInfo: FilterInfo,
     private val keyword: String? = null,
 ) : PagingSource<Int, Policy>() {
     override fun getRefreshKey(state: PagingState<Int, Policy>): Int? {
@@ -31,11 +28,11 @@ class SpecPolicyPagingSource @Inject constructor(
         try {
             val pageNumber = params.key ?: 0
             val requestBody = FilterInfoRequest(
-                age = dataSource.getAge().first(),
-                categories = category,
-                employmentCodeList = dataSource.getEmployCode().first(),
+                age = filterInfo.age,
+                categories = null,
+                employmentCodeList = filterInfo.employmentCodeList,
                 keyword = keyword,
-                isFinished = dataSource.getFinish().first(),
+                isFinished = filterInfo.isFinished,
             ).toRequestBody()
 
             val response = policyService.postSpecPolicies(
@@ -49,7 +46,7 @@ class SpecPolicyPagingSource @Inject constructor(
             return LoadResult.Page(
                 data = policies,
                 prevKey = null,
-                nextKey = if (policies.isEmpty()) null else pageNumber + (params.loadSize / PagingSize.SEARCH_PAGE_SIZE),
+                nextKey = if (policies.isEmpty()) null else pageNumber + (params.loadSize / SEARCH_PAGE_SIZE),
             )
         } catch (e: IOException) {
             return LoadResult.Error(e)

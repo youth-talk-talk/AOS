@@ -2,6 +2,8 @@ package com.youthtalk.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -10,6 +12,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -28,6 +31,7 @@ fun SearchChip(
     iconVisible: Boolean = true,
     backgroundColor: Color = MaterialTheme.colorScheme.background,
     borderBackground: Color = MaterialTheme.colorScheme.primary,
+    onDeleteRecently: (String) -> Unit = {},
 ) {
     Row(
         modifier = modifier
@@ -46,6 +50,13 @@ fun SearchChip(
     ) {
         if (iconVisible) {
             Icon(
+                modifier = Modifier
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null,
+                    ) {
+                        onDeleteRecently(text)
+                    },
                 painter = painterResource(id = R.drawable.close_icon),
                 contentDescription = "삭제 아이콘",
                 tint = Color.Black,

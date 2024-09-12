@@ -10,6 +10,12 @@ data class PostResponse(
 )
 
 @Serializable
+data class PostSearchResponse(
+    @SerialName("total") val total: Int,
+    @SerialName("posts") val posts: List<PostDataResponse>,
+)
+
+@Serializable
 data class PostDataResponse(
     val postId: Long,
     val title: String,

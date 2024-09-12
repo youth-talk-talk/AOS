@@ -1,5 +1,6 @@
 package com.core.domain.usercase.di
 
+import com.core.dataapi.repository.CommunityRepository
 import com.core.dataapi.repository.HomeRepository
 import com.core.dataapi.repository.LoginRepository
 import com.core.dataapi.repository.SpecPolicyRepository
@@ -12,6 +13,7 @@ import com.core.domain.usercase.PostLoginUseCase
 import com.core.domain.usercase.PostPolicyCommentUseCase
 import com.core.domain.usercase.PostPolicyDeleteCommentUseCase
 import com.core.domain.usercase.PostPolicyScrapUseCase
+import com.core.domain.usercase.PostPostScrapUseCase
 import com.core.domain.usercase.PostSignUseCase
 import dagger.Module
 import dagger.Provides
@@ -58,4 +60,8 @@ object UseCaseModule {
     @Provides
     @Singleton
     fun providePostPolicyDeleteCommentUseCase(repository: SpecPolicyRepository) = PostPolicyDeleteCommentUseCase(repository)
+
+    @Provides
+    @Singleton
+    fun providePostPostScrapUseCase(repository: CommunityRepository) = PostPostScrapUseCase(repository)
 }

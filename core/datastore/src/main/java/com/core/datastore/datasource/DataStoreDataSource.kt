@@ -11,6 +11,7 @@ import com.core.datastore.datasource.DataStoreDataSource.PreferencesKey.AGE
 import com.core.datastore.datasource.DataStoreDataSource.PreferencesKey.CATEGORIES
 import com.core.datastore.datasource.DataStoreDataSource.PreferencesKey.EMPLOY_CODE
 import com.core.datastore.datasource.DataStoreDataSource.PreferencesKey.IS_FINISH
+import com.core.datastore.datasource.DataStoreDataSource.PreferencesKey.RECENT_LIST
 import com.core.datastore.datasource.DataStoreDataSource.PreferencesKey.REFRESH_TOKEN
 import com.core.datastore.datasource.DataStoreDataSource.PreferencesKey.REVIEW_CATEGORIES
 import com.youthtalk.model.Category
@@ -31,6 +32,7 @@ class DataStoreDataSource @Inject constructor(
         val REVIEW_CATEGORIES = stringPreferencesKey("REVIEW_CATEGORIES")
         val AGE = intPreferencesKey("AGE")
         val EMPLOY_CODE = stringPreferencesKey("EMPLOY_CODE")
+        val RECENT_LIST = stringPreferencesKey("RECENT_LIST")
         val IS_FINISH = booleanPreferencesKey("IS_FINISH")
     }
 
@@ -74,6 +76,10 @@ class DataStoreDataSource @Inject constructor(
         } ?: Category.entries
     }
 
+    override fun getRecentSearchList(): Flow<List<String>> = dataStore.data.map { prefs ->
+        prefs[RECENT_LIST]?.split(",") ?: listOf()
+    }
+
     override suspend fun setCategoryFilter(categories: List<Category>) {
         val listToString = Json.encodeToJsonElement<List<Category>>(categories)
         dataStore.edit { prefs ->
@@ -107,7 +113,7 @@ class DataStoreDataSource @Inject constructor(
 
     override suspend fun setAge(age: Int?) {
         dataStore.edit { prefs ->
-            prefs[AGE] = age ?: 0
+            age?.let { prefs[AGE] = age } ?: prefs.remove(AGE)
         }
     }
 
@@ -118,6 +124,12 @@ class DataStoreDataSource @Inject constructor(
     override suspend fun setFinish(isFinish: Boolean?) {
         dataStore.edit { prefs ->
             prefs[IS_FINISH] = isFinish ?: false
+        }
+    }
+
+    override suspend fun setRecentList(list: List<String>) {
+        dataStore.edit { prefs ->
+            prefs[RECENT_LIST] = list.joinToString(",")
         }
     }
 

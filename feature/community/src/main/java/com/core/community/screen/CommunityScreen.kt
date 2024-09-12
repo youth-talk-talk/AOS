@@ -58,7 +58,7 @@ import kotlinx.collections.immutable.ImmutableList
 @Composable
 fun CommunityScreen(
     viewModel: CommunityViewModel = hiltViewModel(),
-    onClickItem: (String, Long) -> Unit,
+    onClickItem: (Long) -> Unit,
     writePost: (String) -> Unit,
     onClickSearch: (String) -> Unit,
 ) {
@@ -99,7 +99,7 @@ private fun CommunitySuccessScreen(
     uiState: CommunityUiState.Success,
     changeTab: (Int) -> Unit,
     changeReviewCheckBox: (Category?) -> Unit,
-    onClickItem: (String, Long) -> Unit,
+    onClickItem: (Long) -> Unit,
     writePost: (String) -> Unit,
     onClickSearch: (String) -> Unit,
 ) {
@@ -136,7 +136,7 @@ private fun CommunitySuccessScreen(
                             .clickableSingle {
                                 val type = when (tabIndex) {
                                     0 -> "review"
-                                    else -> "free"
+                                    else -> "post"
                                 }
                                 onClickSearch(type)
                             },
@@ -151,17 +151,13 @@ private fun CommunitySuccessScreen(
                         onCheck = { category ->
                             changeReviewCheckBox(category)
                         },
-                        onClickItem = { postId ->
-                            onClickItem("review", postId)
-                        },
+                        onClickItem = { postId -> onClickItem(postId) },
                     )
 
                     1 -> freeBoard(
                         popularPosts = popularPosts,
                         posts = posts,
-                        onClickItem = { postId ->
-                            onClickItem("free", postId)
-                        },
+                        onClickItem = { postId -> onClickItem(postId) },
                     )
                 }
             }
@@ -337,6 +333,7 @@ private fun LazyListScope.reviewPost(
                     scrap = post.scrap,
                     scraps = post.scraps,
                     policyTitle = post.policyTitle,
+                    onClickScrap = {},
                 )
             }
         }
@@ -372,6 +369,7 @@ private fun PopularPosts(popularReviewPosts: ImmutableList<Post>, onClickItem: (
                 comments = reviewPost.comments,
                 scraps = reviewPost.scraps,
                 scrap = reviewPost.scrap,
+                onClickScrap = {},
             )
         }
     }
@@ -439,6 +437,7 @@ fun LazyListScope.freeBoard(popularPosts: List<Post>, posts: LazyPagingItems<Pos
                         scraps = popularPost.scraps,
                         comments = popularPost.comments,
                         scrap = popularPost.scrap,
+                        onClickScrap = {},
                     )
                 }
             }
@@ -485,6 +484,7 @@ fun LazyListScope.freeBoard(popularPosts: List<Post>, posts: LazyPagingItems<Pos
                     scraps = post.scraps,
                     comments = post.comments,
                     scrap = post.scrap,
+                    onClickScrap = {},
                 )
             }
         }
@@ -496,8 +496,7 @@ fun LazyListScope.freeBoard(popularPosts: List<Post>, posts: LazyPagingItems<Pos
 private fun CommunityScreenPreview() {
     YongProjectTheme {
         CommunityScreen(
-            onClickItem = { _, _ ->
-            },
+            onClickItem = {},
             writePost = {},
             onClickSearch = {},
         )
