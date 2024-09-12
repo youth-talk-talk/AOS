@@ -7,8 +7,8 @@ import androidx.paging.cachedIn
 import com.core.domain.usercase.PostPolicyScrapUseCase
 import com.core.domain.usercase.specpolicy.GetPolicyCountUseCase
 import com.core.domain.usercase.specpolicy.GetUserFilterInfoUseCase
+import com.core.domain.usercase.specpolicy.PostFilterUseCase
 import com.core.domain.usercase.specpolicy.PostSpecPoliciesUseCase
-import com.core.domain.usercase.specpolicy.SaveFilterUseCase
 import com.youthtalk.model.Category
 import com.youthtalk.model.EmploymentCode
 import com.youthtalk.specpolicy.model.SpecPolicyUiEffect
@@ -30,7 +30,7 @@ class SpecPolicyViewModel @Inject constructor(
     private val postSpecPoliciesUseCase: PostSpecPoliciesUseCase,
     private val getPolicyCountUseCase: GetPolicyCountUseCase,
     private val getUserFilterInfoUseCase: GetUserFilterInfoUseCase,
-    private val saveFilterUseCase: SaveFilterUseCase,
+    private val postFilterUseCase: PostFilterUseCase,
     private val postPolicyScrapUseCase: PostPolicyScrapUseCase,
 ) : ViewModel() {
 
@@ -79,7 +79,7 @@ class SpecPolicyViewModel @Inject constructor(
         if (state !is SpecPolicyUiState.Success) return
 
         viewModelScope.launch {
-            saveFilterUseCase(state.filterInfo)
+            postFilterUseCase(state.filterInfo)
                 .collectLatest {
                     getData(state.category)
                 }
@@ -142,8 +142,8 @@ class SpecPolicyViewModel @Inject constructor(
     private fun getData(category: Category) {
         viewModelScope.launch {
             combine(
-                postSpecPoliciesUseCase(listOf(category)),
-                getPolicyCountUseCase(listOf(category)),
+                postSpecPoliciesUseCase(listOf(category), null),
+                getPolicyCountUseCase(listOf(category), null),
                 getUserFilterInfoUseCase(),
             ) { polices, count, filterInfo ->
                 SpecPolicyUiState.Success(

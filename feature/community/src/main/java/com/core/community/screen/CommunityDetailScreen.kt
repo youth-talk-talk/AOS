@@ -32,7 +32,7 @@ import com.youthtalk.model.Comment
 import com.youthtalk.model.Post
 
 @Composable
-fun CommunityDetailScreen(postId: Long, type: String) {
+fun CommunityDetailScreen(postId: Long) {
     val post = Post(
         postId = 0,
         title = "",
@@ -256,7 +256,6 @@ private fun CommunityDetailScreenPreview() {
     YongProjectTheme {
         CommunityDetailScreen(
             postId = 0,
-            type = "REVIEW",
         )
     }
 }

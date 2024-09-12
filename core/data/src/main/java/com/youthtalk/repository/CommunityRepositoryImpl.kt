@@ -87,4 +87,14 @@ class CommunityRepositoryImpl @Inject constructor(
             ).flow,
         )
     }
+
+    override fun postPostScrap(id: Long): Flow<String> = flow {
+        runCatching { communityService.postPostScrap(id) }
+            .onSuccess { response ->
+                emit(response.message)
+            }
+            .onFailure {
+                Log.d("YOON-CHAN", "CommnunityRepository postPostScrap error ${it.message}")
+            }
+    }
 }

@@ -82,6 +82,7 @@ private fun MyPagePosts(type: String, posts: LazyPagingItems<Post>, onBack: () -
                         scraps = post.scraps,
                         comments = post.comments,
                         scrap = post.scrap,
+                        onClickScrap = {},
                     )
                 }
             }

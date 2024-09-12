@@ -7,5 +7,5 @@ import javax.inject.Inject
 class GetPolicyCountUseCase @Inject constructor(
     private val specPolicyRepository: SpecPolicyRepository,
 ) {
-    operator fun invoke(categories: List<Category>) = specPolicyRepository.getCount(categories)
+    operator fun invoke(categories: List<Category>?, keyword: String?) = specPolicyRepository.getCount(categories, keyword)
 }

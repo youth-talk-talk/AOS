@@ -7,5 +7,5 @@ import javax.inject.Inject
 class PostSpecPoliciesUseCase @Inject constructor(
     private val specPolicyRepository: SpecPolicyRepository,
 ) {
-    operator fun invoke(categories: List<Category>) = specPolicyRepository.getPolicies(categories)
+    operator fun invoke(categories: List<Category>?, keyword: String?) = specPolicyRepository.getPolicies(categories, keyword)
 }

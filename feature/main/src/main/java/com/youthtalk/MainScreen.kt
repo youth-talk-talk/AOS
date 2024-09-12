@@ -166,6 +166,15 @@ fun NavHostScreen(navController: NavHostController, homeLazyListScrollState: Laz
             it.arguments?.getString("type")?.let { type ->
                 SearchScreen(
                     type = type,
+                    onClickDetailPolicy = { policyId ->
+                        navController.navigate("${Nav.PolicyDetail.route}/$policyId")
+                    },
+                    onClickDetailPost = { postId ->
+                        navController.navigate("${CommunityNavigation.CommunityDetail.route}/$postId")
+                    },
+                    onBack = {
+                        navController.popBackStack()
+                    },
                 )
             }
         }
@@ -176,21 +185,16 @@ fun NavHostScreen(navController: NavHostController, homeLazyListScrollState: Laz
 
 private fun NavGraphBuilder.communityNavigation(navController: NavHostController) {
     composable(
-        route = "${CommunityNavigation.CommunityDetail.route}/{type}/{postId}",
+        route = "${CommunityNavigation.CommunityDetail.route}/{postId}",
         arguments = listOf(
-            navArgument("type") {
-                type = NavType.StringType
-            },
             navArgument("postId") {
                 type = NavType.LongType
             },
         ),
     ) {
         val postId = it.arguments?.getLong("postId") ?: -1
-        val type = it.arguments?.getString("type") ?: ""
         CommunityDetailScreen(
             postId = postId,
-            type = type,
         )
     }
 
@@ -227,14 +231,14 @@ private fun NavGraphBuilder.mainNavigation(navController: NavHostController, hom
 
     composable(route = MainNav.Community.route) {
         CommunityScreen(
-            onClickItem = { type, postId ->
-                navController.navigate("${CommunityNavigation.CommunityDetail.route}/$type/$postId")
+            onClickItem = { postId ->
+                navController.navigate("${CommunityNavigation.CommunityDetail.route}/$postId")
             },
             writePost = { type ->
                 navController.navigate("${CommunityNavigation.CommunityWrite.route}/$type")
             },
             onClickSearch = { type ->
-                navController.navigate("${CommunityNavigation.CommunityDetail.route}/$type")
+                navController.navigate("${Nav.Search.route}/$type")
             },
         )
     }
