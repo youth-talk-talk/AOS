@@ -121,7 +121,10 @@ fun NavHostScreen(navController: NavHostController, homeLazyListScrollState: Laz
             ),
         ) {
             it.arguments?.getString("policyId")?.let { policyId ->
-                PolicyDetailScreen(policyId = policyId)
+                PolicyDetailScreen(
+                    policyId = policyId,
+                    onBack = { navController.popBackStack() },
+                )
             }
         }
 
@@ -195,6 +198,7 @@ private fun NavGraphBuilder.communityNavigation(navController: NavHostController
         val postId = it.arguments?.getLong("postId") ?: -1
         CommunityDetailScreen(
             postId = postId,
+            onBack = { navController.popBackStack() },
         )
     }
 
@@ -232,13 +236,22 @@ private fun NavGraphBuilder.mainNavigation(navController: NavHostController, hom
     composable(route = MainNav.Community.route) {
         CommunityScreen(
             onClickItem = { postId ->
-                navController.navigate("${CommunityNavigation.CommunityDetail.route}/$postId")
+                navController.navigate("${CommunityNavigation.CommunityDetail.route}/$postId") {
+                    restoreState = true
+                    launchSingleTop = true
+                }
             },
             writePost = { type ->
-                navController.navigate("${CommunityNavigation.CommunityWrite.route}/$type")
+                navController.navigate("${CommunityNavigation.CommunityWrite.route}/$type") {
+                    restoreState = true
+                    launchSingleTop = true
+                }
             },
             onClickSearch = { type ->
-                navController.navigate("${Nav.Search.route}/$type")
+                navController.navigate("${Nav.Search.route}/$type") {
+                    restoreState = true
+                    launchSingleTop = true
+                }
             },
         )
     }
@@ -303,7 +316,10 @@ fun RowScope.BottomIcon(navHostController: NavHostController, mainNav: MainNav, 
             ) {
                 if (navHostController.currentDestination?.route != mainNav.route) {
                     navHostController.navigate(mainNav.route) {
-                        popUpTo(MainNav.Home.route)
+                        popUpTo(navHostController.graph.id) {
+                            saveState = true
+                        }
+                        restoreState = true
                         launchSingleTop = true
                     }
                 } else {

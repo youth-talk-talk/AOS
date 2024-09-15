@@ -21,7 +21,7 @@ import com.youth.app.feature.policydetail.R
 import com.youthtalk.designsystem.YongProjectTheme
 
 @Composable
-fun PolicyDetailTopAppBar(modifier: Modifier = Modifier, isScrap: Boolean, onClickScrap: () -> Unit) {
+fun PolicyDetailTopAppBar(modifier: Modifier = Modifier, isScrap: Boolean, onClickScrap: (Boolean) -> Unit, onBack: () -> Unit) {
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -32,7 +32,11 @@ fun PolicyDetailTopAppBar(modifier: Modifier = Modifier, isScrap: Boolean, onCli
     ) {
         Icon(
             modifier = Modifier
-                .padding(vertical = 13.dp),
+                .padding(vertical = 13.dp)
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null,
+                ) { onBack() },
             painter = painterResource(id = R.drawable.left_icon),
             contentDescription = "뒤로가기",
             tint = Color.Black,
@@ -51,7 +55,7 @@ fun PolicyDetailTopAppBar(modifier: Modifier = Modifier, isScrap: Boolean, onCli
                     .clickable(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = null,
-                    ) { onClickScrap() },
+                    ) { onClickScrap(isScrap) },
                 painter = if (isScrap) painterResource(id = R.drawable.bookmark_check) else painterResource(id = R.drawable.bookmark),
                 contentDescription = "북마크 아이콘",
                 tint = if (isScrap) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSecondary,
@@ -67,6 +71,7 @@ private fun PolicyDetailTopAppBarPreview() {
         PolicyDetailTopAppBar(
             isScrap = true,
             onClickScrap = {},
+            onBack = {},
         )
     }
 }
@@ -78,6 +83,7 @@ private fun PolicyDetailTopAppBarBookMarkFalsePreview() {
         PolicyDetailTopAppBar(
             isScrap = false,
             onClickScrap = {},
+            onBack = {},
         )
     }
 }

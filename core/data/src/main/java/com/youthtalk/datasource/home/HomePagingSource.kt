@@ -1,5 +1,6 @@
 package com.youthtalk.datasource.home
 
+import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.core.datastore.datasource.DataStoreDataSource
@@ -19,13 +20,14 @@ class HomePagingSource @Inject constructor(
     override fun getRefreshKey(state: PagingState<Int, Policy>): Int? {
         return state.anchorPosition?.let { anchorPosition ->
             val anchorPage = state.closestPageToPosition(anchorPosition)
-            anchorPage?.prevKey?.plus(1) ?: anchorPage?.nextKey?.minus(1)
+            anchorPage?.nextKey?.minus(1) ?: anchorPage?.prevKey?.plus(1)
         }
     }
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Policy> {
         try {
             val pageNumber = params.key ?: 0
+            Log.d("YOON-CHAN", "HomePagingSource pageNumber $pageNumber")
             val getCategories: List<String> = dataSource.getCategoryFilter().first().map { it.name }
 
             val response = policyService.getPolices(
@@ -39,7 +41,7 @@ class HomePagingSource @Inject constructor(
             return LoadResult.Page(
                 data = policies,
                 prevKey = null,
-                nextKey = if (policies.size == params.loadSize) pageNumber + 1 else null,
+                nextKey = if (policies.size != params.loadSize) null else pageNumber + (params.loadSize / 10),
             )
         } catch (e: IOException) {
             return LoadResult.Error(e)

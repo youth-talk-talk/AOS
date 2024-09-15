@@ -39,6 +39,8 @@ fun CommentScreen(
     isMine: Boolean,
     isDetailScreen: Boolean = true,
     deleteComment: () -> Unit = {},
+    modifierComment: (String) -> Unit,
+    onClickLike: () -> Unit,
 ) {
     Row(
         modifier = modifier
@@ -79,7 +81,13 @@ fun CommentScreen(
                     horizontalArrangement = Arrangement.spacedBy(1.dp),
                 ) {
                     Text(
-                        modifier = Modifier.width(21.dp),
+                        modifier = Modifier.width(21.dp)
+                            .clickable(
+                                interactionSource = remember { MutableInteractionSource() },
+                                indication = null,
+                            ) {
+                                modifierComment(content)
+                            },
                         text = stringResource(id = R.string.modify),
                         style = MaterialTheme.typography.labelLarge.copy(
                             color = MaterialTheme.colorScheme.onTertiary,
@@ -106,7 +114,13 @@ fun CommentScreen(
                 Icon(
                     modifier = Modifier
                         .padding(start = 29.dp)
-                        .align(Alignment.CenterEnd),
+                        .align(Alignment.CenterEnd)
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null,
+                        ) {
+                            onClickLike()
+                        },
                     painter = if (isLike) painterResource(id = R.drawable.favorite_check_icon) else painterResource(id = R.drawable.favorite_icon),
                     contentDescription = stringResource(id = R.string.favorite),
                     tint = if (isLike) MaterialTheme.colorScheme.primary else Color.Black,
@@ -126,6 +140,8 @@ private fun CommentScreenIsMinePreview() {
             isLike = true,
             isMine = true,
             deleteComment = {},
+            onClickLike = {},
+            modifierComment = {},
         )
     }
 }
@@ -140,6 +156,8 @@ private fun CommentScreenOtherPreview() {
             isMine = false,
             isLike = true,
             deleteComment = {},
+            onClickLike = {},
+            modifierComment = {},
         )
     }
 }

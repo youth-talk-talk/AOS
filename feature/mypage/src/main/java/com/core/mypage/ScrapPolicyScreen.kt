@@ -88,7 +88,7 @@ private fun ScrapScreen(
                 key = { index -> policies.peek(index)?.policyId ?: "" },
             ) { index ->
                 policies[index]?.let { policy ->
-                    if (!deleteScrap.containsKey(policy.policyId)) {
+                    if (deleteScrap.getOrDefault(policy.policyId, policy.scrap)) {
                         PolicyCard(
                             modifier = Modifier
                                 .animateItemPlacement(),

@@ -57,7 +57,7 @@ class SpecPolicyViewModel @Inject constructor(
         if (state !is SpecPolicyUiState.Success) return
 
         viewModelScope.launch {
-            postPolicyScrapUseCase(id)
+            postPolicyScrapUseCase(id, scrap)
                 .catch {
                     Log.d("YOON-CHAN", "SpecPolicyViewModel clickScrap error ${it.message}")
                 }
