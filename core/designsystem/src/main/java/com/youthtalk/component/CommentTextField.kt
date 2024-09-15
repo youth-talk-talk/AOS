@@ -6,19 +6,16 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,81 +30,71 @@ import com.youthtalk.designsystem.YongProjectTheme
 import com.youthtalk.designsystem.gray50
 
 @Composable
-fun CommentTextField(modifier: Modifier = Modifier, addComment: (String) -> Unit) {
+fun CommentTextField(
+    modifier: Modifier = Modifier,
+    text: String,
+    isModifier: Boolean,
+    onTextChange: (String) -> Unit,
+    addComment: (String) -> Unit,
+    modifierComment: (String) -> Unit,
+) {
     val focusManager = LocalFocusManager.current
 
-    var text by remember {
-        mutableStateOf("")
-    }
-
-    Box(
+    BasicTextField(
         modifier = modifier
             .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.background)
-            .padding(horizontal = 18.dp),
-        contentAlignment = Alignment.Center,
-    ) {
-        BasicTextField(
+            .padding(vertical = 7.dp)
+            .background(
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                shape = RoundedCornerShape(8.dp),
+            )
+            .heightIn(max = 150.dp),
+        value = text,
+        textStyle = MaterialTheme.typography.titleMedium,
+        onValueChange = onTextChange,
+        keyboardOptions = KeyboardOptions(
+            imeAction = ImeAction.Default,
+            keyboardType = KeyboardType.Text,
+        ),
+    ) { innerTextField ->
+
+        Row(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 7.dp)
-                .background(
-                    color = MaterialTheme.colorScheme.onSecondaryContainer,
-                    shape = RoundedCornerShape(8.dp),
-                ),
-            value = text,
-            textStyle = MaterialTheme.typography.titleMedium,
-            onValueChange = { text = it },
-            keyboardOptions = KeyboardOptions(
-                imeAction = ImeAction.Done,
-                keyboardType = KeyboardType.Text,
-            ),
-            keyboardActions = KeyboardActions(
-                onDone = {
-                    focusManager.clearFocus()
-                    if (text.isNotEmpty()) {
-                        addComment(text)
-                        text = ""
-                    }
-                },
-            ),
-        ) { innerTextField ->
-
-            Row(
-                modifier = Modifier
-                    .padding(horizontal = 13.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Box(modifier = Modifier.weight(1f)) {
-                    innerTextField()
-                    if (text.isEmpty()) {
-                        Text(
-                            text = "댓글을 달아보세요",
-                            style = MaterialTheme.typography.titleMedium.copy(
-                                color = gray50,
-                            ),
-                        )
-                    }
+                .padding(horizontal = 13.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Box(modifier = Modifier.weight(1f)) {
+                innerTextField()
+                if (text.isEmpty()) {
+                    Text(
+                        text = if (isModifier) "수정할 댓글을 적어주세요" else "댓글을 달아보세요",
+                        style = MaterialTheme.typography.titleMedium.copy(
+                            color = gray50,
+                        ),
+                    )
                 }
-
-                Icon(
-                    modifier = Modifier
-                        .padding(vertical = 13.dp)
-                        .clickable(
-                            interactionSource = remember { MutableInteractionSource() },
-                            indication = null,
-                        ) {
-                            focusManager.clearFocus()
-                            if (text.isNotEmpty()) {
-                                addComment(text)
-                                text = ""
-                            }
-                        },
-                    painter = painterResource(id = R.drawable.arrow_up_icon),
-                    contentDescription = "댓글 등록",
-                    tint = Color.Black,
-                )
             }
+
+            Icon(
+                modifier = Modifier
+                    .padding(vertical = 13.dp)
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null,
+                    ) {
+                        focusManager.clearFocus()
+                        if (text.isNotEmpty()) {
+                            if (isModifier) {
+                                modifierComment(text)
+                            } else {
+                                addComment(text)
+                            }
+                        }
+                    },
+                painter = painterResource(id = R.drawable.arrow_up_icon),
+                contentDescription = "댓글 등록",
+                tint = Color.Black,
+            )
         }
     }
 }
@@ -118,6 +105,10 @@ private fun CommentScreenPreview() {
     YongProjectTheme {
         CommentTextField(
             addComment = {},
+            modifierComment = {},
+            text = "",
+            onTextChange = {},
+            isModifier = false,
         )
     }
 }

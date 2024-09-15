@@ -2,6 +2,7 @@ package com.core.domain.usercase.di.home
 
 import com.core.dataapi.repository.HomeRepository
 import com.core.domain.usercase.home.GetAllPoliciesUseCase
+import com.core.domain.usercase.home.GetHomePolicyMapUseCase
 import com.core.domain.usercase.home.GetPopularPoliciesUseCase
 import dagger.Module
 import dagger.Provides
@@ -20,4 +21,8 @@ object HomeUseCaseModule {
     @Provides
     @Singleton
     fun provideGetPopularPolicesUseCase(repository: HomeRepository) = GetPopularPoliciesUseCase(repository)
+
+    @Provides
+    @Singleton
+    fun provideGetHomePolicyMapUseCase(repository: HomeRepository) = GetHomePolicyMapUseCase(repository)
 }

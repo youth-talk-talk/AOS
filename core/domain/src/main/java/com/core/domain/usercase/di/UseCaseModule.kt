@@ -9,9 +9,10 @@ import com.core.domain.usercase.ChangeCategoriesUseCase
 import com.core.domain.usercase.CheckTokenUseCase
 import com.core.domain.usercase.GetCategoriesUseCase
 import com.core.domain.usercase.GetUserUseCase
+import com.core.domain.usercase.PostCommentLikeUseCase
+import com.core.domain.usercase.PostDeleteCommentUseCase
 import com.core.domain.usercase.PostLoginUseCase
-import com.core.domain.usercase.PostPolicyCommentUseCase
-import com.core.domain.usercase.PostPolicyDeleteCommentUseCase
+import com.core.domain.usercase.PostPolicyAddCommentUseCase
 import com.core.domain.usercase.PostPolicyScrapUseCase
 import com.core.domain.usercase.PostPostScrapUseCase
 import com.core.domain.usercase.PostSignUseCase
@@ -46,22 +47,26 @@ object UseCaseModule {
 
     @Provides
     @Singleton
-    fun provideSetCategoriesUseCase(userRepository: UserRepository, homeRepository: HomeRepository) =
-        ChangeCategoriesUseCase(userRepository, homeRepository)
+    fun provideSetCategoriesUseCase(userRepository: UserRepository) = ChangeCategoriesUseCase(userRepository)
 
     @Provides
     @Singleton
-    fun providePostPolicyScrapUseCase(repository: SpecPolicyRepository) = PostPolicyScrapUseCase(repository)
+    fun providePostPolicyScrapUseCase(repository: SpecPolicyRepository, homeRepository: HomeRepository) =
+        PostPolicyScrapUseCase(repository, homeRepository)
 
     @Provides
     @Singleton
-    fun providePostPolicyCommentUseCase(repository: SpecPolicyRepository) = PostPolicyCommentUseCase(repository)
+    fun providePostPolicyAddCommentUseCase(repository: SpecPolicyRepository) = PostPolicyAddCommentUseCase(repository)
 
     @Provides
     @Singleton
-    fun providePostPolicyDeleteCommentUseCase(repository: SpecPolicyRepository) = PostPolicyDeleteCommentUseCase(repository)
+    fun providePostDeleteCommentUseCase(repository: SpecPolicyRepository) = PostDeleteCommentUseCase(repository)
 
     @Provides
     @Singleton
     fun providePostPostScrapUseCase(repository: CommunityRepository) = PostPostScrapUseCase(repository)
+
+    @Provides
+    @Singleton
+    fun providePostCommentLikeUseCase(repository: CommunityRepository) = PostCommentLikeUseCase(repository)
 }

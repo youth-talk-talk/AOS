@@ -1,9 +1,13 @@
 package com.youthtalk.data
 
 import com.youthtalk.dto.CommonResponse
+import com.youthtalk.dto.PostAddCommentResponse
 import com.youthtalk.dto.PostDataResponse
 import com.youthtalk.dto.PostResponse
 import com.youthtalk.dto.PostSearchResponse
+import com.youthtalk.dto.community.PostDetailResponse
+import okhttp3.RequestBody
+import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
@@ -38,4 +42,10 @@ interface CommunityService {
 
     @POST("/posts/{id}/scrap")
     suspend fun postPostScrap(@Path("id") id: Long): CommonResponse<Unit>
+
+    @GET("/posts/{id}")
+    suspend fun getPostDetail(@Path("id") id: Long): CommonResponse<PostDetailResponse>
+
+    @POST("/posts/comments")
+    suspend fun postPostAddComment(@Body requestBody: RequestBody): CommonResponse<PostAddCommentResponse>
 }

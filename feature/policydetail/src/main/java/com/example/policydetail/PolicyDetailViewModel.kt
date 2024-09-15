@@ -4,11 +4,13 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.core.domain.usercase.GetUserUseCase
-import com.core.domain.usercase.PostPolicyCommentUseCase
-import com.core.domain.usercase.PostPolicyDeleteCommentUseCase
+import com.core.domain.usercase.PostCommentLikeUseCase
+import com.core.domain.usercase.PostDeleteCommentUseCase
+import com.core.domain.usercase.PostPolicyAddCommentUseCase
 import com.core.domain.usercase.PostPolicyScrapUseCase
 import com.core.domain.usercase.policydetail.GetPolicyDetailCommentUseCase
 import com.core.domain.usercase.policydetail.GetPolicyDetailUseCase
+import com.core.domain.usercase.post.PatchCommentUseCase
 import com.example.policydetail.model.PolicyDetailUiState
 import com.youthtalk.model.Comment
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -29,8 +31,10 @@ class PolicyDetailViewModel @Inject constructor(
     private val getPolicyDetailCommentUseCase: GetPolicyDetailCommentUseCase,
     private val getUserUseCase: GetUserUseCase,
     private val postPolicyScrapUseCase: PostPolicyScrapUseCase,
-    private val postPolicyCommentUseCase: PostPolicyCommentUseCase,
-    private val postPolicyDeleteCommentUseCase: PostPolicyDeleteCommentUseCase,
+    private val postPolicyAddCommentUseCase: PostPolicyAddCommentUseCase,
+    private val postDeleteCommentUseCase: PostDeleteCommentUseCase,
+    private val patchCommentUseCase: PatchCommentUseCase,
+    private val postCommentLikeUseCase: PostCommentLikeUseCase,
 ) : ViewModel() {
 
     private val _error = MutableSharedFlow<Throwable>()
@@ -62,12 +66,12 @@ class PolicyDetailViewModel @Inject constructor(
         }
     }
 
-    fun postScrap(id: String) {
+    fun postScrap(id: String, scrap: Boolean) {
         val state = _uiState.value
         if (state !is PolicyDetailUiState.Success) return
 
         viewModelScope.launch {
-            postPolicyScrapUseCase(id)
+            postPolicyScrapUseCase(id, scrap)
                 .catch {
                     Log.d("YOON-CHAN", "PolicyDetailViewModel postScrap error ${it.message}")
                 }
@@ -86,7 +90,7 @@ class PolicyDetailViewModel @Inject constructor(
         if (state !is PolicyDetailUiState.Success) return
 
         viewModelScope.launch {
-            postPolicyCommentUseCase(policyId, text)
+            postPolicyAddCommentUseCase(policyId, text)
                 .catch {
                     Log.d("YOON-CHAN", "PolicyDetailViewModel addComment error ${it.message}")
                 }
@@ -111,7 +115,7 @@ class PolicyDetailViewModel @Inject constructor(
         if (state !is PolicyDetailUiState.Success) return
 
         viewModelScope.launch {
-            postPolicyDeleteCommentUseCase(commentId)
+            postDeleteCommentUseCase(commentId)
                 .catch {
                     Log.d("YOON-CHAN", "PolicyDetailViewModel deleteComment error ${it.message}")
                 }
@@ -120,6 +124,40 @@ class PolicyDetailViewModel @Inject constructor(
                     comments.removeAt(index)
                     _uiState.value = state.copy(
                         comments = comments.toPersistentList(),
+                    )
+                }
+        }
+    }
+
+    fun modifyComment(id: Long, content: String) {
+        val state = _uiState.value
+        if (state !is PolicyDetailUiState.Success) return
+
+        viewModelScope.launch {
+            patchCommentUseCase(id, content)
+                .catch {
+                    Log.d("YOON-CHAN", "PolicyDetailViewModel modifyComment error ${it.message}")
+                }
+                .collectLatest {
+                    _uiState.value = state.copy(
+                        comments = state.comments.map { if (it.commentId == id) it.copy(content = content) else it }.toPersistentList(),
+                    )
+                }
+        }
+    }
+
+    fun postCommentLike(id: Long, isLike: Boolean) {
+        val state = _uiState.value
+        if (state !is PolicyDetailUiState.Success) return
+
+        viewModelScope.launch {
+            postCommentLikeUseCase(id, !isLike)
+                .catch {
+                    Log.d("YOON-CHAN", "PolicyDetailViewModel postCommentLike error ${it.message}")
+                }
+                .collectLatest {
+                    _uiState.value = state.copy(
+                        comments = state.comments.map { if (it.commentId == id) it.copy(isLikedByMember = !isLike) else it }.toPersistentList(),
                     )
                 }
         }

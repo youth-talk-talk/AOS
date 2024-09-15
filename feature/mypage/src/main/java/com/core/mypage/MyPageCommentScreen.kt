@@ -92,6 +92,9 @@ private fun MyPageComments(isMine: Boolean, comments: ImmutableList<Comment>, on
                     isLike = comment.isLikedByMember,
                     isMine = isMine,
                     isDetailScreen = false,
+                    onClickLike = {},
+                    modifierComment = {},
+                    deleteComment = {},
                 )
             }
         }

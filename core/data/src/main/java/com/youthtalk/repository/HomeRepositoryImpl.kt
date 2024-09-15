@@ -26,21 +26,24 @@ class HomeRepositoryImpl @Inject constructor(
     private val policyService: PolicyService,
     private val dataSource: DataStoreDataSource,
 ) : HomeRepository {
+    companion object {
+        private var homePolicyMap: Map<String, Boolean> = mapOf()
+    }
 
-    override fun getPolices(): Flow<Flow<PagingData<Policy>>> = flow {
-        emit(
-            Pager(
-                config = PagingConfig(
-                    pageSize = 10,
-                ),
-                pagingSourceFactory = {
-                    HomePagingSource(
-                        policyService = policyService,
-                        dataSource = dataSource,
-                    )
-                },
-            ).flow,
-        )
+    override fun getPolices(): Flow<PagingData<Policy>> {
+        homePolicyMap = mapOf()
+        return Pager(
+            config = PagingConfig(
+                pageSize = 10,
+                initialLoadSize = 10,
+            ),
+            pagingSourceFactory = {
+                HomePagingSource(
+                    policyService = policyService,
+                    dataSource = dataSource,
+                )
+            },
+        ).flow
     }
 
     override fun getTop5Polices(): Flow<List<Policy>> = flow {
@@ -69,5 +72,21 @@ class HomeRepositoryImpl @Inject constructor(
                     else -> throw NetworkErrorException("network Error")
                 }
             }
+    }
+
+    override fun getHomePolicyMap(): Flow<Map<String, Boolean>> = flow {
+        emit(homePolicyMap)
+    }
+
+    override fun postHomePolicyScrap(id: String, scrap: Boolean): Flow<Map<String, Boolean>> = flow {
+        Log.d("YOON-CHAN", "postHomePolicyScrap $id $scrap")
+        homePolicyMap = if (homePolicyMap.containsKey(id)) {
+            homePolicyMap - id
+            homePolicyMap + Pair(id, !scrap)
+        } else {
+            homePolicyMap + Pair(id, !scrap)
+        }
+        Log.d("YOON-CHAN", "postHomePolicyScrap homePOlicyMap $homePolicyMap")
+        emit(homePolicyMap)
     }
 }

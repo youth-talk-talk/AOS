@@ -322,7 +322,7 @@ private fun SearchPolicies(
                     modifier = Modifier
                         .padding(horizontal = 17.dp)
                         .padding(bottom = 12.dp),
-                    policy = if (map.containsKey(policy.policyId)) policy.copy(scrap = map[policy.policyId] ?: false) else policy,
+                    policy = policy.copy(scrap = map.getOrDefault(policy.policyId, policy.scrap)),
                     onClickDetailPolicy = onClickDetailPolicy,
                     onClickScrap = onClickScrap,
                 )

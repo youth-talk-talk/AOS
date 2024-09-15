@@ -6,6 +6,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import com.core.domain.usercase.PostPolicyScrapUseCase
 import com.core.domain.usercase.PostPostScrapUseCase
+import com.core.domain.usercase.home.GetHomePolicyMapUseCase
+import com.core.domain.usercase.post.GetPostScrapUseCase
 import com.core.domain.usercase.search.GetSearchPostCountUseCase
 import com.core.domain.usercase.search.GetSearchPostsUseCase
 import com.core.domain.usercase.specpolicy.GetPolicyCountUseCase
@@ -32,6 +34,8 @@ class SearchResultViewModel @Inject constructor(
     private val getUserFilterInfoUseCase: GetUserFilterInfoUseCase,
     private val getPostsCountUseCase: GetSearchPostCountUseCase,
     private val getPostsUseCase: GetSearchPostsUseCase,
+    private val getHomePolicyMapUseCase: GetHomePolicyMapUseCase,
+    private val getPostScrapUseCase: GetPostScrapUseCase,
     private val postPolicyScrapUseCase: PostPolicyScrapUseCase,
     private val postPostScrapUseCase: PostPostScrapUseCase,
     private val postFilterUseCase: PostFilterUseCase,
@@ -56,19 +60,13 @@ class SearchResultViewModel @Inject constructor(
         if (state !is SearchResultUiState.Success) return
 
         viewModelScope.launch {
-            postPostScrapUseCase(postId)
+            postPostScrapUseCase(postId, scrap)
                 .catch {
                     Log.d("YOON-CHAN", "SearchResultViewModel applyFilter error ${it.message}")
                 }
                 .collectLatest {
-                    val postScrap = if (state.postScrapMap.containsKey(postId)) {
-                        state.postScrapMap - postId
-                    } else {
-                        state.postScrapMap + Pair(postId, !scrap)
-                    }
-
                     _uiState.value = state.copy(
-                        postScrapMap = postScrap,
+                        postScrapMap = it,
                     )
                 }
         }
@@ -112,11 +110,16 @@ class SearchResultViewModel @Inject constructor(
                 getPolicyCountUseCase(null, keyword),
                 getSpecPoliciesUseCase(null, keyword),
                 getUserFilterInfoUseCase(),
-            ) { count, policies, filterInfo ->
+                getHomePolicyMapUseCase(),
+                getPostScrapUseCase(),
+
+            ) { count, policies, filterInfo, policyMap, postMap ->
                 SearchResultUiState.Success(
                     policies = policies.cachedIn(viewModelScope),
                     count = count,
                     filterInfo = filterInfo,
+                    policyScrapMap = policyMap,
+                    postScrapMap = postMap,
                 )
             }
                 .onStart {
@@ -158,17 +161,13 @@ class SearchResultViewModel @Inject constructor(
         if (state !is SearchResultUiState.Success) return
 
         viewModelScope.launch {
-            postPolicyScrapUseCase(postId)
+            postPolicyScrapUseCase(postId, scrap)
                 .catch {
                     Log.d("YOON-CHAN", "SearchResultViewModel postPolicyScrap error ${it.message}")
                 }
                 .collectLatest {
                     _uiState.value = state.copy(
-                        policyScrapMap = if (state.policyScrapMap.containsKey(postId)) {
-                            state.policyScrapMap - postId
-                        } else {
-                            state.policyScrapMap + Pair(postId, !scrap)
-                        },
+                        policyScrapMap = it,
                     )
                 }
         }

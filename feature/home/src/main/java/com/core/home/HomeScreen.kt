@@ -1,6 +1,5 @@
 package com.core.home
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -22,6 +21,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -69,14 +69,9 @@ fun HomeScreen(
         val value = uiState as HomeUiState.Success
         val allPolicies = value.allPolicies.collectAsLazyPagingItems()
 
-        LifecycleResumeEffect(
-            key1 = Unit,
-        ) {
-            allPolicies.refresh()
+        LifecycleResumeEffect(key1 = Unit) {
             viewModel.onResume()
-            onPauseOrDispose {
-                viewModel.clearData()
-            }
+            onPauseOrDispose {}
         }
         HomeMain(
             uiState = value,
@@ -91,7 +86,6 @@ fun HomeScreen(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun HomeMain(
     uiState: HomeUiState.Success,
@@ -146,12 +140,12 @@ private fun HomeMain(
                 }
                 items(
                     count = allPolicies.itemCount,
+                    key = { index -> allPolicies.peek(index)!!.policyId },
                 ) { index ->
                     allPolicies[index]?.let { policy ->
-                        val checkPolicyScrap = policy.copy(scrap = uiState.scrap[policy.policyId] ?: policy.scrap)
+                        val checkPolicyScrap = policy.copy(scrap = uiState.scrap.getOrDefault(policy.policyId, policy.scrap))
                         UpdatePolicyScreen(
-                            modifier = Modifier.animateItemPlacement(),
-                            checkPolicyScrap,
+                            policy = checkPolicyScrap,
                             onClickDetailPolicy = onClickDetailPolicy,
                             onClickScrap = onClickScrap,
                         )

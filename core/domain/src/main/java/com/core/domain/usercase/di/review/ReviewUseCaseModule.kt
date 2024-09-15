@@ -22,7 +22,8 @@ object ReviewUseCaseModule {
 
     @Provides
     @Singleton
-    fun provideSetReviewCategoriesUseCase(repository: UserRepository) = SetReviewCategoriesUseCase(repository)
+    fun provideSetReviewCategoriesUseCase(userRepository: UserRepository, communityRepository: CommunityRepository) =
+        SetReviewCategoriesUseCase(userRepository, communityRepository)
 
     @Provides
     @Singleton

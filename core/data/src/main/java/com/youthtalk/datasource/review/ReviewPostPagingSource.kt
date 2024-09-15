@@ -36,8 +36,8 @@ class ReviewPostPagingSource @Inject constructor(
             val reviewPosts = response.data?.posts?.map { it.toData() } ?: listOf()
             return LoadResult.Page(
                 data = reviewPosts,
-                prevKey = null,
-                nextKey = if (reviewPosts.size == params.loadSize) pageNumber + 1 else null,
+                prevKey = if (pageNumber == 0) null else pageNumber - 1,
+                nextKey = if (reviewPosts.size != params.loadSize) null else pageNumber + (params.loadSize / 10),
             )
         } catch (e: IOException) {
             return LoadResult.Error(e)

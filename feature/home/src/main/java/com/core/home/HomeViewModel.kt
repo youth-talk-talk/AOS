@@ -8,8 +8,8 @@ import com.core.domain.usercase.ChangeCategoriesUseCase
 import com.core.domain.usercase.GetCategoriesUseCase
 import com.core.domain.usercase.PostPolicyScrapUseCase
 import com.core.domain.usercase.home.GetAllPoliciesUseCase
+import com.core.domain.usercase.home.GetHomePolicyMapUseCase
 import com.core.domain.usercase.home.GetPopularPoliciesUseCase
-import com.core.domain.usercase.policydetail.GetPolicyDetailUseCase
 import com.core.home.model.HomeUiState
 import com.youthtalk.model.Category
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -33,7 +33,7 @@ class HomeViewModel @Inject constructor(
     private val getAllPoliciesUseCase: GetAllPoliciesUseCase,
     private val getPopularPoliciesUseCase: GetPopularPoliciesUseCase,
     private val postPolicyScrapUseCase: PostPolicyScrapUseCase,
-    private val getPolicyDetailUseCase: GetPolicyDetailUseCase,
+    private val getHomePolicyMapUseCase: GetHomePolicyMapUseCase,
 ) : ViewModel() {
 
     private val _errorHandler = MutableSharedFlow<Throwable>()
@@ -47,12 +47,13 @@ class HomeViewModel @Inject constructor(
             combine(
                 getCategoriesUseCase(),
                 getPopularPoliciesUseCase(),
-                getAllPoliciesUseCase(),
-            ) { categories, policies, all ->
+                getHomePolicyMapUseCase(),
+            ) { categories, policies, map ->
                 HomeUiState.Success(
                     categoryList = categories.toPersistentList(),
                     popularPolicies = policies.toPersistentList(),
-                    allPolicies = all.cachedIn(viewModelScope),
+                    allPolicies = getAllPoliciesUseCase().cachedIn(viewModelScope),
+                    scrap = map,
                 )
             }
                 .map {
@@ -93,14 +94,13 @@ class HomeViewModel @Inject constructor(
         if (state !is HomeUiState.Success) return
 
         viewModelScope.launch {
-            postPolicyScrapUseCase(id)
+            postPolicyScrapUseCase(id, isScrap)
                 .catch {
                     Log.d("YOON-CHAN", "HomeViewModel postScrap error ${it.message}")
                 }
                 .collectLatest {
-                    val newScrap = if (state.scrap.contains(id)) state.scrap - id else state.scrap + Pair(id, !isScrap)
                     _uiState.value = state.copy(
-                        scrap = newScrap,
+                        scrap = it,
                     )
                 }
         }
@@ -111,25 +111,22 @@ class HomeViewModel @Inject constructor(
         if (state !is HomeUiState.Success) return
         Log.d("YOON-CHAN", "HomeViewModel onResume")
         viewModelScope.launch {
-            getPopularPoliciesUseCase()
+            combine(
+                getPopularPoliciesUseCase(),
+                getHomePolicyMapUseCase(),
+            ) { popular, map ->
+                Log.d("YOON-CHAN", "onResume $map")
+                state.copy(
+                    popularPolicies = popular.toPersistentList(),
+                    scrap = map,
+                )
+            }
                 .catch {
                     Log.d("YOON-CHAN", "Home Init error ${it.message}")
                 }
                 .collectLatest {
-                    Log.d("YOON-CHAN", "init CollectLatest")
-                    _uiState.value = state.copy(
-                        popularPolicies = it.toPersistentList(),
-                    )
+                    _uiState.value = it
                 }
         }
-    }
-
-    fun clearData() {
-        Log.d("YOON-CHAN", "HomeViewModel onPause clear")
-        val state = uiState.value
-        if (state !is HomeUiState.Success) return
-        _uiState.value = state.copy(
-            scrap = mapOf(),
-        )
     }
 }

@@ -39,17 +39,17 @@ class AuthInterceptor @Inject constructor(
         try {
             val response = chain.proceed(request)
 
-            Log.d(
-                "YOON-CHAN",
-                "AuthInterceptor response code ${response.code}," +
-                    "\n request Header ${response.request.headers[AUTHORIZATION]}" +
-                    " \n request refresh Header ${response.request.headers[AUTHORIZATION_REFRESH]}",
-            )
+//            Log.d(
+//                "YOON-CHAN",
+//                "AuthInterceptor response code ${response.code}," +
+//                    "\n request Header ${response.request.headers[AUTHORIZATION]}" +
+//                    " \n request refresh Header ${response.request.headers[AUTHORIZATION_REFRESH]}",
+//            )
             if (response.code == HTTP_OK) {
                 val newAccessToken: String = response.header(AUTHORIZATION, null) ?: return response
                 val newRefreshToken: String = response.header(AUTHORIZATION_REFRESH, null) ?: return response
 
-                Log.d("YOON-CHAN", "new Access Token = $newAccessToken, new Refresh Token $newRefreshToken")
+//                Log.d("YOON-CHAN", "new Access Token = $newAccessToken, new Refresh Token $newRefreshToken")
                 CoroutineScope(Dispatchers.IO).launch {
                     val currentAccessToken = dataStoreDataSource.getAccessToken().first()
                     if (currentAccessToken != newAccessToken) {
