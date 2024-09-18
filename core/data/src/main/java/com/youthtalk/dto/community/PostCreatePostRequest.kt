@@ -15,6 +15,18 @@ data class PostCreatePostRequest(
 }
 
 @Serializable
+data class PostModifyPostRequest(
+    val title: String,
+    val postType: String,
+    val policyId: String?,
+    val contentList: List<PostContentRequest>,
+    val addImgUrlList: List<String>,
+    val deletedImgUrlList: List<String>,
+) {
+    fun toRequestBody() = Json.encodeToString(serializer(), this).toRequestBody()
+}
+
+@Serializable
 data class PostContentRequest(
     val content: String,
     val type: String,

@@ -72,6 +72,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -100,20 +102,21 @@ import java.util.UUID
 @Composable
 fun CommunityWriteScreen(
     type: String,
+    postId: Long,
     viewModel: CommunityWriteViewModel = hiltViewModel(),
     onBack: () -> Unit,
     checkPermission: (String) -> Boolean,
     goDetail: (Long) -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val scope = rememberCoroutineScope()
     var showPictureDialog by remember { mutableStateOf(false) }
     var deleteDialog by remember { mutableStateOf(false) }
-    var requestPermission by remember { mutableStateOf("") }
-    var repeatRequestDialog by remember { mutableStateOf(false) }
-    var settingDialog by remember { mutableStateOf(false) }
     val context = LocalContext.current
     BackHandler { deleteDialog = true }
+
+    LifecycleEventEffect(event = Lifecycle.Event.ON_CREATE) {
+        viewModel.uiEvent(CommunityWriteUiEvent.GetPostInfo(postId))
+    }
 
     LaunchedEffect(key1 = viewModel.uieffect) {
         viewModel.uieffect.collectLatest {
@@ -124,6 +127,78 @@ fun CommunityWriteScreen(
             }
         }
     }
+
+    when (uiState) {
+        is CommunityWriteUiState.Loading -> {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize(),
+                contentAlignment = Alignment.Center,
+            ) {
+                CircularProgressIndicator()
+            }
+        }
+        is CommunityWriteUiState.Success -> {
+            val state = uiState as CommunityWriteUiState.Success
+            CommunityWrite(
+                type,
+                title = state.title,
+                policies = state.searchPolicies.collectAsLazyPagingItems(),
+                contents = state.contents,
+                searchPolicy = state.selectPolicy,
+                requestFocus = viewModel.focusRequest,
+                onBack = { deleteDialog = true },
+                onClickPicture = { showPictureDialog = true },
+                onSearch = { viewModel.uiEvent(CommunityWriteUiEvent.SearchPolicies(it)) },
+                onPolicyDialogClick = { viewModel.uiEvent(CommunityWriteUiEvent.SelectPolicy(it)) },
+                onTitleTextChange = { viewModel.uiEvent(CommunityWriteUiEvent.ChangeTitleText(it)) },
+                onChangeTextValue = { contentInfo, text -> viewModel.uiEvent(CommunityWriteUiEvent.ChangeContents(contentInfo, text)) },
+                onDeleteText = { viewModel.uiEvent(CommunityWriteUiEvent.DeleteText) },
+                onDeleteImage = { viewModel.uiEvent(CommunityWriteUiEvent.DeleteImage(it)) },
+                createPost = { viewModel.uiEvent(CommunityWriteUiEvent.CreatePost(it, postId)) },
+            )
+
+            if (state.isLoading) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Transparent),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    CircularProgressIndicator()
+                }
+            }
+        }
+    }
+
+    CommunityWriteDialog(
+        context = context,
+        showPictureDialog = showPictureDialog,
+        onDismissShowPictureDialog = { showPictureDialog = false },
+        checkPermission = checkPermission,
+        addImage = { changeUri -> viewModel.uiEvent(CommunityWriteUiEvent.AddImage(changeUri)) },
+        onBack = onBack,
+        deleteDialog = deleteDialog,
+        onDismissDeleteDialog = { deleteDialog = false },
+    )
+}
+
+@Composable
+private fun CommunityWriteDialog(
+    showPictureDialog: Boolean,
+    context: Context,
+    deleteDialog: Boolean,
+    checkPermission: (String) -> Boolean,
+    onDismissDeleteDialog: () -> Unit,
+    onBack: () -> Unit,
+    onDismissShowPictureDialog: () -> Unit,
+    addImage: (String) -> Unit,
+) {
+    var repeatRequestDialog by remember { mutableStateOf(false) }
+    var settingDialog by remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
+    var requestPermission by remember { mutableStateOf("") }
+
     val cameraLauncher = rememberLauncherForActivityResult(contract = ActivityResultContracts.TakePicturePreview()) { camera ->
         camera?.let {
             val uri = getImageUri(context, it)
@@ -132,14 +207,14 @@ fun CommunityWriteScreen(
                 scope,
                 UUID.randomUUID(),
                 uri,
-                changeUri = { changeUri -> viewModel.uiEvent(CommunityWriteUiEvent.AddImage(changeUri)) },
+                changeUri = addImage,
             )
         }
     }
 
     val pictureLauncher = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri ->
         uri?.let {
-            uploadWorkManager(context, scope, UUID.randomUUID(), uri) { changeUri -> viewModel.uiEvent(CommunityWriteUiEvent.AddImage(changeUri)) }
+            uploadWorkManager(context, scope, UUID.randomUUID(), uri, changeUri = addImage)
         }
     }
 
@@ -169,43 +244,9 @@ fun CommunityWriteScreen(
         }
     }
 
-    when (uiState) {
-        is CommunityWriteUiState.Success -> {
-            val state = uiState as CommunityWriteUiState.Success
-            CommunityWrite(
-                type,
-                title = state.title,
-                policies = state.searchPolicies.collectAsLazyPagingItems(),
-                contents = state.contents,
-                searchPolicy = state.selectPolicy,
-                requestFocus = viewModel.focusRequest,
-                onBack = { deleteDialog = true },
-                onClickPicture = { showPictureDialog = true },
-                onSearch = { viewModel.uiEvent(CommunityWriteUiEvent.SearchPolicies(it)) },
-                onPolicyDialogClick = { viewModel.uiEvent(CommunityWriteUiEvent.SelectPolicy(it)) },
-                onTitleTextChange = { viewModel.uiEvent(CommunityWriteUiEvent.ChangeTitleText(it)) },
-                onChangeTextValue = { contentInfo, text -> viewModel.uiEvent(CommunityWriteUiEvent.ChangeContents(contentInfo, text)) },
-                onDeleteText = { viewModel.uiEvent(CommunityWriteUiEvent.DeleteText) },
-                onDeleteImage = { viewModel.uiEvent(CommunityWriteUiEvent.DeleteImage(it)) },
-                createPost = { viewModel.uiEvent(CommunityWriteUiEvent.CreatePost(it)) },
-            )
-
-            if (state.isLoading) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(Color.Transparent),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    CircularProgressIndicator()
-                }
-            }
-        }
-    }
-
     if (showPictureDialog) {
         AddPictureDialog(
-            onDismiss = { showPictureDialog = false },
+            onDismiss = { onDismissShowPictureDialog() },
             onCamera = {
                 onRequestPermission(
                     context = context,
@@ -213,7 +254,7 @@ fun CommunityWriteScreen(
                     requestLauncher = { cameraRequestPermission.launch(it) },
                     success = {
                         cameraLauncher.launch()
-                        showPictureDialog = false
+                        onDismissShowPictureDialog()
                     },
                 )
             },
@@ -228,7 +269,7 @@ fun CommunityWriteScreen(
                     requestLauncher = { albumsRequestPermission.launch(it) },
                     success = {
                         pictureLauncher.launch("image/*")
-                        showPictureDialog = false
+                        onDismissShowPictureDialog()
                     },
                 )
             },
@@ -239,9 +280,9 @@ fun CommunityWriteScreen(
         CustomDialog(
             title = "글쓰기를 중단하시겠습니까?\n" +
                 "작성중이던 글이 사라집니다",
-            onCancel = { deleteDialog = false },
+            onCancel = onDismissDeleteDialog,
             onSuccess = { onBack() },
-            onDismiss = { deleteDialog = false },
+            onDismiss = onDismissDeleteDialog,
         )
     }
 
@@ -924,6 +965,7 @@ private fun CommunityWriteScreenPreview() {
     YongProjectTheme {
         CommunityWriteScreen(
             type = "free",
+            postId = -1,
             onBack = {},
             checkPermission = { false },
             goDetail = {},

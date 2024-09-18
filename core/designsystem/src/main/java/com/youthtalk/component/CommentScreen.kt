@@ -39,7 +39,7 @@ fun CommentScreen(
     isMine: Boolean,
     isDetailScreen: Boolean = true,
     deleteComment: () -> Unit = {},
-    modifierComment: (String) -> Unit,
+    modifierComment: (String) -> Unit = {},
     onClickLike: () -> Unit,
 ) {
     Row(

@@ -13,6 +13,9 @@ import kotlinx.coroutines.flow.emptyFlow
 @Stable
 sealed class CommunityWriteUiState {
     @Immutable
+    data object Loading : CommunityWriteUiState()
+
+    @Immutable
     data class Success(
         val title: String = "",
         val contents: ImmutableList<WriteInfo> = persistentListOf(),

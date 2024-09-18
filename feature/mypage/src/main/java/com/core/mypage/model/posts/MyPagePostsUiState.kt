@@ -15,5 +15,6 @@ sealed class MyPagePostsUiState {
     @Immutable
     data class Success(
         val posts: Flow<PagingData<Post>> = emptyFlow(),
+        val scrapMap: Map<Long, Boolean> = mapOf(),
     ) : MyPagePostsUiState()
 }

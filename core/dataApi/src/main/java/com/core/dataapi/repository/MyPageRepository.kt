@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface MyPageRepository {
     fun getScrapPolicies(): Flow<Flow<PagingData<Policy>>>
-    fun getMyPagePosts(type: String): Flow<Flow<PagingData<Post>>>
+    fun getMyPagePosts(type: String): Flow<PagingData<Post>>
     fun getMyPageComments(isMine: Boolean): Flow<List<Comment>>
     fun getDeadlinePolicies(): Flow<List<Policy>>
     fun postUser(nickname: String, region: Region): Flow<User>

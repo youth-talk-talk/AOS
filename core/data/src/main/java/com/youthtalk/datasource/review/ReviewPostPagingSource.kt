@@ -37,7 +37,7 @@ class ReviewPostPagingSource @Inject constructor(
             return LoadResult.Page(
                 data = reviewPosts,
                 prevKey = if (pageNumber == 0) null else pageNumber - 1,
-                nextKey = if (reviewPosts.size != params.loadSize) null else pageNumber + (params.loadSize / 10),
+                nextKey = if (reviewPosts.size != params.loadSize) null else pageNumber + 1,
             )
         } catch (e: IOException) {
             return LoadResult.Error(e)

@@ -9,6 +9,7 @@ sealed interface CommunityWriteUiEvent {
     data class AddImage(val uri: String) : CommunityWriteUiEvent
     data class ChangeContents(val contentInfo: ContentInfo, val text: String) : CommunityWriteUiEvent
     data class DeleteImage(val index: Int) : CommunityWriteUiEvent
-    data class CreatePost(val type: String) : CommunityWriteUiEvent
+    data class CreatePost(val type: String, val id: Long) : CommunityWriteUiEvent
+    data class GetPostInfo(val id: Long) : CommunityWriteUiEvent
     data object DeleteText : CommunityWriteUiEvent
 }

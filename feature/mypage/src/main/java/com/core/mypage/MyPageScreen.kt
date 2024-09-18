@@ -9,7 +9,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,13 +27,9 @@ import com.core.mypage.component.DDayPolicy
 import com.core.mypage.component.EtcTabComponent
 import com.core.mypage.component.FavoritesTabComponent
 import com.core.mypage.component.ProfileCard
-import com.core.mypage.model.comments.MyPageCommentsUiEvent
 import com.core.mypage.model.home.MyPageHomeUiState
-import com.core.mypage.model.posts.MyPagePostsUiEvent
 import com.core.mypage.navigation.SettingNavigation
-import com.core.mypage.viewmodel.MyPageCommentsViewModel
 import com.core.mypage.viewmodel.MyPageHomeViewModel
-import com.core.mypage.viewmodel.MyPagePostViewModel
 import com.youth.app.feature.mypage.R
 import com.youthtalk.designsystem.YongProjectTheme
 import com.youthtalk.model.Category
@@ -42,7 +37,7 @@ import com.youthtalk.model.Policy
 import com.youthtalk.util.clickableSingle
 
 @Composable
-fun MyPageScreen(onClickDetailPolicy: (String) -> Unit, goLogin: () -> Unit) {
+fun MyPageScreen(onClickDetailPolicy: (String) -> Unit, goLogin: () -> Unit, policyDetail: (String) -> Unit, postDetail: (Long) -> Unit) {
     val navHost = rememberNavController()
     val myPageHomeViewModel: MyPageHomeViewModel = hiltViewModel()
     NavHost(
@@ -79,6 +74,7 @@ fun MyPageScreen(onClickDetailPolicy: (String) -> Unit, goLogin: () -> Unit) {
                 onBack = {
                     navHost.popBackStack()
                 },
+                policyDetail = policyDetail,
             )
         }
 
@@ -91,16 +87,12 @@ fun MyPageScreen(onClickDetailPolicy: (String) -> Unit, goLogin: () -> Unit) {
             ),
         ) {
             val type = it.arguments?.getString("type") ?: ""
-            val viewModel: MyPagePostViewModel = hiltViewModel()
-            LaunchedEffect(Unit) {
-                viewModel.uiEvent(MyPagePostsUiEvent.GetData(type = type))
-            }
             MyPagePostScreen(
-                viewModel = viewModel,
                 type = type,
                 onBack = {
                     navHost.popBackStack()
                 },
+                postDetail = postDetail,
             )
         }
 
@@ -113,15 +105,11 @@ fun MyPageScreen(onClickDetailPolicy: (String) -> Unit, goLogin: () -> Unit) {
             ),
         ) {
             val isMine = it.arguments?.getBoolean("me") ?: false
-            val viewModel: MyPageCommentsViewModel = hiltViewModel()
-
-            LaunchedEffect(Unit) {
-                viewModel.uiEvent(MyPageCommentsUiEvent.GetData(isMine))
-            }
             MyPageCommentScreen(
                 isMine = isMine,
-                viewModel = viewModel,
                 onBack = { navHost.popBackStack() },
+                policyDetail = policyDetail,
+                postDetail = postDetail,
             )
         }
 
@@ -290,6 +278,8 @@ private fun MyPagePreview() {
         MyPageScreen(
             onClickDetailPolicy = {},
             goLogin = {},
+            policyDetail = {},
+            postDetail = {},
         )
     }
 }

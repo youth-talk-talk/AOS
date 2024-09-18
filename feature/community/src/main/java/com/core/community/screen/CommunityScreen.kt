@@ -15,14 +15,16 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -32,12 +34,14 @@ import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -47,9 +51,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemContentType
+import androidx.paging.compose.itemKey
 import com.core.community.component.SearchBarComponent
 import com.core.community.model.CommunityUiEvent
 import com.core.community.model.CommunityUiState
@@ -85,25 +93,40 @@ fun CommunityScreen(
             CircularProgressIndicator()
         }
     } else {
+        val state = uiState as CommunityUiState.Success
+        val lazyListState = rememberLazyListState(
+            initialFirstVisibleItemIndex = state.index,
+            initialFirstVisibleItemScrollOffset = state.offset,
+        )
+
+        LaunchedEffect(lazyListState) {
+            snapshotFlow { lazyListState.firstVisibleItemIndex to lazyListState.firstVisibleItemScrollOffset }
+                .collect { (index, offset) ->
+                    viewModel.uiEvent(CommunityUiEvent.SaveScrollPosition(index, offset))
+                }
+        }
         CommunitySuccessScreen(
             tabIndex,
             tabNames.toList(),
-            uiState as CommunityUiState.Success,
+            lazyListState = lazyListState,
+            state,
             changeTab = { index -> tabIndex = index },
             changeReviewCheckBox = viewModel::setCategories,
             onClickItem = onClickItem,
             writePost = writePost,
             onClickSearch = onClickSearch,
             postPostScrap = { postId, scrap -> viewModel.uiEvent(CommunityUiEvent.PostScrap(postId, scrap)) },
+            clearData = { viewModel.uiEvent(CommunityUiEvent.ClearData) },
         )
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun CommunitySuccessScreen(
     tabIndex: Int,
     tabNames: List<String>,
+    lazyListState: LazyListState,
     uiState: CommunityUiState.Success,
     changeTab: (Int) -> Unit,
     changeReviewCheckBox: (Category?) -> Unit,
@@ -111,6 +134,7 @@ private fun CommunitySuccessScreen(
     writePost: (String) -> Unit,
     onClickSearch: (String) -> Unit,
     postPostScrap: (Long, Boolean) -> Unit,
+    clearData: () -> Unit,
 ) {
     val categories = uiState.categories
     val reviewPosts = uiState.reviewPosts.collectAsLazyPagingItems()
@@ -128,6 +152,29 @@ private fun CommunitySuccessScreen(
         isRefresh = false
     })
 
+    LifecycleResumeEffect(key1 = Unit) {
+        if (tabIndex == 0) {
+            reviewPosts.refresh()
+        } else {
+            posts.refresh()
+        }
+        onPauseOrDispose {
+            clearData()
+        }
+    }
+
+    LaunchedEffect(reviewPosts.loadState.refresh) {
+        if (reviewPosts.loadState.refresh is LoadState.NotLoading) {
+            lazyListState.scrollToItem(uiState.index, uiState.offset)
+        }
+    }
+
+    LaunchedEffect(posts.loadState.refresh) {
+        if (posts.loadState.refresh is LoadState.NotLoading) {
+            lazyListState.scrollToItem(uiState.index, uiState.offset)
+        }
+    }
+
     Surface {
         Box(modifier = Modifier.pullRefresh(refreshState)) {
             LazyColumn(
@@ -135,6 +182,7 @@ private fun CommunitySuccessScreen(
                     .fillMaxSize()
                     .background(MaterialTheme.colorScheme.onSecondaryContainer),
                 contentPadding = PaddingValues(bottom = 12.dp),
+                state = lazyListState,
             ) {
                 item {
                     CommunityTab(
@@ -342,6 +390,8 @@ private fun LazyListScope.reviewPost(
 
     items(
         count = reviewPosts.itemCount,
+        key = reviewPosts.itemKey { it.postId },
+        contentType = reviewPosts.itemContentType { it.postId },
     ) { index ->
         Box(
             modifier = Modifier
@@ -355,7 +405,11 @@ private fun LazyListScope.reviewPost(
             reviewPosts[index]?.let { post ->
                 val scrapPost = post.copy(
                     scrap = map.getOrDefault(post.postId, post.scrap),
-                    scraps = post.scraps,
+                    scraps = if (post.scrap == map.getOrDefault(post.postId, post.scrap)) {
+                        post.scraps
+                    } else {
+                        if (map.getOrDefault(post.postId, post.scrap)) post.scraps + 1 else post.scraps - 1
+                    },
                 )
                 PostCard(
                     modifier = Modifier
@@ -397,7 +451,11 @@ private fun PopularPosts(
             val reviewPost = popularReviewPosts[index]
             val post = reviewPost.copy(
                 scrap = map.getOrDefault(reviewPost.postId, reviewPost.scrap),
-                scraps = reviewPost.scraps,
+                scraps = if (reviewPost.scrap == map.getOrDefault(reviewPost.postId, reviewPost.scrap)) {
+                    reviewPost.scraps
+                } else {
+                    if (map.getOrDefault(reviewPost.postId, reviewPost.scrap)) reviewPost.scraps + 1 else reviewPost.scraps - 1
+                },
             )
             PostCard(
                 modifier = Modifier
@@ -477,8 +535,12 @@ fun LazyListScope.freeBoard(
                     val popularPost = popularPosts[index]
                     val post = if (map.containsKey(popularPost.postId)) {
                         popularPost.copy(
-                            scrap = map[popularPost.postId] ?: false,
-                            scraps = popularPost.scraps,
+                            scrap = map.getOrDefault(popularPost.postId, popularPost.scrap),
+                            scraps = if (popularPost.scrap == map.getOrDefault(popularPost.postId, popularPost.scrap)) {
+                                popularPost.scraps
+                            } else {
+                                if (map.getOrDefault(popularPost.postId, popularPost.scrap)) popularPost.scraps + 1 else popularPost.scraps - 1
+                            },
                         )
                     } else {
                         popularPost
@@ -520,13 +582,18 @@ fun LazyListScope.freeBoard(
 
     items(
         count = posts.itemCount,
-        key = { index -> posts.peek(index)?.postId ?: 0 },
+        key = posts.itemKey { it.postId },
+        contentType = posts.itemContentType { it.postId },
     ) { index ->
         posts[index]?.let { post ->
             val scrapPost = if (map.containsKey(post.postId)) {
                 post.copy(
-                    scrap = map[post.postId] ?: false,
-                    scraps = post.scraps,
+                    scrap = map.getOrDefault(post.postId, post.scrap),
+                    scraps = if (post.scrap == map.getOrDefault(post.postId, post.scrap)) {
+                        post.scraps
+                    } else {
+                        if (map.getOrDefault(post.postId, post.scrap)) post.scraps + 1 else post.scraps - 1
+                    },
                 )
             } else {
                 post

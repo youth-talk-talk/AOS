@@ -16,6 +16,7 @@ data class PostDetailResponse(
     val view: Long,
     val images: List<String>,
     val category: String?,
+    val scrap: Boolean,
 )
 
 @Serializable

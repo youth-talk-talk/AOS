@@ -25,7 +25,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -53,22 +52,17 @@ class CommunityViewModel @Inject constructor(
             combine(
                 getReviewCategoriesUseCase(),
                 postPopularReviewPostsUseCase(),
-                postReviewPostsUseCase(),
                 getPostScrapUseCase(),
-            ) { categories, popularReviewPosts, reviewPosts, map ->
+                getPopularPostsUseCase(),
+            ) { categories, popularReviewPosts, map, popularPosts ->
                 CommunityUiState.Success(
                     categories = categories.toPersistentList(),
                     popularReviewPosts = popularReviewPosts.toPersistentList(),
-                    reviewPosts = reviewPosts.cachedIn(viewModelScope),
+                    reviewPosts = postReviewPostsUseCase().cachedIn(viewModelScope),
                     postScrapMap = map,
+                    posts = getPostsUseCase().cachedIn(viewModelScope),
+                    popularPosts = popularPosts.toPersistentList(),
                 )
-            }.flatMapMerge {
-                combine(
-                    getPopularPostsUseCase(),
-                    getPostsUseCase(),
-                ) { popularPosts, posts ->
-                    it.copy(popularPosts = popularPosts.toPersistentList(), posts = posts.cachedIn(viewModelScope))
-                }
             }
                 .catch {
                     Log.d("YOON-CHAN", "CommunityViewModel getReviewCategoriesUseCase error")
@@ -82,7 +76,28 @@ class CommunityViewModel @Inject constructor(
     fun uiEvent(event: CommunityUiEvent) {
         when (event) {
             is CommunityUiEvent.PostScrap -> postScrap(event.postId, event.scrap)
+            is CommunityUiEvent.SaveScrollPosition -> saveScrollPosition(event.index, event.offset)
+            is CommunityUiEvent.ClearData -> clearData()
         }
+    }
+
+    private fun clearData() {
+        val state = _uiState.value
+        if (state !is CommunityUiState.Success) return
+
+        _uiState.value = state.copy(
+            postScrapMap = mapOf(),
+        )
+    }
+
+    private fun saveScrollPosition(index: Int, offset: Int) {
+        val state = _uiState.value
+        if (state !is CommunityUiState.Success) return
+
+        _uiState.value = state.copy(
+            index = index,
+            offset = offset,
+        )
     }
 
     private fun postScrap(postId: Long, scrap: Boolean) {
@@ -95,8 +110,14 @@ class CommunityViewModel @Inject constructor(
                     Log.d("YOON-CHAN", "CommunityViewModel postScrap error ${it.message}")
                 }
                 .collectLatest {
+                    val map = if (state.postScrapMap.containsKey(postId)) {
+                        state.postScrapMap - postId
+                        state.postScrapMap + Pair(postId, !scrap)
+                    } else {
+                        state.postScrapMap + Pair(postId, !scrap)
+                    }
                     _uiState.value = state.copy(
-                        postScrapMap = it,
+                        postScrapMap = map,
                     )
                 }
         }
@@ -116,14 +137,10 @@ class CommunityViewModel @Inject constructor(
                 categories.add(category)
             }
             viewModelScope.launch {
-                setReviewCategoriesUseCase(categories)
-                    .collectLatest {
-                        Log.d("YOON-CHAN", "CommunityViewModel setCategories")
-                        _uiState.value = state.copy(
-                            reviewPosts = it.cachedIn(viewModelScope),
-                            categories = categories.toPersistentList(),
-                        )
-                    }
+                _uiState.value = state.copy(
+                    reviewPosts = setReviewCategoriesUseCase(categories).cachedIn(viewModelScope),
+                    categories = categories.toPersistentList(),
+                )
             }
         }
     }

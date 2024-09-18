@@ -12,7 +12,7 @@ class SetReviewCategoriesUseCase @Inject constructor(
     private val userRepository: UserRepository,
     private val communityRepository: CommunityRepository,
 ) {
-    suspend operator fun invoke(categories: List<Category>): Flow<Flow<PagingData<Post>>> {
+    suspend operator fun invoke(categories: List<Category>): Flow<PagingData<Post>> {
         userRepository.setReviewCategoryList(categories)
         return communityRepository.postReviewPost()
     }

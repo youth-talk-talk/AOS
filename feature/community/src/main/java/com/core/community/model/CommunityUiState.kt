@@ -24,5 +24,7 @@ interface CommunityUiState {
         val popularPosts: ImmutableList<Post> = persistentListOf(),
         val posts: Flow<PagingData<Post>> = emptyFlow(),
         val postScrapMap: Map<Long, Boolean> = mapOf(),
+        val index: Int = 0,
+        val offset: Int = 0,
     ) : CommunityUiState
 }

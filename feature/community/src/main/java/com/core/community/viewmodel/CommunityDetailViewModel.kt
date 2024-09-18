@@ -3,6 +3,7 @@ package com.core.community.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.core.community.model.CommunityDetailUiEffect
 import com.core.community.model.CommunityDetailUiEvent
 import com.core.community.model.CommunityDetailUiState
 import com.core.domain.usercase.GetUserUseCase
@@ -16,6 +17,7 @@ import com.core.domain.usercase.post.PostPostAddCommentUseCase
 import com.youthtalk.model.Comment
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.toPersistentList
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
@@ -39,6 +41,9 @@ class CommunityDetailViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<CommunityDetailUiState>(CommunityDetailUiState.Loading)
     val uiState = _uiState.asStateFlow()
 
+    var uiEffect = MutableSharedFlow<CommunityDetailUiEffect>()
+        private set
+
     fun uiEvent(event: CommunityDetailUiEvent) {
         when (event) {
             is CommunityDetailUiEvent.GetPostDetail -> getPostDetail(event.id)
@@ -47,6 +52,16 @@ class CommunityDetailViewModel @Inject constructor(
             is CommunityDetailUiEvent.DeleteComment -> deleteComment(event.index, event.commentId)
             is CommunityDetailUiEvent.ModifyComment -> modifyComment(event.id, event.content)
             is CommunityDetailUiEvent.PostScrap -> postPostScrap(event.postId, event.isScrap)
+            is CommunityDetailUiEvent.ModifyPost -> goWriteScreen()
+        }
+    }
+
+    private fun goWriteScreen() {
+        val state = _uiState.value
+        if (state !is CommunityDetailUiState.Success) return
+
+        viewModelScope.launch {
+            uiEffect.emit(CommunityDetailUiEffect.CommunityWrite(state.post.postId, state.post.postType))
         }
     }
 
@@ -61,7 +76,7 @@ class CommunityDetailViewModel @Inject constructor(
                 }
                 .collectLatest {
                     _uiState.value = state.copy(
-                        post = state.post.copy(),
+                        post = state.post.copy(scrap = !isScrap),
                     )
                 }
         }
