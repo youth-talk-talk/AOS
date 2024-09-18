@@ -1,5 +1,7 @@
 [versions]
+accompanistPermissionsVersion = "0.36.0"
 agp = "8.5.0"
+coilComposeVersion = "2.7.0"
 coreSplashscreen = "1.0.1"
 datastorePreferences = "1.1.1"
 datastorePreferencesCore = "1.1.1"
@@ -15,6 +17,7 @@ activityCompose = "1.9.0"
 composeBom = "2024.05.00"
 appcompat = "1.7.0"
 material = "1.12.0"
+materialVersion = "1.7.1"
 navigationCompose = "2.7.7"
 okhttp = "4.12.0"
 okhttpBom = "4.12.0"
@@ -44,11 +47,11 @@ ossLicenses = "17.1.0"
 ossLicensesPlugin = "0.10.6"
 
 ##material3
-material3 = "1.2.1"
+material3 = "1.3.0"
 
 # https://developer.android.com/jetpack/androidx/releases/hilt
 hiltNavigationCompose = "1.2.0"
-hiltAndroid = "2.48"
+hiltAndroid = "2.51.1"
 
 annotation = "1.8.0"
 kakaoUser = "2.20.1"
@@ -68,14 +71,20 @@ pagingCommonAndroid = "3.3.1"
 #Room
 roomRuntime = "2.6.1"
 
+#workmanager
+workRuntimeKtx = "2.9.1"
+
 [libraries]
+accompanist-swiperefresh = { module = "com.google.accompanist:accompanist-swiperefresh", version.ref = "accompanistPermissionsVersion" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 androidx-compose-navigation-test = { group = "androidx.navigation", name = "navigation-testing", version.ref = "navigationCompose" }
 androidx-runtime = { module = "androidx.compose.runtime:runtime", version.ref = "runtime" }
+coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilComposeVersion" }
 dagger-compiler = { module = "com.google.dagger:dagger-compiler", version.ref = "hiltAndroid" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
+google-accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistPermissionsVersion" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -90,6 +99,7 @@ androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit
 androidx-annotation = {group = "androidx.annotation", name = "annotation", version.ref = "annotation"}
 
 androidx-material3 = { group = "androidx.compose.material3", name = "material3"}
+androidx-material = { module = "androidx.compose.material:material", version.ref = "materialVersion" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 
@@ -120,8 +130,10 @@ hilt-android-testing = { group = "com.google.dagger", name = "hilt-android-testi
 hilt-android-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hiltAndroid" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
 hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hiltAndroid" }
+androidx-hilt-compiler = { module = "androidx.hilt:hilt-compiler", version.ref = "hiltNavigationCompose" }
 hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 hilt-core = { group = "com.google.dagger", name = "hilt-core", version.ref = "hiltAndroid" }
+androidx-hilt-work = { module = "androidx.hilt:hilt-work", version.ref = "hiltNavigationCompose" }
 
 #oss
 oss-licenses-plugin = { group = "com.google.android.gms", name = "oss-licenses-plugin", version.ref = "ossLicensesPlugin" }
@@ -164,6 +176,10 @@ androidx-room-paging = { module = "androidx.room:room-paging", version.ref = "ro
 androidx-room-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomRuntime" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomRuntime" }
+
+#WorkManager
+androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "workRuntimeKtx" }
+
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }

@@ -17,7 +17,12 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -29,6 +34,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -40,7 +47,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -89,11 +95,11 @@ fun CommunityScreen(
             writePost = writePost,
             onClickSearch = onClickSearch,
             postPostScrap = { postId, scrap -> viewModel.uiEvent(CommunityUiEvent.PostScrap(postId, scrap)) },
-            clearData = { viewModel.clearData() },
         )
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 private fun CommunitySuccessScreen(
     tabIndex: Int,
@@ -105,20 +111,25 @@ private fun CommunitySuccessScreen(
     writePost: (String) -> Unit,
     onClickSearch: (String) -> Unit,
     postPostScrap: (Long, Boolean) -> Unit,
-    clearData: () -> Unit,
 ) {
     val categories = uiState.categories
     val reviewPosts = uiState.reviewPosts.collectAsLazyPagingItems()
     val popularReviewPosts = uiState.popularReviewPosts
     val popularPosts = uiState.popularPosts
     val posts = uiState.posts.collectAsLazyPagingItems()
-
-    LifecycleResumeEffect(Unit) {
-        onPauseOrDispose {}
-    }
+    var isRefresh by remember { mutableStateOf(false) }
+    val refreshState = rememberPullRefreshState(refreshing = isRefresh, onRefresh = {
+        isRefresh = true
+        if (tabIndex == 0) {
+            reviewPosts.refresh()
+        } else {
+            posts.refresh()
+        }
+        isRefresh = false
+    })
 
     Surface {
-        Box {
+        Box(modifier = Modifier.pullRefresh(refreshState)) {
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
@@ -173,15 +184,18 @@ private fun CommunitySuccessScreen(
                     )
                 }
             }
+
             WriteButton(
                 onClick = {
                     val type = when (tabIndex) {
-                        1 -> "review"
-                        else -> "free"
+                        0 -> "review"
+                        else -> "post"
                     }
                     writePost(type)
                 },
             )
+
+            PullRefreshIndicator(true, refreshState, Modifier.align(Alignment.TopCenter))
         }
     }
 }

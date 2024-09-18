@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
+import androidx.core.app.ActivityCompat
 import androidx.core.view.WindowCompat
 import com.core.navigation.navigator.LoginNavigator
 import com.youthtalk.designsystem.YongProjectTheme
@@ -34,6 +35,9 @@ class MainActivity : ComponentActivity() {
                                 activity = this@MainActivity,
                                 withFinish = true,
                             )
+                        },
+                        checkPermission = { permission ->
+                            ActivityCompat.shouldShowRequestPermissionRationale(this, permission)
                         },
                     )
                 }

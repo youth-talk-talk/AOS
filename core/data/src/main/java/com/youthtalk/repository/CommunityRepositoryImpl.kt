@@ -14,14 +14,21 @@ import com.youthtalk.datasource.review.ReviewPostPagingSource
 import com.youthtalk.dto.CommentLikeRequest
 import com.youthtalk.dto.community.PatchCommentRequest
 import com.youthtalk.dto.community.PostAddCommentRequest
+import com.youthtalk.dto.community.PostContentRequest
+import com.youthtalk.dto.community.PostCreatePostRequest
 import com.youthtalk.mapper.toData
 import com.youthtalk.mapper.toDate
 import com.youthtalk.model.Comment
 import com.youthtalk.model.Post
 import com.youthtalk.model.PostDetail
+import com.youthtalk.model.WriteInfo
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import java.io.File
 import javax.inject.Inject
 
 class CommunityRepositoryImpl @Inject constructor(
@@ -186,6 +193,50 @@ class CommunityRepositoryImpl @Inject constructor(
             }
             .onFailure {
                 Log.d("YOON-CHAN", "CommnunityRepository patchComment error ${it.message}")
+            }
+    }
+
+    override fun uploadImage(file: File): Flow<String> = flow {
+        val requestBody = file.asRequestBody("image/*".toMediaTypeOrNull())
+        val imagePart = MultipartBody.Part.createFormData("image", file.name, requestBody)
+        runCatching {
+            communityService.postUploadImage(imagePart)
+        }
+            .onSuccess { response ->
+                response.data?.let { uri ->
+                    emit(uri)
+                }
+            }
+            .onFailure {
+                Log.d("YOON-CHAN", "CommnunityRepository uploadImage error ${it.message}")
+                throw it
+            }
+    }
+
+    override fun postCreate(postType: String, title: String, content: List<WriteInfo>, policyId: String?): Flow<PostDetail> = flow {
+        val contentList = mutableListOf<PostContentRequest>()
+        content.forEach {
+            it.uri?.let { uri ->
+                contentList.add(PostContentRequest(uri, "IMAGE"))
+            }
+            contentList.add(PostContentRequest(it.content, "TEXT"))
+        }
+        val requestBody = PostCreatePostRequest(
+            postType = postType,
+            title = title,
+            policyId = policyId,
+            contentList = contentList.toList(),
+        ).toRequestBody()
+
+        runCatching { communityService.postCreate(requestBody) }
+            .onSuccess { response ->
+                response.data?.let { data ->
+                    emit(data.toData())
+                }
+            }
+            .onFailure {
+                Log.d("YOON-CHAN", "CommnunityRepository postCreate error ${it.message}")
+                throw it
             }
     }
 }

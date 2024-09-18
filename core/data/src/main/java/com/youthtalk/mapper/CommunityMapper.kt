@@ -38,5 +38,4 @@ fun PostDetailResponse.toData() = PostDetail(
 fun PostContentInfoResponse.toData() = PostContentInfo(
     content = this.content,
     type = this.type,
-
 )

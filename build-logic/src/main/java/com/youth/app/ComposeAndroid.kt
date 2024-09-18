@@ -24,6 +24,7 @@ internal fun Project.configureComposeAndroid() {
             add("implementation", libs.findLibrary("androidx.ui.graphics").get())
             add("implementation", libs.findLibrary("androidx.ui.tooling-preview").get())
             add("implementation", libs.findLibrary("androidx.material3").get())
+            add("implementation", libs.findLibrary("androidx.material").get())
             add("implementation", libs.findLibrary("androidx.paging.compose").get())
             add("implementation", libs.findLibrary("androidx.lifecycle.runtime.compose").get())
 

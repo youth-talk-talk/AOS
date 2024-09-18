@@ -26,3 +26,7 @@ gradlePlugin {
 tasks.register(":clean", Delete::class) {
     delete = setOf(rootProject.layout.buildDirectory)
 }
+
+//task("clean", Delete::class) {
+//    delete = setOf(rootProject.layout.buildDirectory)
+//}

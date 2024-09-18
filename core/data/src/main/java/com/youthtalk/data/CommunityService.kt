@@ -6,10 +6,13 @@ import com.youthtalk.dto.PostDataResponse
 import com.youthtalk.dto.PostResponse
 import com.youthtalk.dto.PostSearchResponse
 import com.youthtalk.dto.community.PostDetailResponse
+import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -48,4 +51,11 @@ interface CommunityService {
 
     @POST("/posts/comments")
     suspend fun postPostAddComment(@Body requestBody: RequestBody): CommonResponse<PostAddCommentResponse>
+
+    @Multipart
+    @POST("/posts/image")
+    suspend fun postUploadImage(@Part image: MultipartBody.Part): CommonResponse<String>
+
+    @POST("/posts/create")
+    suspend fun postCreate(@Body requestBody: RequestBody): CommonResponse<PostDetailResponse>
 }

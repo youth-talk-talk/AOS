@@ -63,7 +63,7 @@ import com.youthtalk.specpolicy.SpecPolicyScreen
 import kotlinx.coroutines.launch
 
 @Composable
-fun MainScreen(goLogin: () -> Unit) {
+fun MainScreen(goLogin: () -> Unit, checkPermission: (String) -> Boolean) {
     val navHostController = rememberNavController()
     val navBackStackEntry by navHostController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
@@ -96,6 +96,7 @@ fun MainScreen(goLogin: () -> Unit) {
                     navController = navHostController,
                     homeLazyListScrollState = homeLazyListScrollState,
                     goLogin = goLogin,
+                    checkPermission = checkPermission,
                 )
             }
         },
@@ -103,7 +104,12 @@ fun MainScreen(goLogin: () -> Unit) {
 }
 
 @Composable
-fun NavHostScreen(navController: NavHostController, homeLazyListScrollState: LazyListState, goLogin: () -> Unit) {
+fun NavHostScreen(
+    navController: NavHostController,
+    homeLazyListScrollState: LazyListState,
+    goLogin: () -> Unit,
+    checkPermission: (String) -> Boolean,
+) {
     NavHost(
         navController = navController,
         startDestination = MainNav.Home.route,
@@ -182,11 +188,11 @@ fun NavHostScreen(navController: NavHostController, homeLazyListScrollState: Laz
             }
         }
 
-        communityNavigation(navController)
+        communityNavigation(navController, checkPermission = checkPermission)
     }
 }
 
-private fun NavGraphBuilder.communityNavigation(navController: NavHostController) {
+private fun NavGraphBuilder.communityNavigation(navController: NavHostController, checkPermission: (String) -> Boolean) {
     composable(
         route = "${CommunityNavigation.CommunityDetail.route}/{postId}",
         arguments = listOf(
@@ -214,6 +220,14 @@ private fun NavGraphBuilder.communityNavigation(navController: NavHostController
         CommunityWriteScreen(
             type = type,
             onBack = { navController.popBackStack() },
+            checkPermission = checkPermission,
+            goDetail = { postId ->
+                navController.navigate("${CommunityNavigation.CommunityDetail.route}/$postId") {
+                    popUpTo("${CommunityNavigation.CommunityWrite.route}/$type") {
+                        inclusive = true
+                    }
+                }
+            },
         )
     }
 }
@@ -363,6 +377,7 @@ private fun MainScreenPreview() {
     YongProjectTheme {
         MainScreen(
             goLogin = {},
+            checkPermission = { false },
         )
     }
 }

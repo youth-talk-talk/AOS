@@ -2,6 +2,7 @@ package com.core.domain.usercase.di.search
 
 import com.core.dataapi.repository.SearchRepository
 import com.core.domain.usercase.search.GetRecentListUseCase
+import com.core.domain.usercase.search.GetSearchPoliciesTitleUseCase
 import com.core.domain.usercase.search.GetSearchPostCountUseCase
 import com.core.domain.usercase.search.GetSearchPostsUseCase
 import com.core.domain.usercase.search.PostRecentListUseCase
@@ -30,4 +31,8 @@ object SearchUseCaseModule {
     @Provides
     @Singleton
     fun provideGetSearchPostsUseCase(repository: SearchRepository) = GetSearchPostsUseCase(repository)
+
+    @Provides
+    @Singleton
+    fun provideGetSearchPoliciesTitleUseCase(repository: SearchRepository) = GetSearchPoliciesTitleUseCase(repository)
 }

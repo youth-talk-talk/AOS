@@ -40,6 +40,7 @@ dependencies {
 
     val libs = project.extensions.libs
     implementation(libs.findLibrary("hilt.navigation.compose").get())
+    implementation(libs.findLibrary("androidx.work.runtime.ktx").get())
     implementation(libs.findLibrary("androidx.navigation.compose").get())
     androidTestImplementation(libs.findLibrary("androidx.compose.navigation.test").get())
 
