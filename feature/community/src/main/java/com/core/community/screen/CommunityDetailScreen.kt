@@ -153,7 +153,6 @@ private fun CommunityDetail(
             if (post.contentList.isNotEmpty()) {
                 items(
                     count = post.contentList.size,
-                    key = { index -> post.contentList[index] },
                 ) { index ->
                     val content = post.contentList[index]
                     if (content.type == "IMAGE") {

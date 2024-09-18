@@ -4,6 +4,7 @@ import com.youthtalk.dto.CommonResponse
 import com.youthtalk.dto.HomePoliciesResponse
 import com.youthtalk.dto.PolicyDetailResponse
 import com.youthtalk.dto.PostAddCommentResponse
+import com.youthtalk.dto.SearchPoliciesResponse
 import com.youthtalk.dto.specpolicy.SpecPoliciesResponse
 import com.youthtalk.model.PolicyResponse
 import okhttp3.RequestBody
@@ -43,4 +44,11 @@ interface PolicyService {
 
     @GET("/policies/scrapped/upcoming-deadline")
     suspend fun getDeadLinePolicies(): CommonResponse<List<PolicyResponse>>
+
+    @GET("/policies/search")
+    suspend fun getSearchPoliciesTitle(
+        @Query("title") title: String,
+        @Query("page") page: Int,
+        @Query("size") size: Int,
+    ): CommonResponse<List<SearchPoliciesResponse>>
 }

@@ -21,7 +21,14 @@ import androidx.compose.ui.window.Dialog
 import com.youth.app.core.designsystem.R
 
 @Composable
-fun CustomDialog(title: String, onCancel: () -> Unit, onSuccess: () -> Unit, onDismiss: () -> Unit) {
+fun CustomDialog(
+    title: String,
+    cancelTitle: String = "아니요",
+    successTitle: String = "예",
+    onCancel: () -> Unit,
+    onSuccess: () -> Unit,
+    onDismiss: () -> Unit,
+) {
     Dialog(
         onDismissRequest = { onDismiss() },
     ) {
@@ -59,7 +66,7 @@ fun CustomDialog(title: String, onCancel: () -> Unit, onSuccess: () -> Unit, onD
                 RoundButton(
                     modifier = Modifier
                         .weight(1f),
-                    text = "아니요",
+                    text = cancelTitle,
                     color = MaterialTheme.colorScheme.onSurface,
                 ) {
                     onCancel()
@@ -67,10 +74,11 @@ fun CustomDialog(title: String, onCancel: () -> Unit, onSuccess: () -> Unit, onD
                 RoundButton(
                     modifier = Modifier
                         .weight(1f),
-                    text = "예",
+                    text = successTitle,
                     color = MaterialTheme.colorScheme.primary,
                 ) {
                     onSuccess()
+                    onDismiss()
                 }
             }
         }

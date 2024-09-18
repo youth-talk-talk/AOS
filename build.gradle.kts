@@ -23,7 +23,3 @@ plugins {
     id("io.gitlab.arturbosch.detekt") version "1.23.3"
     id("com.google.gms.google-services") version "4.4.1" apply false
 }
-
-task("clean", Delete::class) {
-    delete = setOf(rootProject.layout.buildDirectory)
-}

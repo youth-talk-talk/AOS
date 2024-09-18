@@ -127,13 +127,4 @@ class CommunityViewModel @Inject constructor(
             }
         }
     }
-
-    fun clearData() {
-        val state = _uiState.value
-        if (state !is CommunityUiState.Success) return
-
-        _uiState.value = state.copy(
-            postScrapMap = mapOf(),
-        )
-    }
 }

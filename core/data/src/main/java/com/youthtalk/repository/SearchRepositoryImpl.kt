@@ -10,12 +10,14 @@ import com.core.exception.NoDataException
 import com.youthtalk.data.CommunityService
 import com.youthtalk.data.PolicyService
 import com.youthtalk.datasource.PagingSize
+import com.youthtalk.datasource.search.SearchPoliciesTitlePagingSource
 import com.youthtalk.datasource.search.SearchPolicyPagingSource
 import com.youthtalk.datasource.search.SearchPostPagingSource
 import com.youthtalk.dto.specpolicy.FilterInfoRequest
 import com.youthtalk.model.FilterInfo
 import com.youthtalk.model.Policy
 import com.youthtalk.model.Post
+import com.youthtalk.model.SearchPolicy
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
@@ -110,5 +112,19 @@ class SearchRepositoryImpl @Inject constructor(
             .onFailure {
                 Log.d("YOON-CHAN", "SpecPolicy getPostsCount error ${it.message}")
             }
+    }
+
+    override fun getSearchPolicies(title: String): Flow<PagingData<SearchPolicy>> {
+        return Pager(
+            pagingSourceFactory = {
+                SearchPoliciesTitlePagingSource(
+                    title = title,
+                    policyService = policyService,
+                )
+            },
+            config = PagingConfig(
+                pageSize = PagingSize.SEARCH_PAGE_SIZE,
+            ),
+        ).flow
     }
 }

@@ -4,7 +4,9 @@ import androidx.paging.PagingData
 import com.youthtalk.model.Comment
 import com.youthtalk.model.Post
 import com.youthtalk.model.PostDetail
+import com.youthtalk.model.WriteInfo
 import kotlinx.coroutines.flow.Flow
+import java.io.File
 
 interface CommunityRepository {
     fun postReviewPost(): Flow<Flow<PagingData<Post>>>
@@ -19,4 +21,6 @@ interface CommunityRepository {
     fun getPostDetail(id: Long): Flow<PostDetail>
     fun getPostDetailComments(id: Long): Flow<List<Comment>>
     fun getPostScrapMap(): Flow<Map<Long, Boolean>>
+    fun uploadImage(file: File): Flow<String>
+    fun postCreate(postType: String, title: String, content: List<WriteInfo>, policyId: String?): Flow<PostDetail>
 }

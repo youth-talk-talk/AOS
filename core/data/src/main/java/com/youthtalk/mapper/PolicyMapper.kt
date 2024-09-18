@@ -1,9 +1,11 @@
 package com.youthtalk.mapper
 
 import com.youthtalk.dto.PolicyDetailResponse
+import com.youthtalk.dto.SearchPoliciesResponse
 import com.youthtalk.model.Policy
 import com.youthtalk.model.PolicyDetail
 import com.youthtalk.model.PolicyResponse
+import com.youthtalk.model.SearchPolicy
 
 fun PolicyResponse.toData() = Policy(
     policyId = policyId,
@@ -39,4 +41,9 @@ fun PolicyDetailResponse.toData() = PolicyDetail(
     refUrl2 = refUrl2,
     formattedApplUrl = formattedApplUrl,
     isScrap = isScrap,
+)
+
+fun SearchPoliciesResponse.toData() = SearchPolicy(
+    title = title,
+    policyId = policyId,
 )
