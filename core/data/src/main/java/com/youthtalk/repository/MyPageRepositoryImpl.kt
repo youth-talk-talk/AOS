@@ -43,21 +43,17 @@ class MyPageRepositoryImpl @Inject constructor(
         )
     }
 
-    override fun getMyPagePosts(type: String): Flow<Flow<PagingData<Post>>> = flow {
-        emit(
-            Pager(
-                pagingSourceFactory = {
-                    MyPagePostsPagingSource(
-                        communityService = communityService,
-                        type = type,
-                    )
-                },
-                config = PagingConfig(
-                    pageSize = MY_PAGE_POSTS_SIZE,
-                ),
-            ).flow,
-        )
-    }
+    override fun getMyPagePosts(type: String): Flow<PagingData<Post>> = Pager(
+        pagingSourceFactory = {
+            MyPagePostsPagingSource(
+                communityService = communityService,
+                type = type,
+            )
+        },
+        config = PagingConfig(
+            pageSize = MY_PAGE_POSTS_SIZE,
+        ),
+    ).flow
 
     override fun getMyPageComments(isMine: Boolean): Flow<List<Comment>> = flow {
         runCatching {

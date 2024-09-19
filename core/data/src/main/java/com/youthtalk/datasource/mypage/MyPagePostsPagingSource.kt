@@ -35,7 +35,7 @@ class MyPagePostsPagingSource @Inject constructor(
 
             return LoadResult.Page(
                 data = data,
-                prevKey = null,
+                prevKey = if (pageNumber == 0) null else pageNumber - 1,
                 nextKey = if (data.isEmpty()) null else pageNumber + (params.loadSize / MY_PAGE_POSTS_SIZE),
             )
         } catch (e: IOException) {

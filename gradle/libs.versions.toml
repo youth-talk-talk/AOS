@@ -64,9 +64,8 @@ kotlinxSerializationJson = "1.7.0"
 kotlinxCollectionsImmutable = "0.3.7"
 
 #Paging3
-pagingRuntime = "3.3.1"
-pagingCompose = "3.3.1"
-pagingCommonAndroid = "3.3.1"
+pagingRuntime = "3.3.2"
+pagingCompose = "3.3.2"
 
 #Room
 roomRuntime = "2.6.1"

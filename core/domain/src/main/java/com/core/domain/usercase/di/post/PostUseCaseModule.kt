@@ -8,6 +8,7 @@ import com.core.domain.usercase.post.GetPostScrapUseCase
 import com.core.domain.usercase.post.GetPostsUseCase
 import com.core.domain.usercase.post.PatchCommentUseCase
 import com.core.domain.usercase.post.PostCreatePostUseCase
+import com.core.domain.usercase.post.PostModifyPostUseCase
 import com.core.domain.usercase.post.PostPostAddCommentUseCase
 import com.core.domain.usercase.post.PostUploadImageUseCase
 import dagger.Module
@@ -55,4 +56,8 @@ object PostUseCaseModule {
     @Provides
     @Singleton
     fun providePostCreatePostUseCase(repository: CommunityRepository) = PostCreatePostUseCase(repository)
+
+    @Provides
+    @Singleton
+    fun providePostModifyPostUseCase(repository: CommunityRepository) = PostModifyPostUseCase(repository)
 }

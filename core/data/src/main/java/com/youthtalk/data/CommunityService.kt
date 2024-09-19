@@ -11,6 +11,7 @@ import okhttp3.RequestBody
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Multipart
+import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Part
 import retrofit2.http.Path
@@ -58,4 +59,7 @@ interface CommunityService {
 
     @POST("/posts/create")
     suspend fun postCreate(@Body requestBody: RequestBody): CommonResponse<PostDetailResponse>
+
+    @PATCH("/posts/update/{id}")
+    suspend fun postModifyPost(@Path("id") id: Long, @Body requestBody: RequestBody): CommonResponse<PostDetailResponse>
 }

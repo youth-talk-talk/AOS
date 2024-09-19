@@ -205,27 +205,34 @@ private fun NavGraphBuilder.communityNavigation(navController: NavHostController
         CommunityDetailScreen(
             postId = postId,
             onBack = { navController.popBackStack() },
+            goWriteScreen = { id, type -> navController.navigate("${CommunityNavigation.CommunityWrite.route}/$type/$id") },
         )
     }
 
     composable(
-        route = "${CommunityNavigation.CommunityWrite.route}/{type}",
+        route = "${CommunityNavigation.CommunityWrite.route}/{type}/{postId}",
         arguments = listOf(
             navArgument("type") {
                 type = NavType.StringType
             },
+            navArgument("postId") {
+                type = NavType.LongType
+            },
         ),
     ) {
         val type = it.arguments?.getString("type") ?: ""
+        val id = it.arguments?.getLong("postId") ?: -1
         CommunityWriteScreen(
             type = type,
+            postId = id,
             onBack = { navController.popBackStack() },
             checkPermission = checkPermission,
             goDetail = { postId ->
                 navController.navigate("${CommunityNavigation.CommunityDetail.route}/$postId") {
-                    popUpTo("${CommunityNavigation.CommunityWrite.route}/$type") {
+                    popUpTo("${CommunityNavigation.CommunityWrite.route}/$type/$id") {
                         inclusive = true
                     }
+                    launchSingleTop = true
                 }
             },
         )
@@ -256,7 +263,7 @@ private fun NavGraphBuilder.mainNavigation(navController: NavHostController, hom
                 }
             },
             writePost = { type ->
-                navController.navigate("${CommunityNavigation.CommunityWrite.route}/$type") {
+                navController.navigate("${CommunityNavigation.CommunityWrite.route}/$type/${-1}") {
                     restoreState = true
                     launchSingleTop = true
                 }
@@ -274,6 +281,8 @@ private fun NavGraphBuilder.mainNavigation(navController: NavHostController, hom
         MyPageScreen(
             onClickDetailPolicy = { navController.navigate("${Nav.PolicyDetail.route}/$it") },
             goLogin = goLogin,
+            policyDetail = { navController.navigate("${Nav.PolicyDetail.route}/$it") },
+            postDetail = { navController.navigate("${CommunityNavigation.CommunityDetail.route}/$it") },
         )
     }
 }

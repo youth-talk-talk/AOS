@@ -1,5 +1,6 @@
 package com.youthtalk.datasource.post
 
+import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.youthtalk.data.CommunityService
@@ -15,6 +16,7 @@ class PostPagingSource @Inject constructor(
     override fun getRefreshKey(state: PagingState<Int, Post>): Int? {
         return state.anchorPosition?.let { anchorPosition ->
             val anchorPage = state.closestPageToPosition(anchorPosition)
+            Log.d("YOON-CHAN", "PostPagingSource getRefreshKey ${anchorPage?.prevKey?.plus(1) ?: anchorPage?.nextKey?.minus(1)}")
             anchorPage?.prevKey?.plus(1) ?: anchorPage?.nextKey?.minus(1)
         }
     }
@@ -31,8 +33,8 @@ class PostPagingSource @Inject constructor(
             val posts = response.data?.posts?.map { it.toData() } ?: listOf()
             return LoadResult.Page(
                 data = posts,
-                prevKey = null,
-                nextKey = if (posts.isEmpty()) null else pageNumber + (params.loadSize / 10),
+                prevKey = if (pageNumber == 0) null else pageNumber - 1,
+                nextKey = if (posts.size != params.loadSize) null else pageNumber + 1,
             )
         } catch (e: IOException) {
             return LoadResult.Error(e)

@@ -3,6 +3,7 @@ package com.core.mypage.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.core.domain.usercase.PostCommentLikeUseCase
 import com.core.domain.usercase.mypage.GetMyPageCommentsUseCase
 import com.core.mypage.model.comments.MyPageCommentsUiEvent
 import com.core.mypage.model.comments.MyPageCommentsUiState
@@ -19,6 +20,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MyPageCommentsViewModel @Inject constructor(
     private val getMyPageCommentsUseCase: GetMyPageCommentsUseCase,
+    private val commentLikeUseCase: PostCommentLikeUseCase,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<MyPageCommentsUiState>(MyPageCommentsUiState.Loading)
     val uiState = _uiState.asStateFlow()
@@ -26,6 +28,22 @@ class MyPageCommentsViewModel @Inject constructor(
     fun uiEvent(event: MyPageCommentsUiEvent) {
         when (event) {
             is MyPageCommentsUiEvent.GetData -> getData(event.isMine)
+            is MyPageCommentsUiEvent.CommentLike -> postCommentLike(event.id, !event.like)
+        }
+    }
+
+    private fun postCommentLike(id: Long, like: Boolean) {
+        val state = _uiState.value
+        if (state !is MyPageCommentsUiState.Success) return
+
+        viewModelScope.launch {
+            commentLikeUseCase(id, like)
+                .catch {
+                    Log.d("YOON-CHAN", "MyPageCommentsViewModel postCommentLike error ${it.message}")
+                }
+                .collectLatest {
+                    getData(false)
+                }
         }
     }
 

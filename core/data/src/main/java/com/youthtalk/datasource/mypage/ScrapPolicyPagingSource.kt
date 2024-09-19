@@ -29,7 +29,7 @@ class ScrapPolicyPagingSource @Inject constructor(
 
             return LoadResult.Page(
                 data = policies,
-                prevKey = null,
+                prevKey = if (pageNumber == 0) null else pageNumber - 1,
                 nextKey = if (policies.isEmpty()) null else pageNumber + (params.loadSize / SCRAP_PAGE_SIZE),
             )
         } catch (e: IOException) {

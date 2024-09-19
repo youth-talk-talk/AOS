@@ -32,7 +32,7 @@ fun PostDetailResponse.toData() = PostDetail(
     view = view,
     images = images,
     category = category,
-
+    scrap = scrap,
 )
 
 fun PostContentInfoResponse.toData() = PostContentInfo(

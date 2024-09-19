@@ -8,7 +8,9 @@ import com.core.community.model.CommunityWriteUiEffect
 import com.core.community.model.CommunityWriteUiEvent
 import com.core.community.model.CommunityWriteUiState
 import com.core.community.model.ContentInfo
+import com.core.domain.usercase.post.GetPostDetailUseCase
 import com.core.domain.usercase.post.PostCreatePostUseCase
+import com.core.domain.usercase.post.PostModifyPostUseCase
 import com.core.domain.usercase.search.GetSearchPoliciesTitleUseCase
 import com.youthtalk.model.SearchPolicy
 import com.youthtalk.model.WriteInfo
@@ -21,6 +23,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -29,10 +32,12 @@ import javax.inject.Inject
 class CommunityWriteViewModel @Inject constructor(
     private val getSearchPoliciesTitleUseCase: GetSearchPoliciesTitleUseCase,
     private val postCreatePostUseCase: PostCreatePostUseCase,
+    private val postModifyPostUseCase: PostModifyPostUseCase,
+    private val getPostDetailUseCase: GetPostDetailUseCase,
 ) : ViewModel() {
 
     private val _uiState =
-        MutableStateFlow<CommunityWriteUiState>(CommunityWriteUiState.Success(contents = listOf(WriteInfo(content = "")).toPersistentList()))
+        MutableStateFlow<CommunityWriteUiState>(CommunityWriteUiState.Loading)
     val uiState = _uiState.asStateFlow()
 
     var uieffect = MutableSharedFlow<CommunityWriteUiEffect>()
@@ -50,7 +55,76 @@ class CommunityWriteViewModel @Inject constructor(
             is CommunityWriteUiEvent.ChangeContents -> changeContents(event.contentInfo, event.text)
             is CommunityWriteUiEvent.DeleteImage -> deleteImage(event.index)
             is CommunityWriteUiEvent.DeleteText -> deleteContents()
-            is CommunityWriteUiEvent.CreatePost -> createPost(event.type)
+            is CommunityWriteUiEvent.CreatePost -> if (event.id == -1L) createPost(event.type) else modifyPost(event.id, event.type)
+            is CommunityWriteUiEvent.GetPostInfo -> getPostInfo(event.id)
+        }
+    }
+
+    private fun modifyPost(postId: Long, type: String) {
+        val state = _uiState.value
+        if (state !is CommunityWriteUiState.Success) return
+
+        viewModelScope.launch {
+            postModifyPostUseCase(
+                postId = postId,
+                postType = type,
+                title = state.title,
+                policyId = state.selectPolicy?.policyId,
+                contents = state.contents,
+            )
+                .onStart {
+                    _uiState.value = state.copy(isLoading = true)
+                }
+                .catch {
+                    Log.d("YOON-CHAN", "CommunityWriteViewModel createPost error ${it.message}")
+                }
+                .collectLatest {
+                    _uiState.value = state.copy(isLoading = false)
+                    uieffect.emit(CommunityWriteUiEffect.GoDetail(it.postId))
+                }
+        }
+    }
+
+    private fun getPostInfo(id: Long) {
+        if (id == -1L) {
+            _uiState.value = CommunityWriteUiState.Success(contents = listOf(WriteInfo(content = "")).toPersistentList())
+        } else {
+            viewModelScope.launch {
+                getPostDetailUseCase(id)
+                    .map {
+                        val contents = mutableListOf<WriteInfo>()
+                        it.contentList.forEach { contentInfo ->
+                            if (contentInfo.type == "IMAGE") {
+                                contents.add(WriteInfo(uri = contentInfo.content, content = ""))
+                            } else {
+                                if (contents.isEmpty()) {
+                                    contents.add(WriteInfo(content = contentInfo.content))
+                                } else {
+                                    contents[contents.size - 1] = contents[contents.size - 1].copy(content = contentInfo.content)
+                                }
+                            }
+                        }
+
+                        CommunityWriteUiState.Success(
+                            title = it.title,
+                            selectPolicy = if (it.policyTitle != null && it.policyId != null) {
+                                SearchPolicy(
+                                    title = it.policyTitle ?: "",
+                                    policyId = it.policyId ?: "",
+                                )
+                            } else {
+                                null
+                            },
+                            contents = contents.toPersistentList(),
+                        )
+                    }
+                    .catch {
+                        Log.d("YOON-CHAN", "CommunityWriteViewModel getPostInfo error ${it.message}")
+                    }
+                    .collectLatest { uiState ->
+                        _uiState.value = uiState
+                    }
+            }
         }
     }
 
