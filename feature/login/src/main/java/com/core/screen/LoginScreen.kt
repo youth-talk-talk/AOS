@@ -16,8 +16,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -161,12 +159,12 @@ private fun LogoText() {
     ) {
         Image(
             modifier = Modifier.size(88.dp),
-            imageVector = Icons.Default.AddCircle,
+            painter = painterResource(id = R.drawable.logo),
             contentDescription = "로고",
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
-            text = stringResource(id = R.string.app_name),
+            text = stringResource(id = R.string.login_title),
             style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.SemiBold),
         )
         Text(

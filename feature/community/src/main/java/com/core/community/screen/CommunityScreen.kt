@@ -442,7 +442,7 @@ private fun PopularPosts(
 
     LazyRow(
         modifier = Modifier
-            .aspectRatio(3.14f),
+            .aspectRatio(2.8f),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         items(
@@ -459,7 +459,7 @@ private fun PopularPosts(
             )
             PostCard(
                 modifier = Modifier
-                    .aspectRatio(3f)
+                    .aspectRatio(2.5f)
                     .clickableSingle {
                         onClickItem(post.postId)
                     },
@@ -468,6 +468,7 @@ private fun PopularPosts(
                 comments = post.comments,
                 scraps = post.scraps,
                 scrap = post.scrap,
+                isSingleLine = true,
                 onClickScrap = { postPostScrap(post.postId, it) },
             )
         }
@@ -526,7 +527,7 @@ fun LazyListScope.freeBoard(
 
             LazyRow(
                 modifier = Modifier
-                    .aspectRatio(3.14f),
+                    .aspectRatio(2.8f),
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
             ) {
                 items(
@@ -547,13 +548,14 @@ fun LazyListScope.freeBoard(
                     }
                     PostCard(
                         modifier = Modifier
-                            .aspectRatio(3f)
+                            .aspectRatio(2.5f)
                             .clickableSingle { onClickItem(post.postId) },
                         policyTitle = post.policyTitle,
                         title = post.title,
                         scraps = post.scraps,
                         comments = post.comments,
                         scrap = post.scrap,
+                        isSingleLine = true,
                         onClickScrap = { postPostScrap(post.postId, it) },
                     )
                 }

@@ -1,6 +1,9 @@
 package com.core.domain.usercase.di.mypage
 
+import com.core.dataapi.repository.AnnounceRepository
 import com.core.dataapi.repository.MyPageRepository
+import com.core.domain.usercase.mypage.GetAnnounceDetailUseCase
+import com.core.domain.usercase.mypage.GetAnnouncesUseCase
 import com.core.domain.usercase.mypage.GetDeadlinePolicesUseCase
 import com.core.domain.usercase.mypage.GetMyPageCommentsUseCase
 import com.core.domain.usercase.mypage.GetMyPagePostsUseCase
@@ -39,4 +42,12 @@ object MyPageUseCaseModule {
     @Provides
     @Singleton
     fun providePostUserLogoutUseCase(repository: MyPageRepository) = PostUserLogoutUseCase(repository)
+
+    @Provides
+    @Singleton
+    fun provideGetAnnouncesUseCase(repository: AnnounceRepository) = GetAnnouncesUseCase(repository)
+
+    @Provides
+    @Singleton
+    fun provideGetAnnounceDetailUseCase(repository: AnnounceRepository) = GetAnnounceDetailUseCase(repository)
 }

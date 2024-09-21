@@ -1,6 +1,7 @@
 package com.youthtalk
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Build
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
@@ -46,6 +47,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import androidx.navigation.navDeepLink
 import com.core.community.screen.CommunityDetailScreen
 import com.core.community.screen.CommunityScreen
 import com.core.community.screen.CommunityWriteScreen
@@ -55,6 +57,7 @@ import com.core.navigation.CommunityNavigation
 import com.core.navigation.MainNav
 import com.core.navigation.Nav
 import com.example.policydetail.PolicyDetailScreen
+import com.youth.app.feature.policydetail.BuildConfig
 import com.youth.search.SearchScreen
 import com.youthtalk.designsystem.YongProjectTheme
 import com.youthtalk.designsystem.mainHomeActionBarColor
@@ -123,6 +126,12 @@ fun NavHostScreen(
             arguments = listOf(
                 navArgument("policyId") {
                     type = NavType.StringType
+                },
+            ),
+            deepLinks = listOf(
+                navDeepLink {
+                    uriPattern = "${BuildConfig.SERVER_KEY}/policy_detail/{policyId}"
+                    action = Intent.ACTION_VIEW
                 },
             ),
         ) {

@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.BasicText
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -23,19 +25,23 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.LineBreak
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.policydetail.model.PolicyDetailUiState
+import com.example.policydetail.utils.TextUtils
 import com.youth.app.feature.policydetail.R
 import com.youthtalk.designsystem.YongProjectTheme
 import com.youthtalk.designsystem.gray50
 import com.youthtalk.model.PolicyDetail
 
 @Composable
-fun PolicyDetail(modifier: Modifier = Modifier, policyDetail: PolicyDetail) {
+fun PolicyDetail(modifier: Modifier = Modifier, policyDetail: PolicyDetail, onClickUrl: (String) -> Unit) {
     Column(
         modifier = modifier.background(color = Color.White),
         verticalArrangement = Arrangement.spacedBy(24.dp),
@@ -61,6 +67,7 @@ fun PolicyDetail(modifier: Modifier = Modifier, policyDetail: PolicyDetail) {
                 evaluation = evaluation,
                 applyUrl = applUrl,
                 submitDoc = submitDoc,
+                onClickUrl = onClickUrl,
             )
             MoreScreen(
                 etc = etc,
@@ -68,13 +75,14 @@ fun PolicyDetail(modifier: Modifier = Modifier, policyDetail: PolicyDetail) {
                 operatingOrg = operatingOrg,
                 refUrl1 = refUrl1,
                 refUrl2 = refUrl2,
+                onClickUrl = onClickUrl,
             )
         }
     }
 }
 
 @Composable
-private fun MoreScreen(etc: String, hostDep: String, operatingOrg: String, refUrl1: String, refUrl2: String) {
+private fun MoreScreen(etc: String, hostDep: String, operatingOrg: String, refUrl1: String, refUrl2: String, onClickUrl: (String) -> Unit) {
     var isExpand by remember {
         mutableStateOf(false)
     }
@@ -105,16 +113,18 @@ private fun MoreScreen(etc: String, hostDep: String, operatingOrg: String, refUr
             Column(
                 verticalArrangement = Arrangement.spacedBy(20.dp),
             ) {
-                EtcInfo(etc)
+                if (TextUtils.isNotEmptyContent(etc)) {
+                    EtcInfo(etc)
+                }
                 OperateInfo(hostDep, operatingOrg)
-                RefSiteInfo(refUrl1, refUrl2)
+                RefSiteInfo(refUrl1, refUrl2, onClickUrl)
             }
         }
     }
 }
 
 @Composable
-private fun RefSiteInfo(refUrl1: String, refUrl2: String) {
+private fun RefSiteInfo(refUrl1: String, refUrl2: String, onClickUrl: (String) -> Unit) {
     Column(
         verticalArrangement = Arrangement.spacedBy(4.dp),
     ) {
@@ -125,38 +135,62 @@ private fun RefSiteInfo(refUrl1: String, refUrl2: String) {
             ),
         )
 
-        Text(
-            text = "-사업관련 참고 사이트1",
-            style = MaterialTheme.typography.headlineLarge.copy(
-                fontWeight = FontWeight.W400,
-                color = Color.Black,
-            ),
-        )
+        if (TextUtils.isNotEmptyContent(refUrl1)) {
+            Text(
+                text = "-사업관련 참고 사이트1",
+                style = MaterialTheme.typography.headlineLarge.copy(
+                    fontWeight = FontWeight.W400,
+                    color = Color.Black,
+                ),
+            )
 
-        Text(
-            text = "    ${Typography.middleDot} $refUrl1",
-            style = MaterialTheme.typography.headlineLarge.copy(
-                fontWeight = FontWeight.W400,
-                color = Color.Black,
-                lineBreak = LineBreak.Paragraph,
-            ),
-        )
+            val dot = "    ${Typography.middleDot} "
+            val annotatedText = AnnotatedString.Builder(dot)
+            annotatedText.appendLine(refUrl1)
+            annotatedText.addStyle(SpanStyle(textDecoration = TextDecoration.Underline), dot.length, annotatedText.length)
+            val text = annotatedText.toAnnotatedString()
 
-        Text(
-            text = "-사업관련 참고 사이트 2",
-            style = MaterialTheme.typography.headlineLarge.copy(
-                fontWeight = FontWeight.W400,
-                color = Color.Black,
-            ),
-        )
-        Text(
-            text = "    ${Typography.middleDot} $refUrl2",
-            style = MaterialTheme.typography.headlineLarge.copy(
-                fontWeight = FontWeight.W400,
-                color = Color.Black,
-                lineBreak = LineBreak.Paragraph,
-            ),
-        )
+            Text(
+                modifier = Modifier.clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null,
+                ) { onClickUrl(refUrl1) },
+                text = text,
+                style = MaterialTheme.typography.headlineLarge.copy(
+                    fontWeight = FontWeight.W400,
+                    color = Color.Black,
+                    lineBreak = LineBreak.Paragraph,
+                ),
+            )
+        }
+
+        if (TextUtils.isNotEmptyContent(refUrl2)) {
+            Text(
+                text = "-사업관련 참고 사이트 2",
+                style = MaterialTheme.typography.headlineLarge.copy(
+                    fontWeight = FontWeight.W400,
+                    color = Color.Black,
+                ),
+            )
+
+            val dot = "    ${Typography.middleDot} "
+            val annotatedText = AnnotatedString.Builder(dot)
+            annotatedText.appendLine(refUrl2)
+            annotatedText.addStyle(SpanStyle(textDecoration = TextDecoration.Underline), dot.length, annotatedText.length)
+            val text = annotatedText.toAnnotatedString()
+            Text(
+                modifier = Modifier.clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null,
+                ) { onClickUrl(refUrl2) },
+                text = text,
+                style = MaterialTheme.typography.headlineLarge.copy(
+                    fontWeight = FontWeight.W400,
+                    color = Color.Black,
+                    lineBreak = LineBreak.Paragraph,
+                ),
+            )
+        }
     }
 }
 
@@ -172,13 +206,24 @@ private fun OperateInfo(hostDep: String, operatingOrg: String) {
             ),
         )
 
-        Text(
-            text = "-주관 기간: ${hostDep}\n-운영기관: $operatingOrg",
-            style = MaterialTheme.typography.headlineLarge.copy(
-                fontWeight = FontWeight.W400,
-                color = Color.Black,
-            ),
-        )
+        if (TextUtils.isNotEmptyContent(hostDep)) {
+            Text(
+                text = "-주관 기간: $hostDep",
+                style = MaterialTheme.typography.headlineLarge.copy(
+                    fontWeight = FontWeight.W400,
+                    color = Color.Black,
+                ),
+            )
+        }
+        if (TextUtils.isNotEmptyContent(operatingOrg)) {
+            Text(
+                text = "-운영기관: $operatingOrg",
+                style = MaterialTheme.typography.headlineLarge.copy(
+                    fontWeight = FontWeight.W400,
+                    color = Color.Black,
+                ),
+            )
+        }
     }
 }
 
@@ -205,7 +250,7 @@ private fun EtcInfo(etc: String) {
 }
 
 @Composable
-private fun ApplyMethod(applyStep: String, evaluation: String, applyUrl: String, submitDoc: String) {
+private fun ApplyMethod(applyStep: String, evaluation: String, applyUrl: String, submitDoc: String, onClickUrl: (String) -> Unit) {
     var isExpand by remember {
         mutableStateOf(false)
     }
@@ -236,25 +281,42 @@ private fun ApplyMethod(applyStep: String, evaluation: String, applyUrl: String,
             Column(
                 verticalArrangement = Arrangement.spacedBy(4.dp),
             ) {
-                DetailedConditions(
-                    title = stringResource(id = R.string.apply_method_apply_step),
-                    content = applyStep,
-                )
+                if (TextUtils.isNotEmptyContent(applyStep)) {
+                    SelectionContainer {
+                        DetailedConditions(
+                            title = stringResource(id = R.string.apply_method_apply_step),
+                            content = applyStep,
+                        )
+                    }
+                }
 
-                DetailedConditions(
-                    title = stringResource(id = R.string.apply_method_apply_evaluation),
-                    content = evaluation,
-                )
+                if (TextUtils.isNotEmptyContent(evaluation)) {
+                    DetailedConditions(
+                        title = stringResource(id = R.string.apply_method_apply_evaluation),
+                        content = evaluation,
+                    )
+                }
 
-                DetailedConditions(
-                    title = stringResource(id = R.string.apply_method_apply_url),
-                    content = applyUrl,
-                )
+                if (TextUtils.isNotEmptyContent(applyUrl)) {
+                    SelectionContainer {
+                        DetailedConditions(
+                            modifier = Modifier.clickable(
+                                interactionSource = remember { MutableInteractionSource() },
+                                indication = null,
+                            ) { onClickUrl(applyUrl) },
+                            title = stringResource(id = R.string.apply_method_apply_url),
+                            content = applyUrl,
+                            textDecoration = TextDecoration.Underline,
+                        )
+                    }
+                }
 
-                DetailedConditions(
-                    title = stringResource(id = R.string.apply_method_submit_doc),
-                    content = submitDoc,
-                )
+                if (TextUtils.isNotEmptyContent(submitDoc)) {
+                    DetailedConditions(
+                        title = stringResource(id = R.string.apply_method_submit_doc),
+                        content = submitDoc,
+                    )
+                }
             }
         }
     }
@@ -302,45 +364,60 @@ private fun ApplyUser(
             Column(
                 verticalArrangement = Arrangement.spacedBy(4.dp),
             ) {
-                DetailedConditions(
-                    title = stringResource(id = R.string.age),
-                    content = age,
-                )
+                if (TextUtils.isNotEmptyContent(age)) {
+                    DetailedConditions(
+                        title = stringResource(id = R.string.age),
+                        content = age,
+                    )
+                }
 
-                DetailedConditions(
-                    title = stringResource(id = R.string.addr_income),
-                    content = addrIncome,
-                )
+                if (TextUtils.isNotEmptyContent(addrIncome)) {
+                    DetailedConditions(
+                        title = stringResource(id = R.string.addr_income),
+                        content = addrIncome,
+                    )
+                }
 
-                DetailedConditions(
-                    title = stringResource(id = R.string.education),
-                    content = education,
-                )
+                if (TextUtils.isNotEmptyContent(education)) {
+                    DetailedConditions(
+                        title = stringResource(id = R.string.education),
+                        content = education,
+                    )
+                }
 
-                DetailedConditions(
-                    title = stringResource(id = R.string.major),
-                    content = major,
-                )
+                if (TextUtils.isNotEmptyContent(major)) {
+                    DetailedConditions(
+                        title = stringResource(id = R.string.major),
+                        content = major,
+                    )
+                }
+                if (TextUtils.isNotEmptyContent(employment)) {
+                    DetailedConditions(
+                        title = stringResource(id = R.string.employment),
+                        content = employment,
+                    )
+                }
 
-                DetailedConditions(
-                    title = stringResource(id = R.string.employment),
-                    content = employment,
-                )
+                if (TextUtils.isNotEmptyContent(specialization)) {
+                    DetailedConditions(
+                        title = stringResource(id = R.string.specialization),
+                        content = specialization,
+                    )
+                }
 
-                DetailedConditions(
-                    title = stringResource(id = R.string.specialization),
-                    content = specialization,
-                )
+                if (TextUtils.isNotEmptyContent(applyLimit)) {
+                    DetailedConditions(
+                        title = stringResource(id = R.string.apply_limit),
+                        content = applyLimit,
+                    )
+                }
 
-                DetailedConditions(
-                    title = stringResource(id = R.string.apply_limit),
-                    content = applyLimit,
-                )
-
-                DetailedConditions(
-                    title = stringResource(id = R.string.addition),
-                    content = addition,
-                )
+                if (TextUtils.isNotEmptyContent(addition)) {
+                    DetailedConditions(
+                        title = stringResource(id = R.string.addition),
+                        content = addition,
+                    )
+                }
             }
         }
     }
@@ -366,16 +443,18 @@ private fun SummaryCheck(supportDetail: String, applyTerm: String, operateTerm: 
             contentDetail = applyTerm,
         )
 
-        PolicyContent(
-            modifier = Modifier.padding(bottom = 9.dp),
-            contentTitle = stringResource(id = R.string.apply_operate_title),
-            contentDetail = operateTerm.ifEmpty { "-" },
-        )
+        if (TextUtils.isNotEmptyContent(operateTerm)) {
+            PolicyContent(
+                modifier = Modifier.padding(bottom = 9.dp),
+                contentTitle = stringResource(id = R.string.apply_operate_title),
+                contentDetail = operateTerm.ifEmpty { "-" },
+            )
+        }
     }
 }
 
 @Composable
-private fun DetailedConditions(modifier: Modifier = Modifier, title: String, content: String) {
+private fun DetailedConditions(modifier: Modifier = Modifier, title: String, content: String, textDecoration: TextDecoration = TextDecoration.None) {
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
@@ -387,12 +466,12 @@ private fun DetailedConditions(modifier: Modifier = Modifier, title: String, con
                 color = gray50,
             ),
         )
-
-        Text(
+        BasicText(
             modifier = Modifier.weight(4f),
             text = content,
             style = MaterialTheme.typography.headlineLarge.copy(
                 lineHeight = 20.sp,
+                textDecoration = textDecoration,
             ),
         )
     }
@@ -446,6 +525,7 @@ private fun PolicyDetailPreview() {
     YongProjectTheme {
         PolicyDetail(
             policyDetail = defaultPolicyDetail,
+            onClickUrl = {},
         )
     }
 }

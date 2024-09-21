@@ -153,7 +153,7 @@ class CommunityWriteViewModel @Inject constructor(
 
         val contents = state.contents.toMutableList()
 
-        if (contents[index].content.isNotEmpty()) {
+        if (!contents[index].content.isNullOrEmpty()) {
             contents[index - 1] = contents[index - 1].copy(content = contents[index - 1].content + contents[index].content)
         }
         contents.removeAt(index)
@@ -161,7 +161,7 @@ class CommunityWriteViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.value = state.copy(
                 contents = contents.toPersistentList(),
-                contentsInfo = ContentInfo(index - 1, contents[index - 1].content.length),
+                contentsInfo = ContentInfo(index - 1, contents[index - 1].content?.length ?: 0),
             )
             _focusRequest.emit(index - 1)
         }
@@ -172,15 +172,25 @@ class CommunityWriteViewModel @Inject constructor(
         if (state !is CommunityWriteUiState.Success) return
 
         val contentInfo = state.contentsInfo
+        Log.d("YOON-CHAN", "deleteContent $contentInfo")
         val contents = state.contents.toMutableList()
-        if (contentInfo.index >= 1) {
-            contents.removeAt(contentInfo.index)
-            viewModelScope.launch {
+        if (contents[contentInfo.index].content != null) {
+            if (contents[contentInfo.index].content == "") {
+                contents[contentInfo.index] = contents[contentInfo.index].copy(content = null)
                 _uiState.value = state.copy(
                     contents = contents.toPersistentList(),
-                    contentsInfo = contentInfo.copy(index = contentInfo.index - 1, pos = contents[contentInfo.index - 1].content.length),
                 )
-                _focusRequest.emit(contentInfo.index - 1)
+            }
+        } else {
+            if (contentInfo.index >= 1) {
+                contents.removeAt(contentInfo.index)
+                viewModelScope.launch {
+                    _uiState.value = state.copy(
+                        contents = contents.toPersistentList(),
+                        contentsInfo = contentInfo.copy(index = contentInfo.index - 1, pos = contents[contentInfo.index - 1].content?.length ?: 0),
+                    )
+                    _focusRequest.emit(contentInfo.index - 1)
+                }
             }
         }
     }
@@ -207,19 +217,20 @@ class CommunityWriteViewModel @Inject constructor(
         viewModelScope.launch {
             val index = state.contentsInfo.index
             val contents = state.contents.toMutableList()
-            val addText = if (contents[index].content.isEmpty()) "" else contents[index].content.substring(state.contentsInfo.pos)
+            val addText = if (contents[index].content.isNullOrEmpty()) null else contents[index].content?.substring(state.contentsInfo.pos)
             contents[index] = contents[index].copy(
-                content = if (contents[index].content.isEmpty()) "" else contents[index].content.substring(0 until state.contentsInfo.pos),
+                content = if (contents[index].content.isNullOrEmpty()) null else contents[index].content?.substring(0 until state.contentsInfo.pos),
             )
             if (contents.size == index + 1) {
                 contents.add(WriteInfo(uri, addText))
             } else {
                 contents.add(index + 1, WriteInfo(uri, addText))
             }
-            Log.d("YOON-CHAN", "addUri $contents")
             _uiState.value = state.copy(
                 contents = contents.toPersistentList(),
+                contentsInfo = ContentInfo(index + 1, addText?.length ?: 0),
             )
+            _focusRequest.emit(index + 1)
         }
     }
 

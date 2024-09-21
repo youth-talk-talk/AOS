@@ -1,5 +1,6 @@
 package com.youthtalk.di
 
+import com.core.dataapi.repository.AnnounceRepository
 import com.core.dataapi.repository.CommentRepository
 import com.core.dataapi.repository.CommunityRepository
 import com.core.dataapi.repository.HomeRepository
@@ -11,6 +12,7 @@ import com.core.dataapi.repository.SpecPolicyRepository
 import com.core.dataapi.repository.UserRepository
 import com.core.datastore.datasource.DataSource
 import com.core.datastore.datasource.DataStoreDataSource
+import com.youthtalk.repository.AnnounceRepositoryImpl
 import com.youthtalk.repository.CommentRepositoryImpl
 import com.youthtalk.repository.CommunityRepositoryImpl
 import com.youthtalk.repository.HomeRepositoryImpl
@@ -58,4 +60,7 @@ abstract class DataModule {
 
     @Binds
     abstract fun bindsSearchRepository(repository: SearchRepositoryImpl): SearchRepository
+
+    @Binds
+    abstract fun bindsAnnounceRepository(repository: AnnounceRepositoryImpl): AnnounceRepository
 }

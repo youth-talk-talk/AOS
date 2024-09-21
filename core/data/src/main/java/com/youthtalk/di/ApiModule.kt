@@ -3,6 +3,7 @@ package com.youthtalk.di
 import android.util.Log
 import com.core.datastore.datasource.DataStoreDataSource
 import com.youth.app.core.data.BuildConfig
+import com.youthtalk.data.AnnounceService
 import com.youthtalk.data.CommentService
 import com.youthtalk.data.CommunityService
 import com.youthtalk.data.LoginService
@@ -151,4 +152,8 @@ object ApiModule {
     @Provides
     @Singleton
     fun provideCommunityService(@Main retrofit: Retrofit): CommunityService = retrofit.create(CommunityService::class.java)
+
+    @Provides
+    @Singleton
+    fun provideAnnounceService(@Main retrofit: Retrofit): AnnounceService = retrofit.create(AnnounceService::class.java)
 }

@@ -19,6 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.youth.app.core.designsystem.R
@@ -32,6 +33,7 @@ fun PostCard(
     scraps: Int,
     comments: Int,
     scrap: Boolean,
+    isSingleLine: Boolean = false,
     onClickScrap: (Boolean) -> Unit,
 ) {
     val bookmark = if (scrap) painterResource(id = R.drawable.bookmark_check) else painterResource(id = R.drawable.bookmark)
@@ -50,6 +52,8 @@ fun PostCard(
                 style = MaterialTheme.typography.displaySmall.copy(
                     color = MaterialTheme.colorScheme.onTertiary,
                 ),
+                maxLines = if (isSingleLine) 1 else Int.MAX_VALUE,
+                overflow = if (isSingleLine) TextOverflow.Ellipsis else TextOverflow.Clip,
             )
         }
         Text(

@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import com.youthtalk.designsystem.YongProjectTheme
 
 @Composable
-fun AnnouncementComponent(modifier: Modifier = Modifier) {
+fun AnnouncementComponent(date: String, title: String, modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -35,13 +35,13 @@ fun AnnouncementComponent(modifier: Modifier = Modifier) {
         horizontalAlignment = Alignment.Start,
     ) {
         Text(
-            text = "2024/08/27",
+            text = date,
             style = MaterialTheme.typography.displaySmall.copy(
                 color = MaterialTheme.colorScheme.onSecondary,
             ),
         )
         Text(
-            text = "공지사항_제목 공지사항_제목 칸입니다.",
+            text = title,
             style = MaterialTheme.typography.titleSmall,
         )
     }
@@ -51,6 +51,9 @@ fun AnnouncementComponent(modifier: Modifier = Modifier) {
 @Composable
 private fun AnnouncementComponentPreview() {
     YongProjectTheme {
-        AnnouncementComponent()
+        AnnouncementComponent(
+            date = "2024/08/27",
+            title = "공지사항_제목",
+        )
     }
 }
