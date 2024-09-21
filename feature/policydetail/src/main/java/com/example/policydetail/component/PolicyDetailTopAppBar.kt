@@ -21,7 +21,13 @@ import com.youth.app.feature.policydetail.R
 import com.youthtalk.designsystem.YongProjectTheme
 
 @Composable
-fun PolicyDetailTopAppBar(modifier: Modifier = Modifier, isScrap: Boolean, onClickScrap: (Boolean) -> Unit, onBack: () -> Unit) {
+fun PolicyDetailTopAppBar(
+    modifier: Modifier = Modifier,
+    isScrap: Boolean,
+    onClickScrap: (Boolean) -> Unit,
+    onBack: () -> Unit,
+    onClickShared: () -> Unit,
+) {
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -46,6 +52,11 @@ fun PolicyDetailTopAppBar(modifier: Modifier = Modifier, isScrap: Boolean, onCli
             horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             Icon(
+                modifier = Modifier
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null,
+                    ) { onClickShared() },
                 painter = painterResource(id = R.drawable.share_icon),
                 contentDescription = "공유 아이콘",
                 tint = MaterialTheme.colorScheme.onSecondary,
@@ -72,6 +83,7 @@ private fun PolicyDetailTopAppBarPreview() {
             isScrap = true,
             onClickScrap = {},
             onBack = {},
+            onClickShared = {},
         )
     }
 }
@@ -84,6 +96,7 @@ private fun PolicyDetailTopAppBarBookMarkFalsePreview() {
             isScrap = false,
             onClickScrap = {},
             onBack = {},
+            onClickShared = {},
         )
     }
 }

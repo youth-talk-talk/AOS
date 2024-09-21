@@ -211,7 +211,7 @@ class CommunityRepositoryImpl @Inject constructor(
             it.uri?.let { uri ->
                 contentList.add(PostContentRequest(uri, "IMAGE"))
             }
-            contentList.add(PostContentRequest(it.content, "TEXT"))
+            contentList.add(PostContentRequest(it.content ?: "", "TEXT"))
         }
         val requestBody = PostCreatePostRequest(
             postType = postType,
@@ -238,7 +238,7 @@ class CommunityRepositoryImpl @Inject constructor(
             it.uri?.let { uri ->
                 contentList.add(PostContentRequest(uri, "IMAGE"))
             }
-            contentList.add(PostContentRequest(it.content, "TEXT"))
+            contentList.add(PostContentRequest(it.content ?: "", "TEXT"))
         }
         val requestBody = PostModifyPostRequest(
             title = title,

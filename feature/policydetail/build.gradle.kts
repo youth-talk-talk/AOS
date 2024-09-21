@@ -4,6 +4,7 @@ plugins {
     id("youth.android.feature")
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.jetbrainsCompose)
+    kotlin("plugin.serialization")
 }
 
 android {
@@ -18,4 +19,5 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    implementation(libs.kotlinx.serialization.json)
 }

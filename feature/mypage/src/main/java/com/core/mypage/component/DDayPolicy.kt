@@ -50,7 +50,7 @@ fun DDayPolicy(modifier: Modifier = Modifier, policies: List<Policy>, onClickDet
                 key = { index -> policies[index].policyId },
             ) { index ->
                 PolicyCard(
-                    modifier = Modifier.aspectRatio(3.14f),
+                    modifier = Modifier.aspectRatio(2.5f),
                     policy = policies[index],
                     onClickDetailPolicy = onClickDetailPolicy,
                     onClickScrap = { _, _ -> },

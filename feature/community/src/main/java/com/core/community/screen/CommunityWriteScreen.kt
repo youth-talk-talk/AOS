@@ -15,6 +15,7 @@ import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.launch
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -34,10 +35,14 @@ import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.relocation.BringIntoViewRequester
+import androidx.compose.foundation.relocation.bringIntoViewRequester
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -46,6 +51,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -64,6 +70,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
@@ -96,6 +103,7 @@ import com.youthtalk.util.clickableSingle
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import java.io.OutputStream
 import java.util.UUID
 
@@ -360,48 +368,67 @@ private fun CommunityWrite(
             .fillMaxSize()
             .background(
                 color = MaterialTheme.colorScheme.background,
-            )
-            .imePadding(),
+            ),
     ) {
         MiddleTitleTopBar(title = appbarTitle, onBack = onBack)
         HorizontalDivider()
-        TitleEditText(
-            textFieldState,
-            onTitleTextChange = {
-                textFieldState = it
-                if (it.text != title) {
-                    onTitleTextChange(it.text)
-                }
-            },
-        )
-        if (type == "review") {
-            PolicySearch(
-                searchPolicy = searchPolicy,
-                onClick = { policyDialog = true },
-            )
-        }
-        Spacer(modifier = Modifier.height(12.dp))
-        ContentEditText(
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f),
-            contents = contents,
-            requestFocus = requestFocus,
-            onClickPicture = onClickPicture,
-            onChangeTextValue = onChangeTextValue,
-            onDeleteText = onDeleteText,
-            onDeleteImage = onDeleteImage,
-        )
-        RoundButton(
-            modifier = Modifier
-                .padding(horizontal = 17.dp)
-                .padding(bottom = 12.dp)
-                .fillMaxWidth(),
-            text = "등록하기",
-            enabled = checkEnabled(title, contents, type, searchPolicy),
-            color = if (checkEnabled(title, contents, type, searchPolicy)) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface,
+                .fillMaxSize()
+                .verticalScroll(
+                    state = rememberScrollState(),
+                )
+                .imePadding(),
         ) {
-            createPost(type)
+            TitleEditText(
+                textFieldState,
+                onTitleTextChange = {
+                    textFieldState = it
+                    if (it.text != title) {
+                        onTitleTextChange(it.text)
+                    }
+                },
+            )
+            if (type == "review") {
+                PolicySearch(
+                    searchPolicy = searchPolicy,
+                    onClick = { policyDialog = true },
+                )
+            }
+            Spacer(modifier = Modifier.height(12.dp))
+            ContentEditText(
+                modifier = Modifier
+                    .height(600.dp)
+                    .fillMaxWidth(),
+                contents = contents,
+                type = type,
+                requestFocus = requestFocus,
+                onClickPicture = onClickPicture,
+                onChangeTextValue = onChangeTextValue,
+                onDeleteText = onDeleteText,
+                onDeleteImage = onDeleteImage,
+            )
+            RoundButton(
+                modifier = Modifier
+                    .padding(horizontal = 17.dp)
+                    .padding(bottom = 12.dp)
+                    .fillMaxWidth(),
+                text = "등록하기",
+                enabled = checkEnabled(title, contents, type, searchPolicy),
+                color = if (checkEnabled(
+                        title,
+                        contents,
+                        type,
+                        searchPolicy,
+                    )
+                ) {
+                    MaterialTheme.colorScheme.primary
+                } else {
+                    MaterialTheme.colorScheme.onSurface
+                },
+            ) {
+                createPost(type)
+            }
         }
     }
 
@@ -418,7 +445,7 @@ private fun CommunityWrite(
 private fun checkEnabled(title: String, contents: ImmutableList<WriteInfo>, type: String, searchPolicy: SearchPolicy?): Boolean {
     return (
         title.isNotEmpty() && contents.any {
-            it.uri != null || it.content.isNotEmpty()
+            it.uri != null || !it.content.isNullOrEmpty()
         } && ((type == "review" && searchPolicy != null) || type == "post")
         )
 }
@@ -442,7 +469,7 @@ private fun PolicyDialog(
 
         Column(
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxSize()
                 .height(525.dp)
                 .background(
                     MaterialTheme.colorScheme.background,
@@ -657,9 +684,11 @@ private fun AddPictureDialog(onDismiss: () -> Unit, onCamera: () -> Unit, onAlbu
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun ContentEditText(
     modifier: Modifier = Modifier,
+    type: String,
     contents: ImmutableList<WriteInfo>,
     requestFocus: SharedFlow<Int>,
     onClickPicture: () -> Unit,
@@ -667,6 +696,7 @@ private fun ContentEditText(
     onDeleteText: () -> Unit,
     onDeleteImage: (Int) -> Unit,
 ) {
+    val scope = rememberCoroutineScope()
     Column(
         modifier = modifier
             .padding(horizontal = 17.dp),
@@ -687,22 +717,24 @@ private fun ContentEditText(
         ) {
             LazyColumn(
                 modifier = Modifier
-                    .fillMaxSize()
+                    .fillMaxWidth()
+                    .height(600.dp)
                     .padding(horizontal = 8.dp, vertical = 8.dp),
             ) {
                 items(count = contents.size) { index ->
                     val content = contents[index]
                     var isFocus by remember { mutableStateOf(false) }
-                    var textFieldValue by remember { mutableStateOf(TextFieldValue(content.content)) }
+                    var textFieldValue by remember { mutableStateOf(TextFieldValue(content.content ?: "")) }
                     val focusRequest = remember { FocusRequester() }
-
+                    val bringIntoViewRequester = remember { BringIntoViewRequester() }
+                    var height by remember { mutableIntStateOf(-1) }
                     LaunchedEffect(key1 = requestFocus) {
-                        requestFocus.collectLatest {
+                        requestFocus.collect {
                             if (index == it) focusRequest.requestFocus()
                         }
                     }
                     LaunchedEffect(content.content) {
-                        textFieldValue = textFieldValue.copy(text = content.content)
+                        textFieldValue = textFieldValue.copy(text = content.content ?: "")
                     }
 
                     content.uri?.let { uri ->
@@ -711,11 +743,11 @@ private fun ContentEditText(
                                 mutableStateOf(false)
                             }
                             SubcomposeAsyncImage(
-                                modifier = Modifier.padding(top = 16.dp, end = 16.dp),
                                 model = uri,
                                 contentDescription = null,
                                 onSuccess = {
                                     isSuccess = true
+                                    height = it.painter.intrinsicSize.height.toInt()
                                 },
                                 loading = {
                                     CircularProgressIndicator()
@@ -738,11 +770,14 @@ private fun ContentEditText(
                         modifier = Modifier
                             .onFocusChanged { isFocus = it.isFocused }
                             .focusRequester(focusRequest)
+                            .bringIntoViewRequester(bringIntoViewRequester)
                             .clearFocusOnKeyboardDismiss()
                             .onKeyEvent { event ->
                                 when (event.key.keyCode) {
                                     287762808832 -> {
-                                        onDeleteText()
+                                        if (textFieldValue.text.isEmpty()) {
+                                            onDeleteText()
+                                        }
                                     }
 
                                     else -> {}
@@ -754,21 +789,59 @@ private fun ContentEditText(
                             textFieldValue = it
                             onChangeTextValue(ContentInfo(index, textFieldValue.selection.start), textFieldValue.text)
                         },
+                        onTextLayout = {
+                            val cursorRect = it.getCursorRect(textFieldValue.selection.start) // Get Text Field cursor position
+                            scope.launch {
+                                bringIntoViewRequester.bringIntoView(cursorRect) // Scroll to Text Field cursor position by typing
+                            }
+                        },
                     ) { innerTextField ->
-                        if (textFieldValue.text.isEmpty() && !isFocus) {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(2.dp)
-                                    .background(MaterialTheme.colorScheme.background),
-                            )
+                        if (index != 0 && index != contents.size - 1) {
+                            if (textFieldValue.text.isEmpty() && !isFocus) {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(2.dp)
+                                        .background(MaterialTheme.colorScheme.background),
+                                )
+                            } else {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .background(MaterialTheme.colorScheme.background),
+                                ) {
+                                    innerTextField()
+                                }
+                            }
                         } else {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .background(MaterialTheme.colorScheme.background),
-                            ) {
-                                innerTextField()
+                            if (index == 0) {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .onEmptyHeight(contents.size == 1 && contents[index].content.isNullOrEmpty())
+                                        .background(MaterialTheme.colorScheme.background),
+                                ) {
+                                    if (contents.size == 1 && contents[index].content.isNullOrEmpty()) {
+                                        if (type == "review") {
+                                            Text(
+                                                text = stringResource(id = R.string.review_content_hint),
+                                                style = MaterialTheme.typography.labelLarge.copy(
+                                                    color = MaterialTheme.colorScheme.onTertiary,
+                                                ),
+                                            )
+                                        }
+                                    }
+                                    innerTextField()
+                                }
+                            } else {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(200.dp)
+                                        .background(MaterialTheme.colorScheme.background),
+                                ) {
+                                    innerTextField()
+                                }
                             }
                         }
                     }
@@ -930,6 +1003,14 @@ fun Modifier.onClickNoIndicator(click: () -> Unit): Modifier = composed {
         indication = null,
         onClick = click,
     )
+}
+
+fun Modifier.onEmptyHeight(isEmpty: Boolean): Modifier = composed {
+    if (isEmpty) {
+        height(100.dp)
+    } else {
+        this
+    }
 }
 
 private fun getImageUri(context: Context, bitmap: Bitmap): Uri {

@@ -2,6 +2,7 @@ package com.core.mypage.navigation
 
 import com.core.mypage.navigation.SettingRoute.ACCOUNT_MANAGE
 import com.core.mypage.navigation.SettingRoute.ANNOUNCE
+import com.core.mypage.navigation.SettingRoute.ANNOUNCE_DETAIL
 import com.core.mypage.navigation.SettingRoute.MY_PAGE_COMMENT
 import com.core.mypage.navigation.SettingRoute.MY_PAGE_HOME
 import com.core.mypage.navigation.SettingRoute.MY_PAGE_POST
@@ -38,6 +39,10 @@ sealed class SettingNavigation(
     data object Announce : SettingNavigation(
         route = ANNOUNCE,
     )
+
+    data object AnnounceDetail : SettingNavigation(
+        route = ANNOUNCE_DETAIL,
+    )
 }
 
 object SettingRoute {
@@ -48,4 +53,5 @@ object SettingRoute {
     const val MY_PAGE_POST = "my_page_post"
     const val MY_PAGE_COMMENT = "my_page_comment"
     const val ANNOUNCE = "announce"
+    const val ANNOUNCE_DETAIL = "announce_detail"
 }

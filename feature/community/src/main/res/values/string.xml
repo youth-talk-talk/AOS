@@ -14,4 +14,6 @@
 
     <string name="popular_post">인기 게시물</string>
     <string name="recent_post">최신 게시물</string>
+    <string name="review_content_hint">*후기로 무얼 적어야 할 지 모르겠다면 아래 질문에 대한 답을 적어주세요!\n1. 해당프로그램을 경험하면서 느낀 장점이나 단점이 있나요?\n2. 주관부서에 남기고 싶은 피드백을 적어주세요!\n3. 다음년도에 해당 프로그램을 신청할 청년들을 위한 tip!</string>
+
 </resources>

@@ -1,5 +1,7 @@
 package com.core.mypage
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -118,6 +121,24 @@ fun MyPageScreen(onClickDetailPolicy: (String) -> Unit, goLogin: () -> Unit, pol
                 onBack = {
                     navHost.popBackStack()
                 },
+                onClickAnnounceDetail = { navHost.navigate("${SettingNavigation.AnnounceDetail.route}/$it") },
+            )
+        }
+
+        composable(
+            "${SettingNavigation.AnnounceDetail.route}/{id}",
+            arguments = listOf(
+                navArgument("id") {
+                    type = NavType.LongType
+                },
+            ),
+        ) {
+            val id = it.arguments?.getLong("id") ?: 0
+            AnnouncementDetailScreen(
+                id = id,
+                onBack = {
+                    navHost.popBackStack()
+                },
             )
         }
     }
@@ -150,6 +171,7 @@ private fun MyPageHomeScreen(navHost: NavHostController, viewModel: MyPageHomeVi
 private fun MyPageHome(navHost: NavHostController, uiState: MyPageHomeUiState.Success, onClickDetailPolicy: (String) -> Unit) {
     val user = uiState.user
     val deadLinePolicies = uiState.deadlinePolicies
+    val context = LocalContext.current
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background,
@@ -184,6 +206,12 @@ private fun MyPageHome(navHost: NavHostController, uiState: MyPageHomeUiState.Su
                 announce = {
                     navHost.navigate(SettingNavigation.Announce.route)
                 },
+                onClickQnA = {
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://open.kakao.com/o/s5skUrpg"))
+                    if (intent.resolveActivity(context.packageManager) != null) {
+                        context.startActivity(intent)
+                    }
+                },
             )
         }
     }
@@ -197,6 +225,7 @@ private fun FavoritesScreen(
     writeComment: () -> Unit,
     likeComment: () -> Unit,
     announce: () -> Unit,
+    onClickQnA: () -> Unit,
 ) {
     val favorites = stringArrayResource(id = R.array.favorites)
     val etc = stringArrayResource(id = R.array.etc)
@@ -230,6 +259,8 @@ private fun FavoritesScreen(
                 .clickableSingle {
                     if (it == "공지사항") {
                         announce()
+                    } else {
+                        onClickQnA()
                     }
                 },
             title = it,
