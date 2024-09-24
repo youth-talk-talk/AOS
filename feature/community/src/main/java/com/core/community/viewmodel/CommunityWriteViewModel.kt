@@ -1,6 +1,5 @@
 package com.core.community.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
@@ -26,6 +25,7 @@ import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -76,7 +76,7 @@ class CommunityWriteViewModel @Inject constructor(
                     _uiState.value = state.copy(isLoading = true)
                 }
                 .catch {
-                    Log.d("YOON-CHAN", "CommunityWriteViewModel createPost error ${it.message}")
+                    Timber.e("CommunityWriteViewModel createPost error " + it.message)
                 }
                 .collectLatest {
                     _uiState.value = state.copy(isLoading = false)
@@ -119,7 +119,7 @@ class CommunityWriteViewModel @Inject constructor(
                         )
                     }
                     .catch {
-                        Log.d("YOON-CHAN", "CommunityWriteViewModel getPostInfo error ${it.message}")
+                        Timber.e("CommunityWriteViewModel getPostInfo error " + it.message)
                     }
                     .collectLatest { uiState ->
                         _uiState.value = uiState
@@ -138,7 +138,7 @@ class CommunityWriteViewModel @Inject constructor(
                     _uiState.value = state.copy(isLoading = true)
                 }
                 .catch {
-                    Log.d("YOON-CHAN", "CommunityWriteViewModel createPost error ${it.message}")
+                    Timber.e("CommunityWriteViewModel createPost error " + it.message)
                 }
                 .collectLatest {
                     _uiState.value = state.copy(isLoading = false)
@@ -172,7 +172,6 @@ class CommunityWriteViewModel @Inject constructor(
         if (state !is CommunityWriteUiState.Success) return
 
         val contentInfo = state.contentsInfo
-        Log.d("YOON-CHAN", "deleteContent $contentInfo")
         val contents = state.contents.toMutableList()
         if (contents[contentInfo.index].content != null) {
             if (contents[contentInfo.index].content == "") {
@@ -240,7 +239,6 @@ class CommunityWriteViewModel @Inject constructor(
         _uiState.value = state.copy(
             title = text,
         )
-        Log.d("YOON-CHAN", "changeTitleText $text")
     }
 
     private fun selectPolicy(policy: SearchPolicy?) {

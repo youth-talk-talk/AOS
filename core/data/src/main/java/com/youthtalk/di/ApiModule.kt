@@ -1,6 +1,5 @@
 package com.youthtalk.di
 
-import android.util.Log
 import com.core.datastore.datasource.DataStoreDataSource
 import com.youth.app.core.data.BuildConfig
 import com.youthtalk.data.AnnounceService
@@ -67,13 +66,11 @@ object ApiModule {
                 val token = response.headers["Authorization"]
                 val refreshToken = response.headers["Authorization-refresh"]
                 if (token != null && refreshToken != null) {
-                    Log.d("YOON-CHAN", "token $ refreshToken Saved \n $token \n $refreshToken")
                     CoroutineScope(Dispatchers.IO).launch {
                         dataStoreDataSource.saveAccessToken(token)
                         dataStoreDataSource.saveRefreshToken(refreshToken)
                     }
                 }
-
                 response
             }
 

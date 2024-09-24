@@ -1,6 +1,5 @@
 package com.youthtalk.repository
 
-import android.util.Log
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
@@ -13,11 +12,14 @@ import com.youthtalk.datasource.PagingSize
 import com.youthtalk.datasource.search.SearchPoliciesTitlePagingSource
 import com.youthtalk.datasource.search.SearchPolicyPagingSource
 import com.youthtalk.datasource.search.SearchPostPagingSource
+import com.youthtalk.dto.PostSearchResponse
 import com.youthtalk.dto.specpolicy.FilterInfoRequest
+import com.youthtalk.dto.specpolicy.SpecPoliciesResponse
 import com.youthtalk.model.FilterInfo
 import com.youthtalk.model.Policy
 import com.youthtalk.model.Post
 import com.youthtalk.model.SearchPolicy
+import com.youthtalk.utils.ErrorUtils.throwableError
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
@@ -66,10 +68,10 @@ class SearchRepositoryImpl @Inject constructor(
             .onSuccess { response ->
                 response.data?.let { specPolicyInfo ->
                     emit(specPolicyInfo.totalCount)
-                } ?: throw NoDataException("not response Data")
+                } ?: throw NoDataException()
             }
             .onFailure {
-                Log.d("YOON-CHAN", "SpecPolicy error ${it.message}")
+                throwableError<SpecPoliciesResponse>(it)
             }
     }
 
@@ -110,7 +112,7 @@ class SearchRepositoryImpl @Inject constructor(
                 }
             }
             .onFailure {
-                Log.d("YOON-CHAN", "SpecPolicy getPostsCount error ${it.message}")
+                throwableError<PostSearchResponse>(it)
             }
     }
 

@@ -1,6 +1,5 @@
 package com.youthtalk.di
 
-import android.util.Log
 import com.core.datastore.datasource.DataStoreDataSource
 import com.youthtalk.dto.CommonResponse
 import com.youthtalk.dto.toResponseBody
@@ -13,6 +12,7 @@ import okhttp3.Interceptor
 import okhttp3.Protocol
 import okhttp3.Request
 import okhttp3.Response
+import timber.log.Timber
 import java.net.HttpURLConnection.HTTP_OK
 import java.net.HttpURLConnection.HTTP_UNAUTHORIZED
 import javax.inject.Inject
@@ -39,23 +39,15 @@ class AuthInterceptor @Inject constructor(
         try {
             val response = chain.proceed(request)
 
-//            Log.d(
-//                "YOON-CHAN",
-//                "AuthInterceptor response code ${response.code}," +
-//                    "\n request Header ${response.request.headers[AUTHORIZATION]}" +
-//                    " \n request refresh Header ${response.request.headers[AUTHORIZATION_REFRESH]}",
-//            )
             if (response.code == HTTP_OK) {
                 val newAccessToken: String = response.header(AUTHORIZATION, null) ?: return response
                 val newRefreshToken: String = response.header(AUTHORIZATION_REFRESH, null) ?: return response
 
-//                Log.d("YOON-CHAN", "new Access Token = $newAccessToken, new Refresh Token $newRefreshToken")
                 CoroutineScope(Dispatchers.IO).launch {
                     val currentAccessToken = dataStoreDataSource.getAccessToken().first()
                     if (currentAccessToken != newAccessToken) {
                         dataStoreDataSource.saveAccessToken(newAccessToken)
                         dataStoreDataSource.saveRefreshToken(newRefreshToken)
-                        Log.d("YOON-CHAN", "save new Access Token")
                     }
                 }
                 val newRequest = chain.request().newBuilder()
@@ -63,11 +55,13 @@ class AuthInterceptor @Inject constructor(
                     .addHeader(AUTHORIZATION, "Bearer $newAccessToken")
                     .build()
                 return chain.proceed(newRequest)
+            } else {
+                response.newBuilder()
+                    .code(response.code)
             }
-
             return response
         } catch (e: IllegalStateException) {
-            Log.d("YOON-CHAN", "AuthInterceptor ${e.message}")
+            Timber.e("$e")
             return refreshTokenExpiredResponse(request)
         }
     }
@@ -84,7 +78,7 @@ class AuthInterceptor @Inject constructor(
             .request(request)
             .protocol(Protocol.HTTP_2)
             .code(HTTP_UNAUTHORIZED)
-            .message("")
+            .message("유효하지 않은 엑세스 토큰입니다.")
             .body(toResponseBody(responseBody))
             .build()
     }
@@ -101,7 +95,7 @@ class AuthInterceptor @Inject constructor(
             .request(request)
             .protocol(Protocol.HTTP_2)
             .code(HTTP_UNAUTHORIZED)
-            .message("")
+            .message("유효하지 않은 리프레쉬 토큰입니다.")
             .body(toResponseBody(responseBody))
             .build()
     }

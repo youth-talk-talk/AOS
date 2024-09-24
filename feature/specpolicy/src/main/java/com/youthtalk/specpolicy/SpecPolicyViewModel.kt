@@ -1,6 +1,5 @@
 package com.youthtalk.specpolicy
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
@@ -23,6 +22,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -59,7 +59,7 @@ class SpecPolicyViewModel @Inject constructor(
         viewModelScope.launch {
             postPolicyScrapUseCase(id, scrap)
                 .catch {
-                    Log.d("YOON-CHAN", "SpecPolicyViewModel clickScrap error ${it.message}")
+                    Timber.e("SpecPolicyViewModel clickScrap error " + it.message)
                 }
                 .collectLatest {
                     val newScrap = if (state.scrap.contains(id)) {
@@ -154,7 +154,7 @@ class SpecPolicyViewModel @Inject constructor(
                 )
             }
                 .catch {
-                    Log.d("YOON-CHAN", "SpecPolicyViewModel erro ${it.message}")
+                    Timber.e("SpecPolicyViewModel error " + it.message)
                 }
                 .collectLatest {
                     _uiState.value = it

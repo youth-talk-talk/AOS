@@ -7,7 +7,8 @@ import okhttp3.RequestBody.Companion.toRequestBody
 
 @Serializable
 data class SignRequest(
-    val username: String,
+    val socialType: String,
+    val socialId: String,
     val nickname: String,
     val region: String,
 ) {

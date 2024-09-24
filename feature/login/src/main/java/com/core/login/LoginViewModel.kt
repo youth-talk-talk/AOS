@@ -1,6 +1,5 @@
 package com.core.login
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.core.domain.usercase.GetUserUseCase
@@ -13,6 +12,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -21,9 +21,7 @@ class LoginViewModel @Inject constructor(
     private val getUserUseCase: GetUserUseCase,
     private val postSignUseCase: PostSignUseCase,
 ) : ViewModel() {
-
-    var kakaoId = ""
-
+    private var socialId = ""
     private val _user = MutableSharedFlow<User?>()
     val user = _user.asSharedFlow()
 
@@ -41,25 +39,23 @@ class LoginViewModel @Inject constructor(
         viewModelScope.launch {
             getUserUseCase()
                 .catch {
-                    Log.d("YOON-CHAN", "checkToken error $it")
                     _user.emit(null)
                 }
                 .collectLatest {
-                    Log.d("YOON-CHAN", "checkToken success $it")
                     _user.emit(it)
                 }
         }
     }
 
     fun postLogin(userId: Long) {
-        kakaoId = "kakao$userId"
+        socialId = "$userId"
         viewModelScope.launch {
-            postLoginUseCase("kakao$userId")
+            postLoginUseCase(socialId)
                 .catch {
+                    Timber.e("viewModel postLogin error $it")
                     _error.emit(it)
                 }
                 .collectLatest {
-                    Log.d("YOON-CHAN", "viewModel postLogin $it")
                     _memberId.emit(it)
                 }
         }
@@ -67,13 +63,12 @@ class LoginViewModel @Inject constructor(
 
     fun postSign(nickname: String, region: String) {
         viewModelScope.launch {
-            Log.d("YOON-CHAN", "postSign")
-            postSignUseCase(kakaoId, nickname, region)
+            postSignUseCase(socialId, nickname, region)
                 .catch {
+                    Timber.e("viewModel sign error $it")
                     _error.emit(it)
                 }
                 .collectLatest {
-                    Log.d("YOON-CHAN", "viewModel postSign $it")
                     _memberId.emit(it)
                 }
         }

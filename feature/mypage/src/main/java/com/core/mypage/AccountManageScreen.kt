@@ -1,6 +1,5 @@
 package com.core.mypage
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -60,6 +59,7 @@ import com.youthtalk.model.User
 import com.youthtalk.model.toRegionName
 import com.youthtalk.util.clickableSingle
 import kotlinx.coroutines.flow.collectLatest
+import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -99,9 +99,9 @@ fun AccountManageScreen(
                             goLogin()
                             UserApiClient.instance.logout { error ->
                                 if (error != null) {
-                                    Log.e("YOON-CHAN", "로그아웃 실패. SDK에서 토큰 삭제됨", error)
+                                    Timber.e(error, "로그아웃 실패. SDK에서 토큰 삭제됨")
                                 } else {
-                                    Log.i("YOON-CHAN", "로그아웃 성공. SDK에서 토큰 삭제됨")
+                                    Timber.i("로그아웃 성공. SDK에서 토큰 삭제됨")
                                 }
                             }
                         }

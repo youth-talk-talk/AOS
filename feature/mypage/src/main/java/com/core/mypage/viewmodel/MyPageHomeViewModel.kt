@@ -1,6 +1,5 @@
 package com.core.mypage.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.core.domain.usercase.GetUserUseCase
@@ -21,6 +20,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -48,7 +48,7 @@ class MyPageHomeViewModel @Inject constructor(
                 )
             }
                 .catch {
-                    Log.d("YOON-CHAN", "MyPageHomeViewModel error ${it.message}")
+                    Timber.e("MyPageHomeViewModel error " + it.message)
                 }
                 .collectLatest {
                     _uiState.value = it
@@ -72,7 +72,7 @@ class MyPageHomeViewModel @Inject constructor(
         viewModelScope.launch {
             postUserUseCase(changeName, changeRegion)
                 .catch {
-                    Log.d("YOON-CHAN", "MyPageHomeViewModel chageNickname error ${it.message}")
+                    Timber.e("MyPageHomeViewModel chageNickname error " + it.message)
                 }
                 .collectLatest {
                     _uiState.value = state.copy(user = it)
@@ -86,7 +86,7 @@ class MyPageHomeViewModel @Inject constructor(
         viewModelScope.launch {
             postUserLogoutUseCase(deleteUser)
                 .catch {
-                    Log.d("YOON-CHAN", "MyPageHomeViewModel postLogout error ${it.message}")
+                    Timber.e("MyPageHomeViewModel postLogout error " + it.message)
                 }
                 .collectLatest {
                     _uiEffect.emit(MyPageHomeUiEffect.GoLogin)

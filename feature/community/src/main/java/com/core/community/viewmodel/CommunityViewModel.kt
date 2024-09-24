@@ -1,6 +1,5 @@
 package com.core.community.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
@@ -26,6 +25,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -65,7 +65,7 @@ class CommunityViewModel @Inject constructor(
                 )
             }
                 .catch {
-                    Log.d("YOON-CHAN", "CommunityViewModel getReviewCategoriesUseCase error")
+                    Timber.e("CommunityViewModel getReviewCategoriesUseCase error")
                 }
                 .collectLatest {
                     _uiState.value = it
@@ -107,7 +107,7 @@ class CommunityViewModel @Inject constructor(
         viewModelScope.launch {
             postPostScrapUseCase(postId, scrap)
                 .catch {
-                    Log.d("YOON-CHAN", "CommunityViewModel postScrap error ${it.message}")
+                    Timber.e("CommunityViewModel postScrap error " + it.message)
                 }
                 .collectLatest {
                     val map = if (state.postScrapMap.containsKey(postId)) {

@@ -1,6 +1,5 @@
 package com.core.mypage
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -75,7 +74,6 @@ private fun ScrapScreen(
     var isOnPause by rememberSaveable { mutableStateOf(false) }
     LifecycleResumeEffect(policies) {
         if (isOnPause) {
-            Log.d("YOON-CHAN", "isRefresh")
             policies.refresh()
             isOnPause = false
         }

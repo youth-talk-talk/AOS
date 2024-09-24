@@ -1,6 +1,5 @@
 package com.youthtalk.datasource.home
 
-import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.core.datastore.datasource.DataStoreDataSource
@@ -27,7 +26,6 @@ class HomePagingSource @Inject constructor(
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Policy> {
         try {
             val pageNumber = params.key ?: 0
-            Log.d("YOON-CHAN", "HomePagingSource pageNumber $pageNumber")
             val getCategories: List<String> = dataSource.getCategoryFilter().first().map { it.name }
 
             val response = policyService.getPolices(

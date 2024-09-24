@@ -1,7 +1,6 @@
 package com.core.login
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -45,7 +44,6 @@ class LoginActivity : ComponentActivity() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.memberId.collectLatest {
                     splashScreen.setKeepOnScreenCondition { false }
-                    Log.d("YOON-CHAN", "MainActivity memberId $it")
                     mainNavigator.navigateFrom(
                         activity = this@LoginActivity,
                         withFinish = true,

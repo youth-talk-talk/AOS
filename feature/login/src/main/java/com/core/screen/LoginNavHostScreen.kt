@@ -31,10 +31,11 @@ fun LoginNavHostScreen(viewModel: LoginViewModel) {
                         restoreState = true
                     }
                 },
+                onBack = { navHostController.popBackStack() },
             )
         }
         composable(LoginRouteName.INFORMATION_SCREEN) {
-            InformationScreen(viewModel)
+            InformationScreen(viewModel, onBack = { navHostController.popBackStack() })
         }
     }
 }

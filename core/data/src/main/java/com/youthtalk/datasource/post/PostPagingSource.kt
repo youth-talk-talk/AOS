@@ -1,6 +1,5 @@
 package com.youthtalk.datasource.post
 
-import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.youthtalk.data.CommunityService
@@ -16,7 +15,6 @@ class PostPagingSource @Inject constructor(
     override fun getRefreshKey(state: PagingState<Int, Post>): Int? {
         return state.anchorPosition?.let { anchorPosition ->
             val anchorPage = state.closestPageToPosition(anchorPosition)
-            Log.d("YOON-CHAN", "PostPagingSource getRefreshKey ${anchorPage?.prevKey?.plus(1) ?: anchorPage?.nextKey?.minus(1)}")
             anchorPage?.prevKey?.plus(1) ?: anchorPage?.nextKey?.minus(1)
         }
     }

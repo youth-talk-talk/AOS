@@ -1,6 +1,5 @@
 package com.core.community.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.core.community.model.CommunityDetailUiEffect
@@ -24,6 +23,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -72,7 +72,7 @@ class CommunityDetailViewModel @Inject constructor(
         viewModelScope.launch {
             postPostScrapUseCase(postId, isScrap)
                 .catch {
-                    Log.d("YOON-CHAN", "CommunityDetailViewModel modifyComment error ${it.message}")
+                    Timber.e("CommunityDetailViewModel modifyComment error " + it.message)
                 }
                 .collectLatest {
                     _uiState.value = state.copy(
@@ -89,7 +89,7 @@ class CommunityDetailViewModel @Inject constructor(
         viewModelScope.launch {
             patchCommentUseCase(id, content)
                 .catch {
-                    Log.d("YOON-CHAN", "CommunityDetailViewModel modifyComment error ${it.message}")
+                    Timber.e("CommunityDetailViewModel modifyComment error " + it.message)
                 }
                 .collectLatest {
                     _uiState.value = state.copy(
@@ -106,7 +106,7 @@ class CommunityDetailViewModel @Inject constructor(
         viewModelScope.launch {
             postPostAddCommentUseCase(id, text)
                 .catch {
-                    Log.d("YOON-CHAN", "CommunityDetailViewModel postAddComment error ${it.message}")
+                    Timber.e("CommunityDetailViewModel postAddComment error " + it.message)
                 }
                 .collectLatest {
                     val newComment = Comment(
@@ -129,7 +129,7 @@ class CommunityDetailViewModel @Inject constructor(
         viewModelScope.launch {
             postCommentLikeUseCase(id, !isLike)
                 .catch {
-                    Log.d("YOON-CHAN", "CommunityDetailViewModel postCommentIsLike error ${it.message}")
+                    Timber.e("CommunityDetailViewModel postCommentIsLike error " + it.message)
                 }
                 .collectLatest {
                     _uiState.value = state.copy(
@@ -153,7 +153,7 @@ class CommunityDetailViewModel @Inject constructor(
                 )
             }
                 .catch {
-                    Log.d("YOON-CHAN", "CommunityDetailViewModel getPostDetail error ${it.message}")
+                    Timber.e("CommunityDetailViewModel getPostDetail error " + it.message)
                 }
                 .collectLatest {
                     _uiState.value = it
@@ -168,7 +168,7 @@ class CommunityDetailViewModel @Inject constructor(
         viewModelScope.launch {
             postDeleteCommentUseCase(commentId)
                 .catch {
-                    Log.d("YOON-CHAN", "PolicyDetailViewModel deleteComment error ${it.message}")
+                    Timber.e("PolicyDetailViewModel deleteComment error " + it.message)
                 }
                 .collectLatest {
                     val comments = state.comments.toMutableList()

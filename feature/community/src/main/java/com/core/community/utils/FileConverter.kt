@@ -3,12 +3,11 @@ package com.core.community.utils
 import android.content.Context
 import android.net.Uri
 import android.os.Environment
-import android.util.Log
+import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
-import java.nio.file.Files
 
 object FileConverter {
     fun uriToFile(context: Context, uri: Uri): File? {
@@ -16,7 +15,6 @@ object FileConverter {
         inputStream?.let {
             val file = createTempImageFile(context)
             copyInputStreamToFile(it, file)
-            Log.d("YOON-CHAN", "uriToFile ${Files.size(file.toPath())} byte")
             return file
         }
         return null
@@ -44,12 +42,12 @@ object FileConverter {
                 outputStream.flush()
             }
         } catch (e: IOException) {
-            Log.d("YOON-CHAN", "${e.message}")
+            Timber.e(e.message)
         } finally {
             try {
                 inputStream.close()
             } catch (e: IOException) {
-                Log.d("YOON-CHAN", "${e.message}")
+                Timber.e(e.message)
             }
         }
     }

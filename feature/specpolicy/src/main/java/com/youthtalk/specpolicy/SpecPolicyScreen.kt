@@ -36,7 +36,6 @@ import com.youthtalk.component.filter.PolicyFilterBottomSheet
 import com.youthtalk.designsystem.YongProjectTheme
 import com.youthtalk.model.Category
 import com.youthtalk.model.EmploymentCode
-import com.youthtalk.model.Policy
 import com.youthtalk.specpolicy.component.SpecPolicyTopBar
 import com.youthtalk.specpolicy.model.SpecPolicyUiEvent
 import com.youthtalk.specpolicy.model.SpecPolicyUiState
@@ -210,75 +209,6 @@ private fun SpecPolicyInfo(policyCount: Int) {
             tint = MaterialTheme.colorScheme.onSecondary,
         )
     }
-}
-
-fun getPolicies(): List<Policy> {
-    return listOf(
-        Policy(
-            policyId = "R2024062424307",
-            category = Category.LIFE,
-            title = "든든전세주택 입주자 모집 시작",
-            deadlineStatus = "D-168",
-            hostDep = "국토교통부 주택정책관 주택기금과\n주거복지정책관 주거복지지원과",
-            scrap = false,
-        ),
-        Policy(
-            policyId = "R2024062424308",
-            category = Category.LIFE,
-            title = "든든전세주택 입주자 모집 시작",
-            deadlineStatus = "D-168",
-            hostDep = "국토교통부 주택정책관 주택기금과\n주거복지정책관 주거복지지원과",
-            scrap = false,
-        ),
-        Policy(
-            policyId = "R2024062424309",
-            category = Category.LIFE,
-            title = "든든전세주택 입주자 모집 시작",
-            deadlineStatus = "D-168",
-            hostDep = "국토교통부 주택정책관 주택기금과\n주거복지정책관 주거복지지원과",
-            scrap = false,
-        ),
-        Policy(
-            policyId = "R2024062424310",
-            category = Category.LIFE,
-            title = "든든전세주택 입주자 모집 시작",
-            deadlineStatus = "D-168",
-            hostDep = "국토교통부 주택정책관 주택기금과\n주거복지정책관 주거복지지원과",
-            scrap = false,
-        ),
-        Policy(
-            policyId = "R2024062424311",
-            category = Category.LIFE,
-            title = "든든전세주택 입주자 모집 시작",
-            deadlineStatus = "D-168",
-            hostDep = "국토교통부 주택정책관 주택기금과\n주거복지정책관 주거복지지원과",
-            scrap = false,
-        ),
-        Policy(
-            policyId = "R2024062424312",
-            category = Category.LIFE,
-            title = "든든전세주택 입주자 모집 시작",
-            deadlineStatus = "D-168",
-            hostDep = "국토교통부 주택정책관 주택기금과\n주거복지정책관 주거복지지원과",
-            scrap = false,
-        ),
-        Policy(
-            policyId = "R2024062424313",
-            category = Category.LIFE,
-            title = "든든전세주택 입주자 모집 시작",
-            deadlineStatus = "D-168",
-            hostDep = "국토교통부 주택정책관 주택기금과\n주거복지정책관 주거복지지원과",
-            scrap = false,
-        ),
-        Policy(
-            policyId = "R2024062424314",
-            category = Category.LIFE,
-            title = "든든전세주택 입주자 모집 시작",
-            deadlineStatus = "D-168",
-            hostDep = "국토교통부 주택정책관 주택기금과\n주거복지정책관 주거복지지원과",
-            scrap = false,
-        ),
-    )
 }
 
 @Preview

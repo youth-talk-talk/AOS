@@ -37,6 +37,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import com.youthtalk.designsystem.YongProjectTheme
+import com.youthtalk.designsystem.gray
+import com.youthtalk.designsystem.gray50
 
 @Composable
 fun DropDownComponent(
@@ -74,7 +76,14 @@ fun DropDownComponent(
             dropDownList.forEach {
                 Column(modifier = Modifier.padding(horizontal = 8.dp)) {
                     DropdownMenuItem(
-                        text = { Text(text = it) },
+                        text = {
+                            Text(
+                                text = it,
+                                style = MaterialTheme.typography.titleSmall.copy(
+                                    color = gray50,
+                                ),
+                            )
+                        },
                         onClick = {
                             dropDownClick(it)
                             expanded = false
@@ -93,25 +102,23 @@ fun DropBar(expanded: Boolean, selectedRegion: String, onClick: () -> Unit) {
         modifier =
         Modifier
             .fillMaxWidth()
-            .padding(5.dp)
             .background(color = MaterialTheme.colorScheme.background)
             .border(
                 shape = RoundedCornerShape(8.dp),
                 width = 1.dp,
-                color = Color.Gray,
+                color = gray,
             )
+            .padding(horizontal = 13.dp, vertical = 10.dp)
             .clickable { onClick() },
     ) {
         Row(
-            modifier = Modifier.padding(8.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
                 text = selectedRegion,
                 modifier =
                 Modifier
-                    .weight(1f)
-                    .padding(start = 8.dp),
+                    .weight(1f),
                 style = if (selectedRegion == "전체지역") {
                     MaterialTheme.typography.displayMedium.copy(Color.Gray)
                 } else {

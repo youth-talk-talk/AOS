@@ -8,6 +8,7 @@
         <item name="windowSplashScreenAnimationDuration">5000</item>
         <item name="windowSplashScreenAnimatedIcon">@mipmap/logo</item>
         <item name="windowSplashScreenIconBackgroundColor">#FFFFFFFF</item>
+        <item name="android:windowBackground">#FFFFFFFF</item>
 
         <item name="postSplashScreenTheme">@style/Theme.Youth.Theme</item>
     </style>

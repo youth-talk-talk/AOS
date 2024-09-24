@@ -1,6 +1,5 @@
 package com.core.home
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
@@ -24,6 +23,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -60,10 +60,10 @@ class HomeViewModel @Inject constructor(
                     it
                 }
                 .catch {
-                    Log.d("YOON-CHAN", "Home Init error ${it.message}")
+                    Timber.e("Home Init error " + it.message)
                 }
                 .collectLatest {
-                    Log.d("YOON-CHAN", "init CollectLatest")
+                    Timber.e("init CollectLatest")
                     _uiState.value = it
                 }
         }
@@ -96,7 +96,7 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             postPolicyScrapUseCase(id, isScrap)
                 .catch {
-                    Log.d("YOON-CHAN", "HomeViewModel postScrap error ${it.message}")
+                    Timber.e("HomeViewModel postScrap error " + it.message)
                 }
                 .collectLatest {
                     _uiState.value = state.copy(
@@ -109,20 +109,18 @@ class HomeViewModel @Inject constructor(
     fun onResume() {
         val state = uiState.value
         if (state !is HomeUiState.Success) return
-        Log.d("YOON-CHAN", "HomeViewModel onResume")
         viewModelScope.launch {
             combine(
                 getPopularPoliciesUseCase(),
                 getHomePolicyMapUseCase(),
             ) { popular, map ->
-                Log.d("YOON-CHAN", "onResume $map")
                 state.copy(
                     popularPolicies = popular.toPersistentList(),
                     scrap = map,
                 )
             }
                 .catch {
-                    Log.d("YOON-CHAN", "Home Init error ${it.message}")
+                    Timber.e("Home Init error " + it.message)
                 }
                 .collectLatest {
                     _uiState.value = it

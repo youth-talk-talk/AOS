@@ -1,5 +1,6 @@
 package com.core.screen
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -9,22 +10,25 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.youth.app.feature.login.R
 import com.youthtalk.component.RoundButton
 import com.youthtalk.designsystem.YongProjectTheme
+import com.youthtalk.util.clickableSingle
 
 @Composable
-fun AgreeScreen(clickCancel: () -> Unit, clickNext: () -> Unit) {
+fun AgreeScreen(clickCancel: () -> Unit, clickNext: () -> Unit, onBack: () -> Unit) {
     Column(
         modifier =
         Modifier
@@ -32,15 +36,26 @@ fun AgreeScreen(clickCancel: () -> Unit, clickNext: () -> Unit) {
             .background(Color.White),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Text(
-            modifier = Modifier.padding(top = 14.dp),
-            text = "약관동의",
-            style =
-            MaterialTheme.typography.displayLarge.copy(
-                fontWeight = FontWeight.W700,
-                color = Color.Black,
-            ),
-        )
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(MaterialTheme.colorScheme.background)
+                .padding(horizontal = 17.dp, vertical = 13.dp),
+        ) {
+            Image(
+                modifier = Modifier
+                    .align(Alignment.CenterStart)
+                    .clickableSingle { onBack() },
+                painter = painterResource(com.youth.app.core.designsystem.R.drawable.left_icon),
+                contentDescription = "뒤로가기",
+            )
+
+            Text(
+                modifier = Modifier.align(Alignment.Center),
+                text = "약관 동의",
+                style = MaterialTheme.typography.bodyMedium,
+            )
+        }
 
         // 약관 동의 글
         DetailAgreeText()
@@ -88,34 +103,31 @@ private fun DetailAgreeTextQuestion() {
         Text(
             text = stringResource(id = R.string.agree_subtitle),
             style =
-            MaterialTheme.typography.bodyMedium
-                .copy(fontWeight = FontWeight.W700),
+            MaterialTheme.typography.displayLarge,
         )
         Text(
             text = stringResource(id = R.string.agree_subtitle2),
             style =
-            MaterialTheme.typography.bodySmall
-                .copy(
-                    fontWeight = FontWeight.W400,
-                    color = Color(0xFF929292),
-                ),
+            MaterialTheme.typography.displaySmall
+                .copy(color = MaterialTheme.colorScheme.onSecondary),
         )
     }
 }
 
 @Composable
 private fun ColumnScope.DetailAgreeText() {
-    Box(
+    Column(
         modifier =
         Modifier
             .fillMaxWidth()
             .padding(horizontal = 30.dp, vertical = 21.dp)
-            .background(color = Color(0xFFf3f3f3))
-            .weight(1f),
+            .background(color = MaterialTheme.colorScheme.background)
+            .weight(1f)
+            .verticalScroll(state = rememberScrollState()),
     ) {
         Text(
-            modifier = Modifier.align(Alignment.Center),
-            text = "약관 동의 글",
+            text = stringResource(id = R.string.law_info),
+            style = MaterialTheme.typography.displaySmall,
         )
     }
 }
@@ -127,6 +139,7 @@ private fun AgreeScreenPreview() {
         AgreeScreen(
             clickCancel = {},
             clickNext = {},
+            onBack = {},
         )
     }
 }
