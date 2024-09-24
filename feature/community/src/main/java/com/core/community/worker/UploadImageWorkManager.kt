@@ -1,7 +1,6 @@
 package com.core.community.worker
 
 import android.content.Context
-import android.util.Log
 import androidx.core.net.toUri
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
@@ -13,6 +12,7 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
+import timber.log.Timber
 
 @HiltWorker
 class UploadImageWorkManager @AssistedInject constructor(
@@ -26,15 +26,13 @@ class UploadImageWorkManager @AssistedInject constructor(
         params.inputData.getString("uri")?.let {
             val uri = it.toUri()
             val file = FileConverter.uriToFile(ctx, uri)
-            Log.d("YOON-CHAN", "doWork file length ${file?.length()}")
             file?.let {
                 uploadImageUseCase(file)
                     .catch { error ->
-                        Log.d("YOON-CHAN", "uploadImageUseCase failure ${error.message}")
+                        Timber.e("uploadImageUseCase failure %s", error.message)
                         result = Result.failure()
                     }
                     .collectLatest { uri ->
-                        Log.d("YOON-CHAN", "uploadImageUseCase success $uri")
                         val data = Data.Builder()
                             .putString("uri", uri)
                             .build()

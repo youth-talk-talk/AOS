@@ -1,6 +1,5 @@
 package com.youth.search.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
@@ -25,6 +24,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -62,7 +62,7 @@ class SearchResultViewModel @Inject constructor(
         viewModelScope.launch {
             postPostScrapUseCase(postId, scrap)
                 .catch {
-                    Log.d("YOON-CHAN", "SearchResultViewModel applyFilter error ${it.message}")
+                    Timber.e("SearchResultViewModel applyFilter error " + it.message)
                 }
                 .collectLatest {
                     _uiState.value = state.copy(
@@ -79,7 +79,7 @@ class SearchResultViewModel @Inject constructor(
         viewModelScope.launch {
             postFilterUseCase(state.filterInfo)
                 .catch {
-                    Log.d("YOON-CHAN", "SearchResultViewModel applyFilter error ${it.message}")
+                    Timber.e("SearchResultViewModel applyFilter error " + it.message)
                 }
                 .collectLatest {
                     getPolicies(search)
@@ -94,7 +94,7 @@ class SearchResultViewModel @Inject constructor(
         viewModelScope.launch {
             getUserFilterInfoUseCase()
                 .catch {
-                    Log.d("YOON-CHAN", "SearchResultViewModel getFilterInfo error ${it.message}")
+                    Timber.e("SearchResultViewModel getFilterInfo error " + it.message)
                 }
                 .collectLatest {
                     _uiState.value = state.copy(
@@ -126,7 +126,7 @@ class SearchResultViewModel @Inject constructor(
                     _uiState.value = SearchResultUiState.Loading
                 }
                 .catch {
-                    Log.d("YOON-CHAN", "SearchResultViewModel getPolicies error ${it.message}")
+                    Timber.e("SearchResultViewModel getPolicies error " + it.message)
                 }
                 .collectLatest {
                     _uiState.value = it
@@ -148,7 +148,7 @@ class SearchResultViewModel @Inject constructor(
                 )
             }
                 .catch {
-                    Log.d("YOON-CHAN", "SearchResultViewModel getPosts error ${it.message}")
+                    Timber.e("SearchResultViewModel getPosts error " + it.message)
                 }
                 .collectLatest {
                     _uiState.value = it
@@ -163,7 +163,7 @@ class SearchResultViewModel @Inject constructor(
         viewModelScope.launch {
             postPolicyScrapUseCase(postId, scrap)
                 .catch {
-                    Log.d("YOON-CHAN", "SearchResultViewModel postPolicyScrap error ${it.message}")
+                    Timber.e("SearchResultViewModel postPolicyScrap error " + it.message)
                 }
                 .collectLatest {
                     _uiState.value = state.copy(

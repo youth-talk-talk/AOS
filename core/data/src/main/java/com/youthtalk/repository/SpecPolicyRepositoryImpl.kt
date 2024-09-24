@@ -1,6 +1,5 @@
 package com.youthtalk.repository
 
-import android.util.Log
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
@@ -10,11 +9,14 @@ import com.core.exception.NoDataException
 import com.youthtalk.data.CommentService
 import com.youthtalk.data.PolicyService
 import com.youthtalk.datasource.specpolicy.SpecPolicyPagingSource
+import com.youthtalk.dto.PostAddCommentResponse
 import com.youthtalk.dto.specpolicy.CommentRequest
 import com.youthtalk.dto.specpolicy.FilterInfoRequest
+import com.youthtalk.dto.specpolicy.SpecPoliciesResponse
 import com.youthtalk.model.Category
 import com.youthtalk.model.FilterInfo
 import com.youthtalk.model.Policy
+import com.youthtalk.utils.ErrorUtils.throwableError
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
@@ -65,10 +67,10 @@ class SpecPolicyRepositoryImpl @Inject constructor(
             .onSuccess { response ->
                 response.data?.let { specPolicyInfo ->
                     emit(specPolicyInfo.totalCount)
-                } ?: throw NoDataException("not response Data")
+                } ?: throw NoDataException()
             }
             .onFailure {
-                Log.d("YOON-CHAN", "SpecPolicy error ${it.message}")
+                throwableError<SpecPoliciesResponse>(it)
             }
     }
 
@@ -95,7 +97,7 @@ class SpecPolicyRepositoryImpl @Inject constructor(
                 emit(response.message)
             }
             .onFailure {
-                Log.d("YOON-CHAN", "postScrap error ${it.message}")
+                throwableError<Unit>(it)
             }
     }
 
@@ -111,7 +113,7 @@ class SpecPolicyRepositoryImpl @Inject constructor(
                 } ?: throw NoDataException("no Data")
             }
             .onFailure {
-                Log.d("YOON-CHAN", "postAddComment error ${it.message}")
+                throwableError<PostAddCommentResponse>(it)
             }
     }
 
@@ -123,7 +125,7 @@ class SpecPolicyRepositoryImpl @Inject constructor(
                 emit(response.message)
             }
             .onFailure {
-                Log.d("YOON-CHAN", "postDeleteComment error ${it.message}")
+                throwableError<PostAddCommentResponse>(it)
             }
     }
 }

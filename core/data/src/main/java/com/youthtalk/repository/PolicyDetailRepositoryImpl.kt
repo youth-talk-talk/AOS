@@ -1,11 +1,12 @@
 package com.youthtalk.repository
 
-import android.util.Log
 import com.core.dataapi.repository.PolicyDetailRepository
 import com.core.exception.NoDataException
 import com.youthtalk.data.PolicyService
+import com.youthtalk.dto.PolicyDetailResponse
 import com.youthtalk.mapper.toData
 import com.youthtalk.model.PolicyDetail
+import com.youthtalk.utils.ErrorUtils.throwableError
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
@@ -24,7 +25,7 @@ class PolicyDetailRepositoryImpl @Inject constructor(
                 } ?: throw NoDataException("no Data")
             }
             .onFailure {
-                Log.d("YOON-CHAN", "PolicyDetail error ${it.message}")
+                throwableError<PolicyDetailResponse>(it)
             }
     }
 }

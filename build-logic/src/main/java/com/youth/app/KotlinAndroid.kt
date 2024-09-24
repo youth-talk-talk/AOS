@@ -60,6 +60,7 @@ internal fun Project.configureKotlinAndroid() {
         add("coreLibraryDesugaring", libs.findLibrary("android.desugarJdkLibs").get())
         add("implementation", libs.findLibrary("gson").get())
         add("implementation", libs.findLibrary("kakao.v2.user").get())
+        add("implementation", libs.findLibrary("timber").get())
     }
 
 }

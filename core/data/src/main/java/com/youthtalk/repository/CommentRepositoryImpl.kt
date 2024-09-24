@@ -1,11 +1,12 @@
 package com.youthtalk.repository
 
-import android.util.Log
 import com.core.dataapi.repository.CommentRepository
 import com.core.exception.NoDataException
 import com.youthtalk.data.CommentService
+import com.youthtalk.dto.CommentResponse
 import com.youthtalk.mapper.toDate
 import com.youthtalk.model.Comment
+import com.youthtalk.utils.ErrorUtils.throwableError
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
@@ -23,7 +24,7 @@ class CommentRepositoryImpl @Inject constructor(
                 } ?: throw NoDataException("no Data")
             }
             .onFailure {
-                Log.d("YOON-CHAN", "CommentRepository getPolicyComment error ${it.message}")
+                throwableError<List<CommentResponse>>(it)
             }
     }
 }

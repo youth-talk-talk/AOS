@@ -71,6 +71,7 @@ pagingCompose = "3.3.2"
 roomRuntime = "2.6.1"
 
 #workmanager
+timberVersion = "5.0.1"
 workRuntimeKtx = "2.9.1"
 
 [libraries]
@@ -179,12 +180,13 @@ androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomRunt
 #WorkManager
 androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "workRuntimeKtx" }
 
+#timber
+timber = { module = "com.jakewharton.timber:timber", version.ref = "timberVersion" }
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
 kspPlugins = {id = "com.google.devtools.ksp", version.ref = "ksp"}
 hiltPlugins = { id="com.google.dagger.hilt.android", version.ref = "hiltAndroid" }
-
 
 #kotlin
 jetbrainsKotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }

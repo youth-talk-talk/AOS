@@ -1,6 +1,5 @@
 package com.core.mypage.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.core.domain.usercase.mypage.GetAnnounceDetailUseCase
@@ -13,6 +12,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -37,7 +37,7 @@ class AnnouncementDetailViewModel @Inject constructor(
                     )
                 }
                 .catch {
-                    Log.d("YOON-CHAN", "AnnouncementDetailViewModel getAnnounceDetail ${it.message}")
+                    Timber.e("AnnouncementDetailViewModel getAnnounceDetail " + it.message)
                 }
                 .collectLatest {
                     _uiState.value = it

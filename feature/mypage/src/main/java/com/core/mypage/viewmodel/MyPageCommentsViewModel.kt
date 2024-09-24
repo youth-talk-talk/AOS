@@ -1,6 +1,5 @@
 package com.core.mypage.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.core.domain.usercase.PostCommentLikeUseCase
@@ -15,6 +14,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -39,7 +39,7 @@ class MyPageCommentsViewModel @Inject constructor(
         viewModelScope.launch {
             commentLikeUseCase(id, like)
                 .catch {
-                    Log.d("YOON-CHAN", "MyPageCommentsViewModel postCommentLike error ${it.message}")
+                    Timber.e("MyPageCommentsViewModel postCommentLike error " + it.message)
                 }
                 .collectLatest {
                     getData(false)
@@ -56,7 +56,7 @@ class MyPageCommentsViewModel @Inject constructor(
                     )
                 }
                 .catch {
-                    Log.d("YOON-CHAN", "MyPageCommentsViewModel getData error ${it.message}")
+                    Timber.e("MyPageCommentsViewModel getData error " + it.message)
                 }
                 .collectLatest {
                     _uiState.value = it

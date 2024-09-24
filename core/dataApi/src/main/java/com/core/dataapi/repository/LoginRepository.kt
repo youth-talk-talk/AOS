@@ -3,7 +3,7 @@ package com.core.dataapi.repository
 import kotlinx.coroutines.flow.Flow
 
 interface LoginRepository {
-    fun postLogin(userId: String): Flow<Long>
+    fun postLogin(socialId: String): Flow<Long>
 
     fun hasToken(): Flow<Boolean>
 

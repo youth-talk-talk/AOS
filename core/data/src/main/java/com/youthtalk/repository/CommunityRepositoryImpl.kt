@@ -1,6 +1,5 @@
 package com.youthtalk.repository
 
-import android.util.Log
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
@@ -12,10 +11,14 @@ import com.youthtalk.data.CommunityService
 import com.youthtalk.datasource.post.PostPagingSource
 import com.youthtalk.datasource.review.ReviewPostPagingSource
 import com.youthtalk.dto.CommentLikeRequest
+import com.youthtalk.dto.CommentResponse
+import com.youthtalk.dto.PostAddCommentResponse
+import com.youthtalk.dto.PostResponse
 import com.youthtalk.dto.community.PatchCommentRequest
 import com.youthtalk.dto.community.PostAddCommentRequest
 import com.youthtalk.dto.community.PostContentRequest
 import com.youthtalk.dto.community.PostCreatePostRequest
+import com.youthtalk.dto.community.PostDetailResponse
 import com.youthtalk.dto.community.PostModifyPostRequest
 import com.youthtalk.mapper.toData
 import com.youthtalk.mapper.toDate
@@ -23,6 +26,7 @@ import com.youthtalk.model.Comment
 import com.youthtalk.model.Post
 import com.youthtalk.model.PostDetail
 import com.youthtalk.model.WriteInfo
+import com.youthtalk.utils.ErrorUtils.throwableError
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
@@ -69,7 +73,7 @@ class CommunityRepositoryImpl @Inject constructor(
                 } ?: throw NoDataException("no Data")
             }
             .onFailure {
-                Log.d("YOON-CHAN", "CommnunityRepository postPopularReviewPost error ${it.message}")
+                throwableError<PostResponse>(it)
             }
     }
 
@@ -98,7 +102,7 @@ class CommunityRepositoryImpl @Inject constructor(
                 } ?: throw NoDataException("no Data")
             }
             .onFailure {
-                Log.d("YOON-CHAN", "CommnunityRepository postPopularReviewPost error ${it.message}")
+                throwableError<PostResponse>(it)
             }
     }
 
@@ -108,7 +112,7 @@ class CommunityRepositoryImpl @Inject constructor(
                 emit(response.message)
             }
             .onFailure {
-                Log.d("YOON-CHAN", "CommnunityRepository postPostScrap error ${it.message}")
+                throwableError<Unit>(it)
             }
     }
 
@@ -130,7 +134,7 @@ class CommunityRepositoryImpl @Inject constructor(
                 }
             }
             .onFailure {
-                Log.d("YOON-CHAN", "CommnunityRepository getPostDetail error ${it.message}")
+                throwableError<PostDetailResponse>(it)
             }
     }
 
@@ -142,7 +146,7 @@ class CommunityRepositoryImpl @Inject constructor(
                 }
             }
             .onFailure {
-                Log.d("YOON-CHAN", "CommnunityRepository getPostDetailComments error ${it.message}")
+                throwableError<List<CommentResponse>>(it)
             }
     }
 
@@ -158,7 +162,7 @@ class CommunityRepositoryImpl @Inject constructor(
                 emit(response.message)
             }
             .onFailure {
-                Log.d("YOON-CHAN", "CommnunityRepository postCommentLike error ${it.message}")
+                throwableError<Unit>(it)
             }
     }
 
@@ -172,7 +176,7 @@ class CommunityRepositoryImpl @Inject constructor(
                 }
             }
             .onFailure {
-                Log.d("YOON-CHAN", "CommnunityRepository postCommentLike error ${it.message}")
+                throwableError<PostAddCommentResponse>(it)
             }
     }
 
@@ -184,7 +188,7 @@ class CommunityRepositoryImpl @Inject constructor(
                 emit(response.message)
             }
             .onFailure {
-                Log.d("YOON-CHAN", "CommnunityRepository patchComment error ${it.message}")
+                throwableError<Unit>(it)
             }
     }
 
@@ -200,8 +204,7 @@ class CommunityRepositoryImpl @Inject constructor(
                 }
             }
             .onFailure {
-                Log.d("YOON-CHAN", "CommnunityRepository uploadImage error ${it.message}")
-                throw it
+                throwableError<String>(it)
             }
     }
 
@@ -227,8 +230,7 @@ class CommunityRepositoryImpl @Inject constructor(
                 }
             }
             .onFailure {
-                Log.d("YOON-CHAN", "CommnunityRepository postCreate error ${it.message}")
-                throw it
+                throwableError<PostDetailResponse>(it)
             }
     }
 
@@ -260,8 +262,7 @@ class CommunityRepositoryImpl @Inject constructor(
                 }
             }
             .onFailure {
-                Log.d("YOON-CHAN", "CommnunityRepository postCreate error ${it.message}")
-                throw it
+                throwableError<PostDetailResponse>(it)
             }
     }
 }

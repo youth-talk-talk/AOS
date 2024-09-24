@@ -2,7 +2,6 @@ package com.core.community.worker
 
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import androidx.work.Constraints
 import androidx.work.Data
 import androidx.work.ExistingWorkPolicy
@@ -13,6 +12,7 @@ import androidx.work.WorkManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.util.UUID
 
 object UploadWork {
@@ -41,14 +41,12 @@ object UploadWork {
         scope.launch {
             workManager.getWorkInfoByIdFlow(uuid)
                 .catch {
-                    Log.d("YOON-CHAN", "workManager.getWorkInfoByIdFlow error ${it.message}")
+                    Timber.e("workManager.getWorkInfoByIdFlow error " + it.message)
                 }
                 .collect { workInfo ->
                     if (workInfo != null) {
-                        Log.d("YOON-CHAN", "getWorkInfoByIdFlow $uuid $workInfo")
                         if (workInfo.state == WorkInfo.State.SUCCEEDED) {
                             val newUri = workInfo.outputData.getString("uri") ?: uri.toString()
-                            Log.d("YOON-CHAN", "getWorkInfoByIdFlow $uuid $workInfo $newUri")
                             changeUri(newUri)
                         }
                     }

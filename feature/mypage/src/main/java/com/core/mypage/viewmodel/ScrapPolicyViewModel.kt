@@ -1,6 +1,5 @@
 package com.core.mypage.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
@@ -15,8 +14,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -40,7 +39,7 @@ class ScrapPolicyViewModel @Inject constructor(
                 )
             }
                 .catch {
-                    Log.d("YOON-CHAN", "scrapPolicyViewModel init error ${it.message}")
+                    Timber.e("scrapPolicyViewModel init error " + it.message)
                 }
                 .collectLatest {
                     _uiState.value = it
@@ -61,7 +60,7 @@ class ScrapPolicyViewModel @Inject constructor(
         viewModelScope.launch {
             postPolicyScrapUseCase(policyId, scrap)
                 .catch {
-                    Log.d("YOON-CHAN", "scrapPolicyViewModel deleteScrap error ${it.message}")
+                    Timber.e("scrapPolicyViewModel deleteScrap error " + it.message)
                 }
                 .collectLatest {
                     _uiState.value = state.copy(

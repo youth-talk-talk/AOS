@@ -48,7 +48,6 @@ import com.example.policydetail.component.PolicyDetailTopAppBar
 import com.example.policydetail.component.PolicyTitle
 import com.example.policydetail.model.PolicyDetailUiState
 import com.example.policydetail.utils.TextUtils
-import com.youth.app.feature.policydetail.BuildConfig
 import com.youth.app.feature.policydetail.R
 import com.youthtalk.component.CommentScreen
 import com.youthtalk.component.CommentTextField
@@ -102,7 +101,7 @@ fun PolicyDetailScreen(policyId: String, viewModel: PolicyDetailViewModel = hilt
                         val encodedUrl = URLEncoder.encode(it, "UTF-8")
                         navController.navigate(WebViewRoute(encodedUrl))
                     },
-                    onClickShared = { shared(context, "${BuildConfig.SERVER_KEY}/policy_detail/$policyId") },
+                    onClickShared = { shared(context, "http://youth-talk.com/detail_policy/$policyId") },
                 )
             }
 

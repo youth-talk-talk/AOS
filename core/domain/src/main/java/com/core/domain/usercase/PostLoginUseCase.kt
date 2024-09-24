@@ -6,5 +6,5 @@ import javax.inject.Inject
 class PostLoginUseCase @Inject constructor(
     private val loginRepository: LoginRepository,
 ) {
-    operator fun invoke(userId: String) = loginRepository.postLogin(userId)
+    operator fun invoke(socialId: String) = loginRepository.postLogin(socialId)
 }

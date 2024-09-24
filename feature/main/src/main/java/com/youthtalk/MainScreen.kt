@@ -48,16 +48,15 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
-import com.core.community.screen.CommunityDetailScreen
-import com.core.community.screen.CommunityScreen
-import com.core.community.screen.CommunityWriteScreen
+import com.core.community.screen.community.CommunityScreen
+import com.core.community.screen.detail.CommunityDetailScreen
+import com.core.community.screen.write.CommunityWriteScreen
 import com.core.home.HomeScreen
 import com.core.mypage.MyPageScreen
 import com.core.navigation.CommunityNavigation
 import com.core.navigation.MainNav
 import com.core.navigation.Nav
 import com.example.policydetail.PolicyDetailScreen
-import com.youth.app.feature.policydetail.BuildConfig
 import com.youth.search.SearchScreen
 import com.youthtalk.designsystem.YongProjectTheme
 import com.youthtalk.designsystem.mainHomeActionBarColor
@@ -130,7 +129,7 @@ fun NavHostScreen(
             ),
             deepLinks = listOf(
                 navDeepLink {
-                    uriPattern = "${BuildConfig.SERVER_KEY}/policy_detail/{policyId}"
+                    uriPattern = "http://youth-talk.com/detail_policy/{policyId}"
                     action = Intent.ACTION_VIEW
                 },
             ),

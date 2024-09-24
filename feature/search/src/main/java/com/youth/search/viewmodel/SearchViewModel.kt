@@ -1,6 +1,5 @@
 package com.youth.search.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.core.domain.usercase.search.GetRecentListUseCase
@@ -77,7 +76,6 @@ class SearchViewModel @Inject constructor(
             }
             recently.add(0, search)
         }
-        Log.d("YOON-CHAN", recently.joinToString(","))
         viewModelScope.launch {
             postRecentListUseCase(recently)
             _uiState.value = state.copy(

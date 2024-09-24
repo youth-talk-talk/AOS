@@ -1,6 +1,5 @@
 package com.youthtalk.repository
 
-import android.util.Log
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
@@ -14,14 +13,18 @@ import com.youthtalk.datasource.PagingSize.MY_PAGE_POSTS_SIZE
 import com.youthtalk.datasource.PagingSize.SCRAP_PAGE_SIZE
 import com.youthtalk.datasource.mypage.MyPagePostsPagingSource
 import com.youthtalk.datasource.mypage.ScrapPolicyPagingSource
+import com.youthtalk.dto.CommentResponse
 import com.youthtalk.dto.PostUserRequest
+import com.youthtalk.dto.UserResponse
 import com.youthtalk.mapper.toData
 import com.youthtalk.mapper.toDate
 import com.youthtalk.model.Comment
 import com.youthtalk.model.Policy
+import com.youthtalk.model.PolicyResponse
 import com.youthtalk.model.Post
 import com.youthtalk.model.Region
 import com.youthtalk.model.User
+import com.youthtalk.utils.ErrorUtils.throwableError
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
@@ -63,7 +66,7 @@ class MyPageRepositoryImpl @Inject constructor(
                 emit(response.data?.map { it.copy(isLikedByMember = !isMine).toDate() } ?: listOf())
             }
             .onFailure {
-                Log.d("YOON-CHAN", "MyPageRepository getMyPageComments error ${it.message}")
+                throwableError<List<CommentResponse>>(it)
             }
     }
 
@@ -75,7 +78,7 @@ class MyPageRepositoryImpl @Inject constructor(
                 emit(response.data?.map { it.toData() } ?: listOf())
             }
             .onFailure {
-                Log.d("YOON-CHAN", "MyPageRepository getDeadlinePolicies error ${it.message}")
+                throwableError<List<PolicyResponse>>(it)
             }
     }
 
@@ -87,10 +90,10 @@ class MyPageRepositoryImpl @Inject constructor(
             .onSuccess { response ->
                 response.data?.let {
                     emit(it.toData())
-                } ?: throw NoDataException("no data")
+                } ?: throw NoDataException()
             }
             .onFailure {
-                Log.d("YOON-CHAN", "MyPageRepository postUser error ${it.message}")
+                throwableError<UserResponse>(it)
             }
     }
 
@@ -107,7 +110,7 @@ class MyPageRepositoryImpl @Inject constructor(
                     emit(true)
                 }
                 .onFailure {
-                    Log.d("YOON-CHAN", "MyPageRepository postLogout error ${it.message}")
+                    throwableError<Int>(it)
                 }
         }
     }
