@@ -89,8 +89,9 @@ fun PolicyDetailScreen(policyId: String, viewModel: PolicyDetailViewModel = hilt
     } else {
         NavHost(navController = navController, startDestination = Detail) {
             composable<Detail> {
+                val value = uiState as PolicyDetailUiState.Success
                 PolicyDetailSuccessScreen(
-                    uiState as PolicyDetailUiState.Success,
+                    value,
                     onBack = onBack,
                     onClickScrap = { viewModel.postScrap(policyId, it) },
                     addComment = { viewModel.addComment(policyId, it) },
@@ -101,7 +102,12 @@ fun PolicyDetailScreen(policyId: String, viewModel: PolicyDetailViewModel = hilt
                         val encodedUrl = URLEncoder.encode(it, "UTF-8")
                         navController.navigate(WebViewRoute(encodedUrl))
                     },
-                    onClickShared = { shared(context, "http://youth-talk.com/detail_policy/$policyId") },
+                    onClickShared = {
+                        shared(
+                            context,
+                            "${value.policyDetail.title}\n${value.policyDetail.applUrl}\n${value.policyDetail.formattedApplUrl}",
+                        )
+                    },
                 )
             }
 
