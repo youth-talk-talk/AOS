@@ -1,5 +1,7 @@
 ![app_background](https://github.com/user-attachments/assets/e2d4d36b-63a9-45fb-831f-105272823d8b)
 
+#### 비공개 구글 플레이 스토어 주소: https://play.google.com/store/apps/details?id=com.youth.yongproject.app
+
 # 청년 정책 어플리케이션: 청년톡톡
 ### 청년톡톡은 2030 청년들을 위한 종합 어플리케이션으로, 정부의 다양한 지원 정책을 쉽게 찾아보고 소통할 수 있는 공간입니다.
 ### 왜 청년 정책을 누리지 못하고 있을까요? 이제 여러분이 누릴 수 있는 지원 혜택을 간편하게 검색해 보세요!
