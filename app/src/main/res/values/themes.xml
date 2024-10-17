@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <style name="Theme.YongProject" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.YongProject" parent="Theme.Material3.DynamicColors.DayNight.NoActionBar" >
+        <item name="android:windowDisablePreview">true</item>
+        <item name="android:windowBackground">@null</item>
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
 </resources>

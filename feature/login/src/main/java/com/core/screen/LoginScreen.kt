@@ -52,9 +52,6 @@ fun LoginScreen(navHostController: NavHostController, viewModel: LoginViewModel)
             when (it) {
                 is UnAuthorizedException -> {
                     navHostController.navigate(LoginRouteName.AGREE_SCREEN) {
-//                        popUpTo(LoginRouteName.LOGIN_SCREEN) {
-//                            inclusive = true
-//                        }
                         launchSingleTop = true
                     }
                 }
