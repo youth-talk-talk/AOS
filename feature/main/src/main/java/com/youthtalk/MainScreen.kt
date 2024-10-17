@@ -159,7 +159,7 @@ fun NavHostScreen(
                 SpecPolicyScreen(
                     category = category,
                     onClickSearch = {
-                        navController.navigate("${Nav.Search.route}/main")
+                        navController.navigate("${Nav.Search.route}/home")
                     },
                     onBack = { navController.popBackStack() },
                     onClickDetailPolicy = {

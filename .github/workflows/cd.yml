@@ -29,7 +29,11 @@ jobs:
                 run: |
                     echo '${{ secrets.GOOGLE_SERVICE_KEY }}' >> ${{ github.workspace }}/app/google-services.json
             -   name: build release
-                run: ./gradlew assembleRelease
+                run: |
+                    echo sdk.dir=${{ env.ANDROID_HOME }} >> local.properties
+                    echo '${{ secrets.LOCAL_PROPERTIES }}' >> local.properties
+                    chmod +x gradlew
+                    ./gradlew assembleRelease
             -   uses: r0adkll/sign-android-release@v1
                 name: Sign app APK
                 # ID used to access action output
