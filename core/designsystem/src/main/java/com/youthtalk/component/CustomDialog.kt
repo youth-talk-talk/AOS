@@ -23,9 +23,9 @@ import com.youth.app.core.designsystem.R
 @Composable
 fun CustomDialog(
     title: String,
-    cancelTitle: String = "아니요",
+    cancelTitle: String? = "아니요",
     successTitle: String = "예",
-    onCancel: () -> Unit,
+    onCancel: () -> Unit = {},
     onSuccess: () -> Unit,
     onDismiss: () -> Unit,
 ) {
@@ -49,7 +49,8 @@ fun CustomDialog(
                 contentDescription = "경고",
             )
             Box(
-                modifier = Modifier.weight(1f)
+                modifier = Modifier
+                    .weight(1f)
                     .padding(vertical = 20.dp),
             ) {
                 Text(
@@ -63,13 +64,15 @@ fun CustomDialog(
             Row(
                 horizontalArrangement = Arrangement.spacedBy(13.dp),
             ) {
-                RoundButton(
-                    modifier = Modifier
-                        .weight(1f),
-                    text = cancelTitle,
-                    color = MaterialTheme.colorScheme.onSurface,
-                ) {
-                    onCancel()
+                cancelTitle?.let {
+                    RoundButton(
+                        modifier = Modifier
+                            .weight(1f),
+                        text = cancelTitle,
+                        color = MaterialTheme.colorScheme.onSurface,
+                    ) {
+                        onCancel()
+                    }
                 }
                 RoundButton(
                     modifier = Modifier

@@ -30,12 +30,13 @@ class SpecPolicyPagingSource @Inject constructor(
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Policy> {
         try {
             val pageNumber = params.key ?: 0
+            val isFinish = if (dataSource.getFinish().first()) null else false
             val requestBody = FilterInfoRequest(
                 age = dataSource.getAge().first(),
                 categories = category,
                 employmentCodeList = dataSource.getEmployCode().first(),
                 keyword = keyword,
-                isFinished = dataSource.getFinish().first(),
+                isFinished = isFinish,
             ).toRequestBody()
 
             val response = policyService.postSpecPolicies(

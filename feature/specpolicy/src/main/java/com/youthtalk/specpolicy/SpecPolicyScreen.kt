@@ -93,7 +93,7 @@ private fun SpecPolicyScreen(
     category: Category,
     uiState: SpecPolicyUiState.Success,
     onClickEmploy: (EmploymentCode) -> Unit,
-    onClickFinished: (Boolean) -> Unit,
+    onClickFinished: (Boolean?) -> Unit,
     onClickBottomSheet: () -> Unit,
     onClickReset: () -> Unit,
     onChangeAge: (String) -> Unit,

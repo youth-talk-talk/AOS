@@ -9,5 +9,6 @@ sealed interface CommunityDetailUiEvent {
     data class DeleteComment(val index: Int, val commentId: Long) : CommunityDetailUiEvent
     data class ModifyComment(val id: Long, val content: String) : CommunityDetailUiEvent
     data class PostScrap(val postId: Long, val isScrap: Boolean, val type: PostType) : CommunityDetailUiEvent
+    data class DeletePost(val postId: Long) : CommunityDetailUiEvent
     data object ModifyPost : CommunityDetailUiEvent
 }

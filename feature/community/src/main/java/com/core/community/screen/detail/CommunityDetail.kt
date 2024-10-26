@@ -76,7 +76,7 @@ fun CommunityDetail(
             onBack = onBack,
             isMine = user.memberId == post.writerId,
             scrap = post.scrap,
-            onDeleteDialog = onDeleteDialog,
+            onDelete = onDeleteDialog,
             onClickModifier = onClickModifier,
             onPostScrap = { onPostScrap(post.postId, it) },
         )

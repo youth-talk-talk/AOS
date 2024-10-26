@@ -9,6 +9,7 @@ import com.youthtalk.dto.community.PostDetailResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.PATCH
@@ -62,4 +63,7 @@ interface CommunityService {
 
     @PATCH("/posts/update/{id}")
     suspend fun postModifyPost(@Path("id") id: Long, @Body requestBody: RequestBody): CommonResponse<PostDetailResponse>
+
+    @DELETE("/posts/{postId}")
+    suspend fun deletePost(@Path("postId") postId: Long): CommonResponse<Unit>
 }

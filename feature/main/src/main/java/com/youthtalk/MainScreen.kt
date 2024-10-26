@@ -3,6 +3,7 @@ package com.youthtalk
 import android.app.Activity
 import android.content.Intent
 import android.os.Build
+import android.util.Log
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.fadeIn
@@ -218,7 +219,14 @@ private fun NavGraphBuilder.communityNavigation(navController: NavHostController
         val postId = it.arguments?.getLong("postId") ?: -1
         CommunityDetailScreen(
             postId = postId,
-            onBack = { navController.popBackStack() },
+            onBack = { isRemove ->
+                Log.d("YOON-CHAN", "CommunityDetailScreen onBack $isRemove")
+                navController.previousBackStackEntry?.savedStateHandle?.set(
+                    "isRemove",
+                    isRemove,
+                )
+                navController.popBackStack()
+            },
             goWriteScreen = { id, type -> navController.navigate("${CommunityNavigation.CommunityWrite.route}/$type/$id") },
         )
     }
@@ -268,8 +276,11 @@ private fun NavGraphBuilder.mainNavigation(navController: NavHostController, hom
         )
     }
 
-    composable(route = MainNav.Community.route) {
+    composable(route = MainNav.Community.route) { backStack ->
+        val isRemove = backStack.savedStateHandle.get<Boolean>(key = "isRemove") ?: false
+        backStack.savedStateHandle.remove<Boolean>("isRemove")
         CommunityScreen(
+            isRemove = isRemove,
             onClickItem = { postId ->
                 navController.navigate("${CommunityNavigation.CommunityDetail.route}/$postId") {
                     restoreState = true
@@ -356,6 +367,8 @@ fun RowScope.BottomIcon(navHostController: NavHostController, mainNav: MainNav, 
                         popUpTo(navHostController.graph.id) {
                             saveState = true
                         }
+                        launchSingleTop = mainNav.route != MainNav.MyPage.route
+                        restoreState = mainNav.route != MainNav.MyPage.route
                     }
                 } else {
                     scrollTop()

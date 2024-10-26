@@ -1,5 +1,6 @@
 package com.core.community.screen.community
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,6 +17,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,6 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
@@ -45,6 +48,7 @@ import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 fun CommunityScreen(
+    isRemove: Boolean = false,
     viewModel: CommunityViewModel = hiltViewModel(),
     onClickItem: (Long) -> Unit,
     writePost: (String) -> Unit,
@@ -64,6 +68,11 @@ fun CommunityScreen(
         val state = uiState as CommunityUiState.Success
         val reviewPost = state.reviewPosts.collectAsLazyPagingItems()
         val posts = state.posts.collectAsLazyPagingItems()
+
+        LaunchedEffect(key1 = isRemove) {
+            Log.d("YOON-CHAN", "getData")
+            if (isRemove) viewModel.uiEvent(CommunityUiEvent.GetData)
+        }
 
         Community(
             reviewPosts = reviewPost,
@@ -140,31 +149,33 @@ fun LazyListScope.reviewPost(
         )
     }
 
-    items(
-        count = reviewPosts.itemCount,
-        key = reviewPosts.itemKey { it.postId },
-        contentType = reviewPosts.itemContentType { it.postId },
-    ) { index ->
-        Box(
-            modifier = Modifier
-                .background(
-                    color = MaterialTheme.colorScheme.onSecondaryContainer,
-                )
-                .padding(horizontal = 17.dp)
-                .padding(top = 12.dp),
+    if (reviewPosts.loadState.refresh is LoadState.NotLoading) {
+        items(
+            count = reviewPosts.itemCount,
+            key = reviewPosts.itemKey { it.postId },
+            contentType = reviewPosts.itemContentType { it.postId },
+        ) { index ->
+            Box(
+                modifier = Modifier
+                    .background(
+                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+                    )
+                    .padding(horizontal = 17.dp)
+                    .padding(top = 12.dp),
 
-        ) {
-            reviewPosts[index]?.let { reviewPost ->
-                PostCard(
-                    modifier = Modifier
-                        .clickableSingle { onClickItem(reviewPost.postId) },
-                    title = reviewPost.title,
-                    comments = reviewPost.comments,
-                    scrap = reviewPost.scrap,
-                    scraps = reviewPost.scraps,
-                    policyTitle = reviewPost.policyTitle,
-                    onClickScrap = { postPostScrap(reviewPost.postId, it, PostType.REVIEW) },
-                )
+            ) {
+                reviewPosts[index]?.let { reviewPost ->
+                    PostCard(
+                        modifier = Modifier
+                            .clickableSingle { onClickItem(reviewPost.postId) },
+                        title = reviewPost.title,
+                        comments = reviewPost.comments,
+                        scrap = reviewPost.scrap,
+                        scraps = reviewPost.scraps,
+                        policyTitle = reviewPost.policyTitle,
+                        onClickScrap = { postPostScrap(reviewPost.postId, it, PostType.REVIEW) },
+                    )
+                }
             }
         }
     }
@@ -264,30 +275,32 @@ fun LazyListScope.freeBoard(
         )
     }
 
-    items(
-        count = posts.itemCount,
-        key = posts.itemKey { it.postId },
-        contentType = posts.itemContentType { it.postId },
-    ) { index ->
-        posts[index]?.let { post ->
-            Box(
-                modifier = Modifier
-                    .background(
-                        color = MaterialTheme.colorScheme.onSecondaryContainer,
-                    )
-                    .padding(horizontal = 17.dp)
-                    .padding(top = 12.dp),
-            ) {
-                PostCard(
+    if (posts.loadState.refresh is LoadState.NotLoading) {
+        items(
+            count = posts.itemCount,
+            key = posts.itemKey { it.postId },
+            contentType = posts.itemContentType { it.postId },
+        ) { index ->
+            posts[index]?.let { post ->
+                Box(
                     modifier = Modifier
-                        .clickableSingle { onClickItem(post.postId) },
-                    policyTitle = post.policyTitle,
-                    title = post.title,
-                    scraps = post.scraps,
-                    comments = post.comments,
-                    scrap = post.scrap,
-                    onClickScrap = { postPostScrap(post.postId, it, PostType.POST) },
-                )
+                        .background(
+                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                        )
+                        .padding(horizontal = 17.dp)
+                        .padding(top = 12.dp),
+                ) {
+                    PostCard(
+                        modifier = Modifier
+                            .clickableSingle { onClickItem(post.postId) },
+                        policyTitle = post.policyTitle,
+                        title = post.title,
+                        scraps = post.scraps,
+                        comments = post.comments,
+                        scrap = post.scrap,
+                        onClickScrap = { postPostScrap(post.postId, it, PostType.POST) },
+                    )
+                }
             }
         }
     }
