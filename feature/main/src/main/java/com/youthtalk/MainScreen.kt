@@ -251,7 +251,7 @@ private fun NavGraphBuilder.communityNavigation(navController: NavHostController
             checkPermission = checkPermission,
             goDetail = { postId ->
                 navController.navigate("${CommunityNavigation.CommunityDetail.route}/$postId") {
-                    popUpTo("${CommunityNavigation.CommunityWrite.route}/$type/$id") {
+                    popUpTo("${CommunityNavigation.CommunityDetail.route}/$postId") {
                         inclusive = true
                     }
                     launchSingleTop = true
