@@ -13,8 +13,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.core.community.model.CommunityDetailUiEffect
 import com.core.community.model.CommunityDetailUiEvent
@@ -22,6 +20,7 @@ import com.core.community.model.CommunityDetailUiState
 import com.core.community.viewmodel.CommunityDetailViewModel
 import com.youthtalk.component.CustomDialog
 import com.youthtalk.designsystem.YongProjectTheme
+import com.youthtalk.model.PostType
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -31,12 +30,6 @@ fun CommunityDetailScreen(
     onBack: () -> Unit,
     goWriteScreen: (Long, String) -> Unit,
 ) {
-    LifecycleEventEffect(
-        event = Lifecycle.Event.ON_CREATE,
-    ) {
-        viewModel.uiEvent(CommunityDetailUiEvent.GetPostDetail(postId))
-    }
-
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(viewModel.uiEffect) {
@@ -72,7 +65,15 @@ fun CommunityDetailScreen(
                 onModifyComment = { id, content -> viewModel.uiEvent(CommunityDetailUiEvent.ModifyComment(id, content)) },
                 onDeleteDialog = { deleteDialog = true },
                 onClickModifier = { viewModel.uiEvent(CommunityDetailUiEvent.ModifyPost) },
-                onPostScrap = { id, scrap -> viewModel.uiEvent(CommunityDetailUiEvent.PostScrap(id, scrap)) },
+                onPostScrap = { id, scrap ->
+                    viewModel.uiEvent(
+                        CommunityDetailUiEvent.PostScrap(
+                            id,
+                            scrap,
+                            state.post.policyId?.let { PostType.REVIEW } ?: PostType.POST,
+                        ),
+                    )
+                },
             )
 
             if (deleteDialog) {

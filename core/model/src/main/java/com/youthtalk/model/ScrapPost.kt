@@ -4,7 +4,8 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-data class Post(
+data class ScrapPost(
+    val scrapId: Long?,
     @PrimaryKey val postId: Long,
     val title: String,
     val content: String,

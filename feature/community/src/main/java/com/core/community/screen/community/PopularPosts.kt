@@ -11,17 +11,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.youth.app.feature.community.R
 import com.youthtalk.component.PostCard
-import com.youthtalk.model.Post
+import com.youthtalk.model.PostType
+import com.youthtalk.model.ReviewPost
 import com.youthtalk.util.clickableSingle
 import kotlinx.collections.immutable.ImmutableList
 
 @Composable
-fun PopularPosts(
-    popularReviewPosts: ImmutableList<Post>,
-    map: Map<Long, Boolean>,
-    onClickItem: (Long) -> Unit,
-    postPostScrap: (Long, Boolean) -> Unit,
-) {
+fun PopularPosts(popularReviewPosts: ImmutableList<ReviewPost>, onClickItem: (Long) -> Unit, postPostScrap: (Long, Boolean, PostType) -> Unit) {
     Text(
         text = stringResource(id = R.string.popular_post),
         style = MaterialTheme.typography.headlineSmall.copy(
@@ -38,27 +34,19 @@ fun PopularPosts(
             count = popularReviewPosts.size,
         ) { index ->
             val reviewPost = popularReviewPosts[index]
-            val post = reviewPost.copy(
-                scrap = map.getOrDefault(reviewPost.postId, reviewPost.scrap),
-                scraps = if (reviewPost.scrap == map.getOrDefault(reviewPost.postId, reviewPost.scrap)) {
-                    reviewPost.scraps
-                } else {
-                    if (map.getOrDefault(reviewPost.postId, reviewPost.scrap)) reviewPost.scraps + 1 else reviewPost.scraps - 1
-                },
-            )
             PostCard(
                 modifier = Modifier
                     .aspectRatio(2.5f)
                     .clickableSingle {
-                        onClickItem(post.postId)
+                        onClickItem(reviewPost.postId)
                     },
-                policyTitle = post.policyTitle,
-                title = post.title,
-                comments = post.comments,
-                scraps = post.scraps,
-                scrap = post.scrap,
+                policyTitle = reviewPost.policyTitle,
+                title = reviewPost.title,
+                comments = reviewPost.comments,
+                scraps = reviewPost.scraps,
+                scrap = reviewPost.scrap,
                 isSingleLine = true,
-                onClickScrap = { postPostScrap(post.postId, it) },
+                onClickScrap = { postPostScrap(reviewPost.postId, it, PostType.REVIEW) },
             )
         }
     }

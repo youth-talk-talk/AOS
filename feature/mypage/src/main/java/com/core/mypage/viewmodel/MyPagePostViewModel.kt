@@ -1,5 +1,6 @@
 package com.core.mypage.viewmodel
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
@@ -7,6 +8,7 @@ import com.core.domain.usercase.PostPostScrapUseCase
 import com.core.domain.usercase.mypage.GetMyPagePostsUseCase
 import com.core.mypage.model.posts.MyPagePostsUiEvent
 import com.core.mypage.model.posts.MyPagePostsUiState
+import com.youthtalk.model.PostType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -20,36 +22,34 @@ import javax.inject.Inject
 class MyPagePostViewModel @Inject constructor(
     private val getMyPagePostsUseCase: GetMyPagePostsUseCase,
     private val postScrapUseCase: PostPostScrapUseCase,
+    private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<MyPagePostsUiState>(MyPagePostsUiState.Loading)
     val uiState = _uiState.asStateFlow()
 
+    init {
+        val type = savedStateHandle.get<String>("type") ?: "scrap"
+        getPost(type)
+    }
+
     fun uiEvent(event: MyPagePostsUiEvent) {
         when (event) {
-            is MyPagePostsUiEvent.GetData -> getPost(event.type)
-            is MyPagePostsUiEvent.PostScrap -> postScrap(event.id, event.scrap)
+            is MyPagePostsUiEvent.PostScrap -> postScrap(event.id, event.scrap, event.type)
         }
     }
 
-    private fun postScrap(id: Long, scrap: Boolean) {
+    private fun postScrap(id: Long, scrap: Boolean, type: PostType) {
         val state = _uiState.value
         if (state !is MyPagePostsUiState.Success) return
 
         viewModelScope.launch {
-            postScrapUseCase(id, scrap)
+            postScrapUseCase(id, scrap, type)
                 .catch {
                     Timber.e("MyPagePostViewModel postScrap error " + it.message)
                 }
                 .collectLatest {
-                    val map = if (state.scrapMap.containsKey(id)) {
-                        state.scrapMap - id
-                    } else {
-                        state.scrapMap + Pair(id, !scrap)
-                    }
-                    _uiState.value = state.copy(
-                        scrapMap = map,
-                    )
+                    Timber.d("MyPagePostViewModel postScrap $it")
                 }
         }
     }

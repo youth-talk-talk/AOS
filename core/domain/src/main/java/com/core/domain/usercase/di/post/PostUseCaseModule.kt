@@ -4,7 +4,6 @@ import com.core.dataapi.repository.CommunityRepository
 import com.core.domain.usercase.post.GetPopularPostsUseCase
 import com.core.domain.usercase.post.GetPostDetailCommentUseCase
 import com.core.domain.usercase.post.GetPostDetailUseCase
-import com.core.domain.usercase.post.GetPostScrapUseCase
 import com.core.domain.usercase.post.GetPostsUseCase
 import com.core.domain.usercase.post.PatchCommentUseCase
 import com.core.domain.usercase.post.PostCreatePostUseCase
@@ -36,10 +35,6 @@ object PostUseCaseModule {
     @Provides
     @Singleton
     fun provideGetPostDetailCommentUseCase(repository: CommunityRepository) = GetPostDetailCommentUseCase(repository)
-
-    @Provides
-    @Singleton
-    fun provideGetPostScrapUseCase(repository: CommunityRepository) = GetPostScrapUseCase(repository)
 
     @Provides
     @Singleton

@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
 import com.youthtalk.component.PostCard
 import com.youthtalk.model.Post
+import com.youthtalk.model.PostType
 import com.youthtalk.util.clickableSingle
 
 @Composable
@@ -22,9 +23,8 @@ fun SearchPosts(
     posts: LazyPagingItems<Post>,
     count: Int,
     type: String,
-    map: Map<Long, Boolean>,
     onClickDetailPost: (Long) -> Unit,
-    onClickScrap: (Long, Boolean) -> Unit,
+    onClickScrap: (Long, Boolean, PostType) -> Unit,
 ) {
     LazyColumn(
         modifier = Modifier
@@ -52,30 +52,17 @@ fun SearchPosts(
             key = { index -> posts.peek(index)?.postId ?: 0 },
         ) { index ->
             posts[index]?.let { post ->
-                val newPost = if (map.containsKey(post.postId)) {
-                    post.copy(
-                        scrap = map[post.postId] ?: false,
-                        scraps = if (map[post.postId] == true) {
-                            post.scraps + 1
-                        } else {
-                            post.scraps - 1
-                        },
-                    )
-                } else {
-                    post
-                }
-
                 PostCard(
                     modifier = Modifier
                         .padding(horizontal = 17.dp)
                         .padding(bottom = 12.dp)
-                        .clickableSingle { onClickDetailPost(newPost.postId) },
-                    policyTitle = newPost.policyTitle,
-                    title = newPost.title,
-                    scraps = newPost.scraps,
-                    comments = newPost.comments,
-                    scrap = newPost.scrap,
-                    onClickScrap = { scrap -> onClickScrap(newPost.postId, scrap) },
+                        .clickableSingle { onClickDetailPost(post.postId) },
+                    policyTitle = post.policyTitle,
+                    title = post.title,
+                    scraps = post.scraps,
+                    comments = post.comments,
+                    scrap = post.scrap,
+                    onClickScrap = { scrap -> onClickScrap(post.postId, scrap, post.policyId?.let { PostType.REVIEW } ?: PostType.POST) },
                 )
             }
         }

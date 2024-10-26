@@ -4,8 +4,9 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-data class Post(
-    @PrimaryKey val postId: Long,
+data class ReviewPost(
+    @PrimaryKey
+    val postId: Long,
     val title: String,
     val content: String,
     val writerId: Long?,

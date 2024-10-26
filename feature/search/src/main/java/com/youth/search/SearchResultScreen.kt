@@ -90,9 +90,8 @@ fun SearchResultScreen(
                     posts,
                     state.count,
                     type,
-                    map = state.postScrapMap,
                     onClickDetailPost = onClickDetailPost,
-                    onClickScrap = { postId, scrap -> viewModel.uiEvent(SearchResultUiEvent.PostPostScrap(postId, scrap)) },
+                    onClickScrap = { postId, scrap, postType -> viewModel.uiEvent(SearchResultUiEvent.PostPostScrap(postId, scrap, postType)) },
                 )
             }
         }

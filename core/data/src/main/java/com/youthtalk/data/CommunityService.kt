@@ -2,9 +2,9 @@ package com.youthtalk.data
 
 import com.youthtalk.dto.CommonResponse
 import com.youthtalk.dto.PostAddCommentResponse
-import com.youthtalk.dto.PostDataResponse
 import com.youthtalk.dto.PostResponse
 import com.youthtalk.dto.PostSearchResponse
+import com.youthtalk.dto.ScrapPostDataResponse
 import com.youthtalk.dto.community.PostDetailResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -34,7 +34,7 @@ interface CommunityService {
         @Path("type") type: String,
         @Query("page") page: Int,
         @Query("size") size: Int,
-    ): CommonResponse<List<PostDataResponse>>
+    ): CommonResponse<List<ScrapPostDataResponse>>
 
     @GET("/posts/keyword")
     suspend fun getSearchPosts(
