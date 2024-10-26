@@ -1,7 +1,7 @@
 package com.core.community.model
 
+import com.youthtalk.model.PostType
+
 sealed interface CommunityUiEvent {
-    data class PostScrap(val postId: Long, val scrap: Boolean) : CommunityUiEvent
-    data class SaveScrollPosition(val index: Int, val offset: Int) : CommunityUiEvent
-    data object ClearData : CommunityUiEvent
+    data class PostScrap(val postId: Long, val scrap: Boolean, val type: PostType) : CommunityUiEvent
 }

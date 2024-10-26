@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 enum class EmploymentCode(
-    val employName: String
+    val employName: String,
 ) {
     ALL("전체선택"),
     EMPLOYED("재직자"),
@@ -16,5 +16,5 @@ enum class EmploymentCode(
     TEMPORARY_WORKER("단기근로자"),
     FARMER("영농종사자"),
     NO_RESTRICTION("제한없음"),
-    OTHER("기타")
+    OTHER("기타"),
 }

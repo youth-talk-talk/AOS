@@ -15,7 +15,6 @@ sealed class SearchResultUiState {
         val posts: Flow<PagingData<Post>> = emptyFlow(),
         val filterInfo: FilterInfo,
         val policyScrapMap: Map<String, Boolean> = mapOf(),
-        val postScrapMap: Map<Long, Boolean> = mapOf(),
         val count: Int = 0,
     ) : SearchResultUiState()
 }

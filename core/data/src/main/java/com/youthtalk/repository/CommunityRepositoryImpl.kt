@@ -1,5 +1,6 @@
 package com.youthtalk.repository
 
+import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
@@ -8,8 +9,9 @@ import com.core.datastore.datasource.DataStoreDataSource
 import com.core.exception.NoDataException
 import com.youthtalk.data.CommentService
 import com.youthtalk.data.CommunityService
-import com.youthtalk.datasource.post.PostPagingSource
-import com.youthtalk.datasource.review.ReviewPostPagingSource
+import com.youthtalk.datasource.post.PostRemoteMediator
+import com.youthtalk.datasource.review.ReviewPostRemoteMediator
+import com.youthtalk.datasource.room.YouthDatabase
 import com.youthtalk.dto.CommentLikeRequest
 import com.youthtalk.dto.CommentResponse
 import com.youthtalk.dto.PostAddCommentResponse
@@ -22,9 +24,12 @@ import com.youthtalk.dto.community.PostDetailResponse
 import com.youthtalk.dto.community.PostModifyPostRequest
 import com.youthtalk.mapper.toData
 import com.youthtalk.mapper.toDate
+import com.youthtalk.mapper.toReviewData
 import com.youthtalk.model.Comment
 import com.youthtalk.model.Post
 import com.youthtalk.model.PostDetail
+import com.youthtalk.model.PostType
+import com.youthtalk.model.ReviewPost
 import com.youthtalk.model.WriteInfo
 import com.youthtalk.utils.ErrorUtils.throwableError
 import kotlinx.coroutines.flow.Flow
@@ -39,26 +44,25 @@ import javax.inject.Inject
 class CommunityRepositoryImpl @Inject constructor(
     private val communityService: CommunityService,
     private val commentService: CommentService,
+    private val youthDatabase: YouthDatabase,
     private val dataStoreDataSource: DataStoreDataSource,
 ) : CommunityRepository {
-    companion object {
-        var postScrapMap: Map<Long, Boolean> = mapOf()
-    }
-
-    override fun postReviewPost(): Flow<PagingData<Post>> = Pager(
+    @OptIn(ExperimentalPagingApi::class)
+    override fun postReviewPost(): Flow<PagingData<ReviewPost>> = Pager(
         config = PagingConfig(
             pageSize = 50,
             prefetchDistance = 2,
         ),
-        pagingSourceFactory = {
-            ReviewPostPagingSource(
-                communityService = communityService,
-                dataSource = dataStoreDataSource,
-            )
-        },
-    ).flow
+        remoteMediator = ReviewPostRemoteMediator(
+            communityService = communityService,
+            youthDatabase = youthDatabase,
+            dataSource = dataStoreDataSource,
+        ),
+    ) {
+        youthDatabase.reviewPostDao().getPagingSource()
+    }.flow
 
-    override fun postPopularReviewPost(): Flow<List<Post>> = flow {
+    override fun postPopularReviewPost(): Flow<List<ReviewPost>> = flow {
         val categories = dataStoreDataSource.getReviewCategoryFilter().first().map { it.name }
         runCatching {
             communityService.postReviewPosts(
@@ -69,7 +73,7 @@ class CommunityRepositoryImpl @Inject constructor(
         }
             .onSuccess { response ->
                 response.data?.let { popularReviewPosts ->
-                    emit(popularReviewPosts.popularPosts.map { it.toData() })
+                    emit(popularReviewPosts.popularPosts.map { it.toReviewData() })
                 } ?: throw NoDataException("no Data")
             }
             .onFailure {
@@ -77,17 +81,18 @@ class CommunityRepositoryImpl @Inject constructor(
             }
     }
 
+    @OptIn(ExperimentalPagingApi::class)
     override fun getPosts(): Flow<PagingData<Post>> = Pager(
         config = PagingConfig(
-            pageSize = 50,
-            prefetchDistance = 2,
+            pageSize = 20,
         ),
-        pagingSourceFactory = {
-            PostPagingSource(
-                communityService = communityService,
-            )
-        },
-    ).flow
+        remoteMediator = PostRemoteMediator(
+            communityService = communityService,
+            youthDatabase = youthDatabase,
+        ),
+    ) {
+        youthDatabase.postDao().getPagingSource()
+    }.flow
 
     override fun getPopularPosts(): Flow<List<Post>> = flow {
         runCatching {
@@ -106,9 +111,10 @@ class CommunityRepositoryImpl @Inject constructor(
             }
     }
 
-    override fun postPostScrap(id: Long): Flow<String> = flow {
+    override fun postPostScrap(id: Long, scrap: Boolean, type: PostType): Flow<String> = flow {
         runCatching { communityService.postPostScrap(id) }
             .onSuccess { response ->
+                setDatabase(id, scrap, type)
                 emit(response.message)
             }
             .onFailure {
@@ -116,14 +122,35 @@ class CommunityRepositoryImpl @Inject constructor(
             }
     }
 
-    override fun postPostScrapMap(id: Long, scrap: Boolean): Flow<Map<Long, Boolean>> = flow {
-        postScrapMap = if (postScrapMap.containsKey(id)) {
-            postScrapMap - id
-            postScrapMap + Pair(id, !scrap)
-        } else {
-            postScrapMap + Pair(id, !scrap)
+    private suspend fun setDatabase(id: Long, scrap: Boolean, type: PostType) {
+        when (type) {
+            PostType.REVIEW -> youthDatabase.reviewPostDao().getPostById(id)?.let { reviewPost ->
+                youthDatabase.reviewPostDao().updatePost(
+                    reviewPost.copy(
+                        scrap = !scrap,
+                        scraps = reviewPost.scraps + if (!scrap) 1 else -1,
+                    ),
+                )
+            }
+
+            PostType.POST -> youthDatabase.postDao().getPostById(id)?.let { post ->
+                youthDatabase.postDao().updatePost(
+                    post.copy(
+                        scrap = !scrap,
+                        scraps = post.scraps + if (!scrap) 1 else -1,
+                    ),
+                )
+            }
+
+            PostType.SCRAP -> youthDatabase.scrapPostDao().getPostById(id)?.let { scrapPost ->
+                youthDatabase.scrapPostDao().updatePost(
+                    scrapPost.copy(
+                        scrap = !scrap,
+                        scraps = scrapPost.scraps + if (!scrap) 1 else -1,
+                    ),
+                )
+            }
         }
-        emit(postScrapMap)
     }
 
     override fun getPostDetail(id: Long): Flow<PostDetail> = flow {
@@ -148,10 +175,6 @@ class CommunityRepositoryImpl @Inject constructor(
             .onFailure {
                 throwableError<List<CommentResponse>>(it)
             }
-    }
-
-    override fun getPostScrapMap(): Flow<Map<Long, Boolean>> = flow {
-        emit(postScrapMap)
     }
 
     override fun postCommentLike(id: Long, like: Boolean): Flow<String> = flow {
@@ -264,5 +287,10 @@ class CommunityRepositoryImpl @Inject constructor(
             .onFailure {
                 throwableError<PostDetailResponse>(it)
             }
+    }
+
+    override fun postScrapPost(id: Long): Flow<Long> = flow {
+        youthDatabase.scrapPostDao().deletePost(id)
+        emit(id)
     }
 }

@@ -1,5 +1,6 @@
 package com.core.community.viewmodel
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.core.community.model.CommunityDetailUiEffect
@@ -14,6 +15,7 @@ import com.core.domain.usercase.post.GetPostDetailUseCase
 import com.core.domain.usercase.post.PatchCommentUseCase
 import com.core.domain.usercase.post.PostPostAddCommentUseCase
 import com.youthtalk.model.Comment
+import com.youthtalk.model.PostType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -36,7 +38,13 @@ class CommunityDetailViewModel @Inject constructor(
     private val postDeleteCommentUseCase: PostDeleteCommentUseCase,
     private val patchCommentUseCase: PatchCommentUseCase,
     private val postPostScrapUseCase: PostPostScrapUseCase,
+    private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
+
+    init {
+        val postId = savedStateHandle.get<Long>("postId") ?: -1
+        uiEvent(CommunityDetailUiEvent.GetPostDetail(postId))
+    }
 
     private val _uiState = MutableStateFlow<CommunityDetailUiState>(CommunityDetailUiState.Loading)
     val uiState = _uiState.asStateFlow()
@@ -51,7 +59,7 @@ class CommunityDetailViewModel @Inject constructor(
             is CommunityDetailUiEvent.PostAddComment -> postAddComment(event.id, event.text)
             is CommunityDetailUiEvent.DeleteComment -> deleteComment(event.index, event.commentId)
             is CommunityDetailUiEvent.ModifyComment -> modifyComment(event.id, event.content)
-            is CommunityDetailUiEvent.PostScrap -> postPostScrap(event.postId, event.isScrap)
+            is CommunityDetailUiEvent.PostScrap -> postPostScrap(event.postId, event.isScrap, event.type)
             is CommunityDetailUiEvent.ModifyPost -> goWriteScreen()
         }
     }
@@ -61,16 +69,21 @@ class CommunityDetailViewModel @Inject constructor(
         if (state !is CommunityDetailUiState.Success) return
 
         viewModelScope.launch {
-            uiEffect.emit(CommunityDetailUiEffect.CommunityWrite(state.post.postId, state.post.postType))
+            uiEffect.emit(
+                CommunityDetailUiEffect.CommunityWrite(
+                    state.post.postId,
+                    state.post.postType,
+                ),
+            )
         }
     }
 
-    private fun postPostScrap(postId: Long, isScrap: Boolean) {
+    private fun postPostScrap(postId: Long, isScrap: Boolean, type: PostType) {
         val state = _uiState.value
         if (state !is CommunityDetailUiState.Success) return
 
         viewModelScope.launch {
-            postPostScrapUseCase(postId, isScrap)
+            postPostScrapUseCase(postId, isScrap, type)
                 .catch {
                     Timber.e("CommunityDetailViewModel modifyComment error " + it.message)
                 }

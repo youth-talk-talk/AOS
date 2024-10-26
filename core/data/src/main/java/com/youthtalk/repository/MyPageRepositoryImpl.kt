@@ -1,5 +1,6 @@
 package com.youthtalk.repository
 
+import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
@@ -11,8 +12,9 @@ import com.youthtalk.data.PolicyService
 import com.youthtalk.data.UserService
 import com.youthtalk.datasource.PagingSize.MY_PAGE_POSTS_SIZE
 import com.youthtalk.datasource.PagingSize.SCRAP_PAGE_SIZE
-import com.youthtalk.datasource.mypage.MyPagePostsPagingSource
 import com.youthtalk.datasource.mypage.ScrapPolicyPagingSource
+import com.youthtalk.datasource.mypage.post.ScrapPostRemoteMediator
+import com.youthtalk.datasource.room.YouthDatabase
 import com.youthtalk.dto.CommentResponse
 import com.youthtalk.dto.PostUserRequest
 import com.youthtalk.dto.UserResponse
@@ -21,8 +23,8 @@ import com.youthtalk.mapper.toDate
 import com.youthtalk.model.Comment
 import com.youthtalk.model.Policy
 import com.youthtalk.model.PolicyResponse
-import com.youthtalk.model.Post
 import com.youthtalk.model.Region
+import com.youthtalk.model.ScrapPost
 import com.youthtalk.model.User
 import com.youthtalk.utils.ErrorUtils.throwableError
 import kotlinx.coroutines.flow.Flow
@@ -33,6 +35,7 @@ class MyPageRepositoryImpl @Inject constructor(
     private val policyService: PolicyService,
     private val communityService: CommunityService,
     private val userService: UserService,
+    private val appDatabase: YouthDatabase,
     private val dataSource: DataStoreDataSource,
 ) : MyPageRepository {
     override fun getScrapPolicies(): Flow<Flow<PagingData<Policy>>> = flow {
@@ -46,17 +49,19 @@ class MyPageRepositoryImpl @Inject constructor(
         )
     }
 
-    override fun getMyPagePosts(type: String): Flow<PagingData<Post>> = Pager(
-        pagingSourceFactory = {
-            MyPagePostsPagingSource(
-                communityService = communityService,
-                type = type,
-            )
-        },
+    @OptIn(ExperimentalPagingApi::class)
+    override fun getMyPagePosts(type: String): Flow<PagingData<ScrapPost>> = Pager(
+        remoteMediator = ScrapPostRemoteMediator(
+            communityService = communityService,
+            youthDatabase = appDatabase,
+            type = type,
+        ),
         config = PagingConfig(
             pageSize = MY_PAGE_POSTS_SIZE,
         ),
-    ).flow
+    ) {
+        if (type == "scrap") appDatabase.scrapPostDao().getScrapPostPagingSource() else appDatabase.scrapPostDao().getPostPagingSource()
+    }.flow
 
     override fun getMyPageComments(isMine: Boolean): Flow<List<Comment>> = flow {
         runCatching {

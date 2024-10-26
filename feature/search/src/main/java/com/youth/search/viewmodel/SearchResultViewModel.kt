@@ -6,7 +6,6 @@ import androidx.paging.cachedIn
 import com.core.domain.usercase.PostPolicyScrapUseCase
 import com.core.domain.usercase.PostPostScrapUseCase
 import com.core.domain.usercase.home.GetHomePolicyMapUseCase
-import com.core.domain.usercase.post.GetPostScrapUseCase
 import com.core.domain.usercase.search.GetSearchPostCountUseCase
 import com.core.domain.usercase.search.GetSearchPostsUseCase
 import com.core.domain.usercase.specpolicy.GetPolicyCountUseCase
@@ -16,6 +15,7 @@ import com.core.domain.usercase.specpolicy.PostSpecPoliciesUseCase
 import com.youth.search.model.SearchResultUiEvent
 import com.youth.search.model.SearchResultUiState
 import com.youthtalk.model.FilterInfo
+import com.youthtalk.model.PostType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -35,7 +35,6 @@ class SearchResultViewModel @Inject constructor(
     private val getPostsCountUseCase: GetSearchPostCountUseCase,
     private val getPostsUseCase: GetSearchPostsUseCase,
     private val getHomePolicyMapUseCase: GetHomePolicyMapUseCase,
-    private val getPostScrapUseCase: GetPostScrapUseCase,
     private val postPolicyScrapUseCase: PostPolicyScrapUseCase,
     private val postPostScrapUseCase: PostPostScrapUseCase,
     private val postFilterUseCase: PostFilterUseCase,
@@ -51,23 +50,20 @@ class SearchResultViewModel @Inject constructor(
             is SearchResultUiEvent.PostFilterInfo -> postFilterInfo(event.filterInfo)
             is SearchResultUiEvent.GetFilterInfo -> getFilterInfo()
             is SearchResultUiEvent.FilterApply -> applyFilter(event.search)
-            is SearchResultUiEvent.PostPostScrap -> postPostScrap(event.postId, event.scrap)
+            is SearchResultUiEvent.PostPostScrap -> postPostScrap(event.postId, event.scrap, event.type)
         }
     }
 
-    private fun postPostScrap(postId: Long, scrap: Boolean) {
+    private fun postPostScrap(postId: Long, scrap: Boolean, type: PostType) {
         val state = _uiState.value
         if (state !is SearchResultUiState.Success) return
 
         viewModelScope.launch {
-            postPostScrapUseCase(postId, scrap)
+            postPostScrapUseCase(postId, scrap, type)
                 .catch {
                     Timber.e("SearchResultViewModel applyFilter error " + it.message)
                 }
                 .collectLatest {
-                    _uiState.value = state.copy(
-                        postScrapMap = it,
-                    )
                 }
         }
     }
@@ -111,15 +107,12 @@ class SearchResultViewModel @Inject constructor(
                 getSpecPoliciesUseCase(null, keyword),
                 getUserFilterInfoUseCase(),
                 getHomePolicyMapUseCase(),
-                getPostScrapUseCase(),
-
-            ) { count, policies, filterInfo, policyMap, postMap ->
+            ) { count, policies, filterInfo, policyMap ->
                 SearchResultUiState.Success(
                     policies = policies.cachedIn(viewModelScope),
                     count = count,
                     filterInfo = filterInfo,
                     policyScrapMap = policyMap,
-                    postScrapMap = postMap,
                 )
             }
                 .onStart {
@@ -188,7 +181,6 @@ class SearchResultViewModel @Inject constructor(
 
         _uiState.value = state.copy(
             policyScrapMap = mapOf(),
-            postScrapMap = mapOf(),
         )
     }
 }

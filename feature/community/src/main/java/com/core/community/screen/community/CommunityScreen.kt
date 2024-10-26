@@ -8,22 +8,15 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringArrayResource
@@ -33,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
 import com.core.community.model.CommunityUiEvent
@@ -44,6 +38,8 @@ import com.youthtalk.component.PostCard
 import com.youthtalk.designsystem.YongProjectTheme
 import com.youthtalk.model.Category
 import com.youthtalk.model.Post
+import com.youthtalk.model.PostType
+import com.youthtalk.model.ReviewPost
 import com.youthtalk.util.clickableSingle
 import kotlinx.collections.immutable.ImmutableList
 
@@ -54,10 +50,6 @@ fun CommunityScreen(
     writePost: (String) -> Unit,
     onClickSearch: (String) -> Unit,
 ) {
-    val tabNames = stringArrayResource(id = R.array.tabs)
-    var tabIndex by rememberSaveable {
-        mutableIntStateOf(0)
-    }
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     if (uiState !is CommunityUiState.Success) {
@@ -70,41 +62,31 @@ fun CommunityScreen(
         }
     } else {
         val state = uiState as CommunityUiState.Success
-        val lazyListState = rememberLazyListState(
-            initialFirstVisibleItemIndex = state.index,
-            initialFirstVisibleItemScrollOffset = state.offset,
-        )
+        val reviewPost = state.reviewPosts.collectAsLazyPagingItems()
+        val posts = state.posts.collectAsLazyPagingItems()
 
-        LaunchedEffect(lazyListState) {
-            snapshotFlow { lazyListState.firstVisibleItemIndex to lazyListState.firstVisibleItemScrollOffset }
-                .collect { (index, offset) ->
-                    viewModel.uiEvent(CommunityUiEvent.SaveScrollPosition(index, offset))
-                }
-        }
         Community(
-            tabIndex,
-            tabNames.toList(),
-            lazyListState = lazyListState,
-            state,
-            changeTab = { index -> tabIndex = index },
+            reviewPosts = reviewPost,
+            posts = posts,
+            categories = state.categories,
+            popularReviewPosts = state.popularReviewPosts,
+            popularPosts = state.popularPosts,
             changeReviewCheckBox = viewModel::setCategories,
             onClickItem = onClickItem,
             writePost = writePost,
             onClickSearch = onClickSearch,
-            postPostScrap = { postId, scrap -> viewModel.uiEvent(CommunityUiEvent.PostScrap(postId, scrap)) },
-            clearData = { viewModel.uiEvent(CommunityUiEvent.ClearData) },
+            postPostScrap = { postId, scrap, type -> viewModel.uiEvent(CommunityUiEvent.PostScrap(postId, scrap, type)) },
         )
     }
 }
 
 fun LazyListScope.reviewPost(
     reviewCategories: ImmutableList<Category>,
-    popularReviewPosts: ImmutableList<Post>,
-    reviewPosts: LazyPagingItems<Post>,
-    map: Map<Long, Boolean>,
+    popularReviewPosts: ImmutableList<ReviewPost>,
+    reviewPosts: LazyPagingItems<ReviewPost>,
     onCheck: (Category?) -> Unit,
     onClickItem: (Long) -> Unit,
-    postPostScrap: (Long, Boolean) -> Unit,
+    postPostScrap: (Long, Boolean, PostType) -> Unit,
 ) {
     item {
         Row(
@@ -135,7 +117,7 @@ fun LazyListScope.reviewPost(
                 ),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            PopularPosts(popularReviewPosts, map, onClickItem, postPostScrap = postPostScrap)
+            PopularPosts(popularReviewPosts, onClickItem, postPostScrap = postPostScrap)
         }
     }
 
@@ -172,24 +154,16 @@ fun LazyListScope.reviewPost(
                 .padding(top = 12.dp),
 
         ) {
-            reviewPosts[index]?.let { post ->
-                val scrapPost = post.copy(
-                    scrap = map.getOrDefault(post.postId, post.scrap),
-                    scraps = if (post.scrap == map.getOrDefault(post.postId, post.scrap)) {
-                        post.scraps
-                    } else {
-                        if (map.getOrDefault(post.postId, post.scrap)) post.scraps + 1 else post.scraps - 1
-                    },
-                )
+            reviewPosts[index]?.let { reviewPost ->
                 PostCard(
                     modifier = Modifier
-                        .clickableSingle { onClickItem(scrapPost.postId) },
-                    title = scrapPost.title,
-                    comments = scrapPost.comments,
-                    scrap = scrapPost.scrap,
-                    scraps = scrapPost.scraps,
-                    policyTitle = scrapPost.policyTitle,
-                    onClickScrap = { postPostScrap(scrapPost.postId, it) },
+                        .clickableSingle { onClickItem(reviewPost.postId) },
+                    title = reviewPost.title,
+                    comments = reviewPost.comments,
+                    scrap = reviewPost.scrap,
+                    scraps = reviewPost.scraps,
+                    policyTitle = reviewPost.policyTitle,
+                    onClickScrap = { postPostScrap(reviewPost.postId, it, PostType.REVIEW) },
                 )
             }
         }
@@ -218,9 +192,8 @@ private fun CheckBoxScreen(reviewCategories: ImmutableList<Category>, onCheck: (
 fun LazyListScope.freeBoard(
     popularPosts: List<Post>,
     posts: LazyPagingItems<Post>,
-    map: Map<Long, Boolean>,
     onClickItem: (Long) -> Unit,
-    postPostScrap: (Long, Boolean) -> Unit,
+    postPostScrap: (Long, Boolean, PostType) -> Unit,
 ) {
     item {
         Column(
@@ -255,29 +228,17 @@ fun LazyListScope.freeBoard(
                     count = popularPosts.size,
                 ) { index ->
                     val popularPost = popularPosts[index]
-                    val post = if (map.containsKey(popularPost.postId)) {
-                        popularPost.copy(
-                            scrap = map.getOrDefault(popularPost.postId, popularPost.scrap),
-                            scraps = if (popularPost.scrap == map.getOrDefault(popularPost.postId, popularPost.scrap)) {
-                                popularPost.scraps
-                            } else {
-                                if (map.getOrDefault(popularPost.postId, popularPost.scrap)) popularPost.scraps + 1 else popularPost.scraps - 1
-                            },
-                        )
-                    } else {
-                        popularPost
-                    }
                     PostCard(
                         modifier = Modifier
                             .aspectRatio(2.5f)
-                            .clickableSingle { onClickItem(post.postId) },
-                        policyTitle = post.policyTitle,
-                        title = post.title,
-                        scraps = post.scraps,
-                        comments = post.comments,
-                        scrap = post.scrap,
+                            .clickableSingle { onClickItem(popularPost.postId) },
+                        policyTitle = popularPost.policyTitle,
+                        title = popularPost.title,
+                        scraps = popularPost.scraps,
+                        comments = popularPost.comments,
+                        scrap = popularPost.scrap,
                         isSingleLine = true,
-                        onClickScrap = { postPostScrap(post.postId, it) },
+                        onClickScrap = { postPostScrap(popularPost.postId, it, PostType.POST) },
                     )
                 }
             }
@@ -309,18 +270,6 @@ fun LazyListScope.freeBoard(
         contentType = posts.itemContentType { it.postId },
     ) { index ->
         posts[index]?.let { post ->
-            val scrapPost = if (map.containsKey(post.postId)) {
-                post.copy(
-                    scrap = map.getOrDefault(post.postId, post.scrap),
-                    scraps = if (post.scrap == map.getOrDefault(post.postId, post.scrap)) {
-                        post.scraps
-                    } else {
-                        if (map.getOrDefault(post.postId, post.scrap)) post.scraps + 1 else post.scraps - 1
-                    },
-                )
-            } else {
-                post
-            }
             Box(
                 modifier = Modifier
                     .background(
@@ -328,17 +277,16 @@ fun LazyListScope.freeBoard(
                     )
                     .padding(horizontal = 17.dp)
                     .padding(top = 12.dp),
-
             ) {
                 PostCard(
                     modifier = Modifier
-                        .clickableSingle { onClickItem(scrapPost.postId) },
-                    policyTitle = scrapPost.policyTitle,
-                    title = scrapPost.title,
-                    scraps = scrapPost.scraps,
-                    comments = scrapPost.comments,
-                    scrap = scrapPost.scrap,
-                    onClickScrap = { postPostScrap(scrapPost.postId, it) },
+                        .clickableSingle { onClickItem(post.postId) },
+                    policyTitle = post.policyTitle,
+                    title = post.title,
+                    scraps = post.scraps,
+                    comments = post.comments,
+                    scrap = post.scrap,
+                    onClickScrap = { postPostScrap(post.postId, it, PostType.POST) },
                 )
             }
         }

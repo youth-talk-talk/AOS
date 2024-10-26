@@ -7,16 +7,15 @@ import com.core.community.model.CommunityUiEvent
 import com.core.community.model.CommunityUiState
 import com.core.domain.usercase.PostPostScrapUseCase
 import com.core.domain.usercase.post.GetPopularPostsUseCase
-import com.core.domain.usercase.post.GetPostScrapUseCase
 import com.core.domain.usercase.post.GetPostsUseCase
 import com.core.domain.usercase.review.GetReviewCategoriesUseCase
 import com.core.domain.usercase.review.PostPopularReviewPostsUseCase
 import com.core.domain.usercase.review.PostReviewPostsUseCase
 import com.core.domain.usercase.review.SetReviewCategoriesUseCase
 import com.youthtalk.model.Category
+import com.youthtalk.model.PostType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.toPersistentList
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -28,7 +27,6 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
-@OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class CommunityViewModel @Inject constructor(
     private val getReviewCategoriesUseCase: GetReviewCategoriesUseCase,
@@ -38,7 +36,6 @@ class CommunityViewModel @Inject constructor(
     private val getPopularPostsUseCase: GetPopularPostsUseCase,
     private val getPostsUseCase: GetPostsUseCase,
     private val postPostScrapUseCase: PostPostScrapUseCase,
-    private val getPostScrapUseCase: GetPostScrapUseCase,
 ) : ViewModel() {
 
     private val _error = MutableSharedFlow<Throwable>()
@@ -52,14 +49,12 @@ class CommunityViewModel @Inject constructor(
             combine(
                 getReviewCategoriesUseCase(),
                 postPopularReviewPostsUseCase(),
-                getPostScrapUseCase(),
                 getPopularPostsUseCase(),
-            ) { categories, popularReviewPosts, map, popularPosts ->
+            ) { categories, popularReviewPosts, popularPosts ->
                 CommunityUiState.Success(
                     categories = categories.toPersistentList(),
                     popularReviewPosts = popularReviewPosts.toPersistentList(),
                     reviewPosts = postReviewPostsUseCase().cachedIn(viewModelScope),
-                    postScrapMap = map,
                     posts = getPostsUseCase().cachedIn(viewModelScope),
                     popularPosts = popularPosts.toPersistentList(),
                 )
@@ -75,50 +70,54 @@ class CommunityViewModel @Inject constructor(
 
     fun uiEvent(event: CommunityUiEvent) {
         when (event) {
-            is CommunityUiEvent.PostScrap -> postScrap(event.postId, event.scrap)
-            is CommunityUiEvent.SaveScrollPosition -> saveScrollPosition(event.index, event.offset)
-            is CommunityUiEvent.ClearData -> clearData()
+            is CommunityUiEvent.PostScrap -> postScrap(event.postId, event.scrap, event.type)
         }
     }
 
-    private fun clearData() {
-        val state = _uiState.value
-        if (state !is CommunityUiState.Success) return
-
-        _uiState.value = state.copy(
-            postScrapMap = mapOf(),
-        )
-    }
-
-    private fun saveScrollPosition(index: Int, offset: Int) {
-        val state = _uiState.value
-        if (state !is CommunityUiState.Success) return
-
-        _uiState.value = state.copy(
-            index = index,
-            offset = offset,
-        )
-    }
-
-    private fun postScrap(postId: Long, scrap: Boolean) {
+    private fun postScrap(postId: Long, scrap: Boolean, type: PostType) {
         val state = _uiState.value
         if (state !is CommunityUiState.Success) return
 
         viewModelScope.launch {
-            postPostScrapUseCase(postId, scrap)
+            postPostScrapUseCase(postId, scrap, type)
                 .catch {
                     Timber.e("CommunityViewModel postScrap error " + it.message)
                 }
                 .collectLatest {
-                    val map = if (state.postScrapMap.containsKey(postId)) {
-                        state.postScrapMap - postId
-                        state.postScrapMap + Pair(postId, !scrap)
-                    } else {
-                        state.postScrapMap + Pair(postId, !scrap)
+                    Timber.e("CommunityViewModel postScrap Success $it")
+                    when (type) {
+                        PostType.POST -> {
+                            val list = state.popularPosts.map { post ->
+                                if (post.postId == postId) {
+                                    post.copy(
+                                        scrap = !scrap,
+                                        scraps = if (!scrap) post.scraps + 1 else post.scraps - 1,
+                                    )
+                                } else {
+                                    post
+                                }
+                            }
+                            _uiState.value = state.copy(
+                                popularPosts = list.toPersistentList(),
+                            )
+                        }
+
+                        else -> {
+                            val list = state.popularReviewPosts.map { post ->
+                                if (post.postId == postId) {
+                                    post.copy(
+                                        scrap = !scrap,
+                                        scraps = if (!scrap) post.scraps + 1 else post.scraps - 1,
+                                    )
+                                } else {
+                                    post
+                                }
+                            }
+                            _uiState.value = state.copy(
+                                popularReviewPosts = list.toPersistentList(),
+                            )
+                        }
                     }
-                    _uiState.value = state.copy(
-                        postScrapMap = map,
-                    )
                 }
         }
     }
