@@ -11,7 +11,7 @@ android {
     defaultConfig {
         applicationId = "com.youth.yongproject.app"
         targetSdk = 34
-        versionCode = 9
+        versionCode = 10
         versionName = "1.0.10"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
