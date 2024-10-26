@@ -11,7 +11,7 @@ import com.youthtalk.model.ScrapPost
 @Dao
 interface ScrapPostDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAll(posts: List<ScrapPost>)
+    suspend fun insertAll(posts: List<ScrapPost>)
 
     @Query("SELECT * FROM scrappost WHERE scrap=1 ORDER BY scrapId DESC")
     fun getScrapPostPagingSource(): PagingSource<Int, ScrapPost>

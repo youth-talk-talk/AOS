@@ -54,7 +54,7 @@ fun PolicyFilterBottomSheet(
     sheetState: SheetState,
     onDismiss: () -> Unit,
     onClickEmploy: (EmploymentCode) -> Unit,
-    onClickFinished: (Boolean) -> Unit,
+    onClickFinished: (Boolean?) -> Unit,
     onClickReset: () -> Unit,
     onChangeAge: (String) -> Unit,
     onClickApply: () -> Unit,
@@ -181,7 +181,7 @@ private fun FilterTopBar(onDismiss: () -> Unit) {
 fun ColumnScope.FilterInfo(
     filterInfo: FilterInfo?,
     onClickEmploy: (EmploymentCode) -> Unit,
-    onClickFinished: (Boolean) -> Unit,
+    onClickFinished: (Boolean?) -> Unit,
     ageChange: (String) -> Unit,
 ) {
     Column(
@@ -205,8 +205,8 @@ fun ColumnScope.FilterInfo(
 }
 
 @Composable
-private fun FilterCategoryIsEnd(isFinished: Boolean?, onClick: (Boolean) -> Unit) {
-    val finish = isFinished ?: false
+private fun FilterCategoryIsEnd(isFinished: Boolean?, onClick: (Boolean?) -> Unit) {
+    val finish = isFinished ?: true
     FilterCategoryTitle(
         title = "마감여부",
     )
@@ -219,14 +219,14 @@ private fun FilterCategoryIsEnd(isFinished: Boolean?, onClick: (Boolean) -> Unit
         CategoryButton(
             modifier = Modifier.weight(1f),
             title = "전체 선택",
-            isSelected = !finish,
-            onClick = { onClick(false) },
+            isSelected = finish,
+            onClick = { onClick(null) },
         )
         CategoryButton(
             modifier = Modifier.weight(1f),
             title = "진행중인 정책",
-            isSelected = finish,
-            onClick = { onClick(true) },
+            isSelected = !finish,
+            onClick = { onClick(false) },
         )
     }
 }

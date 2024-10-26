@@ -10,10 +10,12 @@ import com.core.domain.usercase.GetUserUseCase
 import com.core.domain.usercase.PostCommentLikeUseCase
 import com.core.domain.usercase.PostDeleteCommentUseCase
 import com.core.domain.usercase.PostPostScrapUseCase
+import com.core.domain.usercase.post.DeletePostUseCase
 import com.core.domain.usercase.post.GetPostDetailCommentUseCase
 import com.core.domain.usercase.post.GetPostDetailUseCase
 import com.core.domain.usercase.post.PatchCommentUseCase
 import com.core.domain.usercase.post.PostPostAddCommentUseCase
+import com.core.exception.BadRequestException
 import com.youthtalk.model.Comment
 import com.youthtalk.model.PostType
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -38,6 +40,7 @@ class CommunityDetailViewModel @Inject constructor(
     private val postDeleteCommentUseCase: PostDeleteCommentUseCase,
     private val patchCommentUseCase: PatchCommentUseCase,
     private val postPostScrapUseCase: PostPostScrapUseCase,
+    private val deletePostUseCase: DeletePostUseCase,
     private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
@@ -61,6 +64,7 @@ class CommunityDetailViewModel @Inject constructor(
             is CommunityDetailUiEvent.ModifyComment -> modifyComment(event.id, event.content)
             is CommunityDetailUiEvent.PostScrap -> postPostScrap(event.postId, event.isScrap, event.type)
             is CommunityDetailUiEvent.ModifyPost -> goWriteScreen()
+            is CommunityDetailUiEvent.DeletePost -> deletePost(event.postId)
         }
     }
 
@@ -167,6 +171,9 @@ class CommunityDetailViewModel @Inject constructor(
             }
                 .catch {
                     Timber.e("CommunityDetailViewModel getPostDetail error " + it.message)
+                    when (it) {
+                        is BadRequestException -> uiEffect.emit(CommunityDetailUiEffect.NotFoundPost(true, it.message))
+                    }
                 }
                 .collectLatest {
                     _uiState.value = it
@@ -174,7 +181,7 @@ class CommunityDetailViewModel @Inject constructor(
         }
     }
 
-    fun deleteComment(index: Int, commentId: Long) {
+    private fun deleteComment(index: Int, commentId: Long) {
         val state = _uiState.value
         if (state !is CommunityDetailUiState.Success) return
 
@@ -189,6 +196,22 @@ class CommunityDetailViewModel @Inject constructor(
                     _uiState.value = state.copy(
                         comments = comments.toPersistentList(),
                     )
+                }
+        }
+    }
+
+    private fun deletePost(postId: Long) {
+        val state = _uiState.value
+        if (state !is CommunityDetailUiState.Success) return
+
+        viewModelScope.launch {
+            deletePostUseCase(postId)
+                .catch {
+                    Timber.e("PolicyDetailViewModel deletePost error ${it.message}")
+                }
+                .collectLatest {
+                    Timber.e("PolicyDetailViewModel deletePost Success $it")
+                    uiEffect.emit(CommunityDetailUiEffect.PostDelete(true))
                 }
         }
     }

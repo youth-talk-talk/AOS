@@ -1,5 +1,6 @@
 package com.core.community.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
@@ -45,6 +46,18 @@ class CommunityViewModel @Inject constructor(
     val uiState = _uiState.asStateFlow()
 
     init {
+        Log.d("YOON-CHAN", "CommunityViewModel Init")
+        getData()
+    }
+
+    fun uiEvent(event: CommunityUiEvent) {
+        when (event) {
+            is CommunityUiEvent.PostScrap -> postScrap(event.postId, event.scrap, event.type)
+            is CommunityUiEvent.GetData -> getData()
+        }
+    }
+
+    private fun getData() {
         viewModelScope.launch {
             combine(
                 getReviewCategoriesUseCase(),
@@ -65,12 +78,6 @@ class CommunityViewModel @Inject constructor(
                 .collectLatest {
                     _uiState.value = it
                 }
-        }
-    }
-
-    fun uiEvent(event: CommunityUiEvent) {
-        when (event) {
-            is CommunityUiEvent.PostScrap -> postScrap(event.postId, event.scrap, event.type)
         }
     }
 

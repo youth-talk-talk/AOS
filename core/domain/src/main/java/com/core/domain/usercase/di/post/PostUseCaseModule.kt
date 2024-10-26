@@ -1,6 +1,7 @@
 package com.core.domain.usercase.di.post
 
 import com.core.dataapi.repository.CommunityRepository
+import com.core.domain.usercase.post.DeletePostUseCase
 import com.core.domain.usercase.post.GetPopularPostsUseCase
 import com.core.domain.usercase.post.GetPostDetailCommentUseCase
 import com.core.domain.usercase.post.GetPostDetailUseCase
@@ -55,4 +56,8 @@ object PostUseCaseModule {
     @Provides
     @Singleton
     fun providePostModifyPostUseCase(repository: CommunityRepository) = PostModifyPostUseCase(repository)
+
+    @Provides
+    @Singleton
+    fun provideDeletePostUseCase(repository: CommunityRepository) = DeletePostUseCase(repository)
 }

@@ -249,6 +249,34 @@ class CommunityRepositoryImpl @Inject constructor(
         runCatching { communityService.postCreate(requestBody) }
             .onSuccess { response ->
                 response.data?.let { data ->
+                    if (postType == "review") {
+                        val reviewPost = ReviewPost(
+                            postId = data.postId,
+                            title = data.title,
+                            content = data.content,
+                            writerId = data.writerId,
+                            scraps = 0,
+                            scrap = false,
+                            comments = 0,
+                            policyId = data.policyId,
+                            policyTitle = data.policyTitle,
+                        )
+                        youthDatabase.reviewPostDao().insertAll(listOf(reviewPost))
+                    } else {
+                        val post = Post(
+                            postId = data.postId,
+                            title = data.title,
+                            content = data.content,
+                            writerId = data.writerId,
+                            scraps = 0,
+                            scrap = false,
+                            comments = 0,
+                            policyId = data.policyId,
+                            policyTitle = data.policyTitle,
+                        )
+                        youthDatabase.postDao().insertAll(listOf(post))
+                    }
+
                     emit(data.toData())
                 }
             }
@@ -281,6 +309,31 @@ class CommunityRepositoryImpl @Inject constructor(
         }
             .onSuccess { response ->
                 response.data?.let { data ->
+                    if (postType == "review") {
+                        youthDatabase.reviewPostDao().getPostById(data.postId)?.let { reviewPost ->
+                            youthDatabase.reviewPostDao().updatePost(
+                                reviewPost.copy(
+                                    title = data.title,
+                                    policyId = data.policyId,
+                                    writerId = data.writerId,
+                                    policyTitle = data.policyTitle,
+                                    content = data.content,
+                                ),
+                            )
+                        }
+                    } else {
+                        youthDatabase.postDao().getPostById(data.postId)?.let { post ->
+                            youthDatabase.postDao().updatePost(
+                                post.copy(
+                                    title = data.title,
+                                    policyId = data.policyId,
+                                    writerId = data.writerId,
+                                    policyTitle = data.policyTitle,
+                                    content = data.content,
+                                ),
+                            )
+                        }
+                    }
                     emit(data.toData())
                 }
             }
@@ -292,5 +345,18 @@ class CommunityRepositoryImpl @Inject constructor(
     override fun postScrapPost(id: Long): Flow<Long> = flow {
         youthDatabase.scrapPostDao().deletePost(id)
         emit(id)
+    }
+
+    override fun deletePost(postId: Long): Flow<String> = flow {
+        runCatching {
+            communityService.deletePost(postId)
+        }
+            .onSuccess { response ->
+                youthDatabase.scrapPostDao().deletePost(postId)
+                emit(response.message)
+            }
+            .onFailure {
+                throwableError<PostDetailResponse>(it)
+            }
     }
 }

@@ -118,13 +118,15 @@ class DataStoreDataSource @Inject constructor(
     }
 
     override fun getFinish(): Flow<Boolean> = dataStore.data.map { prefs ->
-        prefs[IS_FINISH] ?: false
+        prefs[IS_FINISH] ?: true
     }
 
     override suspend fun setFinish(isFinish: Boolean?) {
-        dataStore.edit { prefs ->
-            prefs[IS_FINISH] = isFinish ?: false
-        }
+        isFinish?.let {
+            dataStore.edit { prefs ->
+                prefs[IS_FINISH] = isFinish
+            }
+        } ?: dataStore.edit { it.remove(IS_FINISH) }
     }
 
     override suspend fun setRecentList(list: List<String>) {

@@ -11,7 +11,7 @@ import com.youthtalk.model.ReviewPost
 @Dao
 interface ReviewPostDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAll(posts: List<ReviewPost>)
+    suspend fun insertAll(posts: List<ReviewPost>)
 
     @Query("SELECT * FROM reviewpost ORDER BY postId DESC")
     fun getPagingSource(): PagingSource<Int, ReviewPost>

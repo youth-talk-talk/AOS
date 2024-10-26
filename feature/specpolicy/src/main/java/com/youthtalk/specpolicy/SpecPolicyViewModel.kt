@@ -111,7 +111,7 @@ class SpecPolicyViewModel @Inject constructor(
         )
     }
 
-    private fun changeFinished(isFinished: Boolean) {
+    private fun changeFinished(isFinished: Boolean?) {
         val state = _uiState.value
         if (state !is SpecPolicyUiState.Success) return
 

@@ -84,7 +84,9 @@ class SpecPolicyRepositoryImpl @Inject constructor(
 
     override fun saveFilterInfo(filterInfo: FilterInfo): Flow<FilterInfo> = flow {
         dataSource.setAge(filterInfo.age)
-        dataSource.setFinish(filterInfo.isFinished)
+        dataSource.setFinish(
+            if (filterInfo.isFinished == true || filterInfo.isFinished == null) null else false,
+        )
         dataSource.setEmployCodeFilter(filterInfo.employmentCodeList)
         emit(filterInfo)
     }

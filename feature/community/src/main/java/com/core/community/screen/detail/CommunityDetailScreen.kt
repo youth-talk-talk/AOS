@@ -27,15 +27,25 @@ import kotlinx.coroutines.flow.collectLatest
 fun CommunityDetailScreen(
     postId: Long,
     viewModel: CommunityDetailViewModel = hiltViewModel(),
-    onBack: () -> Unit,
+    onBack: (Boolean) -> Unit,
     goWriteScreen: (Long, String) -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
+    var errorDialog by remember {
+        mutableStateOf(false)
+    }
+    var errorTitle by remember {
+        mutableStateOf("")
+    }
     LaunchedEffect(viewModel.uiEffect) {
         viewModel.uiEffect.collectLatest {
             when (it) {
                 is CommunityDetailUiEffect.CommunityWrite -> goWriteScreen(it.id, it.type)
+                is CommunityDetailUiEffect.PostDelete -> onBack(true)
+                is CommunityDetailUiEffect.NotFoundPost -> {
+                    errorDialog = true
+                    errorTitle = it.message ?: ""
+                }
             }
         }
     }
@@ -58,7 +68,7 @@ fun CommunityDetailScreen(
                 post = state.post,
                 user = state.user,
                 comments = state.comments,
-                onBack = onBack,
+                onBack = { onBack(false) },
                 onClickLike = { id, isLike -> viewModel.uiEvent(CommunityDetailUiEvent.PostCommentLike(id, isLike)) },
                 onAddComment = { id, text -> viewModel.uiEvent(CommunityDetailUiEvent.PostAddComment(id, text)) },
                 onDeleteComment = { index, commentId -> viewModel.uiEvent(CommunityDetailUiEvent.DeleteComment(index, commentId)) },
@@ -80,11 +90,24 @@ fun CommunityDetailScreen(
                 CustomDialog(
                     title = "게시물을 삭제하시겠습니까?",
                     onCancel = { deleteDialog = false },
-                    onSuccess = { /*TODO*/ },
+                    onSuccess = { viewModel.uiEvent(CommunityDetailUiEvent.DeletePost(postId)) },
                     onDismiss = { deleteDialog = false },
                 )
             }
         }
+    }
+
+    if (errorDialog) {
+        CustomDialog(
+            title = errorTitle,
+            cancelTitle = null,
+            successTitle = "돌아가기",
+            onSuccess = { onBack(true) },
+            onDismiss = {
+                errorDialog = false
+                errorTitle = ""
+            },
+        )
     }
 }
 

@@ -25,4 +25,5 @@ interface CommunityRepository {
     fun postCreate(postType: String, title: String, content: List<WriteInfo>, policyId: String?): Flow<PostDetail>
     fun postModifyPost(postId: Long, postType: String, title: String, content: List<WriteInfo>, policyId: String?): Flow<PostDetail>
     fun postScrapPost(id: Long): Flow<Long>
+    fun deletePost(postId: Long): Flow<String>
 }

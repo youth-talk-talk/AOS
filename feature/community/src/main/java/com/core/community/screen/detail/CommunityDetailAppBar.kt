@@ -38,7 +38,7 @@ fun CommunityDetailAppBar(
     isMine: Boolean,
     scrap: Boolean,
     onBack: () -> Unit,
-    onDeleteDialog: () -> Unit,
+    onDelete: () -> Unit,
     onClickModifier: () -> Unit,
     onPostScrap: (Boolean) -> Unit,
 ) {
@@ -130,7 +130,10 @@ fun CommunityDetailAppBar(
                                     textAlign = TextAlign.Center,
                                 )
                             },
-                            onClick = { onClickModifier() },
+                            onClick = {
+                                onClickModifier()
+                                expanded = false
+                            },
                         )
                         HorizontalDivider()
                         DropdownMenuItem(
@@ -142,7 +145,10 @@ fun CommunityDetailAppBar(
                                     textAlign = TextAlign.Center,
                                 )
                             },
-                            onClick = { onDeleteDialog() },
+                            onClick = {
+                                onDelete()
+                                expanded = false
+                            },
                         )
                     }
                 }
@@ -160,9 +166,10 @@ private fun CommunityDetailAppBarPreview() {
             isMine = true,
             scrap = true,
             onBack = { },
-            onDeleteDialog = { },
+            onDelete = { },
             onClickModifier = { },
-        ) {
-        }
+
+            onPostScrap = {},
+        )
     }
 }
