@@ -61,7 +61,7 @@ fun MyPagePostScreen(type: String, viewModel: MyPagePostViewModel = hiltViewMode
                 onBack = onBack,
                 postDetail = postDetail,
                 onClickScrap = { id, scrap, postType ->
-                    viewModel.uiEvent(MyPagePostsUiEvent.PostScrap(id, scrap, if (type == "scrap") PostType.SCRAP else postType))
+                    viewModel.uiEvent(MyPagePostsUiEvent.PostScrap(id, scrap, postType))
                 },
             )
         }

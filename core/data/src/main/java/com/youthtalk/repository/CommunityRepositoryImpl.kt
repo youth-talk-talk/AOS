@@ -141,15 +141,15 @@ class CommunityRepositoryImpl @Inject constructor(
                     ),
                 )
             }
+        }
 
-            PostType.SCRAP -> youthDatabase.scrapPostDao().getPostById(id)?.let { scrapPost ->
-                youthDatabase.scrapPostDao().updatePost(
-                    scrapPost.copy(
-                        scrap = !scrap,
-                        scraps = scrapPost.scraps + if (!scrap) 1 else -1,
-                    ),
-                )
-            }
+        youthDatabase.scrapPostDao().getPostById(id)?.let { scrapPost ->
+            youthDatabase.scrapPostDao().updatePost(
+                scrapPost.copy(
+                    scrap = !scrap,
+                    scraps = scrapPost.scraps + if (!scrap) 1 else -1,
+                ),
+            )
         }
     }
 

@@ -13,7 +13,7 @@ interface ScrapPostDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(posts: List<ScrapPost>)
 
-    @Query("SELECT * FROM scrappost WHERE scrap=1 ORDER BY scrapId DESC")
+    @Query("SELECT * FROM scrappost WHERE scrap IS 1 ORDER BY scrapId DESC")
     fun getScrapPostPagingSource(): PagingSource<Int, ScrapPost>
 
     @Query("SELECT * FROM scrappost ORDER BY postId DESC")
