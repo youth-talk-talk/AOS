@@ -43,7 +43,3 @@ dependencies {
     //noinspection UseTomlInstead
     implementation("com.google.firebase:firebase-analytics")
 }
-
-task("printVersionName") {
-    println("${project.android.defaultConfig.versionName}")
-}
