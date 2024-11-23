@@ -8,9 +8,12 @@ import com.core.domain.usercase.PostSignUseCase
 import com.youthtalk.model.User
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -30,6 +33,8 @@ class LoginViewModel @Inject constructor(
 
     private val _memberId = MutableSharedFlow<Long>()
     val memberId = _memberId.asSharedFlow()
+
+    var loading = MutableStateFlow<Boolean>(false)
 
     init {
         checkToken()
@@ -64,6 +69,12 @@ class LoginViewModel @Inject constructor(
     fun postSign(nickname: String, region: String) {
         viewModelScope.launch {
             postSignUseCase(socialId, nickname, region)
+                .onStart {
+                    loading.value = true
+                }
+                .onCompletion {
+                    loading.value = false
+                }
                 .catch {
                     Timber.e("viewModel sign error $it")
                     _error.emit(it)

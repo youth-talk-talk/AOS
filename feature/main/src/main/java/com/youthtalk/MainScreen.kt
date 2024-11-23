@@ -218,11 +218,7 @@ private fun NavGraphBuilder.communityNavigation(navController: NavHostController
         val postId = it.arguments?.getLong("postId") ?: -1
         CommunityDetailScreen(
             postId = postId,
-            onBack = { isRemove ->
-                navController.previousBackStackEntry?.savedStateHandle?.set(
-                    "isRemove",
-                    isRemove,
-                )
+            onBack = {
                 navController.popBackStack()
             },
             goWriteScreen = { id, type -> navController.navigate("${CommunityNavigation.CommunityWrite.route}/$type/$id") },
@@ -279,11 +275,8 @@ private fun NavGraphBuilder.mainNavigation(navController: NavHostController, hom
         )
     }
 
-    composable(route = MainNav.Community.route) { backStack ->
-        val isRemove = backStack.savedStateHandle.get<Boolean>(key = "isRemove") ?: false
-        backStack.savedStateHandle.remove<Boolean>("isRemove")
+    composable(route = MainNav.Community.route) {
         CommunityScreen(
-            isRemove = isRemove,
             onClickItem = { postId ->
                 navController.navigate("${CommunityNavigation.CommunityDetail.route}/$postId") {
                     restoreState = true

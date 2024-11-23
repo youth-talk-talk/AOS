@@ -24,4 +24,7 @@ interface ReviewPostDao {
 
     @Update
     suspend fun updatePost(post: ReviewPost)
+
+    @Query("DELETE FROM reviewpost WHERE postId=:postId")
+    suspend fun deletePost(postId: Long)
 }

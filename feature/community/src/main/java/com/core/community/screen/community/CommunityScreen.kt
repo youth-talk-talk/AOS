@@ -12,12 +12,20 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringArrayResource
@@ -25,6 +33,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
@@ -43,11 +52,12 @@ import com.youthtalk.model.Post
 import com.youthtalk.model.PostType
 import com.youthtalk.model.ReviewPost
 import com.youthtalk.util.clickableSingle
+import com.youthtalk.util.rememberLazyListState
 import kotlinx.collections.immutable.ImmutableList
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun CommunityScreen(
-    isRemove: Boolean = false,
     viewModel: CommunityViewModel = hiltViewModel(),
     onClickItem: (Long) -> Unit,
     writePost: (String) -> Unit,
@@ -68,22 +78,67 @@ fun CommunityScreen(
         val reviewPost = state.reviewPosts.collectAsLazyPagingItems()
         val posts = state.posts.collectAsLazyPagingItems()
 
-        LaunchedEffect(key1 = isRemove) {
-            if (isRemove) viewModel.uiEvent(CommunityUiEvent.GetData)
+        var tabIndex by rememberSaveable {
+            mutableIntStateOf(0)
+        }
+        val lazyListState =
+            if (tabIndex == 0) {
+                reviewPost.rememberLazyListState()
+            } else {
+                posts.rememberLazyListState()
+            }
+
+        LifecycleResumeEffect(Unit) {
+            viewModel.uiEvent(CommunityUiEvent.GetPopularData)
+            onPauseOrDispose {}
         }
 
-        Community(
-            reviewPosts = reviewPost,
-            posts = posts,
-            categories = state.categories,
-            popularReviewPosts = state.popularReviewPosts,
-            popularPosts = state.popularPosts,
-            changeReviewCheckBox = viewModel::setCategories,
-            onClickItem = onClickItem,
-            writePost = writePost,
-            onClickSearch = onClickSearch,
-            postPostScrap = { postId, scrap, type -> viewModel.uiEvent(CommunityUiEvent.PostScrap(postId, scrap, type)) },
+        val isRefresh by remember { mutableStateOf(false) }
+        val refreshState = rememberPullRefreshState(
+            refreshing = isRefresh,
+            onRefresh = {
+                viewModel.uiEvent(CommunityUiEvent.GetPopularData)
+                if (tabIndex == 0) {
+                    reviewPost.refresh()
+                } else {
+                    posts.refresh()
+                }
+            },
         )
+
+        Box(
+            modifier = Modifier
+                .pullRefresh(refreshState),
+        ) {
+            Community(
+                reviewPosts = reviewPost,
+                posts = posts,
+                lazyListState = lazyListState,
+                tabIndex = tabIndex,
+                categories = state.categories,
+                popularReviewPosts = state.popularReviewPosts,
+                popularPosts = state.popularPosts,
+                changeReviewCheckBox = viewModel::setCategories,
+                onClickItem = onClickItem,
+                onClickSearch = onClickSearch,
+                onClickTab = { tabIndex = it },
+                postPostScrap = { postId, scrap, type ->
+                    viewModel.uiEvent(CommunityUiEvent.PostScrap(postId, scrap, type))
+                },
+            )
+
+            WriteButton(
+                onClick = {
+                    val type = when (tabIndex) {
+                        0 -> "review"
+                        else -> "post"
+                    }
+                    writePost(type)
+                },
+            )
+
+            PullRefreshIndicator(isRefresh, refreshState, Modifier.align(Alignment.TopCenter))
+        }
     }
 }
 
