@@ -27,7 +27,7 @@ import kotlinx.coroutines.flow.collectLatest
 fun CommunityDetailScreen(
     postId: Long,
     viewModel: CommunityDetailViewModel = hiltViewModel(),
-    onBack: (Boolean) -> Unit,
+    onBack: () -> Unit,
     goWriteScreen: (Long, String) -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -41,7 +41,7 @@ fun CommunityDetailScreen(
         viewModel.uiEffect.collectLatest {
             when (it) {
                 is CommunityDetailUiEffect.CommunityWrite -> goWriteScreen(it.id, it.type)
-                is CommunityDetailUiEffect.PostDelete -> onBack(true)
+                is CommunityDetailUiEffect.PostDelete -> onBack()
                 is CommunityDetailUiEffect.NotFoundPost -> {
                     errorDialog = true
                     errorTitle = it.message ?: ""
@@ -68,7 +68,7 @@ fun CommunityDetailScreen(
                 post = state.post,
                 user = state.user,
                 comments = state.comments,
-                onBack = { onBack(false) },
+                onBack = { onBack() },
                 onClickLike = { id, isLike -> viewModel.uiEvent(CommunityDetailUiEvent.PostCommentLike(id, isLike)) },
                 onAddComment = { id, text -> viewModel.uiEvent(CommunityDetailUiEvent.PostAddComment(id, text)) },
                 onDeleteComment = { index, commentId -> viewModel.uiEvent(CommunityDetailUiEvent.DeleteComment(index, commentId)) },
@@ -102,7 +102,7 @@ fun CommunityDetailScreen(
             title = errorTitle,
             cancelTitle = null,
             successTitle = "돌아가기",
-            onSuccess = { onBack(true) },
+            onSuccess = { onBack() },
             onDismiss = {
                 errorDialog = false
                 errorTitle = ""

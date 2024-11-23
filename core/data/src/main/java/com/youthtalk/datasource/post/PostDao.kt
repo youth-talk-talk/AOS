@@ -24,4 +24,7 @@ interface PostDao {
 
     @Update
     suspend fun updatePost(post: Post)
+
+    @Query("DELETE FROM post WHERE postId=:postId")
+    suspend fun deletePost(postId: Long)
 }

@@ -1,6 +1,5 @@
 package com.core.community.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
@@ -46,7 +45,6 @@ class CommunityViewModel @Inject constructor(
     val uiState = _uiState.asStateFlow()
 
     init {
-        Log.d("YOON-CHAN", "CommunityViewModel Init")
         getData()
     }
 
@@ -54,6 +52,30 @@ class CommunityViewModel @Inject constructor(
         when (event) {
             is CommunityUiEvent.PostScrap -> postScrap(event.postId, event.scrap, event.type)
             is CommunityUiEvent.GetData -> getData()
+            is CommunityUiEvent.GetPopularData -> getPopularData()
+        }
+    }
+
+    private fun getPopularData() {
+        val state = _uiState.value
+        if (state !is CommunityUiState.Success) return
+
+        viewModelScope.launch {
+            combine(
+                postPopularReviewPostsUseCase(),
+                getPopularPostsUseCase(),
+            ) { popularReviewPosts, popularPosts ->
+                state.copy(
+                    popularReviewPosts = popularReviewPosts.toPersistentList(),
+                    popularPosts = popularPosts.toPersistentList(),
+                )
+            }
+                .catch {
+                    Timber.e("CommunityViewModel getPopularData error")
+                }
+                .collectLatest {
+                    _uiState.value = it
+                }
         }
     }
 

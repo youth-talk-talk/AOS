@@ -6,6 +6,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -17,6 +18,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.TopAppBar
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,6 +33,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.core.component.DropDownComponent
 import com.core.login.LoginViewModel
 import com.core.utils.RandomNickname
@@ -43,6 +46,7 @@ import com.youthtalk.designsystem.gray
 fun InformationScreen(viewModel: LoginViewModel, onBack: () -> Unit) {
     val first = stringArrayResource(id = R.array.first).toList()
     val second = stringArrayResource(id = R.array.second).toList()
+    val loading by viewModel.loading.collectAsStateWithLifecycle()
     var text by remember {
         mutableStateOf(RandomNickname.getRandomNickname(first, second))
     }
@@ -57,6 +61,16 @@ fun InformationScreen(viewModel: LoginViewModel, onBack: () -> Unit) {
         onClickSign = viewModel::postSign,
         onBack = onBack,
     )
+
+    if (loading) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize(),
+            contentAlignment = Alignment.Center,
+        ) {
+            CircularProgressIndicator()
+        }
+    }
 }
 
 @Composable

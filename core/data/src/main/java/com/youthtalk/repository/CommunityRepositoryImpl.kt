@@ -353,6 +353,8 @@ class CommunityRepositoryImpl @Inject constructor(
         }
             .onSuccess { response ->
                 youthDatabase.scrapPostDao().deletePost(postId)
+                youthDatabase.postDao().deletePost(postId)
+                youthDatabase.reviewPostDao().deletePost(postId)
                 emit(response.message)
             }
             .onFailure {
