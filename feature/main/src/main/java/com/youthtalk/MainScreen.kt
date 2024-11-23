@@ -3,7 +3,6 @@ package com.youthtalk
 import android.app.Activity
 import android.content.Intent
 import android.os.Build
-import android.util.Log
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.fadeIn
@@ -220,7 +219,6 @@ private fun NavGraphBuilder.communityNavigation(navController: NavHostController
         CommunityDetailScreen(
             postId = postId,
             onBack = { isRemove ->
-                Log.d("YOON-CHAN", "CommunityDetailScreen onBack $isRemove")
                 navController.previousBackStackEntry?.savedStateHandle?.set(
                     "isRemove",
                     isRemove,
@@ -251,7 +249,12 @@ private fun NavGraphBuilder.communityNavigation(navController: NavHostController
             checkPermission = checkPermission,
             goDetail = { postId ->
                 navController.navigate("${CommunityNavigation.CommunityDetail.route}/$postId") {
-                    popUpTo("${CommunityNavigation.CommunityDetail.route}/$postId") {
+                    val route = if (id == -1L) {
+                        "${navController.currentDestination?.route}"
+                    } else {
+                        "${CommunityNavigation.CommunityDetail.route}/$postId"
+                    }
+                    popUpTo(route) {
                         inclusive = true
                     }
                     launchSingleTop = true

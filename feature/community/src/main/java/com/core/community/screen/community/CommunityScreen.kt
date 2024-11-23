@@ -1,6 +1,5 @@
 package com.core.community.screen.community
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -70,7 +69,6 @@ fun CommunityScreen(
         val posts = state.posts.collectAsLazyPagingItems()
 
         LaunchedEffect(key1 = isRemove) {
-            Log.d("YOON-CHAN", "getData")
             if (isRemove) viewModel.uiEvent(CommunityUiEvent.GetData)
         }
 
