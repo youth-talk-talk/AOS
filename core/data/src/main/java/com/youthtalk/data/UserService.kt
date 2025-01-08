@@ -10,19 +10,18 @@ import retrofit2.http.PATCH
 import retrofit2.http.POST
 
 interface UserService {
-
-    @GET("/members/me")
+    @GET("/api/v1/members/me")
     suspend fun getUser(): CommonResponse<UserResponse>
 
-    @GET("/members/me/comments/likes")
+    @GET("/api/v1/members/me/comments/likes")
     suspend fun getLikeComments(): CommonResponse<List<CommentResponse>>
 
-    @GET("/members/me/comments")
+    @GET("/api/v1/members/me/comments")
     suspend fun getMyComments(): CommonResponse<List<CommentResponse>>
 
-    @PATCH("/members/me")
+    @PATCH("/api/v1/members/me")
     suspend fun postUser(@Body requestBody: RequestBody): CommonResponse<UserResponse>
 
-    @POST("/members/me")
-    suspend fun postDeleteUser(): CommonResponse<Int>
+    @POST("/api/v1/members/me")
+    suspend fun postDeleteUser(): CommonResponse<Unit>
 }

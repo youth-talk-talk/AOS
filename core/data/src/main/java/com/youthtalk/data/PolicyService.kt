@@ -16,36 +16,36 @@ import retrofit2.http.Query
 
 interface PolicyService {
 
-    @GET("/policies")
+    @GET("/api/v1/policies")
     suspend fun getPolices(
         @Query("categories") categories: List<String>,
         @Query("page") page: Int,
         @Query("size") size: Int,
     ): CommonResponse<HomePoliciesResponse>
 
-    @GET("/policies/{policyid}")
+    @GET("/api/v1/policies/{policyid}")
     suspend fun getPolicyDetail(@Path("policyid") policyId: String): CommonResponse<PolicyDetailResponse>
 
-    @POST("/policies/search")
+    @POST("/api/v1/policies/search")
     suspend fun postSpecPolicies(
         @Body requestBody: RequestBody,
         @Query("page") page: Int,
         @Query("size") size: Int,
     ): CommonResponse<SpecPoliciesResponse>
 
-    @POST("/policies/{id}/scrap")
+    @POST("/api/v1/policies/{id}/scrap")
     suspend fun postPolicyScrap(@Path("id") id: String): CommonResponse<Unit>
 
-    @POST("/policies/comments")
+    @POST("/api/v1/policies/comments")
     suspend fun postAddComment(@Body requestBody: RequestBody): CommonResponse<PostAddCommentResponse>
 
-    @GET("/policies/scrap")
+    @GET("/api/v1/policies/scrap")
     suspend fun getScrapPolicies(@Query("page") page: Int, @Query("size") size: Int): CommonResponse<List<PolicyResponse>>
 
-    @GET("/policies/scrapped/upcoming-deadline")
+    @GET("/api/v1/policies/scrapped/upcoming-deadline")
     suspend fun getDeadLinePolicies(): CommonResponse<List<PolicyResponse>>
 
-    @GET("/policies/search")
+    @GET("/api/v1/policies/search")
     suspend fun getSearchPoliciesTitle(
         @Query("title") title: String,
         @Query("page") page: Int,

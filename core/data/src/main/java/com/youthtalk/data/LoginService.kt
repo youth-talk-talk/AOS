@@ -7,9 +7,9 @@ import retrofit2.http.Body
 import retrofit2.http.POST
 
 interface LoginService {
-    @POST("/login")
+    @POST("/api/v1/login")
     suspend fun postLogin(@Body requestBody: RequestBody): CommonResponse<MemberId>
 
-    @POST("/signUp")
+    @POST("/api/v1/signUp")
     suspend fun postSignUp(@Body requestBody: RequestBody): CommonResponse<Int>
 }

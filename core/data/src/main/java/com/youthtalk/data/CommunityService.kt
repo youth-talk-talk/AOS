@@ -20,24 +20,24 @@ import retrofit2.http.Query
 
 interface CommunityService {
 
-    @GET("/posts/review")
+    @GET("/api/v1/posts/review")
     suspend fun postReviewPosts(
         @Query("page") page: Int,
         @Query("size") size: Int,
         @Query("categories") categories: List<String>,
     ): CommonResponse<PostResponse>
 
-    @GET("/posts/post")
+    @GET("/api/v1/posts/post")
     suspend fun getPosts(@Query("page") page: Int, @Query("size") size: Int): CommonResponse<PostResponse>
 
-    @GET("/posts/{type}")
+    @GET("/api/v1/posts/{type}")
     suspend fun getMyPagePosts(
         @Path("type") type: String,
         @Query("page") page: Int,
         @Query("size") size: Int,
     ): CommonResponse<List<ScrapPostDataResponse>>
 
-    @GET("/posts/keyword")
+    @GET("/api/v1/posts/keyword")
     suspend fun getSearchPosts(
         @Query("keyword") keyword: String,
         @Query("type") type: String,
@@ -45,25 +45,25 @@ interface CommunityService {
         @Query("size") size: Int,
     ): CommonResponse<PostSearchResponse>
 
-    @POST("/posts/{id}/scrap")
+    @POST("/api/v1/posts/{id}/scrap")
     suspend fun postPostScrap(@Path("id") id: Long): CommonResponse<Unit>
 
-    @GET("/posts/{id}")
+    @GET("/api/v1/posts/{id}")
     suspend fun getPostDetail(@Path("id") id: Long): CommonResponse<PostDetailResponse>
 
-    @POST("/posts/comments")
+    @POST("/api/v1/posts/comments")
     suspend fun postPostAddComment(@Body requestBody: RequestBody): CommonResponse<PostAddCommentResponse>
 
     @Multipart
-    @POST("/posts/image")
+    @POST("/api/v1/posts/image")
     suspend fun postUploadImage(@Part image: MultipartBody.Part): CommonResponse<String>
 
-    @POST("/posts/create")
+    @POST("/api/v1/posts/create")
     suspend fun postCreate(@Body requestBody: RequestBody): CommonResponse<PostDetailResponse>
 
-    @PATCH("/posts/update/{id}")
+    @PATCH("/api/v1/posts/update/{id}")
     suspend fun postModifyPost(@Path("id") id: Long, @Body requestBody: RequestBody): CommonResponse<PostDetailResponse>
 
-    @DELETE("/posts/{postId}")
+    @DELETE("/api/v1/posts/{postId}")
     suspend fun deletePost(@Path("postId") postId: Long): CommonResponse<Unit>
 }
