@@ -58,10 +58,10 @@ interface CommunityService {
     @POST("/api/v1/posts/image")
     suspend fun postUploadImage(@Part image: MultipartBody.Part): CommonResponse<String>
 
-    @POST("/api/v1/posts/create")
+    @POST("/api/v1/posts")
     suspend fun postCreate(@Body requestBody: RequestBody): CommonResponse<PostDetailResponse>
 
-    @PATCH("/api/v1/posts/update/{id}")
+    @PATCH("/api/v1/posts/{id}")
     suspend fun postModifyPost(@Path("id") id: Long, @Body requestBody: RequestBody): CommonResponse<PostDetailResponse>
 
     @DELETE("/api/v1/posts/{postId}")
