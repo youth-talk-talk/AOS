@@ -7,7 +7,6 @@ data class PostDetailResponse(
     val postId: Long,
     val postType: String,
     val title: String,
-    val content: String,
     val contentList: List<PostContentInfoResponse>,
     val policyId: String?,
     val policyTitle: String?,

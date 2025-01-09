@@ -5,8 +5,8 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class PostResponse(
-    @SerialName("top5_posts") val popularPosts: List<PostDataResponse>,
-    @SerialName("other_posts") val posts: List<PostDataResponse>,
+    @SerialName("top5Posts") val popularPosts: List<PostDataResponse>,
+    @SerialName("allPosts") val posts: List<PostDataResponse>,
 )
 
 @Serializable
@@ -19,7 +19,7 @@ data class PostSearchResponse(
 data class PostDataResponse(
     val postId: Long,
     val title: String,
-    val content: String,
+//    val content: String,
     val writerId: Long?,
     val scraps: Int,
     val scrap: Boolean,
@@ -33,7 +33,7 @@ data class ScrapPostDataResponse(
     val scrapId: Long? = null,
     val postId: Long,
     val title: String,
-    val content: String,
+//    val content: String,
     val writerId: Long?,
     val scraps: Int,
     val scrap: Boolean,
