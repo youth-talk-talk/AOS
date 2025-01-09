@@ -19,7 +19,6 @@ data class PostSearchResponse(
 data class PostDataResponse(
     val postId: Long,
     val title: String,
-//    val content: String,
     val writerId: Long?,
     val scraps: Int,
     val scrap: Boolean,
@@ -33,7 +32,6 @@ data class ScrapPostDataResponse(
     val scrapId: Long? = null,
     val postId: Long,
     val title: String,
-//    val content: String,
     val writerId: Long?,
     val scraps: Int,
     val scrap: Boolean,
