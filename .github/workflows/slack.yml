@@ -12,6 +12,7 @@ jobs:
             contents: write
 
         steps:
+            - uses: actions/checkout@v4
             - name: save Version
               run: |
                 versionName=$(grep "versionName" ./app/build.gradle.kts | awk -F'=' '{ print $2 }' | tr -d ' "')
