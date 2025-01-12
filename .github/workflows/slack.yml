@@ -22,4 +22,4 @@ jobs:
                 echo "${{ env.version_name }}"
             - name: send message
               run: |
-                  curl -H "Content-type: application/json" --data '{"channel":"$(${{ secrets.CREDENTIAL_FILE_CONTENT }})","blocks":[{"type":"section","text":{"type":"mrkdwn","text":"터미널 슬랙 메세지 테스트"}}]}' -H "Authorization: Bearer $(${{ secrets.SLACK_AUTHORIZATION }})" -X POST https://slack.com/api/chat.postMessage
+                  curl -H "Content-type: application/json" --data '{"channel":"${{ secrets.CREDENTIAL_FILE_CONTENT }}","blocks":[{"type":"section","text":{"type":"mrkdwn","text":"터미널 슬랙 메세지 테스트"}}]}' -H "Authorization: Bearer ${{ secrets.SLACK_AUTHORIZATION }}" -X POST https://slack.com/api/chat.postMessage
