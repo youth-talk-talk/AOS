@@ -8,10 +8,10 @@ jobs:
         name: Slack message
         runs-on: ubuntu-latest
         steps:
-            -   name: save Version
-                run: |
-                    versionName=$(grep "versionName" ${{github.workspace}}/app/build.gradle.kts | awk -F'=' '{ print $2 }' | tr -d ' "')
-                    echo "version_name=$versionName" >> $GITHUB_ENV
-            -   name: check version
-                run: |
-                    echo "${{ env.version_name }}"
+            - name: save Version
+              run: |
+                versionName=$(grep "versionName" ${{github.workspace}}/app/build.gradle.kts | awk -F'=' '{ print $2 }' | tr -d ' "')
+                echo "version_name=$versionName" >> $GITHUB_ENV
+            - name: check version
+              run: |
+                echo "${{ env.version_name }}"
