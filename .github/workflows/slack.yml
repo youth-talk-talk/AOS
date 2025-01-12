@@ -7,6 +7,10 @@ jobs:
     slack:
         name: Slack message
         runs-on: ubuntu-latest
+
+        permissions:
+            contents: write
+
         steps:
             - name: save Version
               run: |
