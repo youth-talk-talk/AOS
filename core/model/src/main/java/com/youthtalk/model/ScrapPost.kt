@@ -8,7 +8,6 @@ data class ScrapPost(
     val scrapId: Long?,
     @PrimaryKey val postId: Long,
     val title: String,
-    val content: String,
     val writerId: Long?,
     val scraps: Int,
     val scrap: Boolean,

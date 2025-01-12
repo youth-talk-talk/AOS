@@ -96,15 +96,6 @@ fun CommunityDetail(
                 )
             }
 
-            if (post.content.isNotEmpty()) {
-                item {
-                    Text(
-                        text = post.content,
-                        style = MaterialTheme.typography.headlineLarge,
-                    )
-                }
-            }
-
             if (post.contentList.isNotEmpty()) {
                 items(
                     count = post.contentList.size,
@@ -200,7 +191,6 @@ private fun CommunityDetailPreview() {
                 postId = 2057,
                 postType = "accusata",
                 title = "nibh",
-                content = "wisi",
                 contentList = listOf(),
                 policyId = null,
                 policyTitle = null,
