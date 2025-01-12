@@ -1,3 +1,4 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
 import com.youth.app.setNamespace
 
 plugins {
@@ -5,6 +6,10 @@ plugins {
     id("youth.android.hilt")
     id("kotlinx-serialization")
     kotlin("plugin.serialization")
+}
+
+fun getApiKey(propertyKey: String): String {
+    return gradleLocalProperties(rootDir, providers).getProperty(propertyKey)
 }
 
 android {

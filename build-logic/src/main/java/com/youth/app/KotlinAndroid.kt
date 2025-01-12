@@ -29,14 +29,29 @@ internal fun Project.configureKotlinAndroid() {
             minSdk = 26
 
             buildConfigField("String", "KAKAO_API_KEY", getApiKey("kakao.api.key"))
-            buildConfigField("String", "SERVER_KEY", getApiKey("server_key"))
             addManifestPlaceholders(mapOf("KAKAO_API_KEY" to getApiKey("kakao.api.xml.key")))
         }
 
         buildTypes {
             getByName("release") {
                 isMinifyEnabled = false
+                buildConfigField("String", "SERVER_KEY", getApiKey("server_key"))
                 proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            }
+
+            getByName("debug") {
+                buildConfigField("String", "SERVER_KEY", getApiKey("dev_server_key"))
+                proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            }
+        }
+
+        flavorDimensions.add("versions")
+        productFlavors {
+            create("dev") {
+                buildConfigField("String", "BASE_URL", getApiKey("server_key"))
+            }
+            create("prod") {
+                buildConfigField("String", "BASE_URL", getApiKey("dev_server_key"))
             }
         }
 
