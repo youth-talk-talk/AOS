@@ -23,11 +23,12 @@ jobs:
             -   name: save body message
                 run: |
                     sed -n '/#### 기능 수정/,$p' ${{ github.workspace}}/.github/body.md > ${{ github.workspace}}/.github/body.txt
+                    sed -e '/^#### /,$s/^#### //' ${{ github.workspace}}/.github/body.txt > ${{ github.workspace}}/.github/body.txt
                     body=$(awk '{printf "%s\\n", $0}' ${{ github.workspace}}/.github/body.txt)
                     echo "body=$body" >> $GITHUB_ENV
             -   name: send message
                 run: |
                     curl -H "Content-type: application/json" \
-                    --data '{"channel":"${{ secrets.SLACK_CHANNEL_ID }}","blocks":[{"type":"section","text":{"type":"mrkdwn","text":"[AOS][테스트중입니다.]\n*안드로이드 파이어베이스 `v${{ env.version_name }}`버전 배포 완료*\n 배포 내용\n >${{ env.body }}"}}]}' \
+                    --data '{"channel":"${{ secrets.SLACK_CHANNEL_ID }}","blocks":[{"type":"section","text":{"type":"mrkdwn","text":"[AOS][테스트중입니다.]\n*안드로이드 파이어베이스 `v${{ env.version_name }}`버전 배포 완료*\n 배포 내용\n \>${{ env.body }}"}}]}' \
                     -H "Authorization: Bearer ${{ secrets.SLACK_AUTHORIZATION }}" \
                     -X POST https://slack.com/api/chat.postMessage
