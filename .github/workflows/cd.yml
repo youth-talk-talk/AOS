@@ -10,7 +10,7 @@ on:
     workflow_dispatch:
 
 jobs:
-    single-apk:
+    sign-apk:
         name: Sign app APK
         runs-on: ubuntu-latest
         steps:
@@ -64,7 +64,7 @@ jobs:
                     releaseNotesFile: ${{ github.workspace }}/.github/releaseNote.txt
 
     get-version:
-        needs: [ single-apk ]
+        needs: [ sign-apk ]
         name: create release
         runs-on: ubuntu-latest
 
@@ -86,29 +86,42 @@ jobs:
             -   name: check version
                 run: |
                     echo "${{ env.version_name }}"
+            -   name: add version in body
+                run: |
+                    perl -p -i -e '$.==2 and print "###${{ env.version_name }}\n" ${{ github.workspace}}/.github/body.md'
             -   uses: actions/checkout@v4
             -   uses: ncipollo/release-action@v1
                 with:
                     bodyFile: "${{ github.workspace}}/.github/body.md"
                     tag: "v${{ env.version_name }}"
 
-#    update_release_draft:
-#        needs: [get-version]
-#        permissions:
-#            contents: write
-#            pull-requests: write
-#        runs-on: ubuntu-latest
-#        steps:
-#            # (Optional) GitHub Enterprise requires GHE_HOST variable set
-#            #- name: Set GHE_HOST
-#            #  run: |
-#            #    echo "GHE_HOST=${GITHUB_SERVER_URL##https:\/\/}" >> $GITHUB_ENV
-#
-#            # Drafts your next Release notes as Pull Requests are merged into "master"
-#            -   uses: release-drafter/release-drafter@v6
-#                  # (Optional) specify config name to use, relative to .github/. Default: release-drafter.yml
-#                with:
-#                  config-name: my-config.yml
-#                  version: ${{ env.version_name }}
-#                env:
-#                    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    slack:
+        needs: [ sign-apk ]
+        name: Slack message
+        runs-on: ubuntu-latest
+
+        permissions:
+            contents: write
+
+        steps:
+            -   uses: actions/checkout@v4
+            -   name: save Version
+                run: |
+                    versionName=$(grep "versionName" ./app/build.gradle.kts | awk -F'=' '{ print $2 }' | tr -d ' "')
+                    echo "version_name=$versionName" >> $GITHUB_ENV
+            -   name: check version
+                run: |
+                    echo "${{ env.version_name }}"
+            -   name: save body message
+                run: |
+                    sed -n '/#### 기능 수정/,$p' ${{ github.workspace}}/.github/body.md > ${{ github.workspace}}/.github/body.txt
+                    sed -e '/^#### /,$s/^#### //' ${{ github.workspace}}/.github/body.txt > ${{ github.workspace}}/.github/body2.txt
+                    body=$(awk '{printf "%s\\n> ", $0}' ${{ github.workspace}}/.github/body2.txt)
+                    echo "bodymessage=$body"
+                    echo "body=$body" >> $GITHUB_ENV
+            -   name: send message
+                run: |
+                    curl -H "Content-type: application/json" \
+                    --data '{"channel":"${{ secrets.SLACK_CHANNEL_ID }}","blocks":[{"type":"section","text":{"type":"mrkdwn","text":"[AOS]\n*안드로이드 파이어베이스 `v${{ env.version_name }}`버전 배포 완료*\n 배포 내용\n> ${{ env.body }}"}}]}' \
+                    -H "Authorization: Bearer ${{ secrets.SLACK_AUTHORIZATION }}" \
+                    -X POST https://slack.com/api/chat.postMessage

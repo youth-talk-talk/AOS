@@ -38,6 +38,7 @@ import kotlinx.coroutines.flow.flow
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
+import timber.log.Timber
 import java.io.File
 import javax.inject.Inject
 
@@ -161,6 +162,7 @@ class CommunityRepositoryImpl @Inject constructor(
                 }
             }
             .onFailure {
+                Timber.e("getPostDetail error $it")
                 throwableError<PostDetailResponse>(it)
             }
     }
@@ -253,7 +255,7 @@ class CommunityRepositoryImpl @Inject constructor(
                         val reviewPost = ReviewPost(
                             postId = data.postId,
                             title = data.title,
-                            content = data.content,
+//                            content = data.content,
                             writerId = data.writerId,
                             scraps = 0,
                             scrap = false,
@@ -266,7 +268,7 @@ class CommunityRepositoryImpl @Inject constructor(
                         val post = Post(
                             postId = data.postId,
                             title = data.title,
-                            content = data.content,
+//                            content = data.content,
                             writerId = data.writerId,
                             scraps = 0,
                             scrap = false,
@@ -317,7 +319,7 @@ class CommunityRepositoryImpl @Inject constructor(
                                     policyId = data.policyId,
                                     writerId = data.writerId,
                                     policyTitle = data.policyTitle,
-                                    content = data.content,
+//                                    content = data.content,
                                 ),
                             )
                         }
@@ -329,7 +331,7 @@ class CommunityRepositoryImpl @Inject constructor(
                                     policyId = data.policyId,
                                     writerId = data.writerId,
                                     policyTitle = data.policyTitle,
-                                    content = data.content,
+//                                    content = data.content,
                                 ),
                             )
                         }
