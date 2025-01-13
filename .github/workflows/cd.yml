@@ -88,7 +88,7 @@ jobs:
                     echo "${{ env.version_name }}"
             -   name: add version in body
                 run: |
-                    perl -p -i -e '$.==2 and print "###${{ env.version_name }}\n" ${{ github.workspace}}/.github/body.md'
+                    perl -p -i -e '$.==2 and print "###${{ env.version_name }}\n"' ${{ github.workspace}}/.github/body.md
             -   uses: actions/checkout@v4
             -   uses: ncipollo/release-action@v1
                 with:
