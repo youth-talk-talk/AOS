@@ -26,6 +26,6 @@ jobs:
                   body=$(sed -e '/^#### /,$s/^#### //' ${{ github.workspace}}/.github/body.txt)
 
                   curl -H "Content-type: application/json" \
-                  --data '{"channel":"${{ secrets.SLACK_CHANNEL_ID }}","blocks":[{"type":"section","text":{"type":"mrkdwn","text":"[AOS][테스트중입니다.]\n*안드로이드 파이어베이스 v${{ env.version_name }}버전 배포 완료*\n 배포 내용\n > $body\n"}}]}' \
+                  --data '{"channel":"${{ secrets.SLACK_CHANNEL_ID }}","blocks":[{"type":"section","text":{"type":"mrkdwn","text":"[AOS][테스트중입니다.]\n*안드로이드 파이어베이스 v${{ env.version_name }}버전 배포 완료*\n 배포 내용\n > $(body)\n"}}]}' \
                   -H "Authorization: Bearer ${{ secrets.SLACK_AUTHORIZATION }}" \
                   -X POST https://slack.com/api/chat.postMessage
