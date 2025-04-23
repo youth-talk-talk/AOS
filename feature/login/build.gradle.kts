@@ -20,6 +20,7 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
 
     // coil - gif 사용
-    implementation("io.coil-kt.coil3:coil-compose:3.1.0")
-    implementation("io.coil-kt.coil3:coil-gif:3.1.0")
+    implementation(libs.coil3.coil.compose)
+//    implementation(libs.coil3.coil.network.okhttp)
+    implementation(libs.coil.gif)
 }

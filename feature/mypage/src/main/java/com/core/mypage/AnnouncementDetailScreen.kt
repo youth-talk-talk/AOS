@@ -19,7 +19,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil.compose.AsyncImage
+import coil3.compose.AsyncImage
 import com.core.mypage.model.announcedetail.AnnounceDetailUiEvent
 import com.core.mypage.model.announcedetail.AnnounceDetailUiState
 import com.core.mypage.viewmodel.AnnouncementDetailViewModel
