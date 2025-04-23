@@ -4,10 +4,14 @@
     <string name="login_title">청년톡톡</string>
     <string name="login_screen_description">한눈에 보는 청년 정책! 청년톡톡과 함께해요 :)</string>
     <string name="kakao_description">카카오 로그인</string>
-    <string name="yes">예</string>
-    <string name="no">아니요</string>
-    <string name="agree_subtitle">청년톡톡 서비스 약관에 동의하겠습니까?</string>
-    <string name="agree_subtitle2">약관 미동의 시 서비스 이용이 불가능합니다.</string>
+    <string name="term_title">반가워요!\n가입하려면 약관동의가 필요해요.</string>
+    <string name="next">다음</string>
+    <string name="back">돌아가기</string>
+    <string name="checkbox_title">이용약관</string>
+    <string name="checkbox_required">(필수)</string>
+    <string name="expand">펼치기</string>
+    <string name="nickname_title">반가워요!\n어떤 닉네임으로 불러드릴까요?</string>
+    <string name="nickname_sub_title">청년톡톡에서 활동하실 닉네임을 정해주세요</string>
 
     <string-array name="regions">
         <item>서울특별시</item>

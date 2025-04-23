@@ -24,14 +24,6 @@ fun LoginNavHostScreen(viewModel: LoginViewModel) {
         }
         composable(LoginRouteName.AGREE_SCREEN) {
             AgreeScreen(
-                clickCancel = {
-                    navHostController.navigate(LoginRouteName.LOGIN_SCREEN) {
-                        popUpTo(LoginRouteName.AGREE_SCREEN) {
-                            inclusive = true
-                        }
-                        launchSingleTop = true
-                    }
-                },
                 clickNext = {
                     navHostController.navigate(LoginRouteName.INFORMATION_SCREEN) {
                         launchSingleTop = true

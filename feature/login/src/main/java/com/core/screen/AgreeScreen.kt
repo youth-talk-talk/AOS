@@ -1,20 +1,28 @@
 package com.core.screen
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -23,112 +31,153 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.youth.app.feature.login.R
-import com.youthtalk.component.RoundButton
+import com.youthtalk.component.button.CheckButton
+import com.youthtalk.component.checkbox.CustomCheckBox
 import com.youthtalk.designsystem.YongProjectTheme
-import com.youthtalk.util.clickableSingle
+import com.youthtalk.designsystem.gray100
+import com.youthtalk.designsystem.gray20
+import com.youthtalk.designsystem.gray30
+import com.youthtalk.designsystem.gray80
+import com.youthtalk.designsystem.gray90
 
 @Composable
-fun AgreeScreen(clickCancel: () -> Unit, clickNext: () -> Unit, onBack: () -> Unit) {
+fun AgreeScreen(clickNext: () -> Unit, onBack: () -> Unit) {
     Column(
-        modifier =
-        Modifier
+        modifier = Modifier
             .fillMaxSize()
-            .background(Color.White),
-        horizontalAlignment = Alignment.CenterHorizontally,
+            .background(color = Color.White)
+            .padding(horizontal = 16.dp),
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.background)
-                .padding(horizontal = 17.dp, vertical = 13.dp),
-        ) {
-            Image(
-                modifier = Modifier
-                    .align(Alignment.CenterStart)
-                    .clickableSingle { onBack() },
-                painter = painterResource(com.youth.app.core.designsystem.R.drawable.left_icon),
-                contentDescription = "뒤로가기",
-            )
-
-            Text(
-                modifier = Modifier.align(Alignment.Center),
-                text = "약관 동의",
-                style = MaterialTheme.typography.bodyMedium,
-            )
+        var isExpand by remember {
+            mutableStateOf(false)
         }
 
-        // 약관 동의 글
-        DetailAgreeText()
+        var isCheck by remember {
+            mutableStateOf(false)
+        }
 
-        // 약관 동의 글 동의 여부 텍스트
-        DetailAgreeTextQuestion()
-
-        // 예 아니요 선택 버튼
-        AgreeScreenButton(
-            clickCancel = clickCancel,
-            clickNext = clickNext,
+        LoginAppBar(onClickBack = onBack)
+        Text(
+            text = stringResource(R.string.term_title),
+            style = MaterialTheme.typography.bodyMedium.copy(
+                color = gray100,
+            ),
         )
+
+        TermCheckBox(
+            isCheck = isCheck,
+            isExpand = isExpand,
+            onClickCheck = { isCheck = !isCheck },
+            onClickExpand = { isExpand = !isExpand },
+        )
+
+        LawInfo(isExpand = isExpand)
+        Spacer(Modifier.weight(1f))
+
+        CheckButton(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(
+                    horizontal = 4.dp,
+                    vertical = 26.dp,
+                ),
+            isCheck = isCheck,
+            text = stringResource(R.string.next),
+        ) { clickNext() }
     }
 }
 
 @Composable
-private fun AgreeScreenButton(clickCancel: () -> Unit, clickNext: () -> Unit) {
+internal fun LoginAppBar(onClickBack: () -> Unit) {
     Row(
-        modifier =
-        Modifier
-            .padding(top = 14.dp, bottom = 21.dp)
-            .padding(horizontal = 25.dp),
-        horizontalArrangement = Arrangement.spacedBy(16.dp),
-    ) {
-        RoundButton(
-            modifier = Modifier.weight(1f),
-            text = stringResource(id = R.string.no),
-            color = Color(0xFFE3E5E5),
-            onClick = clickCancel,
-        )
-        RoundButton(
-            modifier = Modifier.weight(1f),
-            text = stringResource(id = R.string.yes),
-            color = MaterialTheme.colorScheme.primary,
-            onClick = clickNext,
-        )
-    }
-}
-
-@Composable
-private fun DetailAgreeTextQuestion() {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        Text(
-            text = stringResource(id = R.string.agree_subtitle),
-            style =
-            MaterialTheme.typography.displayLarge,
-        )
-        Text(
-            text = stringResource(id = R.string.agree_subtitle2),
-            style =
-            MaterialTheme.typography.displaySmall
-                .copy(color = MaterialTheme.colorScheme.onSecondary),
-        )
-    }
-}
-
-@Composable
-private fun ColumnScope.DetailAgreeText() {
-    Column(
-        modifier =
-        Modifier
+        modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 30.dp, vertical = 21.dp)
-            .background(color = MaterialTheme.colorScheme.background)
-            .weight(1f)
-            .verticalScroll(state = rememberScrollState()),
+            .padding(top = 24.dp, bottom = 20.dp),
     ) {
-        Text(
-            text = stringResource(id = R.string.law_info),
-            style = MaterialTheme.typography.displaySmall,
+        Image(
+            modifier = Modifier.clickable(
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() },
+            ) {
+                onClickBack()
+            },
+            painter = painterResource(R.drawable.left_icon),
+            contentDescription = stringResource(R.string.back),
         )
+    }
+}
+
+@Composable
+private fun TermCheckBox(isCheck: Boolean, isExpand: Boolean, onClickCheck: () -> Unit, onClickExpand: () -> Unit) {
+    val expandIcon = if (isExpand) R.drawable.arrowup else R.drawable.arrowdown
+    Row(
+        modifier = Modifier
+            .padding(top = 20.dp)
+            .fillMaxWidth()
+            .padding(vertical = 10.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        CustomCheckBox(
+            isCheck = isCheck,
+            onClick = {
+                onClickCheck()
+            },
+        )
+        Text(
+            modifier = Modifier.padding(start = 8.dp, end = 4.dp),
+            text = stringResource(R.string.checkbox_title),
+            style = MaterialTheme.typography.displayMedium.copy(
+                color = gray80,
+            ),
+        )
+        Text(
+            text = stringResource(R.string.checkbox_required),
+            style = MaterialTheme.typography.displayMedium.copy(
+                color = MaterialTheme.colorScheme.primary,
+            ),
+        )
+        Spacer(modifier = Modifier.weight(1f))
+        Image(
+            modifier = Modifier.clickable {
+                onClickExpand()
+            },
+            painter = painterResource(expandIcon),
+            contentDescription = stringResource(R.string.expand),
+        )
+    }
+}
+
+@Composable
+fun LawInfo(isExpand: Boolean) {
+    AnimatedVisibility(
+        modifier = Modifier.fillMaxWidth(),
+        visible = isExpand,
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(360.dp)
+                .padding(top = 6.dp)
+                .background(
+                    color = gray20,
+                    shape = RoundedCornerShape(16.dp),
+                )
+                .border(
+                    width = 1.dp,
+                    color = gray30,
+                    shape = RoundedCornerShape(16.dp),
+                )
+                .padding(20.dp)
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Text(
+                text = stringResource(R.string.law_info),
+                style = MaterialTheme.typography.labelSmall.copy(
+                    color = gray90,
+                ),
+            )
+        }
     }
 }
 
@@ -137,7 +186,6 @@ private fun ColumnScope.DetailAgreeText() {
 private fun AgreeScreenPreview() {
     YongProjectTheme {
         AgreeScreen(
-            clickCancel = {},
             clickNext = {},
             onBack = {},
         )

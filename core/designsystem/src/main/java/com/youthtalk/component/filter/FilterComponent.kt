@@ -17,7 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.youth.app.core.designsystem.R
 import com.youthtalk.designsystem.YongProjectTheme
-import com.youthtalk.designsystem.gray
+import com.youthtalk.designsystem.gray100
 
 @Composable
 fun FilterComponent(modifier: Modifier = Modifier) {
@@ -27,7 +27,7 @@ fun FilterComponent(modifier: Modifier = Modifier) {
             .border(
                 width = 1.dp,
                 shape = RoundedCornerShape(10.dp),
-                color = gray,
+                color = gray100,
             )
             .background(
                 color = MaterialTheme.colorScheme.background,

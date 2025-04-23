@@ -18,7 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.youth.app.feature.mypage.R
 import com.youthtalk.designsystem.YongProjectTheme
-import com.youthtalk.designsystem.gray
+import com.youthtalk.designsystem.gray100
 
 @Composable
 fun BorderIconText(modifier: Modifier = Modifier, title: String, icon: @Composable () -> Unit) {
@@ -31,7 +31,7 @@ fun BorderIconText(modifier: Modifier = Modifier, title: String, icon: @Composab
             )
             .border(
                 width = 1.dp,
-                color = gray,
+                color = gray100,
                 shape = RoundedCornerShape(8.dp),
             )
             .padding(horizontal = 14.dp, vertical = 13.dp),
