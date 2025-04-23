@@ -40,7 +40,7 @@ import com.core.utils.RandomNickname
 import com.youth.app.feature.login.R
 import com.youthtalk.component.RoundButton
 import com.youthtalk.designsystem.YongProjectTheme
-import com.youthtalk.designsystem.gray
+import com.youthtalk.designsystem.gray100
 
 @Composable
 fun InformationScreen(viewModel: LoginViewModel, onBack: () -> Unit) {
@@ -173,7 +173,7 @@ private fun NickNameScreen(text: String, onValueChange: (String) -> Unit) {
             Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 17.dp)
-                .border(width = 1.dp, shape = RoundedCornerShape(8.dp), color = gray),
+                .border(width = 1.dp, shape = RoundedCornerShape(8.dp), color = gray100),
             value = text,
             textStyle = MaterialTheme.typography.titleSmall,
             onValueChange = onValueChange,

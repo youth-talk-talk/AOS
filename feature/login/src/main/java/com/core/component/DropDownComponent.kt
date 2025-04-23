@@ -37,7 +37,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import com.youthtalk.designsystem.YongProjectTheme
-import com.youthtalk.designsystem.gray
+import com.youthtalk.designsystem.gray100
 import com.youthtalk.designsystem.gray50
 
 @Composable
@@ -106,7 +106,7 @@ fun DropBar(expanded: Boolean, selectedRegion: String, onClick: () -> Unit) {
             .border(
                 shape = RoundedCornerShape(8.dp),
                 width = 1.dp,
-                color = gray,
+                color = gray100,
             )
             .padding(horizontal = 13.dp, vertical = 10.dp)
             .clickable { onClick() },

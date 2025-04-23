@@ -11,6 +11,7 @@ import com.youthtalk.model.toRegion
 import com.youthtalk.utils.ErrorUtils.throwableError
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import timber.log.Timber
 import javax.inject.Inject
 
 class LoginRepositoryImpl @Inject constructor(
@@ -18,13 +19,16 @@ class LoginRepositoryImpl @Inject constructor(
     private val dataStoreDataSource: DataStoreDataSource,
 ) : LoginRepository {
     override fun postLogin(socialId: String): Flow<Long> = flow {
+        Timber.e("LoginRepositoryImpl postLogin start")
         runCatching { loginService.postLogin(LoginRequest(socialType = "kakao", socialId = socialId).toRequestBody()) }
             .onSuccess { token ->
+                Timber.e("LoginRepositoryImpl postLogin Success $token")
                 token.data?.let { data ->
                     emit(data.memberId)
                 } ?: throw NoDataException()
             }
             .onFailure { error ->
+                Timber.e("LoginRepositoryImpl postLogin  error : $error")
                 throwableError<MemberId>(error)
             }
     }
@@ -32,6 +36,7 @@ class LoginRepositoryImpl @Inject constructor(
     override fun hasToken(): Flow<Boolean> = dataStoreDataSource.hasToken()
 
     override fun postSign(id: String, nickname: String, region: String): Flow<Int> = flow {
+        Timber.e("LoginRepositoryImpl start")
         runCatching {
             loginService.postSignUp(
                 SignRequest(
@@ -43,11 +48,13 @@ class LoginRepositoryImpl @Inject constructor(
             )
         }
             .onSuccess { response ->
+                Timber.e("LoginRepositoryImpl Success $response")
                 response.data?.let {
                     emit(it)
                 } ?: throw NoDataException()
             }
             .onFailure { error ->
+                Timber.e("LoginRepositoryImpl error : $error")
                 throwableError<Int>(error)
             }
     }

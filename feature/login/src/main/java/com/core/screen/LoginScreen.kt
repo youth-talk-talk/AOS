@@ -37,7 +37,7 @@ import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
 import com.youth.app.feature.login.R
 import com.youthtalk.designsystem.YongProjectTheme
-import com.youthtalk.designsystem.gray
+import com.youthtalk.designsystem.gray100
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 
@@ -164,7 +164,7 @@ fun LoginScreen(onClick: () -> Unit) {
             Text(
                 text = stringResource(id = R.string.login_screen_description),
                 style =
-                MaterialTheme.typography.titleMedium.copy(color = gray),
+                MaterialTheme.typography.titleMedium.copy(color = gray100),
             )
             KaKaoImage(
                 modifier = Modifier.padding(top = 70.dp),

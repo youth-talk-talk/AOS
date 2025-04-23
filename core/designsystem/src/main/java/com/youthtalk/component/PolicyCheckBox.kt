@@ -25,7 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.youth.app.core.designsystem.R
 import com.youthtalk.designsystem.YongProjectTheme
-import com.youthtalk.designsystem.gray
+import com.youthtalk.designsystem.gray100
 
 @Composable
 fun PolicyCheckBox(
@@ -71,7 +71,7 @@ private fun Modifier.isChecked(isCheck: Boolean) = if (isCheck) {
 } else {
     this.border(
         width = 1.dp,
-        color = gray,
+        color = gray100,
         shape = RoundedCornerShape(4.dp),
     )
 }

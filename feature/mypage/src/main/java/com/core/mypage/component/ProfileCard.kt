@@ -20,7 +20,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.youth.app.feature.mypage.R
 import com.youthtalk.designsystem.YongProjectTheme
-import com.youthtalk.designsystem.gray
+import com.youthtalk.designsystem.gray100
 import com.youthtalk.util.clickableSingle
 
 @Composable
@@ -37,7 +37,7 @@ fun ProfileCard(modifier: Modifier = Modifier, username: String, onClick: () -> 
         Text(text = username)
         Row(
             modifier = Modifier
-                .border(width = 1.dp, color = gray, shape = RoundedCornerShape(50.dp))
+                .border(width = 1.dp, color = gray100, shape = RoundedCornerShape(50.dp))
                 .clickableSingle { onClick() }
                 .padding(horizontal = 20.dp, vertical = 6.dp),
             verticalAlignment = Alignment.CenterVertically,

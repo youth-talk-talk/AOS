@@ -34,7 +34,7 @@ import com.core.mypage.viewmodel.MyPageHomeViewModel
 import com.youthtalk.component.MiddleTitleTopBar
 import com.youthtalk.component.RoundButton
 import com.youthtalk.designsystem.YongProjectTheme
-import com.youthtalk.designsystem.gray
+import com.youthtalk.designsystem.gray100
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -117,7 +117,7 @@ private fun NicknameSetting(
                 modifier = Modifier
                     .border(
                         width = 1.dp,
-                        color = gray,
+                        color = gray100,
                         shape = RoundedCornerShape(8.dp),
                     )
                     .padding(13.dp),
