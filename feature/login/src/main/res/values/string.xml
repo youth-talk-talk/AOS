@@ -10,6 +10,8 @@
     <string name="checkbox_title">이용약관</string>
     <string name="checkbox_required">(필수)</string>
     <string name="expand">펼치기</string>
+    <string name="nickname_title">반가워요!\n어떤 닉네임으로 불러드릴까요?</string>
+    <string name="nickname_sub_title">청년톡톡에서 활동하실 닉네임을 정해주세요</string>
 
     <string-array name="regions">
         <item>서울특별시</item>

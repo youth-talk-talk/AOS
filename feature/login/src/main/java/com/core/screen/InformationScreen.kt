@@ -6,7 +6,6 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -18,7 +17,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.TopAppBar
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,103 +24,117 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringArrayResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.core.component.DropDownComponent
 import com.core.login.LoginViewModel
-import com.core.utils.RandomNickname
 import com.youth.app.feature.login.R
-import com.youthtalk.component.RoundButton
+import com.youthtalk.component.button.CheckButton
+import com.youthtalk.component.inputfield.InputTextField
 import com.youthtalk.designsystem.YongProjectTheme
 import com.youthtalk.designsystem.gray100
+import com.youthtalk.designsystem.gray80
 
 @Composable
 fun InformationScreen(viewModel: LoginViewModel, onBack: () -> Unit) {
-    val first = stringArrayResource(id = R.array.first).toList()
-    val second = stringArrayResource(id = R.array.second).toList()
-    val loading by viewModel.loading.collectAsStateWithLifecycle()
-    var text by remember {
-        mutableStateOf(RandomNickname.getRandomNickname(first, second))
+    var nickname by remember {
+        mutableStateOf("")
     }
-    val onValueChange: (String) -> Unit = { value ->
-        if (value.length <= 8) {
-            text = value
-        }
-    }
-    InformationScreen(
-        text = text,
-        onValueChange = onValueChange,
-        onClickSign = viewModel::postSign,
-        onBack = onBack,
-    )
+    val focusManager = LocalFocusManager.current
 
-    if (loading) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize(),
-            contentAlignment = Alignment.Center,
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = Color.White)
+            .clickable(
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() },
+            ) {
+                focusManager.clearFocus()
+            }
+            .padding(horizontal = 16.dp),
+    ) {
+        LoginAppBar(
+            onClickBack = onBack,
+        )
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            CircularProgressIndicator()
+            Text(
+                text = stringResource(R.string.nickname_title),
+                style = MaterialTheme.typography.bodyMedium.copy(
+                    color = gray100,
+                ),
+            )
+
+            Text(
+                text = stringResource(R.string.nickname_sub_title),
+                style = MaterialTheme.typography.displayMedium.copy(
+                    color = gray80,
+                ),
+            )
         }
+
+        InputTextField(
+            modifier = Modifier.padding(top = 16.dp),
+            hint = "닉네임을 입력해 주세요",
+            text = nickname,
+            onTextChange = { nickname = it },
+            onCheckFilter = {
+                it.length > 8
+            },
+        )
+
+        Spacer(Modifier.weight(1f))
+
+        CheckButton(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(
+                    horizontal = 4.dp,
+                    vertical = 26.dp,
+                ),
+            isCheck = nickname.isNotEmpty(),
+            text = stringResource(R.string.next),
+        ) { }
     }
 }
 
 @Composable
 fun InformationScreen(text: String, onValueChange: (String) -> Unit, onClickSign: (String, String) -> Unit, onBack: () -> Unit) {
-    var location by remember {
-        mutableStateOf("전체지역")
-    }
     Column(
-        modifier =
-        Modifier
+        modifier = Modifier
             .fillMaxSize()
-            .background(Color.White),
-        horizontalAlignment = Alignment.CenterHorizontally,
+            .background(color = Color.White)
+            .padding(horizontal = 16.dp),
     ) {
-        InformationTitleScreen(onBack = onBack)
+        LoginAppBar(
+            onClickBack = onBack,
+        )
+        Text(
+            text = stringResource(R.string.nickname_title),
+            style = MaterialTheme.typography.bodyMedium.copy(
+                color = gray100,
+            ),
+        )
 
-        Column(
-            modifier =
-            Modifier
-                .fillMaxSize()
-                .padding(top = 12.dp)
-                .weight(1f),
-            horizontalAlignment = Alignment.Start,
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
-            NickNameScreen(
-                text,
-                onValueChange,
-            )
-            LocationSelectScreen(
-                stringArrayResource(id = R.array.regions).toList(),
-                location,
-                dropDownClick = {
-                    location = it
-                },
-            )
-        }
+        Text(
+            text = stringResource(R.string.nickname_title),
+            style = MaterialTheme.typography.displayMedium.copy(
+                color = gray80,
+            ),
+        )
 
-        val isEnabled = text.matches("""[가-힣][가-힣\s]*""".toRegex()) && location != "전체지역"
-
-        RoundButton(
-            modifier =
-            Modifier
-                .fillMaxWidth()
-                .padding(bottom = 12.dp)
-                .padding(horizontal = 17.dp),
-            text = "시작하기",
-            color = if (isEnabled) MaterialTheme.colorScheme.primary else Color(0xFFE3E5E5),
-            enabled = isEnabled,
-            onClick = {
-                onClickSign(text, location)
-            },
+        InputTextField(
+            hint = "닉네임을 입력해 주세요",
+            text = text,
+            onTextChange = onValueChange,
         )
     }
 }
