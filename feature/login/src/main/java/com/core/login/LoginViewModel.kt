@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.core.domain.usercase.GetUserUseCase
 import com.core.domain.usercase.PostLoginUseCase
 import com.core.domain.usercase.PostSignUseCase
+import com.core.model.login.LoginUiEffect
 import com.youthtalk.model.User
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -31,8 +32,8 @@ class LoginViewModel @Inject constructor(
     private val _error = MutableSharedFlow<Throwable>()
     val error = _error.asSharedFlow()
 
-    private val _memberId = MutableSharedFlow<Long>()
-    val memberId = _memberId.asSharedFlow()
+    var uiEffect = MutableSharedFlow<LoginUiEffect>()
+        private set
 
     var loading = MutableStateFlow<Boolean>(false)
 
@@ -44,10 +45,11 @@ class LoginViewModel @Inject constructor(
         viewModelScope.launch {
             getUserUseCase()
                 .catch {
-                    _user.emit(null)
+                    Timber.e("checkToken not User")
+                    uiEffect.emit(LoginUiEffect.GoLoginActivity)
                 }
                 .collectLatest {
-                    _user.emit(it)
+                    uiEffect.emit(LoginUiEffect.GoMainActivity)
                 }
         }
     }
@@ -61,7 +63,7 @@ class LoginViewModel @Inject constructor(
                     _error.emit(it)
                 }
                 .collectLatest {
-                    _memberId.emit(it)
+                    uiEffect.emit(LoginUiEffect.GoMainActivity)
                 }
         }
     }
@@ -80,7 +82,7 @@ class LoginViewModel @Inject constructor(
                     _error.emit(it)
                 }
                 .collectLatest {
-                    _memberId.emit(it)
+                    uiEffect.emit(LoginUiEffect.GoMainActivity)
                 }
         }
     }

@@ -13,7 +13,14 @@ fun LoginNavHostScreen(viewModel: LoginViewModel) {
 
     NavHost(navController = navHostController, startDestination = LoginRouteName.LOGIN_SCREEN) {
         composable(LoginRouteName.LOGIN_SCREEN) {
-            LoginScreen(navHostController, viewModel)
+            LoginScreen(
+                viewModel,
+                goAgreeScreen = {
+                    navHostController.navigate(LoginRouteName.AGREE_SCREEN) {
+                        launchSingleTop = true
+                    }
+                },
+            )
         }
         composable(LoginRouteName.AGREE_SCREEN) {
             AgreeScreen(

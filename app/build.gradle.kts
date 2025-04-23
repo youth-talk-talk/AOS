@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId = "com.youth.yongproject.app"
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 10101
         versionName = "1.1.1"
 

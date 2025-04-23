@@ -1,7 +1,7 @@
 [versions]
 accompanistPermissionsVersion = "0.36.0"
 agp = "8.5.0"
-coilComposeVersion = "2.7.0"
+coilCompose = "3.1.0"
 coreSplashscreen = "1.0.1"
 datastorePreferences = "1.1.1"
 datastorePreferencesCore = "1.1.1"
@@ -81,7 +81,6 @@ androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", versi
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 androidx-compose-navigation-test = { group = "androidx.navigation", name = "navigation-testing", version.ref = "navigationCompose" }
 androidx-runtime = { module = "androidx.compose.runtime:runtime", version.ref = "runtime" }
-coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilComposeVersion" }
 dagger-compiler = { module = "com.google.dagger:dagger-compiler", version.ref = "hiltAndroid" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 google-accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistPermissionsVersion" }
@@ -182,6 +181,12 @@ androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version
 
 #timber
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timberVersion" }
+
+#Coil
+coil3-coil-network-okttp = {module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coilCompose"}
+coil3-coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }
+coil-gif = { module = "io.coil-kt.coil3:coil-gif", version.ref = "coilCompose" }
+
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }

@@ -18,4 +18,9 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
+    // coil - gif 사용
+    implementation(libs.coil3.coil.compose)
+//    implementation(libs.coil3.coil.network.okhttp)
+    implementation(libs.coil.gif)
 }
