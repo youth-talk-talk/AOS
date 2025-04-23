@@ -4,10 +4,9 @@
     <style name="Theme.Youth.Theme" parent="Theme.Material3.DynamicColors.DayNight.NoActionBar"/>
 
     <style name="Theme.Youth.Splash" parent="Theme.SplashScreen">
-        <item name="windowSplashScreenBackground">#FFFFFFFF</item>
         <item name="windowSplashScreenAnimationDuration">5000</item>
+        <item name="windowSplashScreenBackground">#FFFFFF</item>
         <item name="windowSplashScreenAnimatedIcon">@mipmap/logo</item>
-        <item name="windowSplashScreenIconBackgroundColor">#FFFFFFFF</item>
         <item name="postSplashScreenTheme">@style/Theme.Youth.Theme</item>
     </style>
 
