@@ -17,39 +17,31 @@ val preTendFont =
         Font(R.font.pretendard_semibold, FontWeight.SemiBold, FontStyle.Normal),
     )
 
-val gMarketFont =
-    FontFamily(
-        Font(R.font.gmarket_sans_bold, FontWeight.Bold, FontStyle.Normal),
-    )
-
 val Typography =
     Typography(
-        // P/24/Bold
+        // P/20/SemiBold
         bodyLarge =
         TextStyle(
             fontFamily = preTendFont,
-            fontWeight = FontWeight.W700,
-            fontSize = 24.sp,
-            lineHeight = 24.sp,
+            fontWeight = FontWeight.W600,
+            fontSize = 20.sp,
             color = Color.Black,
         ),
-        // P/18/Bold
+        // P/18/SemiBold
         bodyMedium =
         TextStyle(
             fontFamily = preTendFont,
-            fontWeight = FontWeight.W700,
+            fontWeight = FontWeight.W600,
             fontSize = 18.sp,
-            lineHeight = 24.sp,
             color = Color.Black,
         ),
-        // P/16/Bold
+        // P/18/Medium
         bodySmall =
         TextStyle(
             fontFamily = preTendFont,
-            fontWeight = FontWeight.W700,
-            fontSize = 16.sp,
-            lineHeight = 24.sp,
-            letterSpacing = 0.5.sp,
+            fontWeight = FontWeight.W500,
+            fontSize = 18.sp,
+            color = Color.Black,
         ),
         // P/16/SemiBold
         titleLarge =
@@ -57,86 +49,72 @@ val Typography =
             fontFamily = preTendFont,
             fontWeight = FontWeight.W600,
             fontSize = 16.sp,
-            lineHeight = 24.sp,
             color = Color.Black,
         ),
-        // P/16/Regular - line-height 24
+        // P/16/Medium
         titleMedium =
         TextStyle(
             fontFamily = preTendFont,
-            fontWeight = FontWeight.W400,
+            fontWeight = FontWeight.W500,
             fontSize = 16.sp,
-            lineHeight = 24.sp,
             color = Color.Black,
         ),
-        // P/16/Regular - line-height 16
+        // P/16/Regular
         titleSmall =
         TextStyle(
             fontFamily = preTendFont,
             fontWeight = FontWeight.W400,
             fontSize = 16.sp,
-            lineHeight = 16.sp,
-            letterSpacing = 0.5.sp,
             color = Color.Black,
         ),
-
-        // P/14/Bold
-        displayLarge =
-        TextStyle(
+        // P/14/Semibold
+        displayLarge = TextStyle(
             fontFamily = preTendFont,
-            fontWeight = FontWeight.W700,
+            fontWeight = FontWeight.W600,
             fontSize = 14.sp,
-            lineHeight = 24.sp,
             color = Color.Black,
         ),
-        // P/12/Bold
+        // P/14/Medium
         displayMedium =
         TextStyle(
             fontFamily = preTendFont,
-            fontWeight = FontWeight.W700,
-            fontSize = 12.sp,
-            lineHeight = 16.sp,
-            color = Color.Black,
-        ),
-        // P/12/Regular
-        displaySmall = TextStyle(
-            fontFamily = preTendFont,
-            fontWeight = FontWeight.W600,
-            fontSize = 12.sp,
-            lineHeight = 16.sp,
-            color = Color.Black,
-        ),
-        // P/10/Regular
-        labelLarge = TextStyle(
-            fontFamily = preTendFont,
-            fontWeight = FontWeight.W400,
-            fontSize = 10.sp,
-            lineHeight = 16.sp,
-            color = Color.Black,
-        ),
-        // G/20/Bold
-        labelMedium = TextStyle(
-            fontFamily = gMarketFont,
-            fontWeight = FontWeight.W500,
-            fontSize = 20.sp,
-            lineHeight = 24.sp,
-            color = Color.Black,
-        ),
-        // G/14/Bold
-        headlineSmall = TextStyle(
-            fontFamily = gMarketFont,
             fontWeight = FontWeight.W500,
             fontSize = 14.sp,
-            lineHeight = 24.sp,
             color = Color.Black,
         ),
         // P/14/Regular
+        displaySmall = TextStyle(
+            fontFamily = preTendFont,
+            fontWeight = FontWeight.W400,
+            fontSize = 14.sp,
+            color = Color.Black,
+        ),
+        // P/12/Medium
+        labelMedium = TextStyle(
+            fontFamily = preTendFont,
+            fontWeight = FontWeight.W500,
+            fontSize = 12.sp,
+            color = Color.Black,
+        ),
+        // P/12/Regular
+        labelSmall = TextStyle(
+            fontFamily = preTendFont,
+            fontWeight = FontWeight.W400,
+            fontSize = 12.sp,
+            color = Color.Black,
+        ),
+        // P/10/SemiBold
         headlineLarge = TextStyle(
             fontFamily = preTendFont,
             fontWeight = FontWeight.W600,
-            fontSize = 14.sp,
-            lineHeight = 24.sp,
+            fontSize = 10.sp,
             color = Color.Black,
         ),
-
+        // P/10/Medium
+        headlineMedium = TextStyle(
+            fontFamily = preTendFont,
+            fontWeight = FontWeight.W500,
+            fontSize = 10.sp,
+            color = Color.Black,
+        ),
     )
