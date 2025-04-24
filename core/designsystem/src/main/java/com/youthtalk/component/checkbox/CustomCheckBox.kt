@@ -20,7 +20,7 @@ import com.youthtalk.designsystem.gray10
 import com.youthtalk.designsystem.gray40
 
 @Composable
-fun CustomCheckBox(modifier: Modifier = Modifier, isCheck: Boolean = false, onClick: () -> Unit) {
+fun CustomCheckBox(modifier: Modifier = Modifier, isCheck: Boolean = false, onClick: () -> Unit = {}) {
     val background = if (isCheck) MaterialTheme.colorScheme.primary else gray40
     Box(
         modifier = modifier
