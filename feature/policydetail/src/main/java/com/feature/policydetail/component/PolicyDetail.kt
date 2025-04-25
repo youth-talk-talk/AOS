@@ -1,4 +1,4 @@
-package com.example.policydetail.component
+package com.feature.policydetail.component
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
@@ -33,8 +33,8 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.policydetail.model.PolicyDetailUiState
-import com.example.policydetail.utils.TextUtils
+import com.feature.policydetail.model.PolicyDetailUiState
+import com.feature.policydetail.utils.TextUtils
 import com.youth.app.feature.policydetail.R
 import com.youthtalk.designsystem.YongProjectTheme
 import com.youthtalk.designsystem.gray50

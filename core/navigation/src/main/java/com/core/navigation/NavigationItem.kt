@@ -14,6 +14,7 @@ sealed class MainNav(
     override val title: String,
     override val route: String,
 ) : IconDestination {
+
     data object Home : MainNav(
         route = MAIN_HOME,
         title = NavigationTitle.MAIN_HOME,
@@ -29,7 +30,13 @@ sealed class MainNav(
     data object MyPage : MainNav(
         route = MAIN_MY_PAGE,
         title = NavigationTitle.MAIN_MY_PAGE,
-        icon = R.drawable.mypage,
+        icon = R.drawable.person,
+    )
+
+    data object Policy : MainNav(
+        route = MAIN_MY_PAGE,
+        title = NavigationTitle.MAIN_MY_PAGE,
+        icon = R.drawable.person,
     )
 
     companion object {
@@ -88,6 +95,7 @@ object NavigationRouteName {
     const val MAIN_HOME = "main_home"
     const val MAIN_COMMUNITY = "main_community"
     const val MAIN_MY_PAGE = "main_my_page"
+    const val MAIN_POLICY = "main_policy"
     const val POLICY_DETAIL = "policy_detail"
     const val SPEC_POLICY = "spec_policy"
     const val SEARCH = "search"

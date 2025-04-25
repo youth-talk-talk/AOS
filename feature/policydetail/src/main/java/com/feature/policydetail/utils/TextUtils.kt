@@ -1,4 +1,4 @@
-package com.example.policydetail.utils
+package com.feature.policydetail.utils
 
 object TextUtils {
     fun isNotEmptyContent(text: String): Boolean {
