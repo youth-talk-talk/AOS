@@ -22,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -52,7 +53,7 @@ fun AgreeScreen(clickNext: () -> Unit, onBack: () -> Unit) {
             mutableStateOf(false)
         }
 
-        var isCheck by remember {
+        var isCheck by rememberSaveable {
             mutableStateOf(false)
         }
 
@@ -114,14 +115,18 @@ private fun TermCheckBox(isCheck: Boolean, isExpand: Boolean, onClickCheck: () -
         modifier = Modifier
             .padding(top = 20.dp)
             .fillMaxWidth()
+            .clickable(
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() },
+            ) {
+                onClickCheck()
+            }
             .padding(vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         CustomCheckBox(
             isCheck = isCheck,
-            onClick = {
-                onClickCheck()
-            },
+            onClick = onClickCheck,
         )
         Text(
             modifier = Modifier.padding(start = 8.dp, end = 4.dp),

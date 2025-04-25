@@ -6,31 +6,39 @@
     <string name="kakao_description">카카오 로그인</string>
     <string name="term_title">반가워요!\n가입하려면 약관동의가 필요해요.</string>
     <string name="next">다음</string>
+    <string name="done">완료하기</string>
     <string name="back">돌아가기</string>
     <string name="checkbox_title">이용약관</string>
     <string name="checkbox_required">(필수)</string>
     <string name="expand">펼치기</string>
     <string name="nickname_title">반가워요!\n어떤 닉네임으로 불러드릴까요?</string>
     <string name="nickname_sub_title">청년톡톡에서 활동하실 닉네임을 정해주세요</string>
+    <string name="region_title">지역을 선택해 주세요</string>
+    <string name="region_sub_title">지역을 기반으로 다양한 정책을 추천해 드려요</string>
+    <string name="input_nickname_hint">닉네임을 입력해 주세요</string>
+    <string name="input_region_hint">닉네임을 입력해 주세요</string>
+    <string name="bottom_sheet_button_text">적용하기</string>
+    <string name="bottom_sheet_title">지역을 선택해 주세요</string>
 
     <string-array name="regions">
-        <item>서울특별시</item>
-        <item>경기도</item>
-        <item>인천광역시</item>
-        <item>세종특별자치시</item>
-        <item>대전광역시</item>
-        <item>충청북도</item>
-        <item>충청남도</item>
-        <item>강원도</item>
-        <item>경상북도</item>
-        <item>경상남도</item>
-        <item>대구광역시</item>
-        <item>울산광역시</item>
-        <item>부산광역시</item>
-        <item>광주광역시</item>
-        <item>전라북도</item>
-        <item>전라남도</item>
-        <item>제주특별자치도</item>
+        <item>전체 지역</item>
+        <item>서울</item>
+        <item>부산</item>
+        <item>대구</item>
+        <item>인천</item>
+        <item>광주</item>
+        <item>대전</item>
+        <item>울산</item>
+        <item>경기</item>
+        <item>강원</item>
+        <item>충북</item>
+        <item>충남</item>
+        <item>전북</item>
+        <item>전남</item>
+        <item>경북</item>
+        <item>경남</item>
+        <item>제주</item>
+        <item>세종</item>
     </string-array>
 
     <string-array name="first">

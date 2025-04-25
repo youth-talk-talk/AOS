@@ -8,6 +8,7 @@ import com.core.domain.usercase.PostSignUseCase
 import com.core.model.login.LoginUiEffect
 import com.youthtalk.model.User
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -46,6 +47,7 @@ class LoginViewModel @Inject constructor(
             getUserUseCase()
                 .catch {
                     Timber.e("checkToken not User")
+                    delay(500L)
                     uiEffect.emit(LoginUiEffect.GoLoginActivity)
                 }
                 .collectLatest {
@@ -69,6 +71,7 @@ class LoginViewModel @Inject constructor(
     }
 
     fun postSign(nickname: String, region: String) {
+        Timber.e("postSign Start")
         viewModelScope.launch {
             postSignUseCase(socialId, nickname, region)
                 .onStart {

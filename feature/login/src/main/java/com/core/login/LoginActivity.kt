@@ -4,7 +4,10 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.Lifecycle
@@ -54,7 +57,12 @@ class LoginActivity : ComponentActivity() {
             }
 
             YongProjectTheme {
-                LoginNavHostScreen(viewModel)
+                Scaffold { innerPadding ->
+                    LoginNavHostScreen(
+                        modifier = Modifier.padding(innerPadding),
+                        viewModel = viewModel,
+                    )
+                }
             }
         }
     }

@@ -1,6 +1,9 @@
 package com.core.screen
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -8,10 +11,14 @@ import com.core.login.LoginViewModel
 import com.core.navigation.LoginRouteName
 
 @Composable
-fun LoginNavHostScreen(viewModel: LoginViewModel) {
+fun LoginNavHostScreen(modifier: Modifier = Modifier, viewModel: LoginViewModel) {
     val navHostController = rememberNavController()
-
-    NavHost(navController = navHostController, startDestination = LoginRouteName.LOGIN_SCREEN) {
+    val loading by viewModel.loading.collectAsStateWithLifecycle()
+    NavHost(
+        modifier = modifier,
+        navController = navHostController,
+        startDestination = LoginRouteName.LOGIN_SCREEN,
+    ) {
         composable(LoginRouteName.LOGIN_SCREEN) {
             LoginScreen(
                 viewModel,
@@ -34,7 +41,13 @@ fun LoginNavHostScreen(viewModel: LoginViewModel) {
             )
         }
         composable(LoginRouteName.INFORMATION_SCREEN) {
-            InformationScreen(viewModel, onBack = { navHostController.popBackStack() })
+            InformationScreen(
+                loading = loading,
+                onBack = { navHostController.popBackStack() },
+                signUp = { nickname, region ->
+                    viewModel.postSign(nickname, region)
+                },
+            )
         }
     }
 }
