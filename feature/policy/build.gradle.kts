@@ -7,18 +7,14 @@ plugins {
 }
 
 android {
-    setNamespace("feature.home")
+    setNamespace("feature.policy")
 }
 
 dependencies {
-    implementation(projects.feature.community)
-    implementation(projects.feature.policy)
-    implementation(projects.feature.mypage)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0")
 }

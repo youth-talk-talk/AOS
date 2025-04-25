@@ -1,4 +1,4 @@
-package com.example.policydetail.model
+package com.feature.policydetail.model
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable

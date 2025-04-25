@@ -1,4 +1,4 @@
-package com.example.policydetail.component
+package com.feature.policydetail.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

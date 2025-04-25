@@ -44,3 +44,4 @@ include(
     ":feature:specpolicy",
     ":feature:search",
 )
+include(":feature:policy")

@@ -1,4 +1,4 @@
-package com.example.policydetail
+package com.feature.policydetail
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -10,7 +10,7 @@ import com.core.domain.usercase.PostPolicyScrapUseCase
 import com.core.domain.usercase.policydetail.GetPolicyDetailCommentUseCase
 import com.core.domain.usercase.policydetail.GetPolicyDetailUseCase
 import com.core.domain.usercase.post.PatchCommentUseCase
-import com.example.policydetail.model.PolicyDetailUiState
+import com.feature.policydetail.model.PolicyDetailUiState
 import com.youthtalk.model.Comment
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.toPersistentList

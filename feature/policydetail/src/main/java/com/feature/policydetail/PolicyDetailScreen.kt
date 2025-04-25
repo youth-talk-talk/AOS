@@ -1,4 +1,4 @@
-package com.example.policydetail
+package com.feature.policydetail
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -43,11 +43,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import com.example.policydetail.component.PolicyDetail
-import com.example.policydetail.component.PolicyDetailTopAppBar
-import com.example.policydetail.component.PolicyTitle
-import com.example.policydetail.model.PolicyDetailUiState
-import com.example.policydetail.utils.TextUtils
+import com.feature.policydetail.component.PolicyDetail
+import com.feature.policydetail.component.PolicyDetailTopAppBar
+import com.feature.policydetail.component.PolicyTitle
+import com.feature.policydetail.model.PolicyDetailUiState
+import com.feature.policydetail.utils.TextUtils
 import com.youth.app.feature.policydetail.R
 import com.youthtalk.component.CommentScreen
 import com.youthtalk.component.CommentTextField
