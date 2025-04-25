@@ -29,8 +29,8 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.core.mypage.model.scrappolicy.ScrapPolicyUiEvent
 import com.core.mypage.model.scrappolicy.ScrapPolicyUiState
 import com.core.mypage.viewmodel.ScrapPolicyViewModel
-import com.youthtalk.component.MiddleTitleTopBar
 import com.youthtalk.component.PolicyCard
+import com.youthtalk.component.topbar.MiddleTitleTopBar
 import com.youthtalk.designsystem.YongProjectTheme
 import com.youthtalk.model.Category
 import com.youthtalk.model.Policy

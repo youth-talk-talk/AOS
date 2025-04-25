@@ -25,8 +25,8 @@ import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.core.community.model.ContentInfo
-import com.youthtalk.component.MiddleTitleTopBar
 import com.youthtalk.component.RoundButton
+import com.youthtalk.component.topbar.MiddleTitleTopBar
 import com.youthtalk.designsystem.YongProjectTheme
 import com.youthtalk.model.SearchPolicy
 import com.youthtalk.model.WriteInfo

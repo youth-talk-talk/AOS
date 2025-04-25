@@ -49,10 +49,10 @@ import com.kakao.sdk.user.UserApiClient
 import com.youth.app.feature.mypage.R
 import com.youthtalk.component.CategoryButton
 import com.youthtalk.component.CustomDialog
-import com.youthtalk.component.MiddleTitleTopBar
 import com.youthtalk.component.RoundButton
 import com.youthtalk.component.filter.FilterCategoryTitle
 import com.youthtalk.component.filter.NonlazyGrid
+import com.youthtalk.component.topbar.MiddleTitleTopBar
 import com.youthtalk.designsystem.YongProjectTheme
 import com.youthtalk.model.Region
 import com.youthtalk.model.User

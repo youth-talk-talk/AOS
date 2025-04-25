@@ -23,7 +23,7 @@ import coil3.compose.AsyncImage
 import com.core.mypage.model.announcedetail.AnnounceDetailUiEvent
 import com.core.mypage.model.announcedetail.AnnounceDetailUiState
 import com.core.mypage.viewmodel.AnnouncementDetailViewModel
-import com.youthtalk.component.MiddleTitleTopBar
+import com.youthtalk.component.topbar.MiddleTitleTopBar
 import com.youthtalk.model.AnnounceDetail
 
 @Composable

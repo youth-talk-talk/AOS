@@ -28,7 +28,7 @@ import androidx.paging.compose.itemKey
 import com.core.mypage.component.AnnouncementComponent
 import com.core.mypage.model.announce.AnnounceUiState
 import com.core.mypage.viewmodel.AnnouncementViewModel
-import com.youthtalk.component.MiddleTitleTopBar
+import com.youthtalk.component.topbar.MiddleTitleTopBar
 import com.youthtalk.designsystem.YongProjectTheme
 import com.youthtalk.model.Announce
 

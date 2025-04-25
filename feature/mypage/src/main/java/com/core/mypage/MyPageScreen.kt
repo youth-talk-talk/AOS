@@ -179,6 +179,7 @@ private fun MyPageHome(navHost: NavHostController, uiState: MyPageHomeUiState.Su
         Column {
             ProfileCard(
                 username = user.nickname,
+                email = "",
                 onClick = {
                     navHost.navigate(SettingNavigation.AccountManage.route)
                 },
