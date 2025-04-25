@@ -31,8 +31,8 @@ import com.core.mypage.model.home.MyPageHomeUiEffect
 import com.core.mypage.model.home.MyPageHomeUiEvent
 import com.core.mypage.model.home.MyPageHomeUiState
 import com.core.mypage.viewmodel.MyPageHomeViewModel
-import com.youthtalk.component.MiddleTitleTopBar
 import com.youthtalk.component.RoundButton
+import com.youthtalk.component.topbar.MiddleTitleTopBar
 import com.youthtalk.designsystem.YongProjectTheme
 import com.youthtalk.designsystem.gray100
 import kotlinx.coroutines.flow.collectLatest

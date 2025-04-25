@@ -31,8 +31,8 @@ import androidx.paging.compose.itemKey
 import com.core.mypage.model.posts.MyPagePostsUiEvent
 import com.core.mypage.model.posts.MyPagePostsUiState
 import com.core.mypage.viewmodel.MyPagePostViewModel
-import com.youthtalk.component.MiddleTitleTopBar
 import com.youthtalk.component.PostCard
+import com.youthtalk.component.topbar.MiddleTitleTopBar
 import com.youthtalk.designsystem.YongProjectTheme
 import com.youthtalk.model.PostType
 import com.youthtalk.model.ScrapPost

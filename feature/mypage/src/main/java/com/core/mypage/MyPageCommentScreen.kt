@@ -15,7 +15,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -29,7 +28,7 @@ import com.core.mypage.model.comments.MyPageCommentsUiEvent
 import com.core.mypage.model.comments.MyPageCommentsUiState
 import com.core.mypage.viewmodel.MyPageCommentsViewModel
 import com.youthtalk.component.CommentScreen
-import com.youthtalk.component.MiddleTitleTopBar
+import com.youthtalk.component.topbar.MiddleTitleTopBar
 import com.youthtalk.designsystem.YongProjectTheme
 import com.youthtalk.model.Comment
 import kotlinx.collections.immutable.ImmutableList
