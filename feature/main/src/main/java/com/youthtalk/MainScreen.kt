@@ -15,7 +15,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.core.home.navigation.homeNavigation
 import com.core.mypage.navigation.navigateSettingEtc
+import com.core.mypage.navigation.navigateSettingTerms
 import com.core.mypage.navigation.settingEtcNavigation
+import com.core.mypage.navigation.settingTermsNavigation
 import com.core.navigation.navigator.Navigation
 import com.youthtalk.designsystem.YongProjectTheme
 
@@ -52,8 +54,10 @@ fun NavHostScreen(
     ) {
         homeNavigation(
             onClickEtc = navController::navigateSettingEtc,
+            onClickTerms = navController::navigateSettingTerms,
         )
         settingEtcNavigation()
+        settingTermsNavigation()
 
 //        mainNavigation(navController, homeLazyListScrollState, goLogin = goLogin)
 //

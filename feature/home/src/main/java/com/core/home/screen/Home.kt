@@ -18,7 +18,7 @@ import com.core.navigation.navigator.HomeTabNavigation
 import com.feature.policy.navigation.policyTabNavigation
 
 @Composable
-fun Home(modifier: Modifier = Modifier, onClickEtc: () -> Unit) {
+fun Home(modifier: Modifier = Modifier, onClickEtc: () -> Unit, onClickTerms: () -> Unit) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route ?: "Home"
@@ -49,6 +49,7 @@ fun Home(modifier: Modifier = Modifier, onClickEtc: () -> Unit) {
             settingTabNavigation(
                 onClickProfileCard = navController::navigateAccount,
                 onClickEtc = onClickEtc,
+                onClickTerms = onClickTerms,
             )
         }
     }

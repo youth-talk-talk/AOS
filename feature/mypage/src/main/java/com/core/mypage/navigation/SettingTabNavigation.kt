@@ -18,7 +18,7 @@ fun NavController.navigateAccount(navOptions: NavOptions? = null) {
     navigate(Account, navOptions)
 }
 
-fun NavGraphBuilder.settingTabNavigation(onClickProfileCard: () -> Unit, onClickEtc: () -> Unit) {
+fun NavGraphBuilder.settingTabNavigation(onClickProfileCard: () -> Unit, onClickEtc: () -> Unit, onClickTerms: () -> Unit) {
     navigation(
         startDestination = "Setting",
         route = "Setting_graph",
@@ -27,6 +27,7 @@ fun NavGraphBuilder.settingTabNavigation(onClickProfileCard: () -> Unit, onClick
             SettingScreen(
                 onClickProfileCard = onClickProfileCard,
                 onClickEtc = onClickEtc,
+                onClickTerms = onClickTerms,
             )
         }
 
