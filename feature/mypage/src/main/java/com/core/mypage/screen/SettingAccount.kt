@@ -3,6 +3,8 @@ package com.core.mypage.screen
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,6 +19,10 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -27,6 +33,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.core.mypage.model.InfoType
 import com.youth.app.feature.mypage.R
+import com.youthtalk.component.dialog.ModalDialog
 import com.youthtalk.component.dropdown.RegionDropDown
 import com.youthtalk.component.topbar.MiddleTitleTopBar
 import com.youthtalk.designsystem.YongProjectTheme
@@ -35,9 +42,13 @@ import com.youthtalk.designsystem.gray50
 import com.youthtalk.designsystem.gray70
 import com.youthtalk.designsystem.gray80
 import com.youthtalk.designsystem.gray90
+import timber.log.Timber
 
 @Composable
 fun SettingAccount(modifier: Modifier = Modifier) {
+    var dialog by remember {
+        mutableStateOf(false)
+    }
     Column(
         modifier = modifier
             .fillMaxSize(),
@@ -148,7 +159,14 @@ fun SettingAccount(modifier: Modifier = Modifier) {
             )
 
             Text(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable(
+                        indication = null,
+                        interactionSource = remember { MutableInteractionSource() },
+                    ) {
+                        dialog = true
+                    },
                 text = stringResource(R.string.logout),
                 style = MaterialTheme.typography.displayMedium.copy(
                     color = gray70,
@@ -156,6 +174,18 @@ fun SettingAccount(modifier: Modifier = Modifier) {
                 ),
             )
         }
+    }
+
+    if (dialog) {
+        ModalDialog(
+            title = stringResource(R.string.logout),
+            subTitle = stringResource(R.string.dialog_logout_subtitle),
+            confirmText = stringResource(R.string.logout),
+            onDismissRequest = { dialog = false },
+            onClickConfirm = {
+                Timber.e("dialog Clicked")
+            },
+        )
     }
 }
 
