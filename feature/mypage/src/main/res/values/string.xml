@@ -16,6 +16,9 @@
     <string name="favorite_region">관심지역</string>
     <string name="account_region_hint">지역을 선택해 주세요.</string>
     <string name="account_topbar_title">내 계정</string>
+    <string name="etc_topbar_title">기타 관리</string>
+    <string name="etc_app_version_title">앱 버전</string>
+    <string name="withdraw">회원탈퇴</string>
     <string-array name="favorites">
         <item>스크랩한 정책</item>
         <item>스크랩한 게시물</item>
