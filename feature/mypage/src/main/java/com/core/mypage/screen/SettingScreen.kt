@@ -36,15 +36,16 @@ import com.youthtalk.designsystem.gray40
 import com.youthtalk.designsystem.gray90
 
 @Composable
-fun SettingScreen(modifier: Modifier = Modifier, onClickProfileCard: () -> Unit, onClickEtc: () -> Unit) {
+fun SettingScreen(modifier: Modifier = Modifier, onClickProfileCard: () -> Unit, onClickEtc: () -> Unit, onClickTerms: () -> Unit) {
     SettingMain(
         onClickProfileCard = onClickProfileCard,
         onClickEtc = onClickEtc,
+        onClickTerms = onClickTerms,
     )
 }
 
 @Composable
-fun SettingMain(modifier: Modifier = Modifier, onClickProfileCard: () -> Unit, onClickEtc: () -> Unit) {
+fun SettingMain(modifier: Modifier = Modifier, onClickProfileCard: () -> Unit, onClickEtc: () -> Unit, onClickTerms: () -> Unit) {
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -96,11 +97,9 @@ fun SettingMain(modifier: Modifier = Modifier, onClickProfileCard: () -> Unit, o
             contents = ManageModel.getList(),
             onClick = {
                 when (it) {
-                    is ManageModel.Policy -> {}
+                    is ManageModel.Policy -> onClickTerms()
                     is ManageModel.Inquire -> {}
-                    is ManageModel.Etc -> {
-                        onClickEtc()
-                    }
+                    is ManageModel.Etc -> onClickEtc()
                 }
             },
         )
@@ -207,6 +206,7 @@ private fun SettingScreenPreview() {
         SettingScreen(
             onClickProfileCard = {},
             onClickEtc = {},
+            onClickTerms = {},
         )
     }
 }

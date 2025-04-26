@@ -6,3 +6,6 @@ interface MainNavigator : Navigator
 
 @Serializable
 data object Etc
+
+@Serializable
+data object Terms
