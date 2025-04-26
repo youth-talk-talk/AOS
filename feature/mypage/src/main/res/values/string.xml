@@ -7,6 +7,7 @@
     <string name="scrap_title">스크랩 한 정책</string>
     <string name="notification">알림</string>
     <string name="next">다음 이동</string>
+    <string name="account_region_hint">지역을 선택해 주세요.</string>
     <string-array name="favorites">
         <item>스크랩한 정책</item>
         <item>스크랩한 게시물</item>

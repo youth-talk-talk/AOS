@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
@@ -30,6 +31,7 @@ fun RegionDropDown(modifier: Modifier = Modifier, select: String = "", hint: Str
     Row(
         modifier = modifier
             .fillMaxWidth()
+            .heightIn(min = 46.dp)
             .background(
                 color = gray10,
                 shape = RoundedCornerShape(6.dp),

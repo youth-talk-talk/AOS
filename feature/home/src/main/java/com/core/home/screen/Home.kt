@@ -12,6 +12,7 @@ import androidx.navigation.compose.rememberNavController
 import com.core.community.navigation.communityNavigation
 import com.core.home.navigation.BottomNavigation
 import com.core.home.navigation.homeTabNavigation
+import com.core.mypage.navigation.navigateAccount
 import com.core.mypage.navigation.settingTabNavigation
 import com.core.navigation.navigator.HomeTabNavigation
 import com.feature.policy.navigation.policyTabNavigation
@@ -45,14 +46,18 @@ fun Home(modifier: Modifier = Modifier) {
             homeTabNavigation()
             communityNavigation()
             policyTabNavigation()
-            settingTabNavigation()
+            settingTabNavigation(
+                onClickProfileCard = {
+                    navController.navigateAccount()
+                },
+            )
         }
     }
 }
 
 private fun String.toHomeTabNavigation(): HomeTabNavigation = when (this) {
     "Home" -> HomeTabNavigation.Home
-    "Setting" -> HomeTabNavigation.Setting
+    "Setting", "Account" -> HomeTabNavigation.Setting
     "Community" -> HomeTabNavigation.Community
     "Policy" -> HomeTabNavigation.Policy
     else -> HomeTabNavigation.Home

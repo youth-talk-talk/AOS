@@ -20,3 +20,6 @@ sealed interface HomeTabNavigation {
     @SerialName("Policy")
     data object Policy : HomeTabNavigation
 }
+
+@Serializable
+data object Account

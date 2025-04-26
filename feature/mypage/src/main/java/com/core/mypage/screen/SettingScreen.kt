@@ -36,7 +36,14 @@ import com.youthtalk.designsystem.gray40
 import com.youthtalk.designsystem.gray90
 
 @Composable
-fun SettingScreen(modifier: Modifier = Modifier) {
+fun SettingScreen(modifier: Modifier = Modifier, onClickProfileCard: () -> Unit) {
+    SettingMain(
+        onClickProfileCard = onClickProfileCard,
+    )
+}
+
+@Composable
+fun SettingMain(modifier: Modifier = Modifier, onClickProfileCard: () -> Unit) {
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -51,7 +58,7 @@ fun SettingScreen(modifier: Modifier = Modifier) {
                 .padding(horizontal = 16.dp, vertical = 12.dp),
             username = "울적한 쿠키",
             email = "abcd@kakao.com",
-            onClick = {},
+            onClick = onClickProfileCard,
         )
 
         ScrapPolicyAndNotification()
@@ -194,6 +201,8 @@ fun ScrapPolicyAndNotification(modifier: Modifier = Modifier) {
 @Composable
 private fun SettingScreenPreview() {
     YongProjectTheme {
-        SettingScreen()
+        SettingScreen(
+            onClickProfileCard = {},
+        )
     }
 }
