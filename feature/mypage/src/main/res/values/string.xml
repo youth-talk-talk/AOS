@@ -7,7 +7,15 @@
     <string name="scrap_title">스크랩 한 정책</string>
     <string name="notification">알림</string>
     <string name="next">다음 이동</string>
+    <string name="save">저장</string>
+    <string name="camera">카메라</string>
+    <string name="nickname">닉네임</string>
+    <string name="account">연동된 계정</string>
+    <string name="kakao">카카오</string>
+    <string name="logout">로그아웃</string>
+    <string name="favorite_region">관심지역</string>
     <string name="account_region_hint">지역을 선택해 주세요.</string>
+    <string name="account_topbar_title">내 계정</string>
     <string-array name="favorites">
         <item>스크랩한 정책</item>
         <item>스크랩한 게시물</item>
