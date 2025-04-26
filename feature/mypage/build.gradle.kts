@@ -18,4 +18,5 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     implementation(libs.coil3.coil.compose)
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0")
 }

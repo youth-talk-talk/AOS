@@ -19,7 +19,7 @@ import com.youthtalk.designsystem.gray100
 import com.youthtalk.util.clickableSingle
 
 @Composable
-fun MiddleTitleTopBar(modifier: Modifier = Modifier, title: String, onBack: () -> Unit, icon: (@Composable () -> Unit)? = null) {
+fun MiddleTitleTopBar(modifier: Modifier = Modifier, title: String, onBack: () -> Unit, tails: (@Composable () -> Unit)? = null) {
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -43,9 +43,9 @@ fun MiddleTitleTopBar(modifier: Modifier = Modifier, title: String, onBack: () -
             ),
         )
 
-        icon?.let {
+        tails?.let {
             Box(modifier = Modifier.align(Alignment.CenterEnd)) {
-                icon()
+                tails()
             }
         }
     }
