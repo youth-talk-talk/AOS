@@ -115,3 +115,19 @@ private fun ModalDialogPreview() {
         )
     }
 }
+
+@Preview
+@Composable
+private fun ModalDialogPrimaryPreview() {
+    YongProjectTheme {
+        ModalDialog(
+            title = "프로필 편집 나가기",
+            subTitle = "화면을 나가면 변경사항이 저장되지 않습니다.\n나가시겠습니까?",
+            cancelText = "나가기",
+            confirmText = "편집하기",
+            onDismissRequest = {},
+            onClickCancel = {},
+            onClickConfirm = {},
+        )
+    }
+}
