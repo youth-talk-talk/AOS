@@ -20,6 +20,8 @@
     <string name="etc_app_version_title">앱 버전</string>
     <string name="withdraw">회원탈퇴</string>
     <string name="terms_topbar_title">약관 및 정책</string>
+
+    <string name="dialog_logout_subtitle">로그아웃 하시겠습니까?</string>
     <string-array name="favorites">
         <item>스크랩한 정책</item>
         <item>스크랩한 게시물</item>
