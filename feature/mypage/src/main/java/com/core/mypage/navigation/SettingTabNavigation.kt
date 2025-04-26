@@ -18,7 +18,7 @@ fun NavController.navigateAccount(navOptions: NavOptions? = null) {
     navigate(Account, navOptions)
 }
 
-fun NavGraphBuilder.settingTabNavigation(onClickProfileCard: () -> Unit) {
+fun NavGraphBuilder.settingTabNavigation(onClickProfileCard: () -> Unit, onClickEtc: () -> Unit) {
     navigation(
         startDestination = "Setting",
         route = "Setting_graph",
@@ -26,6 +26,7 @@ fun NavGraphBuilder.settingTabNavigation(onClickProfileCard: () -> Unit) {
         composable<HomeTabNavigation.Setting> {
             SettingScreen(
                 onClickProfileCard = onClickProfileCard,
+                onClickEtc = onClickEtc,
             )
         }
 

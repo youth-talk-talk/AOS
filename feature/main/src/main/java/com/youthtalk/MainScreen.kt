@@ -14,6 +14,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.core.home.navigation.homeNavigation
+import com.core.mypage.navigation.navigateSettingEtc
+import com.core.mypage.navigation.settingEtcNavigation
 import com.core.navigation.navigator.Navigation
 import com.youthtalk.designsystem.YongProjectTheme
 
@@ -21,7 +23,6 @@ import com.youthtalk.designsystem.YongProjectTheme
 fun MainScreen(goLogin: () -> Unit, checkPermission: (String) -> Boolean) {
     val navHostController = rememberNavController()
     val homeLazyListScrollState = rememberLazyListState()
-
     Scaffold(
         content = {
             Column(modifier = Modifier.padding(it)) {
@@ -49,7 +50,10 @@ fun NavHostScreen(
         enterTransition = { EnterTransition.None },
         exitTransition = { ExitTransition.None },
     ) {
-        homeNavigation()
+        homeNavigation(
+            onClickEtc = navController::navigateSettingEtc,
+        )
+        settingEtcNavigation()
 
 //        mainNavigation(navController, homeLazyListScrollState, goLogin = goLogin)
 //
