@@ -11,11 +11,12 @@ fun NavController.navigateHome(navOptions: NavOptions) {
     navigate(Navigation.Main, navOptions)
 }
 
-fun NavGraphBuilder.homeNavigation(onClickEtc: () -> Unit, onClickTerms: () -> Unit) {
+fun NavGraphBuilder.homeNavigation(onClickEtc: () -> Unit, onClickTerms: () -> Unit, onClickSettingScrap: () -> Unit) {
     composable<Navigation.Main> {
         Home(
             onClickEtc = onClickEtc,
             onClickTerms = onClickTerms,
+            onClickSettingScrap = onClickSettingScrap,
         )
     }
 }
