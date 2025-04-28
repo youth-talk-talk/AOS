@@ -1,5 +1,6 @@
 package com.core.navigation.navigator
 
+import com.core.navigation.model.ScrapPostType
 import kotlinx.serialization.Serializable
 
 interface MainNavigator : Navigator
@@ -12,3 +13,8 @@ data object Terms
 
 @Serializable
 data object ScrapPolicy
+
+@Serializable
+data class ScrapPost(
+    val type: ScrapPostType,
+)

@@ -14,11 +14,18 @@ import com.core.home.navigation.BottomNavigation
 import com.core.home.navigation.homeTabNavigation
 import com.core.mypage.navigation.navigateAccount
 import com.core.mypage.navigation.settingTabNavigation
+import com.core.navigation.model.ScrapPostType
 import com.core.navigation.navigator.HomeTabNavigation
 import com.feature.policy.navigation.policyTabNavigation
 
 @Composable
-fun Home(modifier: Modifier = Modifier, onClickEtc: () -> Unit, onClickTerms: () -> Unit, onClickSettingScrap: () -> Unit) {
+fun Home(
+    modifier: Modifier = Modifier,
+    onClickEtc: () -> Unit,
+    onClickTerms: () -> Unit,
+    onClickSettingScrap: () -> Unit,
+    onClickSettingPost: (ScrapPostType) -> Unit,
+) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route ?: "Home"
@@ -51,6 +58,7 @@ fun Home(modifier: Modifier = Modifier, onClickEtc: () -> Unit, onClickTerms: ()
                 onClickEtc = onClickEtc,
                 onClickTerms = onClickTerms,
                 onClickSettingScrap = onClickSettingScrap,
+                onClickSettingPost = onClickSettingPost,
             )
         }
     }

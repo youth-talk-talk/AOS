@@ -28,6 +28,7 @@ import com.core.mypage.component.ProfileCard
 import com.core.mypage.model.CommunityModel
 import com.core.mypage.model.ManageModel
 import com.core.mypage.model.SettingModel
+import com.core.navigation.model.ScrapPostType
 import com.youth.app.feature.mypage.R
 import com.youthtalk.component.topbar.MiddleTitleTopBar
 import com.youthtalk.designsystem.YongProjectTheme
@@ -42,12 +43,14 @@ fun SettingScreen(
     onClickEtc: () -> Unit,
     onClickTerms: () -> Unit,
     onClickSettingScrap: () -> Unit,
+    onClickSettingPost: (ScrapPostType) -> Unit,
 ) {
     SettingMain(
         onClickProfileCard = onClickProfileCard,
         onClickEtc = onClickEtc,
         onClickTerms = onClickTerms,
         onClickSettingScrap = onClickSettingScrap,
+        onClickSettingPost = onClickSettingPost,
     )
 }
 
@@ -58,6 +61,7 @@ fun SettingMain(
     onClickEtc: () -> Unit,
     onClickTerms: () -> Unit,
     onClickSettingScrap: () -> Unit,
+    onClickSettingPost: (ScrapPostType) -> Unit,
 ) {
     Column(
         modifier = modifier
@@ -94,8 +98,12 @@ fun SettingMain(
                 when (it) {
                     is CommunityModel.Comment -> {}
                     is CommunityModel.Like -> {}
-                    is CommunityModel.Scrap -> {}
-                    is CommunityModel.Write -> {}
+                    is CommunityModel.Scrap -> {
+                        onClickSettingPost(ScrapPostType.SCRAP)
+                    }
+                    is CommunityModel.Write -> {
+                        onClickSettingPost(ScrapPostType.MY)
+                    }
                 }
             },
         )
@@ -229,6 +237,7 @@ private fun SettingScreenPreview() {
             onClickEtc = {},
             onClickTerms = {},
             onClickSettingScrap = {},
+            onClickSettingPost = {},
         )
     }
 }
