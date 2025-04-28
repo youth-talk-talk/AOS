@@ -7,6 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.core.mypage.screen.SettingAccount
 import com.core.mypage.screen.SettingScreen
+import com.core.navigation.model.CommentType
 import com.core.navigation.model.ScrapPostType
 import com.core.navigation.navigator.Account
 import com.core.navigation.navigator.HomeTabNavigation
@@ -25,6 +26,7 @@ fun NavGraphBuilder.settingTabNavigation(
     onClickTerms: () -> Unit,
     onClickSettingScrap: () -> Unit,
     onClickSettingPost: (ScrapPostType) -> Unit,
+    onClickSettingComment: (CommentType) -> Unit,
 ) {
     navigation(
         startDestination = "Setting",
@@ -37,6 +39,7 @@ fun NavGraphBuilder.settingTabNavigation(
                 onClickTerms = onClickTerms,
                 onClickSettingScrap = onClickSettingScrap,
                 onClickSettingPost = onClickSettingPost,
+                onClickSettingComment = onClickSettingComment,
             )
         }
 

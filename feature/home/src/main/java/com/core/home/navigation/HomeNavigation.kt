@@ -5,6 +5,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.core.home.screen.Home
+import com.core.navigation.model.CommentType
 import com.core.navigation.model.ScrapPostType
 import com.core.navigation.navigator.Navigation
 
@@ -17,6 +18,7 @@ fun NavGraphBuilder.homeNavigation(
     onClickTerms: () -> Unit,
     onClickSettingScrap: () -> Unit,
     onClickSettingPost: (ScrapPostType) -> Unit,
+    onClickSettingComment: (CommentType) -> Unit,
 ) {
     composable<Navigation.Main> {
         Home(
@@ -24,6 +26,7 @@ fun NavGraphBuilder.homeNavigation(
             onClickTerms = onClickTerms,
             onClickSettingScrap = onClickSettingScrap,
             onClickSettingPost = onClickSettingPost,
+            onClickSettingComment = onClickSettingComment,
         )
     }
 }

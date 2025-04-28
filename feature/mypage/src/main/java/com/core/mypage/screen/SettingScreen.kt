@@ -28,6 +28,7 @@ import com.core.mypage.component.ProfileCard
 import com.core.mypage.model.CommunityModel
 import com.core.mypage.model.ManageModel
 import com.core.mypage.model.SettingModel
+import com.core.navigation.model.CommentType
 import com.core.navigation.model.ScrapPostType
 import com.youth.app.feature.mypage.R
 import com.youthtalk.component.topbar.MiddleTitleTopBar
@@ -44,6 +45,7 @@ fun SettingScreen(
     onClickTerms: () -> Unit,
     onClickSettingScrap: () -> Unit,
     onClickSettingPost: (ScrapPostType) -> Unit,
+    onClickSettingComment: (CommentType) -> Unit,
 ) {
     SettingMain(
         onClickProfileCard = onClickProfileCard,
@@ -51,6 +53,7 @@ fun SettingScreen(
         onClickTerms = onClickTerms,
         onClickSettingScrap = onClickSettingScrap,
         onClickSettingPost = onClickSettingPost,
+        onClickSettingComment = onClickSettingComment,
     )
 }
 
@@ -62,6 +65,7 @@ fun SettingMain(
     onClickTerms: () -> Unit,
     onClickSettingScrap: () -> Unit,
     onClickSettingPost: (ScrapPostType) -> Unit,
+    onClickSettingComment: (CommentType) -> Unit,
 ) {
     Column(
         modifier = modifier
@@ -96,11 +100,18 @@ fun SettingMain(
             contents = CommunityModel.getList(),
             onClick = {
                 when (it) {
-                    is CommunityModel.Comment -> {}
-                    is CommunityModel.Like -> {}
+                    is CommunityModel.Comment -> {
+                        onClickSettingComment(CommentType.MY)
+                    }
+
+                    is CommunityModel.Like -> {
+                        onClickSettingComment(CommentType.LIKE)
+                    }
+
                     is CommunityModel.Scrap -> {
                         onClickSettingPost(ScrapPostType.SCRAP)
                     }
+
                     is CommunityModel.Write -> {
                         onClickSettingPost(ScrapPostType.MY)
                     }
@@ -238,6 +249,7 @@ private fun SettingScreenPreview() {
             onClickTerms = {},
             onClickSettingScrap = {},
             onClickSettingPost = {},
+            onClickSettingComment = {},
         )
     }
 }
