@@ -36,16 +36,29 @@ import com.youthtalk.designsystem.gray40
 import com.youthtalk.designsystem.gray90
 
 @Composable
-fun SettingScreen(modifier: Modifier = Modifier, onClickProfileCard: () -> Unit, onClickEtc: () -> Unit, onClickTerms: () -> Unit) {
+fun SettingScreen(
+    modifier: Modifier = Modifier,
+    onClickProfileCard: () -> Unit,
+    onClickEtc: () -> Unit,
+    onClickTerms: () -> Unit,
+    onClickSettingScrap: () -> Unit,
+) {
     SettingMain(
         onClickProfileCard = onClickProfileCard,
         onClickEtc = onClickEtc,
         onClickTerms = onClickTerms,
+        onClickSettingScrap = onClickSettingScrap,
     )
 }
 
 @Composable
-fun SettingMain(modifier: Modifier = Modifier, onClickProfileCard: () -> Unit, onClickEtc: () -> Unit, onClickTerms: () -> Unit) {
+fun SettingMain(
+    modifier: Modifier = Modifier,
+    onClickProfileCard: () -> Unit,
+    onClickEtc: () -> Unit,
+    onClickTerms: () -> Unit,
+    onClickSettingScrap: () -> Unit,
+) {
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -63,7 +76,9 @@ fun SettingMain(modifier: Modifier = Modifier, onClickProfileCard: () -> Unit, o
             onClick = onClickProfileCard,
         )
 
-        ScrapPolicyAndNotification()
+        ScrapPolicyAndNotification(
+            onClickSettingScrap = onClickSettingScrap,
+        )
 
         HorizontalDivider(
             thickness = 10.dp,
@@ -151,7 +166,7 @@ private fun <T : SettingModel> SettingList(modifier: Modifier = Modifier, title:
 }
 
 @Composable
-fun ScrapPolicyAndNotification(modifier: Modifier = Modifier) {
+fun ScrapPolicyAndNotification(modifier: Modifier = Modifier, onClickSettingScrap: () -> Unit) {
     Row(
         modifier = modifier
             .fillMaxWidth(),
@@ -159,6 +174,12 @@ fun ScrapPolicyAndNotification(modifier: Modifier = Modifier) {
     ) {
         Column(
             modifier = modifier
+                .clickable(
+                    indication = null,
+                    interactionSource = remember { MutableInteractionSource() },
+                ) {
+                    onClickSettingScrap()
+                }
                 .padding(top = 16.dp, bottom = 24.dp)
                 .weight(1f),
             verticalArrangement = Arrangement.spacedBy(6.dp),
@@ -207,6 +228,7 @@ private fun SettingScreenPreview() {
             onClickProfileCard = {},
             onClickEtc = {},
             onClickTerms = {},
+            onClickSettingScrap = {},
         )
     }
 }

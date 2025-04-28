@@ -9,3 +9,6 @@ data object Etc
 
 @Serializable
 data object Terms
+
+@Serializable
+data object ScrapPolicy

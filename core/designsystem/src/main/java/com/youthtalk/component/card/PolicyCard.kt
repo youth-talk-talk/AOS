@@ -72,7 +72,7 @@ fun PolicyCard(modifier: Modifier = Modifier, isBookMark: Boolean = false) {
                 Image(
                     modifier = Modifier.size(20.dp),
                     painter = painterResource(
-                        if (isBookMark) R.drawable.bookmark_line else R.drawable.bookmark_fill,
+                        if (isBookMark) R.drawable.bookmark_fill else R.drawable.bookmark_line,
                     ),
                     contentDescription = "북마크",
                 )
