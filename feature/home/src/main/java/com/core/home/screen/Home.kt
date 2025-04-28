@@ -14,6 +14,7 @@ import com.core.home.navigation.BottomNavigation
 import com.core.home.navigation.homeTabNavigation
 import com.core.mypage.navigation.navigateAccount
 import com.core.mypage.navigation.settingTabNavigation
+import com.core.navigation.model.CommentType
 import com.core.navigation.model.ScrapPostType
 import com.core.navigation.navigator.HomeTabNavigation
 import com.feature.policy.navigation.policyTabNavigation
@@ -25,6 +26,7 @@ fun Home(
     onClickTerms: () -> Unit,
     onClickSettingScrap: () -> Unit,
     onClickSettingPost: (ScrapPostType) -> Unit,
+    onClickSettingComment: (CommentType) -> Unit,
 ) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -59,6 +61,7 @@ fun Home(
                 onClickTerms = onClickTerms,
                 onClickSettingScrap = onClickSettingScrap,
                 onClickSettingPost = onClickSettingPost,
+                onClickSettingComment = onClickSettingComment,
             )
         }
     }

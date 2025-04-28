@@ -1,5 +1,6 @@
 package com.core.navigation.navigator
 
+import com.core.navigation.model.CommentType
 import com.core.navigation.model.ScrapPostType
 import kotlinx.serialization.Serializable
 
@@ -17,4 +18,9 @@ data object ScrapPolicy
 @Serializable
 data class ScrapPost(
     val type: ScrapPostType,
+)
+
+@Serializable
+data class Comment(
+    val type: CommentType,
 )

@@ -120,6 +120,7 @@ fun CommentCard(modifier: Modifier = Modifier, isMine: Boolean = false) {
             Icon(
                 painter = painterResource(R.drawable.favorite_line),
                 contentDescription = "좋아요",
+                tint = gray80,
             )
 
             Text(
