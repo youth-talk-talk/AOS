@@ -4,6 +4,8 @@
     <string name="remove">삭제</string>
     <string name="favorite">좋아요</string>
     <string name="empty_image">빈이미지</string>
+    <string name="bookmark">북마크</string>
+    <string name="comment">댓글</string>
 
     <string-array name="category">
         <item>전체선택</item>
