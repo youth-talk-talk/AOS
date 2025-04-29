@@ -27,6 +27,7 @@ fun Home(
     onClickSettingScrap: () -> Unit,
     onClickSettingPost: (ScrapPostType) -> Unit,
     onClickSettingComment: (CommentType) -> Unit,
+    onClickSettingNotification: () -> Unit,
 ) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -62,6 +63,7 @@ fun Home(
                 onClickSettingScrap = onClickSettingScrap,
                 onClickSettingPost = onClickSettingPost,
                 onClickSettingComment = onClickSettingComment,
+                onClickSettingNotification = onClickSettingNotification,
             )
         }
     }

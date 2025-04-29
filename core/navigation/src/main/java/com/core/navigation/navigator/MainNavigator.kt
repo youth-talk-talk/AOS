@@ -24,3 +24,6 @@ data class ScrapPost(
 data class Comment(
     val type: CommentType,
 )
+
+@Serializable
+data object Notification

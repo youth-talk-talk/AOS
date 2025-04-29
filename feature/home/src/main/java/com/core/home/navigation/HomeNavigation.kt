@@ -19,6 +19,7 @@ fun NavGraphBuilder.homeNavigation(
     onClickSettingScrap: () -> Unit,
     onClickSettingPost: (ScrapPostType) -> Unit,
     onClickSettingComment: (CommentType) -> Unit,
+    onClickSettingNotification: () -> Unit,
 ) {
     composable<Navigation.Main> {
         Home(
@@ -27,6 +28,7 @@ fun NavGraphBuilder.homeNavigation(
             onClickSettingScrap = onClickSettingScrap,
             onClickSettingPost = onClickSettingPost,
             onClickSettingComment = onClickSettingComment,
+            onClickSettingNotification = onClickSettingNotification,
         )
     }
 }

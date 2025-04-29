@@ -46,6 +46,7 @@ fun SettingScreen(
     onClickSettingScrap: () -> Unit,
     onClickSettingPost: (ScrapPostType) -> Unit,
     onClickSettingComment: (CommentType) -> Unit,
+    onClickSettingNotification: () -> Unit,
 ) {
     SettingMain(
         onClickProfileCard = onClickProfileCard,
@@ -54,6 +55,7 @@ fun SettingScreen(
         onClickSettingScrap = onClickSettingScrap,
         onClickSettingPost = onClickSettingPost,
         onClickSettingComment = onClickSettingComment,
+        onClickSettingNotification = onClickSettingNotification,
     )
 }
 
@@ -66,6 +68,7 @@ fun SettingMain(
     onClickSettingScrap: () -> Unit,
     onClickSettingPost: (ScrapPostType) -> Unit,
     onClickSettingComment: (CommentType) -> Unit,
+    onClickSettingNotification: () -> Unit,
 ) {
     Column(
         modifier = modifier
@@ -86,6 +89,7 @@ fun SettingMain(
 
         ScrapPolicyAndNotification(
             onClickSettingScrap = onClickSettingScrap,
+            onClickSettingNotification = onClickSettingNotification,
         )
 
         HorizontalDivider(
@@ -185,7 +189,7 @@ private fun <T : SettingModel> SettingList(modifier: Modifier = Modifier, title:
 }
 
 @Composable
-fun ScrapPolicyAndNotification(modifier: Modifier = Modifier, onClickSettingScrap: () -> Unit) {
+fun ScrapPolicyAndNotification(modifier: Modifier = Modifier, onClickSettingScrap: () -> Unit, onClickSettingNotification: () -> Unit) {
     Row(
         modifier = modifier
             .fillMaxWidth(),
@@ -222,6 +226,12 @@ fun ScrapPolicyAndNotification(modifier: Modifier = Modifier, onClickSettingScra
 
         Column(
             modifier = modifier
+                .clickable(
+                    indication = null,
+                    interactionSource = remember { MutableInteractionSource() },
+                ) {
+                    onClickSettingNotification()
+                }
                 .padding(top = 16.dp, bottom = 24.dp)
                 .weight(1f),
             verticalArrangement = Arrangement.spacedBy(6.dp),
@@ -250,6 +260,7 @@ private fun SettingScreenPreview() {
             onClickSettingScrap = {},
             onClickSettingPost = {},
             onClickSettingComment = {},
+            onClickSettingNotification = {},
         )
     }
 }

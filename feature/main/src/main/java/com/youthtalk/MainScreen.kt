@@ -16,11 +16,13 @@ import androidx.navigation.compose.rememberNavController
 import com.core.home.navigation.homeNavigation
 import com.core.mypage.navigation.navigateSettingComment
 import com.core.mypage.navigation.navigateSettingEtc
+import com.core.mypage.navigation.navigateSettingNotification
 import com.core.mypage.navigation.navigateSettingScrapPolicy
 import com.core.mypage.navigation.navigateSettingScrapPost
 import com.core.mypage.navigation.navigateSettingTerms
 import com.core.mypage.navigation.settingCommentNavigation
 import com.core.mypage.navigation.settingEtcNavigation
+import com.core.mypage.navigation.settingNotificationNavigation
 import com.core.mypage.navigation.settingScrapPolicyNavigation
 import com.core.mypage.navigation.settingScrapPostNavigation
 import com.core.mypage.navigation.settingTermsNavigation
@@ -64,12 +66,14 @@ fun NavHostScreen(
             onClickSettingScrap = navController::navigateSettingScrapPolicy,
             onClickSettingPost = navController::navigateSettingScrapPost,
             onClickSettingComment = navController::navigateSettingComment,
+            onClickSettingNotification = navController::navigateSettingNotification,
         )
         settingEtcNavigation()
         settingTermsNavigation()
         settingScrapPolicyNavigation()
         settingScrapPostNavigation()
         settingCommentNavigation()
+        settingNotificationNavigation()
 
 //        mainNavigation(navController, homeLazyListScrollState, goLogin = goLogin)
 //
