@@ -27,6 +27,7 @@ fun NavGraphBuilder.settingTabNavigation(
     onClickSettingScrap: () -> Unit,
     onClickSettingPost: (ScrapPostType) -> Unit,
     onClickSettingComment: (CommentType) -> Unit,
+    onClickSettingNotification: () -> Unit,
 ) {
     navigation(
         startDestination = "Setting",
@@ -40,6 +41,7 @@ fun NavGraphBuilder.settingTabNavigation(
                 onClickSettingScrap = onClickSettingScrap,
                 onClickSettingPost = onClickSettingPost,
                 onClickSettingComment = onClickSettingComment,
+                onClickSettingNotification = onClickSettingNotification,
             )
         }
 
