@@ -5,9 +5,9 @@ import com.youthtalk.dto.CommonResponse
 import com.youthtalk.dto.UserResponse
 import okhttp3.RequestBody
 import retrofit2.http.Body
-import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.PATCH
+import retrofit2.http.POST
 
 interface UserService {
     @GET("/api/v1/members/me")
@@ -22,6 +22,6 @@ interface UserService {
     @PATCH("/api/v1/members/me")
     suspend fun postUser(@Body requestBody: RequestBody): CommonResponse<UserResponse>
 
-    @DELETE("/api/v1/members/me")
+    @POST("/api/v1/members/me")
     suspend fun postDeleteUser(): CommonResponse<Unit>
 }

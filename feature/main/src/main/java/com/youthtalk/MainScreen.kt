@@ -69,7 +69,9 @@ fun NavHostScreen(
             onClickSettingNotification = navController::navigateSettingNotification,
             goLogin = goLogin,
         )
-        settingEtcNavigation()
+        settingEtcNavigation(
+            goLogin = goLogin,
+        )
         settingTermsNavigation()
         settingScrapPolicyNavigation()
         settingScrapPostNavigation()

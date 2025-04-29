@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="favorite_tab_icon">즐겨찾기 아이콘</string>
     <string name="appbar">마이페이지</string>
     <string name="community">커뮤니티 활동</string>
     <string name="manage">관리</string>
@@ -25,38 +24,7 @@
     <string name="scrap_policy_topbar_title">스크랩 한 정책</string>
 
     <string name="dialog_logout_subtitle">로그아웃 하시겠습니까?</string>
-    <string-array name="favorites">
-        <item>스크랩한 정책</item>
-        <item>스크랩한 게시물</item>
-        <item>작성한 게시물</item>
-        <item>작성한 댓글</item>
-        <item>좋아요한 댓글</item>
-    </string-array>
-
-    <string-array name="etc">
-        <item>공지사항</item>
-        <item>1:1 문의</item>
-    </string-array>
-
-    <string-array name="regions">
-        <item>서울특별시</item>
-        <item>경기도</item>
-        <item>인천광역시</item>
-        <item>세종특별자치시</item>
-        <item>대전광역시</item>
-        <item>충척북도</item>
-        <item>충청남도</item>
-        <item>강원도</item>
-        <item>경상북도</item>
-        <item>경상남도</item>
-        <item>대구광역시</item>
-        <item>울산광역시</item>
-        <item>부산광역시</item>
-        <item>광주광역시</item>
-        <item>전라북도</item>
-        <item>전라남도</item>
-        <item>제주특별자치도</item>
-    </string-array>
+    <string name="dialog_withdraw_subtitle">회원탈퇴 하시겠습니까?\n회원탈퇴 시 모든 정보는 즉시 삭제되며, 복구가 불가합니다.</string>
 
     <string name="law_info">
         청년톡톡 이용약관\n
