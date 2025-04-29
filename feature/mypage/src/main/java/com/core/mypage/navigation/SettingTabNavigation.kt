@@ -28,6 +28,7 @@ fun NavGraphBuilder.settingTabNavigation(
     onClickSettingPost: (ScrapPostType) -> Unit,
     onClickSettingComment: (CommentType) -> Unit,
     onClickSettingNotification: () -> Unit,
+    goLogin: () -> Unit,
 ) {
     navigation(
         startDestination = "Setting",
@@ -46,7 +47,9 @@ fun NavGraphBuilder.settingTabNavigation(
         }
 
         composable<Account> {
-            SettingAccount()
+            SettingAccount(
+                goLogin = goLogin,
+            )
         }
     }
 }

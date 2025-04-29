@@ -19,6 +19,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,26 +32,40 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.core.mypage.model.InfoType
+import com.core.mypage.model.account.AccountUiEffect
+import com.core.mypage.viewmodel.AccountViewModel
 import com.youth.app.feature.mypage.R
 import com.youthtalk.component.dialog.ModalDialog
 import com.youthtalk.component.dropdown.RegionDropDown
 import com.youthtalk.component.topbar.MiddleTitleTopBar
 import com.youthtalk.designsystem.YongProjectTheme
+import com.youthtalk.designsystem.gray10
 import com.youthtalk.designsystem.gray40
 import com.youthtalk.designsystem.gray50
 import com.youthtalk.designsystem.gray70
 import com.youthtalk.designsystem.gray80
 import com.youthtalk.designsystem.gray90
+import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 
 @Composable
-fun SettingAccount(modifier: Modifier = Modifier) {
+fun SettingAccount(modifier: Modifier = Modifier, viewModel: AccountViewModel = hiltViewModel(), goLogin: () -> Unit) {
     var dialog by remember {
         mutableStateOf(false)
     }
+
+    LaunchedEffect(viewModel.uiEffect) {
+        viewModel.uiEffect.collectLatest {
+            when (it) {
+                AccountUiEffect.Logout -> goLogin()
+            }
+        }
+    }
     Column(
         modifier = modifier
+            .background(color = gray10)
             .fillMaxSize(),
     ) {
         MiddleTitleTopBar(
@@ -184,6 +199,7 @@ fun SettingAccount(modifier: Modifier = Modifier) {
             onDismissRequest = { dialog = false },
             onClickConfirm = {
                 Timber.e("dialog Clicked")
+                viewModel.postLogout(false)
             },
         )
     }
@@ -216,6 +232,8 @@ fun AccountInfo(modifier: Modifier = Modifier, infoTitle: String, body: @Composa
 @Composable
 private fun SettingAccountPreview() {
     YongProjectTheme {
-        SettingAccount()
+        SettingAccount(
+            goLogin = {},
+        )
     }
 }

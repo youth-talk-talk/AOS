@@ -2,7 +2,7 @@ package com.core.home.screen
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Scaffold
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -28,6 +28,7 @@ fun Home(
     onClickSettingPost: (ScrapPostType) -> Unit,
     onClickSettingComment: (CommentType) -> Unit,
     onClickSettingNotification: () -> Unit,
+    goLogin: () -> Unit,
 ) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -64,6 +65,7 @@ fun Home(
                 onClickSettingPost = onClickSettingPost,
                 onClickSettingComment = onClickSettingComment,
                 onClickSettingNotification = onClickSettingNotification,
+                goLogin = goLogin,
             )
         }
     }
