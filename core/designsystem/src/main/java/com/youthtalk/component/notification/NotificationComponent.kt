@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.youth.app.core.designsystem.R
@@ -95,6 +96,8 @@ fun NotificationComponent(
             Text(
                 text = notificationTitle,
                 style = MaterialTheme.typography.displayLarge,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
             )
 
             if (notificationSubTitle.isNotEmpty()) {
@@ -103,6 +106,8 @@ fun NotificationComponent(
                     style = MaterialTheme.typography.labelSmall.copy(
                         color = gray80,
                     ),
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
                 )
             }
         }
