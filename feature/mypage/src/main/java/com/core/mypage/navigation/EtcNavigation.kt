@@ -11,8 +11,10 @@ fun NavController.navigateSettingEtc(navOptions: NavOptions? = null) {
     navigate(Etc, navOptions)
 }
 
-fun NavGraphBuilder.settingEtcNavigation() {
+fun NavGraphBuilder.settingEtcNavigation(goLogin: () -> Unit) {
     composable<Etc> {
-        EtcScreen()
+        EtcScreen(
+            goLogin = goLogin,
+        )
     }
 }
