@@ -35,6 +35,8 @@ fun CategoryScreen(goSpecPolicyScreen: (Category) -> Unit) {
                     },
                 category = category.categoryName,
                 painter = when (category) {
+                    Category.ALL -> painterResource(id = R.drawable.recruit)
+                    Category.DWELLING -> painterResource(id = R.drawable.recruit)
                     Category.JOB -> painterResource(id = R.drawable.recruit)
                     Category.EDUCATION -> painterResource(id = R.drawable.teacher)
                     Category.LIFE -> painterResource(id = R.drawable.book)

@@ -1,13 +1,17 @@
 package com.core.mypage.screen
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -24,6 +28,8 @@ import com.youthtalk.component.card.PolicyCard
 import com.youthtalk.component.empty.EmptyScreen
 import com.youthtalk.component.topbar.NoBackMiddleTitleTopBar
 import com.youthtalk.designsystem.YongProjectTheme
+import com.youthtalk.designsystem.gray10
+import com.youthtalk.designsystem.gray40
 
 @Composable
 fun ScrapPolicyScreen(modifier: Modifier = Modifier) {
@@ -70,12 +76,23 @@ fun ScrapPolicyScreen(modifier: Modifier = Modifier) {
             ) {
                 repeat(size) {
                     PolicyCard(
-                        modifier = Modifier.clickable(
-                            indication = null,
-                            interactionSource = remember { MutableInteractionSource() },
-                        ) {
-                            size--
-                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(
+                                color = gray10,
+                                shape = RoundedCornerShape(12.dp),
+                            )
+                            .border(
+                                width = 1.dp,
+                                color = gray40,
+                                shape = RoundedCornerShape(12.dp),
+                            )
+                            .clickable(
+                                indication = null,
+                                interactionSource = remember { MutableInteractionSource() },
+                            ) {
+                                size--
+                            },
                         isBookMark = true,
                     )
                 }
