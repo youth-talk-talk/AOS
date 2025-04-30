@@ -22,31 +22,44 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.youth.app.core.designsystem.R
-import com.youthtalk.component.tag.KeywordTag
 import com.youthtalk.designsystem.YongProjectTheme
 import com.youthtalk.designsystem.gray10
 import com.youthtalk.designsystem.gray50
 import com.youthtalk.designsystem.gray80
 import com.youthtalk.designsystem.gray90
+import com.youthtalk.extentions.shadow
 
 @Composable
-fun PostCard(modifier: Modifier = Modifier, keyword: String = "", communityTitle: String, communitySubTitle: String, policyTitle: String = "") {
+fun BestCard(modifier: Modifier = Modifier, communityCategory: String, communityTitle: String, communitySubTitle: String, policyTitle: String = "") {
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .background(color = gray10),
+            .shadow(
+                offsetX = 4.dp,
+                offsetY = 4.dp,
+                blurRadius = 12.dp,
+            )
+            .background(
+                color = gray10,
+                shape = RoundedCornerShape(12.dp),
+            )
+            .padding(horizontal = 16.dp, vertical = 20.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
-        if (keyword.isNotEmpty()) {
-            KeywordTag(text = keyword)
-        }
-
         Column(
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             Column(
                 verticalArrangement = Arrangement.spacedBy(4.dp),
             ) {
+                Text(
+                    modifier = Modifier.padding(bottom = 2.dp),
+                    text = communityCategory,
+                    style = MaterialTheme.typography.labelMedium.copy(
+                        color = gray80,
+                    ),
+                )
+
                 Text(
                     text = communityTitle,
                     style = MaterialTheme.typography.titleMedium,
@@ -145,11 +158,12 @@ fun PostCard(modifier: Modifier = Modifier, keyword: String = "", communityTitle
 
 @Preview
 @Composable
-private fun PostCardPreview() {
+private fun BestCardPreview() {
     YongProjectTheme {
-        PostCard(
-            communityTitle = "영화 보는 거 좋아하는 사람? 꿀팁 알려드림!",
-            communitySubTitle = "영화 보는 거 좋아하는 사람? 꿀팁 알려드림!",
+        BestCard(
+            communityCategory = "자유게시판",
+            communityTitle = "면접 정장 비싸서 걱정했는데 공짜로 해결함!",
+            communitySubTitle = "면접 정장 비싸서 걱정했는데 공짜로 해결함!.....",
         )
     }
 }

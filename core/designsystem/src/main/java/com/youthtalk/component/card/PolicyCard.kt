@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.youth.app.core.designsystem.R
@@ -31,21 +32,11 @@ import com.youthtalk.designsystem.gray40
 import com.youthtalk.designsystem.gray90
 
 @Composable
-fun PolicyCard(modifier: Modifier = Modifier, isBookMark: Boolean = false) {
+fun PolicyCard(modifier: Modifier = Modifier, isBookMark: Boolean = false, isVisibleScrap: Boolean = false) {
     Column(
         modifier = modifier
-            .fillMaxWidth()
-            .background(
-                color = gray10,
-                shape = RoundedCornerShape(12.dp),
-            )
-            .border(
-                width = 1.dp,
-                color = gray40,
-                shape = RoundedCornerShape(12.dp),
-            )
             .padding(horizontal = 14.dp, vertical = 16.dp),
-        verticalArrangement = Arrangement.spacedBy(14.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -107,6 +98,12 @@ fun PolicyCard(modifier: Modifier = Modifier, isBookMark: Boolean = false) {
                 style = MaterialTheme.typography.titleMedium,
             )
         }
+
+        if (isVisibleScrap) {
+            Text(
+                text = stringResource(R.string.policy_scrap_title, 162),
+            )
+        }
     }
 }
 
@@ -114,7 +111,19 @@ fun PolicyCard(modifier: Modifier = Modifier, isBookMark: Boolean = false) {
 @Composable
 private fun PolicyCardPreview() {
     YongProjectTheme {
-        PolicyCard()
+        PolicyCard(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(
+                    color = gray10,
+                    shape = RoundedCornerShape(12.dp),
+                )
+                .border(
+                    width = 1.dp,
+                    color = gray40,
+                    shape = RoundedCornerShape(12.dp),
+                ),
+        )
     }
 }
 
@@ -123,6 +132,17 @@ private fun PolicyCardPreview() {
 private fun PolicyCardBookmarkTruePreview() {
     YongProjectTheme {
         PolicyCard(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(
+                    color = gray10,
+                    shape = RoundedCornerShape(12.dp),
+                )
+                .border(
+                    width = 1.dp,
+                    color = gray40,
+                    shape = RoundedCornerShape(12.dp),
+                ),
             isBookMark = true,
         )
     }
