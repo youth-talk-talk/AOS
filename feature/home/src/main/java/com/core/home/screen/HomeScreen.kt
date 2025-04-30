@@ -95,7 +95,7 @@ fun HomeScreen(modifier: Modifier = Modifier) {
                 BestCard(
                     modifier = Modifier
                         .padding(horizontal = 8.dp)
-                        .padding(bottom = 16.dp),
+                        .padding(bottom = 8.dp),
                     communityCategory = "자유게시판",
                     communityTitle = "면접 정장 비싸서 걱정했는데 공짜로 해결함!",
                     communitySubTitle = "면접 정장 비싸서 걱정했는데 공짜로 해결함!.....",
