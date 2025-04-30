@@ -27,6 +27,8 @@ import com.core.mypage.navigation.settingScrapPolicyNavigation
 import com.core.mypage.navigation.settingScrapPostNavigation
 import com.core.mypage.navigation.settingTermsNavigation
 import com.core.navigation.navigator.Navigation
+import com.youth.search.navigation.navigatePolicySearch
+import com.youth.search.navigation.policySearchNavigation
 import com.youthtalk.designsystem.YongProjectTheme
 
 @Composable
@@ -61,6 +63,7 @@ fun NavHostScreen(
         exitTransition = { ExitTransition.None },
     ) {
         homeNavigation(
+            onClickPolicySearch = navController::navigatePolicySearch,
             onClickEtc = navController::navigateSettingEtc,
             onClickTerms = navController::navigateSettingTerms,
             onClickSettingScrap = navController::navigateSettingScrapPolicy,
@@ -77,6 +80,9 @@ fun NavHostScreen(
         settingScrapPostNavigation()
         settingCommentNavigation()
         settingNotificationNavigation()
+        policySearchNavigation(
+            onBack = { navController.popBackStack() },
+        )
 
 //        mainNavigation(navController, homeLazyListScrollState, goLogin = goLogin)
 //

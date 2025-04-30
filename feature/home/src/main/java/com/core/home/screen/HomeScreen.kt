@@ -47,7 +47,7 @@ import com.youthtalk.model.Category
 import com.youthtalk.model.Region
 
 @Composable
-fun HomeScreen(modifier: Modifier = Modifier) {
+fun HomeScreen(modifier: Modifier = Modifier, onClickPolicySearch: () -> Unit) {
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -56,7 +56,7 @@ fun HomeScreen(modifier: Modifier = Modifier) {
         RegionTopBar(
             region = Region.SEOUL,
             onClickRegion = {},
-            onClickSearch = {},
+            onClickSearch = onClickPolicySearch,
         )
 
         LazyColumn(

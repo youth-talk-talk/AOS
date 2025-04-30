@@ -28,6 +28,7 @@ fun Home(
     onClickSettingPost: (ScrapPostType) -> Unit,
     onClickSettingComment: (CommentType) -> Unit,
     onClickSettingNotification: () -> Unit,
+    onClickPolicySearch: () -> Unit,
     goLogin: () -> Unit,
 ) {
     val navController = rememberNavController()
@@ -54,7 +55,9 @@ fun Home(
             navController = navController,
             startDestination = HomeTabNavigation.Home,
         ) {
-            homeTabNavigation()
+            homeTabNavigation(
+                onClickPolicySearch = onClickPolicySearch,
+            )
             communityNavigation()
             policyTabNavigation()
             settingTabNavigation(
