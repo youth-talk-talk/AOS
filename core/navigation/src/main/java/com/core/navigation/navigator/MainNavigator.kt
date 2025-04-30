@@ -27,3 +27,11 @@ data class Comment(
 
 @Serializable
 data object Notification
+
+@Serializable
+data object PolicySearch
+
+@Serializable
+data class PolicySearchResult(
+    val search: String,
+)
