@@ -14,6 +14,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.core.home.navigation.homeNavigation
+import com.core.home.navigation.navigatePopularPolicy
+import com.core.home.navigation.popularPolicyNavigation
 import com.core.mypage.navigation.navigateSettingComment
 import com.core.mypage.navigation.navigateSettingEtc
 import com.core.mypage.navigation.navigateSettingNotification
@@ -63,6 +65,7 @@ fun NavHostScreen(
         exitTransition = { ExitTransition.None },
     ) {
         homeNavigation(
+            onClickPopularPolicy = navController::navigatePopularPolicy,
             onClickPolicySearch = navController::navigatePolicySearch,
             onClickEtc = navController::navigateSettingEtc,
             onClickTerms = navController::navigateSettingTerms,
@@ -83,6 +86,7 @@ fun NavHostScreen(
         policySearchNavigation(
             onBack = { navController.popBackStack() },
         )
+        popularPolicyNavigation(onBack = navController::popBackStack)
 
 //        mainNavigation(navController, homeLazyListScrollState, goLogin = goLogin)
 //
