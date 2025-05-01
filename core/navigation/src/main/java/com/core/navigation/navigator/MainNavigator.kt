@@ -35,3 +35,6 @@ data object PolicySearch
 data class PolicySearchResult(
     val search: String,
 )
+
+@Serializable
+data object PopularPolicy

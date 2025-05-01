@@ -47,7 +47,7 @@ import com.youthtalk.model.Category
 import com.youthtalk.model.Region
 
 @Composable
-fun HomeScreen(modifier: Modifier = Modifier, onClickPolicySearch: () -> Unit) {
+fun HomeScreen(modifier: Modifier = Modifier, onClickPolicySearch: () -> Unit, onClickPopularPolicy: () -> Unit) {
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -78,7 +78,9 @@ fun HomeScreen(modifier: Modifier = Modifier, onClickPolicySearch: () -> Unit) {
                     }
                 }
             }
-            popularPolicy()
+            popularPolicy(
+                onClickPopularPolicy = onClickPopularPolicy,
+            )
             newPolicy()
             realTimePolicy()
             item {
@@ -105,7 +107,7 @@ fun HomeScreen(modifier: Modifier = Modifier, onClickPolicySearch: () -> Unit) {
     }
 }
 
-fun LazyListScope.popularPolicy(modifier: Modifier = Modifier) {
+fun LazyListScope.popularPolicy(modifier: Modifier = Modifier, onClickPopularPolicy: () -> Unit) {
     item {
         Column(
             modifier = modifier,
@@ -113,7 +115,7 @@ fun LazyListScope.popularPolicy(modifier: Modifier = Modifier) {
         ) {
             TitleItem(
                 title = "우리 지역 인기 정책",
-                onClick = {},
+                onClick = onClickPopularPolicy,
             )
 
             LazyRow(
