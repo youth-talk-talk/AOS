@@ -1,49 +1,56 @@
-package com.feature.policy.component
+package com.feature.policy.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.youthtalk.component.card.PolicyCard
-import com.youthtalk.component.item.TitleItem
+import com.youthtalk.component.topbar.MiddleTitleTopBar
 import com.youthtalk.designsystem.gray10
-import com.youthtalk.designsystem.gray30
 import com.youthtalk.designsystem.gray40
+import com.youthtalk.designsystem.gray80
 
 @Composable
-fun RecentViewPolicy(modifier: Modifier = Modifier, onClickRecentViewPolicy: () -> Unit) {
+fun RecentlyViewPolicyScreen(modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
-            .padding(top = 10.dp, bottom = 32.dp),
-        verticalArrangement = Arrangement.spacedBy(14.dp),
+            .fillMaxSize(),
     ) {
-        TitleItem(
+        MiddleTitleTopBar(
             title = "최근 본 정책",
-            onClick = onClickRecentViewPolicy,
+            onBack = {},
+            tails = {
+                Text(
+                    text = "전체 선택",
+                    style = MaterialTheme.typography.labelSmall.copy(
+                        color = gray80,
+                    ),
+                )
+            },
         )
 
-        LazyRow(
+        LazyColumn(
             modifier = Modifier
-                .fillMaxWidth(),
-            contentPadding = PaddingValues(horizontal = 16.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
+                .fillMaxSize(),
+            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 10.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             items(
-                count = 10,
+                count = 20,
             ) {
                 PolicyCard(
                     modifier = Modifier
-                        .width(300.dp)
+                        .fillMaxWidth()
                         .background(
                             color = gray10,
                             shape = RoundedCornerShape(12.dp),
@@ -56,10 +63,5 @@ fun RecentViewPolicy(modifier: Modifier = Modifier, onClickRecentViewPolicy: () 
                 )
             }
         }
-
-        HorizontalDivider(
-            thickness = 10.dp,
-            color = gray30,
-        )
     }
 }
