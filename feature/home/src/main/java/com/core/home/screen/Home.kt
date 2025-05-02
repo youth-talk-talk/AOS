@@ -29,6 +29,7 @@ fun Home(
     onClickPolicySearch: () -> Unit,
     onClickPopularPolicy: () -> Unit,
     onClickNewPolicy: () -> Unit,
+    onClickRecentViewPolicy: () -> Unit,
     goLogin: () -> Unit,
 ) {
     val navController = rememberNavController()
@@ -47,7 +48,9 @@ fun Home(
                 onClickNewPolicy = onClickNewPolicy,
             )
             communityNavigation()
-            policyTabNavigation()
+            policyTabNavigation(
+                onClickRecentViewPolicy = onClickRecentViewPolicy,
+            )
             settingTabNavigation(
                 onClickProfileCard = navController::navigateAccount,
                 onClickEtc = onClickEtc,

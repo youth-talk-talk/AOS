@@ -29,6 +29,8 @@ import com.core.mypage.navigation.settingScrapPolicyNavigation
 import com.core.mypage.navigation.settingScrapPostNavigation
 import com.core.mypage.navigation.settingTermsNavigation
 import com.core.navigation.navigator.Navigation
+import com.feature.policy.navigation.navigateRecentlyViewPolicy
+import com.feature.policy.navigation.recentlyViewPolicyNavigation
 import com.youth.search.navigation.navigatePolicySearch
 import com.youth.search.navigation.policySearchNavigation
 import com.youthtalk.designsystem.YongProjectTheme
@@ -71,6 +73,7 @@ fun NavHostScreen(
             onClickSettingComment = navController::navigateSettingComment,
             onClickSettingNotification = navController::navigateSettingNotification,
             onClickNewPolicy = navController::navigateNewPolicy,
+            onClickRecentViewPolicy = navController::navigateRecentlyViewPolicy,
             goLogin = goLogin,
         )
         settingEtcNavigation(
@@ -86,6 +89,7 @@ fun NavHostScreen(
         )
         popularPolicyNavigation(onBack = navController::popBackStack)
         newPolicyNavigation(onBack = navController::popBackStack)
+        recentlyViewPolicyNavigation()
     }
 }
 

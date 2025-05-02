@@ -23,6 +23,7 @@ fun NavGraphBuilder.homeNavigation(
     onClickPolicySearch: () -> Unit,
     onClickPopularPolicy: () -> Unit,
     onClickNewPolicy: () -> Unit,
+    onClickRecentViewPolicy: () -> Unit,
     goLogin: () -> Unit,
 ) {
     composable<Navigation.Main> {
@@ -36,6 +37,7 @@ fun NavGraphBuilder.homeNavigation(
             onClickSettingNotification = onClickSettingNotification,
             onClickPopularPolicy = onClickPopularPolicy,
             onClickNewPolicy = onClickNewPolicy,
+            onClickRecentViewPolicy = onClickRecentViewPolicy,
             goLogin = goLogin,
         )
     }

@@ -55,7 +55,7 @@ import java.time.LocalDate
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun PolicyScreen(modifier: Modifier = Modifier) {
+fun PolicyScreen(modifier: Modifier = Modifier, onClickRecentViewPolicy: () -> Unit) {
     var selectDay by remember {
         mutableStateOf(LocalDate.now())
     }
@@ -91,7 +91,9 @@ fun PolicyScreen(modifier: Modifier = Modifier) {
                     .fillMaxSize()
                     .verticalScroll(state = scrollState),
             ) {
-                RecentViewPolicy()
+                RecentViewPolicy(
+                    onClickRecentViewPolicy = onClickRecentViewPolicy,
+                )
                 DDayPolicy(
                     selectedDay = selectDay,
                     onClickDay = { selectDay = it },

@@ -32,12 +32,10 @@ data object Notification
 data object PolicySearch
 
 @Serializable
-data class PolicySearchResult(
-    val search: String,
-)
-
-@Serializable
 data object PopularPolicy
 
 @Serializable
 data object NewPolicy
+
+@Serializable
+data object RecentlyViewPolicy

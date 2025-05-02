@@ -21,7 +21,7 @@ import com.youthtalk.designsystem.gray30
 import com.youthtalk.designsystem.gray40
 
 @Composable
-fun RecentViewPolicy(modifier: Modifier = Modifier) {
+fun RecentViewPolicy(modifier: Modifier = Modifier, onClickRecentViewPolicy: () -> Unit) {
     Column(
         modifier = modifier
             .padding(top = 10.dp, bottom = 32.dp),
@@ -29,7 +29,7 @@ fun RecentViewPolicy(modifier: Modifier = Modifier) {
     ) {
         TitleItem(
             title = "최근 본 정책",
-            onClick = {},
+            onClick = onClickRecentViewPolicy,
         )
 
         LazyRow(
