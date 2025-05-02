@@ -38,3 +38,6 @@ data class PolicySearchResult(
 
 @Serializable
 data object PopularPolicy
+
+@Serializable
+data object NewPolicy
