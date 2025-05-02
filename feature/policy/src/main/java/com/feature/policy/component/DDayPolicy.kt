@@ -22,11 +22,11 @@ import com.youthtalk.designsystem.gray40
 import java.time.LocalDate
 
 @Composable
-fun DDayPolicy(modifier: Modifier = Modifier, selectedDay: LocalDate, onClickDay: (LocalDate) -> Unit) {
+fun DDayPolicy(modifier: Modifier = Modifier, selectedDay: LocalDate, onClickDay: (LocalDate) -> Unit, onClickDeadlinePolicy: () -> Unit) {
     Column(modifier = modifier) {
         TitleItem(
             title = "곧 마감되니 서둘러 지원해 보세요!",
-            onClick = {},
+            onClick = onClickDeadlinePolicy,
         )
 
         Row(

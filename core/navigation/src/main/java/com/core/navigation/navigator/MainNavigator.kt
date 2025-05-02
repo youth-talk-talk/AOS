@@ -39,3 +39,6 @@ data object NewPolicy
 
 @Serializable
 data object RecentlyViewPolicy
+
+@Serializable
+data object DeadlinePolicy

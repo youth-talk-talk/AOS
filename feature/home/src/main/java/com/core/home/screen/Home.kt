@@ -30,6 +30,7 @@ fun Home(
     onClickPopularPolicy: () -> Unit,
     onClickNewPolicy: () -> Unit,
     onClickRecentViewPolicy: () -> Unit,
+    onClickDeadlinePolicy: () -> Unit,
     goLogin: () -> Unit,
 ) {
     val navController = rememberNavController()
@@ -50,6 +51,7 @@ fun Home(
             communityNavigation()
             policyTabNavigation(
                 onClickRecentViewPolicy = onClickRecentViewPolicy,
+                onClickDeadlinePolicy = onClickDeadlinePolicy,
             )
             settingTabNavigation(
                 onClickProfileCard = navController::navigateAccount,
