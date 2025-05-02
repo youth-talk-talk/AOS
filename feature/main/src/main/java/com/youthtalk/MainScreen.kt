@@ -14,7 +14,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.core.home.navigation.homeNavigation
+import com.core.home.navigation.navigateNewPolicy
 import com.core.home.navigation.navigatePopularPolicy
+import com.core.home.navigation.newPolicyNavigation
 import com.core.home.navigation.popularPolicyNavigation
 import com.core.mypage.navigation.navigateSettingComment
 import com.core.mypage.navigation.navigateSettingEtc
@@ -73,6 +75,7 @@ fun NavHostScreen(
             onClickSettingPost = navController::navigateSettingScrapPost,
             onClickSettingComment = navController::navigateSettingComment,
             onClickSettingNotification = navController::navigateSettingNotification,
+            onClickNewPolicy = navController::navigateNewPolicy,
             goLogin = goLogin,
         )
         settingEtcNavigation(
@@ -87,6 +90,7 @@ fun NavHostScreen(
             onBack = { navController.popBackStack() },
         )
         popularPolicyNavigation(onBack = navController::popBackStack)
+        newPolicyNavigation(onBack = navController::popBackStack)
 
 //        mainNavigation(navController, homeLazyListScrollState, goLogin = goLogin)
 //

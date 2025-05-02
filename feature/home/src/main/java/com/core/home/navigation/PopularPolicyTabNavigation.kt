@@ -5,14 +5,14 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.core.home.screen.PopularPolicyScreen
-import com.core.navigation.navigator.PopularPolicy
+import com.core.navigation.navigator.NewPolicy
 
 fun NavController.navigatePopularPolicy(navOptions: NavOptions? = null) {
-    navigate(PopularPolicy, navOptions)
+    navigate(NewPolicy, navOptions)
 }
 
 fun NavGraphBuilder.popularPolicyNavigation(onBack: () -> Unit) {
-    composable<PopularPolicy> {
+    composable<NewPolicy> {
         PopularPolicyScreen(
             onBack = onBack,
         )

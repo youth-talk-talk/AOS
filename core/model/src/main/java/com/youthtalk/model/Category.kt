@@ -2,7 +2,6 @@ package com.youthtalk.model
 
 import kotlinx.serialization.Serializable
 
-// TODO: 제거 예정
 @Serializable
 enum class Category(
     val categoryName: String,

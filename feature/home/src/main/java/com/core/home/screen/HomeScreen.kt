@@ -47,7 +47,7 @@ import com.youthtalk.model.Category
 import com.youthtalk.model.Region
 
 @Composable
-fun HomeScreen(modifier: Modifier = Modifier, onClickPolicySearch: () -> Unit, onClickPopularPolicy: () -> Unit) {
+fun HomeScreen(modifier: Modifier = Modifier, onClickPolicySearch: () -> Unit, onClickPopularPolicy: () -> Unit, onClickNewPolicy: () -> Unit) {
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -81,7 +81,9 @@ fun HomeScreen(modifier: Modifier = Modifier, onClickPolicySearch: () -> Unit, o
             popularPolicy(
                 onClickPopularPolicy = onClickPopularPolicy,
             )
-            newPolicy()
+            newPolicy(
+                onClickNewPolicy = onClickNewPolicy,
+            )
             realTimePolicy()
             item {
                 TitleItem(
@@ -144,7 +146,7 @@ fun LazyListScope.popularPolicy(modifier: Modifier = Modifier, onClickPopularPol
     }
 }
 
-fun LazyListScope.newPolicy(modifier: Modifier = Modifier) {
+fun LazyListScope.newPolicy(modifier: Modifier = Modifier, onClickNewPolicy: () -> Unit) {
     item {
         Column(
             modifier = modifier
@@ -155,7 +157,7 @@ fun LazyListScope.newPolicy(modifier: Modifier = Modifier) {
             val pagerState = rememberPagerState { categories.size }
             TitleItem(
                 title = "따끈따끈한 새로운 정책",
-                onClick = {},
+                onClick = onClickNewPolicy,
             )
 
             Text(

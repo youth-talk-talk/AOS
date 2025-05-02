@@ -11,11 +11,12 @@ fun NavController.navigateHomeTab(navOptions: NavOptions) {
     navigate(HomeTabNavigation.Home, navOptions)
 }
 
-fun NavGraphBuilder.homeTabNavigation(onClickPolicySearch: () -> Unit, onClickPopularPolicy: () -> Unit) {
+fun NavGraphBuilder.homeTabNavigation(onClickPolicySearch: () -> Unit, onClickPopularPolicy: () -> Unit, onClickNewPolicy: () -> Unit) {
     composable<HomeTabNavigation.Home> {
         HomeScreen(
             onClickPolicySearch = onClickPolicySearch,
             onClickPopularPolicy = onClickPopularPolicy,
+            onClickNewPolicy = onClickNewPolicy,
         )
     }
 }
