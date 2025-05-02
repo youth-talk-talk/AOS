@@ -1,4 +1,4 @@
-package com.core.home
+package com.core.home.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -60,10 +60,10 @@ class HomeViewModel @Inject constructor(
                     it
                 }
                 .catch {
-                    Timber.e("Home Init error " + it.message)
+                    Timber.Forest.e("Home Init error " + it.message)
                 }
                 .collectLatest {
-                    Timber.e("init CollectLatest")
+                    Timber.Forest.e("init CollectLatest")
                     _uiState.value = it
                 }
         }
@@ -96,7 +96,7 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             postPolicyScrapUseCase(id, isScrap)
                 .catch {
-                    Timber.e("HomeViewModel postScrap error " + it.message)
+                    Timber.Forest.e("HomeViewModel postScrap error " + it.message)
                 }
                 .collectLatest {
                     _uiState.value = state.copy(
@@ -120,7 +120,7 @@ class HomeViewModel @Inject constructor(
                 )
             }
                 .catch {
-                    Timber.e("Home Init error " + it.message)
+                    Timber.Forest.e("Home Init error " + it.message)
                 }
                 .collectLatest {
                     _uiState.value = it
