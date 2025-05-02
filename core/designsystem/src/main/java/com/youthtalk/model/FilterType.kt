@@ -1,4 +1,4 @@
-package com.youth.search.model
+package com.youthtalk.model
 
 enum class FilterType {
     POLICY_TYPE,

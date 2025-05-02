@@ -1,4 +1,4 @@
-package com.youth.search.component
+package com.youthtalk.component.sheet
 
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.Image
@@ -332,7 +332,7 @@ fun RegionType(modifier: Modifier = Modifier) {
 @Composable
 fun Serialized(modifier: Modifier = Modifier) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .padding(20.dp)
             .verticalScroll(rememberScrollState()),

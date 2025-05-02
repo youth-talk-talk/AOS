@@ -6,6 +6,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import com.core.community.navigation.communityNavigation
 import com.core.home.navigation.BottomNavigation
@@ -15,7 +16,10 @@ import com.core.mypage.navigation.settingTabNavigation
 import com.core.navigation.model.CommentType
 import com.core.navigation.model.ScrapPostType
 import com.core.navigation.navigator.HomeTabNavigation
+import com.feature.policy.navigation.navigatePolicyOverView
+import com.feature.policy.navigation.policyOverViewNavigation
 import com.feature.policy.navigation.policyTabNavigation
+import timber.log.Timber
 
 @Composable
 fun Home(
@@ -36,6 +40,7 @@ fun Home(
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route ?: "Home"
+    Timber.e("currentRoute : $currentRoute")
     Column(modifier = modifier) {
         NavHost(
             modifier = Modifier
@@ -49,10 +54,17 @@ fun Home(
                 onClickNewPolicy = onClickNewPolicy,
             )
             communityNavigation()
-            policyTabNavigation(
-                onClickRecentViewPolicy = onClickRecentViewPolicy,
-                onClickDeadlinePolicy = onClickDeadlinePolicy,
-            )
+            navigation(
+                route = "policy_tab",
+                startDestination = "Policy",
+            ) {
+                policyTabNavigation(
+                    onClickRecentViewPolicy = onClickRecentViewPolicy,
+                    onClickDeadlinePolicy = onClickDeadlinePolicy,
+                    onClickPolicyOverView = navController::navigatePolicyOverView,
+                )
+                policyOverViewNavigation()
+            }
             settingTabNavigation(
                 onClickProfileCard = navController::navigateAccount,
                 onClickEtc = onClickEtc,
@@ -82,6 +94,6 @@ private fun String.toHomeTabNavigation(): HomeTabNavigation = when (this) {
     "Home" -> HomeTabNavigation.Home
     "Setting", "Account" -> HomeTabNavigation.Setting
     "Community" -> HomeTabNavigation.Community
-    "Policy" -> HomeTabNavigation.Policy
+    "Policy", "PolicyOverView" -> HomeTabNavigation.Policy
     else -> HomeTabNavigation.Home
 }
