@@ -28,7 +28,7 @@ fun RegionTopBar(modifier: Modifier = Modifier, region: Region, onClickRegion: (
         modifier = modifier
             .fillMaxWidth()
             .background(color = gray10)
-            .padding(start = 16.dp, end = 16.dp, top = 24.dp, bottom = 19.dp),
+            .padding(horizontal = 16.dp, vertical = 15.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         Row(
