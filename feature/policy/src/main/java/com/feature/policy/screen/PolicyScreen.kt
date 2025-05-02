@@ -55,7 +55,12 @@ import java.time.LocalDate
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun PolicyScreen(modifier: Modifier = Modifier, onClickRecentViewPolicy: () -> Unit, onClickDeadlinePolicy: () -> Unit) {
+fun PolicyScreen(
+    modifier: Modifier = Modifier,
+    onClickRecentViewPolicy: () -> Unit,
+    onClickDeadlinePolicy: () -> Unit,
+    onClickPolicyOverView: () -> Unit,
+) {
     var selectDay by remember {
         mutableStateOf(LocalDate.now())
     }
@@ -107,7 +112,7 @@ fun PolicyScreen(modifier: Modifier = Modifier, onClickRecentViewPolicy: () -> U
                     TitleItem(
                         modifier = Modifier.padding(top = 20.dp, bottom = 15.dp),
                         title = "모든 정책 한눈에 보기",
-                        onClick = {},
+                        onClick = onClickPolicyOverView,
                     )
 
                     PrimaryTabRow(
@@ -162,6 +167,7 @@ fun PolicyScreen(modifier: Modifier = Modifier, onClickRecentViewPolicy: () -> U
                                             Timber.e("NestedScrollConnection onPostScroll consumed : $consumed, available $available")
                                             return super.onPostScroll(consumed, available, source)
                                         }
+
                                         override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
                                             if (available.y != 0f) {
                                                 isScrollingUp = available.y > 0

@@ -31,11 +31,11 @@ import androidx.compose.ui.unit.dp
 import com.youth.app.feature.search.R
 import com.youth.search.component.FilterBottomSheet
 import com.youth.search.component.FilterChip
-import com.youth.search.model.FilterType
 import com.youthtalk.component.card.PolicyCard
 import com.youthtalk.designsystem.gray10
 import com.youthtalk.designsystem.gray30
 import com.youthtalk.designsystem.gray40
+import com.youthtalk.model.FilterType
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable

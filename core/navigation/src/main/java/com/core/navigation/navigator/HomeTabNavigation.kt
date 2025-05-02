@@ -22,4 +22,9 @@ sealed interface HomeTabNavigation {
 }
 
 @Serializable
+@SerialName("Account")
 data object Account
+
+@Serializable
+@SerialName("PolicyOverView")
+data object PolicyOverView
