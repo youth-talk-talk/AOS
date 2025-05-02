@@ -1,8 +1,6 @@
 package com.core.home.screen
 
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
+import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -36,24 +34,10 @@ fun Home(
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route ?: "Home"
-    Scaffold(
-        bottomBar = {
-            BottomNavigation(
-                route = currentRoute.toHomeTabNavigation(),
-                onClickNavigation = {
-                    navController.navigate(it) {
-                        popUpTo(navController.graph.id) {
-                            saveState = true
-                        }
-                    }
-                },
-            )
-        },
-    ) { innerPadding ->
+    Column(modifier = modifier) {
         NavHost(
-            modifier = modifier
-                .fillMaxSize()
-                .padding(innerPadding),
+            modifier = Modifier
+                .weight(1f),
             navController = navController,
             startDestination = HomeTabNavigation.Home,
         ) {
@@ -75,6 +59,17 @@ fun Home(
                 goLogin = goLogin,
             )
         }
+
+        BottomNavigation(
+            route = currentRoute.toHomeTabNavigation(),
+            onClickNavigation = {
+                navController.navigate(it) {
+                    popUpTo(navController.graph.id) {
+                        saveState = true
+                    }
+                }
+            },
+        )
     }
 }
 
