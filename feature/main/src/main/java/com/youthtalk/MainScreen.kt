@@ -35,6 +35,8 @@ import com.feature.policy.navigation.deadlinePolicyNavigation
 import com.feature.policy.navigation.navigateDeadlinePolicy
 import com.feature.policy.navigation.navigateRecentlyViewPolicy
 import com.feature.policy.navigation.recentlyViewPolicyNavigation
+import com.feature.policydetail.navigation.navigatePolicyDetail
+import com.feature.policydetail.navigation.policyDetailNavigation
 import com.youth.search.navigation.communitySearchNavigation
 import com.youth.search.navigation.navigateCommunitySearch
 import com.youth.search.navigation.navigatePolicySearch
@@ -83,6 +85,7 @@ fun NavHostScreen(
             onClickDeadlinePolicy = navController::navigateDeadlinePolicy,
             onClickCommunitySearch = navController::navigateCommunitySearch,
             onClickPostDetail = navController::navigateCommunityDetail,
+            onClickPolicyDetail = navController::navigatePolicyDetail,
             goLogin = goLogin,
         )
         settingEtcNavigation(
@@ -106,6 +109,8 @@ fun NavHostScreen(
         recentlyViewPolicyNavigation()
         deadlinePolicyNavigation()
         communityDetailNavigation()
+
+        policyDetailNavigation()
     }
 }
 

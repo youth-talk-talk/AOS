@@ -47,7 +47,13 @@ import com.youthtalk.model.Category
 import com.youthtalk.model.Region
 
 @Composable
-fun HomeScreen(modifier: Modifier = Modifier, onClickPolicySearch: () -> Unit, onClickPopularPolicy: () -> Unit, onClickNewPolicy: () -> Unit) {
+fun HomeScreen(
+    modifier: Modifier = Modifier,
+    onClickPolicySearch: () -> Unit,
+    onClickPopularPolicy: () -> Unit,
+    onClickNewPolicy: () -> Unit,
+    onClickPolicyDetail: () -> Unit,
+) {
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -80,6 +86,7 @@ fun HomeScreen(modifier: Modifier = Modifier, onClickPolicySearch: () -> Unit, o
             }
             popularPolicy(
                 onClickPopularPolicy = onClickPopularPolicy,
+                onClickPolicyDetail = onClickPolicyDetail,
             )
             newPolicy(
                 onClickNewPolicy = onClickNewPolicy,
@@ -109,7 +116,7 @@ fun HomeScreen(modifier: Modifier = Modifier, onClickPolicySearch: () -> Unit, o
     }
 }
 
-fun LazyListScope.popularPolicy(modifier: Modifier = Modifier, onClickPopularPolicy: () -> Unit) {
+fun LazyListScope.popularPolicy(modifier: Modifier = Modifier, onClickPopularPolicy: () -> Unit, onClickPolicyDetail: () -> Unit) {
     item {
         Column(
             modifier = modifier,
@@ -139,6 +146,7 @@ fun LazyListScope.popularPolicy(modifier: Modifier = Modifier, onClickPopularPol
                                 color = gray10,
                                 shape = RoundedCornerShape(10.dp),
                             ),
+                        onClick = onClickPolicyDetail,
                     )
                 }
             }

@@ -38,6 +38,7 @@ fun Home(
     onClickDeadlinePolicy: () -> Unit,
     onClickCommunitySearch: (CommunityType) -> Unit,
     onClickPostDetail: () -> Unit,
+    onClickPolicyDetail: () -> Unit,
     goLogin: () -> Unit,
 ) {
     val navController = rememberNavController()
@@ -55,6 +56,7 @@ fun Home(
                 onClickPolicySearch = onClickPolicySearch,
                 onClickPopularPolicy = onClickPopularPolicy,
                 onClickNewPolicy = onClickNewPolicy,
+                onClickPolicyDetail = onClickPolicyDetail,
             )
             communityNavigation(
                 onClickCommunitySearch = onClickCommunitySearch,
