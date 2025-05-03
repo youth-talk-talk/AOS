@@ -51,3 +51,6 @@ data object DeadlinePolicy
 
 @Serializable
 data object CommunityDetail
+
+@Serializable
+data object PolicyDetail

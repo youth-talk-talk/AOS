@@ -1,16 +1,22 @@
-package com.core.community.screen.detail
+package com.feature.policydetail.screen
 
+import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
+import android.webkit.WebView
+import android.webkit.WebViewClient
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
@@ -20,9 +26,6 @@ import androidx.compose.foundation.relocation.BringIntoViewRequester
 import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,41 +40,62 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.youth.app.feature.community.R
-import com.youthtalk.component.comment.UserComment
+import androidx.compose.ui.viewinterop.AndroidView
+import com.feature.policydetail.component.header
+import com.feature.policydetail.component.policyContent
+import com.feature.policydetail.component.policyFooter
+import com.youth.app.feature.policydetail.R
 import com.youthtalk.component.topbar.MiddleTitleTopBar
 import com.youthtalk.designsystem.YongProjectTheme
 import com.youthtalk.designsystem.gray100
 import com.youthtalk.designsystem.gray30
-import com.youthtalk.designsystem.gray40
 import com.youthtalk.designsystem.gray70
-import com.youthtalk.designsystem.gray80
 import com.youthtalk.designsystem.gray90
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun CommunityDetailScreen(modifier: Modifier = Modifier) {
+fun PolicyDetailScreen(modifier: Modifier = Modifier) {
     var textValue by remember {
         mutableStateOf("")
     }
     val bringIntoViewRequester = remember { BringIntoViewRequester() }
     val focusRequester = remember { FocusRequester() }
     val scope = rememberCoroutineScope()
-    val focusManager = LocalFocusManager.current
+    val ime = LocalSoftwareKeyboardController.current
+    val screenHeight = LocalConfiguration.current.screenHeightDp.dp
+    val density = LocalDensity.current
+    var isExpanded by remember {
+        mutableStateOf(false)
+    }
+    var isPolicySummaryExpanded by remember {
+        mutableStateOf(true)
+    }
+    var contentHeight by remember {
+        mutableStateOf(0.dp)
+    }
+    var measuredOnce by remember { mutableStateOf(false) }
+    val animatedHeight by animateDpAsState(
+        targetValue = if (!isExpanded && contentHeight > screenHeight * 0.4f) screenHeight * 0.4f else contentHeight,
+        label = "expandHeight",
+    )
+
     Column(
         modifier = modifier
             .fillMaxSize()
-            .clickable(
-                indication = null,
-                interactionSource = remember { MutableInteractionSource() },
-            ) {
-                focusManager.clearFocus()
+            .pointerInput(Unit) {
+                detectTapGestures { offset ->
+                    ime?.hide()
+                }
             },
     ) {
         MiddleTitleTopBar(
@@ -91,12 +115,6 @@ fun CommunityDetailScreen(modifier: Modifier = Modifier) {
                         contentDescription = "공유하기",
                         colorFilter = ColorFilter.tint(color = gray100),
                     )
-
-                    Image(
-                        painter = painterResource(R.drawable.more),
-                        contentDescription = "공유하기",
-                        colorFilter = ColorFilter.tint(color = gray100),
-                    )
                 }
             },
         )
@@ -105,72 +123,32 @@ fun CommunityDetailScreen(modifier: Modifier = Modifier) {
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f),
+            verticalArrangement = Arrangement.spacedBy(20.dp),
         ) {
-            item {
-                Row(
-                    modifier = Modifier
-                        .padding(start = 16.dp, end = 16.dp, top = 4.dp, bottom = 16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(10.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Image(
-                        painter = painterResource(R.drawable.profile_thumnail),
-                        contentDescription = "기본 이미지",
-                    )
-
-                    Column {
-                        Text(
-                            text = "씩씩한청년",
-                            style = MaterialTheme.typography.displayLarge,
-                        )
-                        Text(
-                            text = "3시간 전",
-                            style = MaterialTheme.typography.labelSmall.copy(
-                                color = gray80,
-                            ),
-                        )
+            header(
+                isExpand = isPolicySummaryExpanded,
+                onClickExpand = { isPolicySummaryExpanded = !isPolicySummaryExpanded },
+            )
+            policyContent(
+                screenHeight = screenHeight,
+                animatedHeight = animatedHeight,
+                measuredOnce = measuredOnce,
+                contentHeight = contentHeight,
+                isExpanded = isExpanded,
+                measureHeight = { height ->
+                    if (!measuredOnce) {
+                        contentHeight = with(density) {
+                            height.toDp()
+                        }
+                        measuredOnce = true
                     }
-                }
-                HorizontalDivider(
-                    color = gray40,
-                )
-
-                Box(
-                    modifier = Modifier
-                        .heightIn(min = 500.dp)
-                        .padding(start = 16.dp, end = 16.dp, top = 20.dp, bottom = 30.dp),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Text("여기는 글 상세 부분 추후 작성 예정")
-                }
-
-                HorizontalDivider(
-                    thickness = 10.dp,
-                    color = gray30,
-                )
-            }
-
-            items(
-                count = 10,
-            ) {
-                if (it == 0) {
-                    Text(
-                        modifier = Modifier.padding(
-                            start = 16.dp,
-                            end = 16.dp,
-                            bottom = 20.dp,
-                            top = 16.dp,
-                        ),
-                        text = "댓글 7",
-                        style = MaterialTheme.typography.displayLarge,
-                    )
-                }
-
-                UserComment(
-                    modifier = Modifier
-                        .padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
-                )
-            }
+                    Timber.e("contentHeight = $contentHeight")
+                },
+                onClickExpanded = {
+                    isExpanded = !isExpanded
+                },
+            )
+            policyFooter()
         }
 
         Row(
@@ -202,12 +180,6 @@ fun CommunityDetailScreen(modifier: Modifier = Modifier) {
                 value = textValue,
                 onValueChange = { textValue = it },
                 textStyle = MaterialTheme.typography.titleSmall,
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    imeAction = ImeAction.Default,
-                ),
-                keyboardActions = KeyboardActions(
-                    onDone = {},
-                ),
             ) { innerTextField ->
                 Box(
                     modifier = Modifier
@@ -235,10 +207,45 @@ fun CommunityDetailScreen(modifier: Modifier = Modifier) {
     }
 }
 
+fun Modifier.isMeasure(measure: Boolean, animationHeight: Dp): Modifier {
+    return if (measure) {
+        this.height(animationHeight)
+    } else {
+        this
+    }
+}
+
+private fun shared(context: Context, text: String) {
+    val intent = Intent(Intent.ACTION_SEND).apply {
+        this.setType("text/plain")
+        putExtra(Intent.EXTRA_TEXT, text)
+    }
+    val chooser = Intent.createChooser(intent, "공유하기")
+    context.startActivity(chooser)
+}
+
+@SuppressLint("SetJavaScriptEnabled")
+@Composable
+fun WebViewScreen(modifier: Modifier = Modifier, url: String) {
+    AndroidView(
+        modifier = Modifier.fillMaxSize(),
+        factory = { context ->
+            WebView(context).apply {
+                webViewClient = WebViewClient() // 페이지 로딩을 WebView 안에서 처리
+                settings.javaScriptEnabled = true // JavaScript 사용 가능하게 설정
+                loadUrl(url)
+            }
+        },
+        update = { webView ->
+            webView.loadUrl(url)
+        },
+    )
+}
+
 @Preview
 @Composable
-private fun CommunityDetailPreview() {
+private fun PolicyDetailScreenPreview() {
     YongProjectTheme {
-        CommunityDetailScreen()
+        PolicyDetailScreen()
     }
 }

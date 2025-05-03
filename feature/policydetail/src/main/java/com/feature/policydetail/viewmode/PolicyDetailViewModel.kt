@@ -1,4 +1,4 @@
-package com.feature.policydetail
+package com.feature.policydetail.viewmode
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -57,7 +57,7 @@ class PolicyDetailViewModel @Inject constructor(
                 )
             }
                 .catch {
-                    Timber.e("PolicyDetailViewModel getData error " + it.message)
+                    Timber.Forest.e("PolicyDetailViewModel getData error " + it.message)
                     _error.emit(it)
                 }
                 .collectLatest { state ->
@@ -73,7 +73,7 @@ class PolicyDetailViewModel @Inject constructor(
         viewModelScope.launch {
             postPolicyScrapUseCase(id, scrap)
                 .catch {
-                    Timber.e("PolicyDetailViewModel postScrap error " + it.message)
+                    Timber.Forest.e("PolicyDetailViewModel postScrap error " + it.message)
                 }
                 .collectLatest {
                     _uiState.value = state.copy(
@@ -92,7 +92,7 @@ class PolicyDetailViewModel @Inject constructor(
         viewModelScope.launch {
             postPolicyAddCommentUseCase(policyId, text)
                 .catch {
-                    Timber.e("PolicyDetailViewModel addComment error " + it.message)
+                    Timber.Forest.e("PolicyDetailViewModel addComment error " + it.message)
                 }
                 .collectLatest {
                     val newComment = Comment(
@@ -117,7 +117,7 @@ class PolicyDetailViewModel @Inject constructor(
         viewModelScope.launch {
             postDeleteCommentUseCase(commentId)
                 .catch {
-                    Timber.e("PolicyDetailViewModel deleteComment error " + it.message)
+                    Timber.Forest.e("PolicyDetailViewModel deleteComment error " + it.message)
                 }
                 .collectLatest {
                     val comments = state.comments.toMutableList()
@@ -136,7 +136,7 @@ class PolicyDetailViewModel @Inject constructor(
         viewModelScope.launch {
             patchCommentUseCase(id, content)
                 .catch {
-                    Timber.e("PolicyDetailViewModel modifyComment error " + it.message)
+                    Timber.Forest.e("PolicyDetailViewModel modifyComment error " + it.message)
                 }
                 .collectLatest {
                     _uiState.value = state.copy(
@@ -153,7 +153,7 @@ class PolicyDetailViewModel @Inject constructor(
         viewModelScope.launch {
             postCommentLikeUseCase(id, !isLike)
                 .catch {
-                    Timber.e("PolicyDetailViewModel postCommentLike error " + it.message)
+                    Timber.Forest.e("PolicyDetailViewModel postCommentLike error " + it.message)
                 }
                 .collectLatest {
                     _uiState.value = state.copy(

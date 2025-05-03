@@ -3,6 +3,8 @@ package com.youthtalk.component.card
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,6 +18,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,9 +35,15 @@ import com.youthtalk.designsystem.gray40
 import com.youthtalk.designsystem.gray90
 
 @Composable
-fun PolicyCard(modifier: Modifier = Modifier, isBookMark: Boolean = false, isVisibleScrap: Boolean = false) {
+fun PolicyCard(modifier: Modifier = Modifier, isBookMark: Boolean = false, isVisibleScrap: Boolean = false, onClick: () -> Unit = {}) {
     Column(
         modifier = modifier
+            .clickable(
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() },
+            ) {
+                onClick()
+            }
             .padding(horizontal = 14.dp, vertical = 16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
