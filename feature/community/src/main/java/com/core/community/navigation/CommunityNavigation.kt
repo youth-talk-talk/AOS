@@ -6,13 +6,16 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.core.community.screen.community.NewCommunityScreen
 import com.core.navigation.navigator.HomeTabNavigation
+import com.youthtalk.model.CommunityType
 
 fun NavController.navigateCommunity(navOptions: NavOptions) {
     navigate(HomeTabNavigation.Home, navOptions)
 }
 
-fun NavGraphBuilder.communityNavigation() {
+fun NavGraphBuilder.communityNavigation(onClickCommunitySearch: (CommunityType) -> Unit) {
     composable<HomeTabNavigation.Community> {
-        NewCommunityScreen()
+        NewCommunityScreen(
+            onClickCommunitySearch = onClickCommunitySearch,
+        )
     }
 }
