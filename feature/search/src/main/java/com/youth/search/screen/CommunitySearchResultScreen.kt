@@ -85,6 +85,7 @@ fun CommunitySearchResultScreen(modifier: Modifier = Modifier, communityType: Co
                     CommunityType.REVIEW -> "청년문화예술패스"
                     CommunityType.FREE -> ""
                 },
+                onClick = {},
             )
 
             HorizontalDivider(

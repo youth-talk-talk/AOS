@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
@@ -26,10 +27,11 @@ import com.youthtalk.extentions.shadow
 import com.youthtalk.model.Category
 
 @Composable
-fun ReviewPost(modifier: Modifier = Modifier, categories: List<Category>) {
+fun ReviewPost(modifier: Modifier = Modifier, lazyListState: LazyListState, categories: List<Category>, onClickPost: () -> Unit) {
     LazyColumn(
         modifier = modifier
             .fillMaxSize(),
+        state = lazyListState,
         contentPadding = PaddingValues(vertical = 20.dp),
     ) {
         item {
@@ -65,6 +67,7 @@ fun ReviewPost(modifier: Modifier = Modifier, categories: List<Category>) {
                             header = "서울시 취업날개서비스 운영",
                             communityTitle = "면접 정장 비싸서 걱정했는데 공짜로 해결함!",
                             content = "면접 정장 비싸서 걱정했는데 공짜로 해결함!.....",
+                            onClick = onClickPost,
                         )
                     }
                 }
@@ -104,6 +107,7 @@ fun ReviewPost(modifier: Modifier = Modifier, categories: List<Category>) {
                 communityTitle = "영화 보는 거 좋아하는 사람? 꿀팁 알려드림!",
                 communitySubTitle = "영화 보는 거 좋아하는 사람? 꿀팁 알려드림! 영화 보는 거 좋아하는 사람...",
                 policyTitle = "청년문화예술패스",
+                onClick = onClickPost,
             )
             HorizontalDivider(
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 20.dp),
