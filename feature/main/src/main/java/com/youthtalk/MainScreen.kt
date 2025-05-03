@@ -11,6 +11,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
+import com.core.community.navigation.communityDetailNavigation
+import com.core.community.navigation.navigateCommunityDetail
 import com.core.home.navigation.homeNavigation
 import com.core.home.navigation.navigateNewPolicy
 import com.core.home.navigation.navigatePopularPolicy
@@ -80,6 +82,7 @@ fun NavHostScreen(
             onClickRecentViewPolicy = navController::navigateRecentlyViewPolicy,
             onClickDeadlinePolicy = navController::navigateDeadlinePolicy,
             onClickCommunitySearch = navController::navigateCommunitySearch,
+            onClickPostDetail = navController::navigateCommunityDetail,
             goLogin = goLogin,
         )
         settingEtcNavigation(
@@ -102,6 +105,7 @@ fun NavHostScreen(
         newPolicyNavigation(onBack = navController::popBackStack)
         recentlyViewPolicyNavigation()
         deadlinePolicyNavigation()
+        communityDetailNavigation()
     }
 }
 

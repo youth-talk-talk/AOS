@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
@@ -23,10 +24,11 @@ import com.youthtalk.designsystem.gray40
 import com.youthtalk.extentions.shadow
 
 @Composable
-fun FreePost(modifier: Modifier = Modifier) {
+fun FreePost(modifier: Modifier = Modifier, lazyListState: LazyListState, onClickPost: () -> Unit) {
     LazyColumn(
         modifier = modifier
             .fillMaxSize(),
+        state = lazyListState,
         contentPadding = PaddingValues(vertical = 20.dp),
     ) {
         item {
@@ -61,6 +63,7 @@ fun FreePost(modifier: Modifier = Modifier) {
                                 ),
                             communityTitle = "면접 정장 비싸서 걱정했는데 공짜로 해결함!",
                             content = "면접 정장 비싸서 걱정했는데 공짜로 해결함!.....",
+                            onClick = onClickPost,
                         )
                     }
                 }
@@ -80,6 +83,7 @@ fun FreePost(modifier: Modifier = Modifier) {
                 modifier = Modifier.padding(horizontal = 16.dp),
                 communityTitle = "영화 보는 거 좋아하는 사람? 꿀팁 알려드림!",
                 communitySubTitle = "영화 보는 거 좋아하는 사람? 꿀팁 알려드림! 영화 보는 거 좋아하는 사람...",
+                onClick = onClickPost,
             )
             HorizontalDivider(
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 20.dp),

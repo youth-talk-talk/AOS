@@ -37,6 +37,7 @@ fun Home(
     onClickRecentViewPolicy: () -> Unit,
     onClickDeadlinePolicy: () -> Unit,
     onClickCommunitySearch: (CommunityType) -> Unit,
+    onClickPostDetail: () -> Unit,
     goLogin: () -> Unit,
 ) {
     val navController = rememberNavController()
@@ -57,6 +58,7 @@ fun Home(
             )
             communityNavigation(
                 onClickCommunitySearch = onClickCommunitySearch,
+                onClickPostDetail = onClickPostDetail,
             )
             navigation(
                 route = "policy_tab",

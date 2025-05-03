@@ -69,6 +69,7 @@ fun ScrapPostScreen(modifier: Modifier = Modifier, type: ScrapPostType) {
                     communityTitle = "영화 보는 거 좋아하는 사람? 꿀팁 알려드림!",
                     communitySubTitle = "영화 보는 거 좋아하는 사람? 꿀팁 알려드림!",
                     policyTitle = if (it % 3 == 0) "청년문화예술패스" else "",
+                    onClick = {},
                 )
                 HorizontalDivider(
                     modifier = Modifier.padding(vertical = 20.dp),

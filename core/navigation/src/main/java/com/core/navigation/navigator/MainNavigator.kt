@@ -48,3 +48,6 @@ data object RecentlyViewPolicy
 
 @Serializable
 data object DeadlinePolicy
+
+@Serializable
+data object CommunityDetail

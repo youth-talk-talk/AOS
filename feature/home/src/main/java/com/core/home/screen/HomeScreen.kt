@@ -304,6 +304,7 @@ fun LazyListScope.realTimePolicy(modifier: Modifier = Modifier) {
                         PostCard(
                             communityTitle = "영화 보는 거 좋아하는 사람? 꿀팁 알려드림!",
                             communitySubTitle = "영화 보는 거 좋아하는 사람? 꿀팁 알려드림! 영화 보는 거 좋아하는 사람...",
+                            onClick = {},
                         )
                         if (it != 2) {
                             HorizontalDivider(
