@@ -28,6 +28,7 @@ import com.youthtalk.designsystem.gray10
 import com.youthtalk.designsystem.gray50
 import com.youthtalk.designsystem.gray80
 import com.youthtalk.designsystem.gray90
+import com.youthtalk.model.Category
 
 @Composable
 fun PostCard(modifier: Modifier = Modifier, keyword: String = "", communityTitle: String, communitySubTitle: String, policyTitle: String = "") {
@@ -63,82 +64,82 @@ fun PostCard(modifier: Modifier = Modifier, keyword: String = "", communityTitle
                     overflow = TextOverflow.Ellipsis,
                 )
             }
+        }
 
-            if (policyTitle.isNotEmpty()) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .border(
-                            width = 1.dp,
-                            color = gray50,
-                            shape = RoundedCornerShape(4.dp),
-                        )
-                        .padding(horizontal = 16.dp, vertical = 11.dp),
+        if (policyTitle.isNotEmpty()) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .border(
+                        width = 1.dp,
+                        color = gray50,
+                        shape = RoundedCornerShape(4.dp),
+                    )
+                    .padding(horizontal = 16.dp, vertical = 11.dp),
+            ) {
+                Text(
+                    text = policyTitle,
+                    style = MaterialTheme.typography.displaySmall.copy(
+                        color = gray90,
+                    ),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
+        }
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+        ) {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
+            ) {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(2.dp),
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
+                    Icon(
+                        painter = painterResource(R.drawable.comment),
+                        contentDescription = stringResource(R.string.comment),
+                        tint = gray80,
+                    )
+
                     Text(
-                        text = policyTitle,
-                        style = MaterialTheme.typography.displaySmall.copy(
-                            color = gray90,
+                        text = "숫자",
+                        style = MaterialTheme.typography.labelSmall.copy(
+                            color = gray80,
                         ),
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
+                    )
+                }
+
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(2.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Icon(
+                        modifier = Modifier.size(16.dp),
+                        painter = painterResource(R.drawable.bookmark_line),
+                        contentDescription = stringResource(R.string.bookmark),
+                        tint = gray80,
+                    )
+
+                    Text(
+                        text = "숫자",
+                        style = MaterialTheme.typography.labelSmall.copy(
+                            color = gray80,
+                        ),
                     )
                 }
             }
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-            ) {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(10.dp),
-                ) {
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(2.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.comment),
-                            contentDescription = stringResource(R.string.comment),
-                            tint = gray80,
-                        )
-
-                        Text(
-                            text = "숫자",
-                            style = MaterialTheme.typography.labelSmall.copy(
-                                color = gray80,
-                            ),
-                        )
-                    }
-
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(2.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Icon(
-                            modifier = Modifier.size(16.dp),
-                            painter = painterResource(R.drawable.bookmark_line),
-                            contentDescription = stringResource(R.string.bookmark),
-                            tint = gray80,
-                        )
-
-                        Text(
-                            text = "숫자",
-                            style = MaterialTheme.typography.labelSmall.copy(
-                                color = gray80,
-                            ),
-                        )
-                    }
-                }
-
-                Text(
-                    text = "Date",
-                    style = MaterialTheme.typography.labelSmall.copy(
-                        color = gray80,
-                    ),
-                )
-            }
+            Text(
+                text = "Date",
+                style = MaterialTheme.typography.labelSmall.copy(
+                    color = gray80,
+                ),
+            )
         }
     }
 }
@@ -148,6 +149,18 @@ fun PostCard(modifier: Modifier = Modifier, keyword: String = "", communityTitle
 private fun PostCardPreview() {
     YongProjectTheme {
         PostCard(
+            communityTitle = "영화 보는 거 좋아하는 사람? 꿀팁 알려드림!",
+            communitySubTitle = "영화 보는 거 좋아하는 사람? 꿀팁 알려드림!",
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun PostCardWithTagPreview() {
+    YongProjectTheme {
+        PostCard(
+            keyword = Category.PARTICIPATION.categoryName.split(" ").first(),
             communityTitle = "영화 보는 거 좋아하는 사람? 꿀팁 알려드림!",
             communitySubTitle = "영화 보는 거 좋아하는 사람? 꿀팁 알려드림!",
         )

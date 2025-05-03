@@ -21,20 +21,20 @@ import androidx.compose.ui.unit.dp
 import com.core.community.component.FreePost
 import com.core.community.component.ReviewPost
 import com.core.community.component.SearchBarComponent
-import com.core.community.model.CommunityType
 import com.youthtalk.designsystem.gray10
 import com.youthtalk.designsystem.gray100
 import com.youthtalk.designsystem.gray70
 import com.youthtalk.model.Category
+import com.youthtalk.model.CommunityType
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NewCommunityScreen(modifier: Modifier = Modifier) {
-    val pagerState = rememberPagerState { 2 }
+fun NewCommunityScreen(modifier: Modifier = Modifier, onClickCommunitySearch: (CommunityType) -> Unit) {
+    val communityType = CommunityType.entries.toList()
+    val pagerState = rememberPagerState { communityType.size }
     val scope = rememberCoroutineScope()
     val categories = Category.entries.toList()
-    val communityType = CommunityType.entries.toList()
     Column(
         modifier = modifier
             .fillMaxSize(),
@@ -54,6 +54,7 @@ fun NewCommunityScreen(modifier: Modifier = Modifier) {
             modifier = Modifier
                 .padding(start = 16.dp, end = 16.dp, bottom = 12.dp),
             hint = "궁금한 주제가 있나요?",
+            onClick = { onClickCommunitySearch(communityType[pagerState.currentPage]) },
         )
 
         SecondaryTabRow(
@@ -112,6 +113,7 @@ fun NewCommunityScreen(modifier: Modifier = Modifier) {
                 CommunityType.REVIEW -> ReviewPost(
                     categories = categories,
                 )
+
                 CommunityType.FREE -> FreePost()
             }
         }

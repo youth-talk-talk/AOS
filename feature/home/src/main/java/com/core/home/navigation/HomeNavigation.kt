@@ -8,6 +8,7 @@ import com.core.home.screen.Home
 import com.core.navigation.model.CommentType
 import com.core.navigation.model.ScrapPostType
 import com.core.navigation.navigator.Navigation
+import com.youthtalk.model.CommunityType
 
 fun NavController.navigateHome(navOptions: NavOptions) {
     navigate(Navigation.Main, navOptions)
@@ -25,6 +26,7 @@ fun NavGraphBuilder.homeNavigation(
     onClickNewPolicy: () -> Unit,
     onClickRecentViewPolicy: () -> Unit,
     onClickDeadlinePolicy: () -> Unit,
+    onClickCommunitySearch: (CommunityType) -> Unit,
     goLogin: () -> Unit,
 ) {
     composable<Navigation.Main> {
@@ -40,6 +42,7 @@ fun NavGraphBuilder.homeNavigation(
             onClickNewPolicy = onClickNewPolicy,
             onClickRecentViewPolicy = onClickRecentViewPolicy,
             onClickDeadlinePolicy = onClickDeadlinePolicy,
+            onClickCommunitySearch = onClickCommunitySearch,
             goLogin = goLogin,
         )
     }

@@ -33,6 +33,8 @@ import com.feature.policy.navigation.deadlinePolicyNavigation
 import com.feature.policy.navigation.navigateDeadlinePolicy
 import com.feature.policy.navigation.navigateRecentlyViewPolicy
 import com.feature.policy.navigation.recentlyViewPolicyNavigation
+import com.youth.search.navigation.communitySearchNavigation
+import com.youth.search.navigation.navigateCommunitySearch
 import com.youth.search.navigation.navigatePolicySearch
 import com.youth.search.navigation.policySearchNavigation
 import com.youthtalk.designsystem.YongProjectTheme
@@ -77,6 +79,7 @@ fun NavHostScreen(
             onClickNewPolicy = navController::navigateNewPolicy,
             onClickRecentViewPolicy = navController::navigateRecentlyViewPolicy,
             onClickDeadlinePolicy = navController::navigateDeadlinePolicy,
+            onClickCommunitySearch = navController::navigateCommunitySearch,
             goLogin = goLogin,
         )
         settingEtcNavigation(
@@ -87,8 +90,13 @@ fun NavHostScreen(
         settingScrapPostNavigation()
         settingCommentNavigation()
         settingNotificationNavigation()
+
         policySearchNavigation(
             onBack = { navController.popBackStack() },
+        )
+        communitySearchNavigation(
+            onBack = { navController.popBackStack() },
+
         )
         popularPolicyNavigation(onBack = navController::popBackStack)
         newPolicyNavigation(onBack = navController::popBackStack)

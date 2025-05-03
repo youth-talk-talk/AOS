@@ -19,6 +19,7 @@ import com.core.navigation.navigator.HomeTabNavigation
 import com.feature.policy.navigation.navigatePolicyOverView
 import com.feature.policy.navigation.policyOverViewNavigation
 import com.feature.policy.navigation.policyTabNavigation
+import com.youthtalk.model.CommunityType
 import timber.log.Timber
 
 @Composable
@@ -35,6 +36,7 @@ fun Home(
     onClickNewPolicy: () -> Unit,
     onClickRecentViewPolicy: () -> Unit,
     onClickDeadlinePolicy: () -> Unit,
+    onClickCommunitySearch: (CommunityType) -> Unit,
     goLogin: () -> Unit,
 ) {
     val navController = rememberNavController()
@@ -53,7 +55,9 @@ fun Home(
                 onClickPopularPolicy = onClickPopularPolicy,
                 onClickNewPolicy = onClickNewPolicy,
             )
-            communityNavigation()
+            communityNavigation(
+                onClickCommunitySearch = onClickCommunitySearch,
+            )
             navigation(
                 route = "policy_tab",
                 startDestination = "Policy",
