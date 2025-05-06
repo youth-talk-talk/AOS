@@ -53,4 +53,9 @@ data object DeadlinePolicy
 data object CommunityDetail
 
 @Serializable
+data class CommunityWrite(
+    val communityType: CommunityType,
+)
+
+@Serializable
 data object PolicyDetail

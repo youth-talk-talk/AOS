@@ -12,7 +12,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.core.community.navigation.communityDetailNavigation
+import com.core.community.navigation.communityWriteNavigation
 import com.core.community.navigation.navigateCommunityDetail
+import com.core.community.navigation.navigateCommunityWrite
 import com.core.home.navigation.homeNavigation
 import com.core.home.navigation.navigateNewPolicy
 import com.core.home.navigation.navigatePopularPolicy
@@ -86,6 +88,7 @@ fun NavHostScreen(
             onClickCommunitySearch = navController::navigateCommunitySearch,
             onClickPostDetail = navController::navigateCommunityDetail,
             onClickPolicyDetail = navController::navigatePolicyDetail,
+            onClickCommunityWrite = navController::navigateCommunityWrite,
             goLogin = goLogin,
         )
         settingEtcNavigation(
@@ -102,13 +105,14 @@ fun NavHostScreen(
         )
         communitySearchNavigation(
             onBack = { navController.popBackStack() },
-
         )
         popularPolicyNavigation(onBack = navController::popBackStack)
         newPolicyNavigation(onBack = navController::popBackStack)
         recentlyViewPolicyNavigation()
         deadlinePolicyNavigation()
+
         communityDetailNavigation()
+        communityWriteNavigation()
 
         policyDetailNavigation()
     }
