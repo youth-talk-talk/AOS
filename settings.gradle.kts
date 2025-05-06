@@ -41,7 +41,6 @@ include(
     ":feature:mypage",
     ":feature:login",
     ":feature:policydetail",
-    ":feature:specpolicy",
     ":feature:search",
 )
 include(":feature:policy")

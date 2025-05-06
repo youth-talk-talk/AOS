@@ -16,7 +16,6 @@ dependencies {
     implementation(projects.feature.mypage)
     implementation(projects.feature.community)
     implementation(projects.feature.policydetail)
-    implementation(projects.feature.specpolicy)
     implementation(projects.feature.search)
     implementation(projects.feature.policy)
 
