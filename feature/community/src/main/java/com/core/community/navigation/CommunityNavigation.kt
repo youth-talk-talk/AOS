@@ -12,11 +12,16 @@ fun NavController.navigateCommunity(navOptions: NavOptions) {
     navigate(HomeTabNavigation.Home, navOptions)
 }
 
-fun NavGraphBuilder.communityNavigation(onClickCommunitySearch: (CommunityType) -> Unit, onClickPostDetail: () -> Unit) {
+fun NavGraphBuilder.communityNavigation(
+    onClickCommunitySearch: (CommunityType) -> Unit,
+    onClickPostDetail: () -> Unit,
+    onClickCommunityWrite: (CommunityType) -> Unit,
+) {
     composable<HomeTabNavigation.Community> {
         NewCommunityScreen(
             onClickCommunitySearch = onClickCommunitySearch,
             onClickPostDetail = onClickPostDetail,
+            onClickCommunityWrite = onClickCommunityWrite,
         )
     }
 }

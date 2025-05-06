@@ -39,6 +39,7 @@ fun Home(
     onClickCommunitySearch: (CommunityType) -> Unit,
     onClickPostDetail: () -> Unit,
     onClickPolicyDetail: () -> Unit,
+    onClickCommunityWrite: (CommunityType) -> Unit,
     goLogin: () -> Unit,
 ) {
     val navController = rememberNavController()
@@ -61,6 +62,7 @@ fun Home(
             communityNavigation(
                 onClickCommunitySearch = onClickCommunitySearch,
                 onClickPostDetail = onClickPostDetail,
+                onClickCommunityWrite = onClickCommunityWrite,
             )
             navigation(
                 route = "policy_tab",

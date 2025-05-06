@@ -37,7 +37,12 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NewCommunityScreen(modifier: Modifier = Modifier, onClickCommunitySearch: (CommunityType) -> Unit, onClickPostDetail: () -> Unit) {
+fun NewCommunityScreen(
+    modifier: Modifier = Modifier,
+    onClickCommunitySearch: (CommunityType) -> Unit,
+    onClickPostDetail: () -> Unit,
+    onClickCommunityWrite: (CommunityType) -> Unit,
+) {
     val communityType = CommunityType.entries.toList()
     val pagerState = rememberPagerState { communityType.size }
     val scope = rememberCoroutineScope()
@@ -143,7 +148,7 @@ fun NewCommunityScreen(modifier: Modifier = Modifier, onClickCommunitySearch: (C
             shape = RoundedCornerShape(100.dp),
             containerColor = MaterialTheme.colorScheme.primary,
             contentColor = gray10,
-            onClick = { },
+            onClick = { onClickCommunityWrite(communityType[pagerState.currentPage]) },
             expanded = !lazyColumnStates[pagerState.currentPage].canScrollBackward,
             icon = {
                 Icon(

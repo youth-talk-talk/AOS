@@ -102,7 +102,7 @@ internal fun LoginAppBar(onClickBack: () -> Unit) {
             ) {
                 onClickBack()
             },
-            painter = painterResource(R.drawable.left_icon),
+            painter = painterResource(R.drawable.arrowleft),
             contentDescription = stringResource(R.string.back),
         )
     }
