@@ -22,7 +22,7 @@ fun NavGraphBuilder.homeNavigation(
     onClickSettingComment: (CommentType) -> Unit,
     onClickSettingNotification: () -> Unit,
     onClickPolicySearch: () -> Unit,
-    onClickPopularPolicy: () -> Unit,
+    onClickPopularPolicy: (String) -> Unit,
     onClickNewPolicy: () -> Unit,
     onClickRecentViewPolicy: () -> Unit,
     onClickDeadlinePolicy: () -> Unit,

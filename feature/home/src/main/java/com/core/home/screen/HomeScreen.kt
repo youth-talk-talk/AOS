@@ -46,7 +46,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
-import com.core.home.model.HomeUiEvent
+import com.core.home.model.home.HomeUiEvent
 import com.core.home.viewmodel.HomeViewModel
 import com.youth.app.core.designsystem.R as Design
 import com.youth.app.feature.policy.R
@@ -72,6 +72,7 @@ import com.youthtalk.model.policy.PoliciesWithReview
 import com.youthtalk.model.policy.Policy
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import kotlinx.serialization.json.Json
 import timber.log.Timber
 
 @Composable
@@ -79,7 +80,7 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = hiltViewModel(),
     onClickPolicySearch: () -> Unit,
-    onClickPopularPolicy: () -> Unit,
+    onClickPopularPolicy: (String) -> Unit,
     onClickNewPolicy: () -> Unit,
     onClickPolicyDetail: (Long) -> Unit,
     onClickPolicyOverView: (Category) -> Unit,
@@ -148,7 +149,7 @@ fun HomeScreen(
                 }
                 popularPolicy(
                     popularPolices = uiState.homeData.popularPolicies,
-                    onClickPopularPolicy = onClickPopularPolicy,
+                    onClickPopularPolicy = { onClickPopularPolicy(Json.encodeToString(uiState.homeData.popularPolicies)) },
                     onClickPolicyDetail = onClickPolicyDetail
                 )
                 newPolicy(

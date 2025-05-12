@@ -10,9 +10,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.core.home.viewmodel.PopularPolicyViewModel
 import com.youthtalk.component.card.PolicyCard
 import com.youthtalk.component.topbar.MiddleTitleTopBar
 import com.youthtalk.designsystem.YongProjectTheme
@@ -20,7 +24,13 @@ import com.youthtalk.designsystem.gray10
 import com.youthtalk.designsystem.gray40
 
 @Composable
-fun PopularPolicyScreen(modifier: Modifier = Modifier, onBack: () -> Unit) {
+fun PopularPolicyScreen(
+    modifier: Modifier = Modifier,
+    viewModel: PopularPolicyViewModel = hiltViewModel(),
+    onBack: () -> Unit,
+    onClickPolicyDetail: (Long) -> Unit
+) {
+    val uiState by viewModel.state.collectAsStateWithLifecycle()
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -37,8 +47,9 @@ fun PopularPolicyScreen(modifier: Modifier = Modifier, onBack: () -> Unit) {
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             items(
-                count = 10
+                count = uiState.policies.size
             ) {
+                val policy = uiState.policies[it]
                 PolicyCard(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -50,7 +61,9 @@ fun PopularPolicyScreen(modifier: Modifier = Modifier, onBack: () -> Unit) {
                             width = 1.dp,
                             color = gray40,
                             shape = RoundedCornerShape(12.dp)
-                        )
+                        ),
+                    policy = policy,
+                    onClick = { onClickPolicyDetail(policy.policyId) }
                 )
             }
         }
@@ -62,7 +75,8 @@ fun PopularPolicyScreen(modifier: Modifier = Modifier, onBack: () -> Unit) {
 fun PopularPolicyScreenPreview() {
     YongProjectTheme {
         PopularPolicyScreen(
-            onBack = {}
+            onBack = {},
+            onClickPolicyDetail = {}
         )
     }
 }

@@ -1,4 +1,4 @@
-package com.core.home.model
+package com.core.home.model.home
 
 import androidx.compose.runtime.Immutable
 import com.core.base.model.UiState
