@@ -17,15 +17,15 @@ data class HomeUiState(
     ),
     val homeData: HomeData = HomeData(
         popularPolicies = listOf(),
-        newPolicies = NewPolicies(
-            all = listOf(),
-            job = listOf(),
-            dwelling = listOf(),
-            education = listOf(),
-            life = listOf(),
-            participation = listOf()
-        ),
         policiesWithReviews = listOf(),
         bestPosts = listOf()
+    ),
+    val newPolicies: NewPolicies = NewPolicies(
+        all = listOf(),
+        job = listOf(),
+        dwelling = listOf(),
+        education = listOf(),
+        life = listOf(),
+        participation = listOf()
     )
 ) : UiState

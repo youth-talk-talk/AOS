@@ -16,7 +16,6 @@ import java.time.LocalDateTime
 
 fun HomeDataResponse.toDomain(): HomeData = HomeData(
     popularPolicies = popularPolicies.map { it.toDomain() },
-    newPolicies = newPolicies.toDomain(),
     policiesWithReviews = policiesWithReviews.map { it.toDomain() },
     bestPosts = bestPosts.map { it.toDomain() }
 )
@@ -55,7 +54,8 @@ fun ReviewResponse.toDomain(): Review = Review(
     contentPreview = contentPreview,
     commentCount = commentCount,
     scrapCount = scrapCount,
-    createdAt = LocalDateTime.parse(createdAt.replace(" ", "T"))
+    createdAt = LocalDateTime.parse(createdAt.replace(" ", "T")),
+    scrap = scrap
 )
 
 fun PostResponse.toDomain(): Post = Post(

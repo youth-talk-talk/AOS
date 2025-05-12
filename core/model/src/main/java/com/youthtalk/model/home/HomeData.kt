@@ -6,7 +6,6 @@ import com.youthtalk.model.policy.Policy
 
 data class HomeData(
     val popularPolicies: List<Policy>,
-    val newPolicies: NewPolicies,
     val policiesWithReviews: List<PoliciesWithReview>,
     val bestPosts: List<Post>
 )

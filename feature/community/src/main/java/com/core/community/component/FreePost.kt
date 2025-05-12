@@ -24,7 +24,7 @@ import com.youthtalk.designsystem.gray40
 import com.youthtalk.extentions.shadow
 
 @Composable
-fun FreePost(modifier: Modifier = Modifier, lazyListState: LazyListState, onClickPost: () -> Unit) {
+fun FreePost(modifier: Modifier = Modifier, lazyListState: LazyListState, onClickPost: (Long) -> Unit) {
     LazyColumn(
         modifier = modifier
             .fillMaxSize(),
@@ -63,7 +63,7 @@ fun FreePost(modifier: Modifier = Modifier, lazyListState: LazyListState, onClic
                                 ),
                             communityTitle = "면접 정장 비싸서 걱정했는데 공짜로 해결함!",
                             content = "면접 정장 비싸서 걱정했는데 공짜로 해결함!.....",
-                            onClick = onClickPost
+                            onClick = { onClickPost(0L) }
                         )
                     }
                 }
@@ -83,7 +83,7 @@ fun FreePost(modifier: Modifier = Modifier, lazyListState: LazyListState, onClic
                 modifier = Modifier.padding(horizontal = 16.dp),
                 communityTitle = "영화 보는 거 좋아하는 사람? 꿀팁 알려드림!",
                 communitySubTitle = "영화 보는 거 좋아하는 사람? 꿀팁 알려드림! 영화 보는 거 좋아하는 사람...",
-                onClick = onClickPost
+                onClick = { onClickPost(0L) }
             )
             HorizontalDivider(
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 20.dp),

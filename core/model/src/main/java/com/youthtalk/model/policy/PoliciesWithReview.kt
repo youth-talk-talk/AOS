@@ -15,5 +15,6 @@ data class Review(
     val contentPreview: String,
     val commentCount: Int,
     val scrapCount: Int,
-    val createdAt: LocalDateTime
+    val createdAt: LocalDateTime,
+    val scrap: Boolean
 )

@@ -14,7 +14,7 @@ fun NavController.navigateCommunity(navOptions: NavOptions) {
 
 fun NavGraphBuilder.communityNavigation(
     onClickCommunitySearch: (CommunityType) -> Unit,
-    onClickPostDetail: () -> Unit,
+    onClickPostDetail: (Long) -> Unit,
     onClickCommunityWrite: (CommunityType) -> Unit
 ) {
     composable<HomeTabNavigation.Community> {

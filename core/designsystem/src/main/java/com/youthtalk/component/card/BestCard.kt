@@ -1,6 +1,8 @@
 package com.youthtalk.component.card
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,6 +14,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -29,7 +32,7 @@ import com.youthtalk.model.community.Post
 import java.time.LocalDateTime
 
 @Composable
-fun BestCard(modifier: Modifier = Modifier, post: Post) {
+fun BestCard(modifier: Modifier = Modifier, post: Post, onClickPostDetail: (Long) -> Unit) {
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -42,6 +45,12 @@ fun BestCard(modifier: Modifier = Modifier, post: Post) {
                 color = gray10,
                 shape = RoundedCornerShape(12.dp)
             )
+            .clickable(
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() }
+            ) {
+                onClickPostDetail(post.postId)
+            }
             .padding(horizontal = 16.dp, vertical = 20.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
@@ -149,7 +158,8 @@ private fun BestCardPreview() {
                 scraps = 0,
                 scrap = false,
                 createdAt = LocalDateTime.now()
-            )
+            ),
+            onClickPostDetail = {}
         )
     }
 }

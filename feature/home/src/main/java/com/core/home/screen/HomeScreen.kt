@@ -21,7 +21,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
@@ -31,12 +30,10 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -47,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
+import com.core.home.model.HomeUiEvent
 import com.core.home.viewmodel.HomeViewModel
 import com.youth.app.core.designsystem.R as Design
 import com.youth.app.feature.policy.R
@@ -57,6 +55,7 @@ import com.youthtalk.component.chip.RoundChip
 import com.youthtalk.component.empty.EmptyScreen
 import com.youthtalk.component.item.CategoryItem
 import com.youthtalk.component.item.TitleItem
+import com.youthtalk.component.sheet.RegionBottomSheet
 import com.youthtalk.component.topbar.RegionTopBar
 import com.youthtalk.designsystem.gray10
 import com.youthtalk.designsystem.gray20
@@ -65,12 +64,12 @@ import com.youthtalk.designsystem.gray80
 import com.youthtalk.designsystem.gray90
 import com.youthtalk.extentions.shadow
 import com.youthtalk.model.Category
+import com.youthtalk.model.Region
 import com.youthtalk.model.home.NewPolicies
 import com.youthtalk.model.policy.PoliciesWithReview
 import com.youthtalk.model.policy.Policy
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import kotlinx.coroutines.launch
 
 @Composable
 fun HomeScreen(
@@ -79,9 +78,14 @@ fun HomeScreen(
     onClickPolicySearch: () -> Unit,
     onClickPopularPolicy: () -> Unit,
     onClickNewPolicy: () -> Unit,
-    onClickPolicyDetail: () -> Unit
+    onClickPolicyDetail: (Long) -> Unit,
+    onClickPolicyOverView: (Category) -> Unit,
+    onClickPostDetail: (Long) -> Unit
 ) {
     val uiState by viewModel.state.collectAsState()
+    var bottomSheet by remember {
+        mutableStateOf(false)
+    }
 
     if (uiState.isLoading) {
         Box(
@@ -99,7 +103,7 @@ fun HomeScreen(
         ) {
             RegionTopBar(
                 region = uiState.user.region,
-                onClickRegion = {},
+                onClickRegion = { bottomSheet = true },
                 onClickSearch = onClickPolicySearch
             )
 
@@ -117,7 +121,7 @@ fun HomeScreen(
                         ) {
                             CategoryItem(
                                 category = it,
-                                onClick = {}
+                                onClick = { onClickPolicyOverView(it) }
                             )
                         }
                     }
@@ -128,11 +132,14 @@ fun HomeScreen(
                     onClickPolicyDetail = onClickPolicyDetail
                 )
                 newPolicy(
-                    newPolicies = uiState.homeData.newPolicies,
-                    onClickNewPolicy = onClickNewPolicy
+                    newPolicies = uiState.newPolicies,
+                    onClickNewPolicy = onClickNewPolicy,
+                    onClickPolicyDetail = onClickPolicyDetail
                 )
                 realTimePolicy(
-                    policiesWithReviews = uiState.homeData.policiesWithReviews
+                    policiesWithReviews = uiState.homeData.policiesWithReviews,
+                    onClickPolicyDetail = onClickPolicyDetail,
+                    onClickPostDetail = onClickPostDetail
                 )
                 item {
                     TitleItem(
@@ -150,10 +157,20 @@ fun HomeScreen(
                         modifier = Modifier
                             .padding(horizontal = 8.dp)
                             .padding(bottom = 8.dp),
-                        post = bestPost
+                        post = bestPost,
+                        onClickPostDetail = onClickPostDetail
                     )
                 }
             }
+        }
+    }
+
+    if (bottomSheet) {
+        RegionBottomSheet(
+            region = uiState.user.region,
+            onDismiss = { bottomSheet = false }
+        ) {
+            viewModel.setEvent(HomeUiEvent.PostRegion(uiState.user, it ?: Region.ALL))
         }
     }
 }
@@ -162,7 +179,7 @@ fun LazyListScope.popularPolicy(
     modifier: Modifier = Modifier,
     popularPolices: List<Policy>,
     onClickPopularPolicy: () -> Unit,
-    onClickPolicyDetail: () -> Unit
+    onClickPolicyDetail: (Long) -> Unit
 ) {
     item {
         Column(
@@ -193,7 +210,7 @@ fun LazyListScope.popularPolicy(
                                 color = gray10,
                                 shape = RoundedCornerShape(10.dp)
                             ),
-                        onClick = onClickPolicyDetail,
+                        onClick = { onClickPolicyDetail(popularPolices[it].policyId) },
                         policy = popularPolices[it],
                         isVisibleScrap = true
                     )
@@ -203,14 +220,24 @@ fun LazyListScope.popularPolicy(
     }
 }
 
-fun LazyListScope.newPolicy(modifier: Modifier = Modifier, newPolicies: NewPolicies, onClickNewPolicy: () -> Unit) {
+fun LazyListScope.newPolicy(
+    modifier: Modifier = Modifier,
+    newPolicies: NewPolicies,
+    onClickNewPolicy: () -> Unit,
+    onClickPolicyDetail: (Long) -> Unit
+) {
     item {
-        val scope = rememberCoroutineScope()
         val categories = Category.entries.toList()
-        val pagerState = rememberPagerState { categories.size }
-        val lazyState = rememberLazyListState()
-        LaunchedEffect(pagerState.currentPage) {
-            lazyState.animateScrollToItem(pagerState.currentPage)
+        var index by remember {
+            mutableStateOf(0)
+        }
+        val items = when (categories[index]) {
+            Category.ALL -> newPolicies.all
+            Category.DWELLING -> newPolicies.dwelling
+            Category.EDUCATION -> newPolicies.education
+            Category.JOB -> newPolicies.job
+            Category.LIFE -> newPolicies.life
+            Category.PARTICIPATION -> newPolicies.participation
         }
 
         Column(
@@ -235,7 +262,6 @@ fun LazyListScope.newPolicy(modifier: Modifier = Modifier, newPolicies: NewPolic
             )
 
             LazyRow(
-                state = lazyState,
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                 contentPadding = PaddingValues(start = 16.dp, end = 16.dp)
             ) {
@@ -244,92 +270,99 @@ fun LazyListScope.newPolicy(modifier: Modifier = Modifier, newPolicies: NewPolic
                 ) {
                     RoundChip(
                         text = categories[it].categoryName,
-                        isSelected = categories[pagerState.currentPage] == categories[it],
+                        isSelected = categories[index] == categories[it],
                         onClick = {
-                            scope.launch {
-                                pagerState.animateScrollToPage(it)
-                                lazyState.animateScrollToItem(it)
-                            }
+                            index = it
                         }
                     )
                 }
             }
 
-            HorizontalPager(
-                state = pagerState
-            ) {
+            if (items.isEmpty()) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 20.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                        .height(500.dp)
                 ) {
-                    val items = when (categories[it]) {
-                        Category.ALL -> newPolicies.all
-                        Category.DWELLING -> newPolicies.dwelling
-                        Category.EDUCATION -> newPolicies.education
-                        Category.JOB -> newPolicies.job
-                        Category.LIFE -> newPolicies.life
-                        Category.PARTICIPATION -> newPolicies.participation
-                    }
+                    Spacer(modifier = Modifier.weight(1f))
+                    EmptyScreen(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(5f)
+                            .background(color = gray10)
+                            .padding(top = 65.dp),
+                        emptyTitle = "새로운 정책이 없습니다."
+                    )
+                }
+            } else {
+                val pagerState = rememberPagerState {
+                    items.size / 4 + if (items.size % 4 != 0) 1 else 0
+                }
+                HorizontalPager(
+                    state = pagerState
+                ) {
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(525.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(14.dp)
+                            .padding(vertical = 20.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        if (items.isEmpty()) {
-                            Spacer(modifier = Modifier.weight(1f))
-                            EmptyScreen(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .weight(5f)
-                                    .background(color = gray10)
-                                    .padding(top = 65.dp),
-                                emptyTitle = "새로운 정책이 없습니다."
-                            )
-                        } else {
-                            items.take(4).forEach {
-                                PolicyCard(
-                                    modifier = Modifier
-                                        .width(340.dp)
-                                        .shadow(
-                                            offsetX = 4.dp,
-                                            offsetY = 4.dp,
-                                            blurRadius = 10.dp
-                                        )
-                                        .background(
-                                            color = gray10,
-                                            shape = RoundedCornerShape(10.dp)
-                                        ),
-                                    policy = it
-                                )
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize(),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(14.dp)
+                        ) {
+                            repeat(4) { count ->
+                                if (items.size > it * 4 + count) {
+                                    PolicyCard(
+                                        modifier = Modifier
+                                            .width(340.dp)
+                                            .shadow(
+                                                offsetX = 4.dp,
+                                                offsetY = 4.dp,
+                                                blurRadius = 10.dp
+                                            )
+                                            .background(
+                                                color = gray10,
+                                                shape = RoundedCornerShape(10.dp)
+                                            ),
+                                        policy = items[it * 4 + count],
+                                        onClick = { onClickPolicyDetail(items[it * 4 + count].policyId) }
+                                    )
+                                }
                             }
                         }
                     }
                 }
-            }
 
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                repeat(categories.size) {
-                    Box(
-                        modifier = Modifier
-                            .size(6.dp)
-                            .background(
-                                color = if (pagerState.currentPage == it) gray90 else gray40,
-                                shape = CircleShape
+                if (pagerState.pageCount > 1) {
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        repeat(pagerState.pageCount) {
+                            Box(
+                                modifier = Modifier
+                                    .size(6.dp)
+                                    .background(
+                                        color = if (pagerState.currentPage == it) gray90 else gray40,
+                                        shape = CircleShape
+                                    )
                             )
-                    )
+                        }
+                    }
                 }
             }
         }
     }
 }
 
-fun LazyListScope.realTimePolicy(modifier: Modifier = Modifier, policiesWithReviews: List<PoliciesWithReview>) {
+fun LazyListScope.realTimePolicy(
+    modifier: Modifier = Modifier,
+    policiesWithReviews: List<PoliciesWithReview>,
+    onClickPolicyDetail: (Long) -> Unit,
+    onClickPostDetail: (Long) -> Unit
+) {
     item {
         var index by remember {
             mutableStateOf(0)
@@ -364,6 +397,13 @@ fun LazyListScope.realTimePolicy(modifier: Modifier = Modifier, policiesWithRevi
                     .padding(horizontal = 16.dp, vertical = 24.dp)
             ) {
                 Row(
+                    modifier = Modifier
+                        .clickable(
+                            indication = null,
+                            interactionSource = remember { MutableInteractionSource() }
+                        ) {
+                            onClickPolicyDetail(policiesWithReviews[index].policyId)
+                        },
                     horizontalArrangement = Arrangement.spacedBy(14.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -418,7 +458,7 @@ fun LazyListScope.realTimePolicy(modifier: Modifier = Modifier, policiesWithRevi
                     policy.reviews.forEachIndexed { index, review ->
                         ReviewCard(
                             review = review,
-                            onClick = {}
+                            onClick = { onClickPostDetail(0L) }
                         )
                         if (index != policy.reviews.size - 1) {
                             HorizontalDivider(

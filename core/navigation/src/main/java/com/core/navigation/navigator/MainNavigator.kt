@@ -50,7 +50,9 @@ data object RecentlyViewPolicy
 data object DeadlinePolicy
 
 @Serializable
-data object CommunityDetail
+data class CommunityDetail(
+    val postId: Long
+)
 
 @Serializable
 data class CommunityWrite(
@@ -58,4 +60,6 @@ data class CommunityWrite(
 )
 
 @Serializable
-data object PolicyDetail
+data class PolicyDetail(
+    val policyId: Long
+)

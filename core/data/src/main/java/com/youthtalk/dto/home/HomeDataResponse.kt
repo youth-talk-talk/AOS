@@ -9,7 +9,6 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class HomeDataResponse(
     val popularPolicies: List<PolicyResponse>,
-    val newPolicies: NewPoliciesResponse,
     val policiesWithReviews: List<PoliciesWithReviewResponse>,
     val bestPosts: List<PostResponse>
 )

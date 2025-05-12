@@ -17,5 +17,6 @@ data class ReviewResponse(
     val contentPreview: String,
     val commentCount: Int,
     val scrapCount: Int,
-    val createdAt: String
+    val createdAt: String,
+    val scrap: Boolean
 )

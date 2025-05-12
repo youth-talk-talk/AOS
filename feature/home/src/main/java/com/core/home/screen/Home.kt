@@ -37,8 +37,8 @@ fun Home(
     onClickRecentViewPolicy: () -> Unit,
     onClickDeadlinePolicy: () -> Unit,
     onClickCommunitySearch: (CommunityType) -> Unit,
-    onClickPostDetail: () -> Unit,
-    onClickPolicyDetail: () -> Unit,
+    onClickPostDetail: (Long) -> Unit,
+    onClickPolicyDetail: (Long) -> Unit,
     onClickCommunityWrite: (CommunityType) -> Unit,
     goLogin: () -> Unit
 ) {
@@ -57,7 +57,9 @@ fun Home(
                 onClickPolicySearch = onClickPolicySearch,
                 onClickPopularPolicy = onClickPopularPolicy,
                 onClickNewPolicy = onClickNewPolicy,
-                onClickPolicyDetail = onClickPolicyDetail
+                onClickPolicyDetail = onClickPolicyDetail,
+                onClickPolicyOverView = navController::navigatePolicyOverView,
+                onClickPostDetail = onClickPostDetail
             )
             communityNavigation(
                 onClickCommunitySearch = onClickCommunitySearch,
@@ -100,10 +102,10 @@ fun Home(
     }
 }
 
-private fun String.toHomeTabNavigation(): HomeTabNavigation = when (this) {
-    "Home" -> HomeTabNavigation.Home
-    "Setting", "Account" -> HomeTabNavigation.Setting
-    "Community" -> HomeTabNavigation.Community
-    "Policy", "PolicyOverView" -> HomeTabNavigation.Policy
+private fun String.toHomeTabNavigation(): HomeTabNavigation = when {
+    contains("Home") -> HomeTabNavigation.Home
+    contains("Setting") || contains("Account") -> HomeTabNavigation.Setting
+    contains("Community") -> HomeTabNavigation.Community
+    contains("Policy") || contains("PolicyOverView") -> HomeTabNavigation.Policy
     else -> HomeTabNavigation.Home
 }

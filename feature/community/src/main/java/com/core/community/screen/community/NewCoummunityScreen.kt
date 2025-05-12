@@ -40,7 +40,7 @@ import kotlinx.coroutines.launch
 fun NewCommunityScreen(
     modifier: Modifier = Modifier,
     onClickCommunitySearch: (CommunityType) -> Unit,
-    onClickPostDetail: () -> Unit,
+    onClickPostDetail: (Long) -> Unit,
     onClickCommunityWrite: (CommunityType) -> Unit
 ) {
     val communityType = CommunityType.entries.toList()

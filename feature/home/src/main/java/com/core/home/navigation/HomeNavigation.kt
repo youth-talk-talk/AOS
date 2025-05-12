@@ -27,8 +27,8 @@ fun NavGraphBuilder.homeNavigation(
     onClickRecentViewPolicy: () -> Unit,
     onClickDeadlinePolicy: () -> Unit,
     onClickCommunitySearch: (CommunityType) -> Unit,
-    onClickPostDetail: () -> Unit,
-    onClickPolicyDetail: () -> Unit,
+    onClickPostDetail: (Long) -> Unit,
+    onClickPolicyDetail: (Long) -> Unit,
     onClickCommunityWrite: (CommunityType) -> Unit,
     goLogin: () -> Unit
 ) {

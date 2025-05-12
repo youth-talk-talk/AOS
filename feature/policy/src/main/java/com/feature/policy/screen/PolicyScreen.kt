@@ -59,7 +59,7 @@ fun PolicyScreen(
     modifier: Modifier = Modifier,
     onClickRecentViewPolicy: () -> Unit,
     onClickDeadlinePolicy: () -> Unit,
-    onClickPolicyOverView: () -> Unit
+    onClickPolicyOverView: (Category) -> Unit
 ) {
     var selectDay by remember {
         mutableStateOf(LocalDate.now())
@@ -112,7 +112,7 @@ fun PolicyScreen(
                     TitleItem(
                         modifier = Modifier.padding(top = 20.dp, bottom = 15.dp),
                         title = "모든 정책 한눈에 보기",
-                        onClick = onClickPolicyOverView
+                        onClick = { onClickPolicyOverView(Category.ALL) }
                     )
 
                     PrimaryTabRow(

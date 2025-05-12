@@ -6,6 +6,7 @@ import com.youthtalk.dto.PolicyDetailResponse
 import com.youthtalk.dto.PostAddCommentResponse
 import com.youthtalk.dto.SearchPoliciesResponse
 import com.youthtalk.dto.home.HomeDataResponse
+import com.youthtalk.dto.home.NewPoliciesResponse
 import com.youthtalk.dto.specpolicy.SpecPoliciesResponse
 import com.youthtalk.model.PolicyResponse
 import com.youthtalk.model.enum.SortType
@@ -18,8 +19,11 @@ import retrofit2.http.Query
 
 interface PolicyService {
 
-    @GET("/api/v1/home?sort=RECENT")
+    @GET("/api/v1/home")
     suspend fun getHome(@Query("sort") sort: SortType = SortType.RECENT): CommonResponse<HomeDataResponse>
+
+    @GET("/api/v1/home/new-policies")
+    suspend fun getNewPolicies(@Query("sort") sort: SortType = SortType.RECENT): CommonResponse<NewPoliciesResponse>
 
     @GET("/api/v1/policies")
     suspend fun getPolices(

@@ -19,7 +19,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.youth.app.core.designsystem.R
@@ -27,12 +26,13 @@ import com.youthtalk.component.button.CheckButton
 import com.youthtalk.component.button.SelectedButton
 import com.youthtalk.designsystem.gray10
 import com.youthtalk.designsystem.gray100
+import com.youthtalk.model.Region
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RegionBottomSheet(modifier: Modifier = Modifier, region: String, onDismiss: () -> Unit, onClick: (String) -> Unit) {
-    val regions = stringArrayResource(R.array.regions).toList()
+fun RegionBottomSheet(modifier: Modifier = Modifier, region: Region?, onDismiss: () -> Unit, onClick: (Region?) -> Unit) {
+    val regions = Region.entries.toList()
     var selectedRegion by remember {
         mutableStateOf(region)
     }
@@ -66,7 +66,10 @@ fun RegionBottomSheet(modifier: Modifier = Modifier, region: String, onDismiss: 
             ) {
                 items(items = regions) {
                     SelectedButton(
-                        text = it,
+                        text = when (it) {
+                            Region.ALL -> "전체 지역"
+                            else -> it.region
+                        },
                         isSelected = selectedRegion == it
                     ) {
                         selectedRegion = it
@@ -79,7 +82,7 @@ fun RegionBottomSheet(modifier: Modifier = Modifier, region: String, onDismiss: 
                     .fillMaxWidth()
                     .padding(vertical = 26.dp),
                 text = stringResource(R.string.bottom_sheet_button_text),
-                isCheck = selectedRegion.isNotEmpty()
+                isCheck = selectedRegion != null
             ) {
                 scope.launch {
                     sheetState.hide()

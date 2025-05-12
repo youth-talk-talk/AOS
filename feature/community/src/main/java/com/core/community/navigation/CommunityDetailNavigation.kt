@@ -7,8 +7,8 @@ import androidx.navigation.compose.composable
 import com.core.community.screen.detail.CommunityDetailScreen
 import com.core.navigation.navigator.CommunityDetail
 
-fun NavController.navigateCommunityDetail(navOptions: NavOptions? = null) {
-    navigate(CommunityDetail, navOptions)
+fun NavController.navigateCommunityDetail(postId: Long, navOptions: NavOptions? = null) {
+    navigate(CommunityDetail(postId), navOptions)
 }
 
 fun NavGraphBuilder.communityDetailNavigation() {

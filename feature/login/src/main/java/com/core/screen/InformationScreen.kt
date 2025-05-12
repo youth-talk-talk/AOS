@@ -36,6 +36,7 @@ import com.youthtalk.component.sheet.RegionBottomSheet
 import com.youthtalk.designsystem.YongProjectTheme
 import com.youthtalk.designsystem.gray100
 import com.youthtalk.designsystem.gray80
+import com.youthtalk.model.Region
 import timber.log.Timber
 
 @Composable
@@ -44,7 +45,7 @@ fun InformationScreen(loading: Boolean, onBack: () -> Unit, signUp: (String, Str
         mutableStateOf("")
     }
     var region by remember {
-        mutableStateOf("")
+        mutableStateOf<Region?>(null)
     }
     var type by remember {
         mutableStateOf(SignType.NICK_NAME)
@@ -117,13 +118,13 @@ fun InformationScreen(loading: Boolean, onBack: () -> Unit, signUp: (String, Str
                     horizontal = 4.dp,
                     vertical = 26.dp
                 ),
-            isCheck = if (type == SignType.NICK_NAME) nickname.isNotEmpty() else nickname.isNotEmpty() && region.isNotEmpty(),
+            isCheck = if (type == SignType.NICK_NAME) nickname.isNotEmpty() else nickname.isNotEmpty() && region != null,
             text = if (type == SignType.NICK_NAME) stringResource(R.string.next) else stringResource(R.string.done)
         ) {
             Timber.i("checkButton")
             when (type) {
                 SignType.NICK_NAME -> type = SignType.REGION
-                SignType.REGION -> signUp(nickname, region)
+                SignType.REGION -> signUp(nickname, region?.region ?: Region.ALL.region)
             }
         }
     }
@@ -146,7 +147,7 @@ fun InputTypeScreen(
     modifier: Modifier = Modifier,
     type: SignType,
     nickname: String,
-    region: String,
+    region: Region?,
     onChangeNickname: (String) -> Unit,
     onSelect: () -> Unit
 ) {
@@ -169,7 +170,7 @@ fun InputTypeScreen(
 
                     RegionDropDown(
                         modifier = Modifier.padding(top = 40.dp),
-                        select = region,
+                        select = region?.region ?: "",
                         hint = stringResource(R.string.input_region_hint),
                         onSelect = onSelect
                     )

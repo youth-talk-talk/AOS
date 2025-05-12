@@ -7,8 +7,8 @@ import androidx.navigation.compose.composable
 import com.core.navigation.navigator.PolicyDetail
 import com.feature.policydetail.screen.PolicyDetailScreen
 
-fun NavController.navigatePolicyDetail(navOptions: NavOptions? = null) {
-    navigate(PolicyDetail, navOptions)
+fun NavController.navigatePolicyDetail(policyId: Long, navOptions: NavOptions? = null) {
+    navigate(PolicyDetail(policyId), navOptions)
 }
 
 fun NavGraphBuilder.policyDetailNavigation() {
