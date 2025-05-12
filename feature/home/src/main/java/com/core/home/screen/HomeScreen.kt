@@ -34,6 +34,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,6 +43,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.LifecycleResumeEffect
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import com.core.home.model.HomeUiEvent
@@ -70,6 +72,7 @@ import com.youthtalk.model.policy.PoliciesWithReview
 import com.youthtalk.model.policy.Policy
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import timber.log.Timber
 
 @Composable
 fun HomeScreen(
@@ -85,6 +88,23 @@ fun HomeScreen(
     val uiState by viewModel.state.collectAsState()
     var bottomSheet by remember {
         mutableStateOf(false)
+    }
+    var isRefresh by rememberSaveable {
+        mutableStateOf(false)
+    }
+
+    LifecycleResumeEffect(Unit) {
+        Timber.e("Dispose Start isRefresh $isRefresh")
+        if (isRefresh) {
+            Timber.e("isRefresh true")
+            viewModel.setEvent(HomeUiEvent.GetHomeData(false))
+            isRefresh = false
+        }
+
+        onPauseOrDispose {
+            Timber.e("onDispose isRefresh true")
+            isRefresh = true
+        }
     }
 
     if (uiState.isLoading) {

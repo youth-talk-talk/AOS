@@ -31,12 +31,12 @@ class HomeViewModel @Inject constructor(
 ) {
 
     init {
-        setEvent(HomeUiEvent.GetHomeData)
+        setEvent(HomeUiEvent.GetHomeData())
     }
 
     override fun handleEvents(event: HomeUiEvent) {
         when (event) {
-            is HomeUiEvent.GetHomeData -> getHomeData()
+            is HomeUiEvent.GetHomeData -> getHomeData(isLoading = event.isLoading)
             is HomeUiEvent.PostRegion -> postUser(event.user, event.region)
         }
     }
@@ -48,12 +48,12 @@ class HomeViewModel @Inject constructor(
                     Timber.e("HomeViewModel postUser error $it")
                 }
                 .collectLatest {
-                    setEvent(HomeUiEvent.GetHomeData)
+                    setEvent(HomeUiEvent.GetHomeData())
                 }
         }
     }
 
-    private fun getHomeData() {
+    private fun getHomeData(isLoading: Boolean = true) {
         viewModelScope.launch {
             combine(
                 getUserUseCase(),
@@ -68,7 +68,7 @@ class HomeViewModel @Inject constructor(
                 )
             }
                 .onStart {
-                    setState { copy(isLoading = true) }
+                    setState { copy(isLoading = isLoading) }
                 }
                 .catch {
                     Timber.e("HomeViewModel getHomeData error $it")

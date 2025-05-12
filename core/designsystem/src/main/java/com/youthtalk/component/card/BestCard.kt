@@ -17,7 +17,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -29,6 +28,7 @@ import com.youthtalk.designsystem.gray10
 import com.youthtalk.designsystem.gray80
 import com.youthtalk.extentions.shadow
 import com.youthtalk.model.community.Post
+import com.youthtalk.util.getTime
 import java.time.LocalDateTime
 
 @Composable
@@ -117,13 +117,15 @@ fun BestCard(modifier: Modifier = Modifier, post: Post, onClickPostDetail: (Long
                     ) {
                         Icon(
                             modifier = Modifier.size(16.dp),
-                            painter = painterResource(R.drawable.bookmark_line),
+                            painter = painterResource(
+                                if (post.scrap) R.drawable.bookmark_fill else R.drawable.bookmark_line
+                            ),
                             contentDescription = stringResource(R.string.bookmark),
-                            tint = gray80
+                            tint = if (post.scrap) MaterialTheme.colorScheme.primary else gray80
                         )
 
                         Text(
-                            text = "${post.scraps}",
+                            text = "${post.scrapCount}",
                             style = MaterialTheme.typography.labelSmall.copy(
                                 color = gray80
                             )
@@ -132,7 +134,7 @@ fun BestCard(modifier: Modifier = Modifier, post: Post, onClickPostDetail: (Long
                 }
 
                 Text(
-                    text = "Date",
+                    text = post.createdAt.getTime(),
                     style = MaterialTheme.typography.labelSmall.copy(
                         color = gray80
                     )
@@ -155,7 +157,7 @@ private fun BestCardPreview() {
                 policyTitle = "",
                 comments = 0,
                 contentPreview = "",
-                scraps = 0,
+                scrapCount = 0,
                 scrap = false,
                 createdAt = LocalDateTime.now()
             ),

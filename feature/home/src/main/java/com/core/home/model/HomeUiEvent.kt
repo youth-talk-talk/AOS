@@ -5,6 +5,6 @@ import com.youthtalk.model.Region
 import com.youthtalk.model.User
 
 interface HomeUiEvent : UiEvent {
-    data object GetHomeData : HomeUiEvent
+    data class GetHomeData(val isLoading: Boolean = true) : HomeUiEvent
     data class PostRegion(val user: User, val region: Region) : HomeUiEvent
 }

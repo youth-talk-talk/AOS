@@ -10,7 +10,7 @@ data class Post(
     val policyTitle: String?,
     val comments: Int,
     val contentPreview: String,
-    val scraps: Int,
+    val scrapCount: Int,
     val scrap: Boolean,
     val createdAt: LocalDateTime
 )

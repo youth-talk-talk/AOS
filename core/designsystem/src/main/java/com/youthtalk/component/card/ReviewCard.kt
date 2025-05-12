@@ -1,5 +1,6 @@
 package com.youthtalk.component.card
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -15,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -23,6 +25,7 @@ import com.youth.app.core.designsystem.R
 import com.youthtalk.designsystem.gray10
 import com.youthtalk.designsystem.gray80
 import com.youthtalk.model.policy.Review
+import com.youthtalk.util.getTime
 
 @Composable
 fun ReviewCard(modifier: Modifier = Modifier, review: Review, onClick: (Long) -> Unit) {
@@ -92,11 +95,13 @@ fun ReviewCard(modifier: Modifier = Modifier, review: Review, onClick: (Long) ->
                     horizontalArrangement = Arrangement.spacedBy(2.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(
+                    Image(
                         modifier = Modifier.size(16.dp),
-                        painter = painterResource(R.drawable.bookmark_line),
+                        painter = painterResource(
+                            if (review.scrap) R.drawable.bookmark_fill else R.drawable.bookmark_line
+                        ),
                         contentDescription = stringResource(R.string.bookmark),
-                        tint = gray80
+                        colorFilter = ColorFilter.tint(if (review.scrap) MaterialTheme.colorScheme.primary else gray80)
                     )
 
                     Text(
@@ -109,7 +114,7 @@ fun ReviewCard(modifier: Modifier = Modifier, review: Review, onClick: (Long) ->
             }
 
             Text(
-                text = "Date",
+                text = review.createdAt.getTime(),
                 style = MaterialTheme.typography.labelSmall.copy(
                     color = gray80
                 )

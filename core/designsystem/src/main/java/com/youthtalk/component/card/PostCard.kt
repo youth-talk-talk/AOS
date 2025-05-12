@@ -46,7 +46,7 @@ fun PostCard(
         policyTitle = "",
         comments = 0,
         contentPreview = "",
-        scraps = 0,
+        scrapCount = 0,
         scrap = false,
         createdAt = LocalDateTime.now()
     ),
@@ -159,7 +159,7 @@ fun PostCard(
                     )
 
                     Text(
-                        text = "${post.scraps}",
+                        text = "${post.scrapCount}",
                         style = MaterialTheme.typography.labelSmall.copy(
                             color = gray80
                         )

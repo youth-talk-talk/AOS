@@ -66,7 +66,7 @@ fun PostResponse.toDomain(): Post = Post(
     policyTitle = policyTitle,
     comments = comments,
     contentPreview = contentPreview,
-    scraps = scraps,
+    scrapCount = scrapCount,
     scrap = scrap,
     createdAt = LocalDateTime.parse(createdAt.replace(" ", "T"))
 )
