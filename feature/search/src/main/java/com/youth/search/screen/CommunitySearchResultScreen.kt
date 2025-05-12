@@ -34,7 +34,7 @@ fun CommunitySearchResultScreen(modifier: Modifier = Modifier, communityType: Co
     }
     LazyColumn(
         modifier = modifier
-            .fillMaxSize(),
+            .fillMaxSize()
     ) {
         item {
             Row(
@@ -43,35 +43,35 @@ fun CommunitySearchResultScreen(modifier: Modifier = Modifier, communityType: Co
                     .padding(horizontal = 16.dp)
                     .padding(bottom = 10.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
                     text = "총 ${DecimalFormat("#,###").format(count)}건",
-                    style = MaterialTheme.typography.displayMedium,
+                    style = MaterialTheme.typography.displayMedium
                 )
 
                 Row(
                     modifier = Modifier
                         .padding(horizontal = 6.dp, vertical = 2.dp),
                     horizontalArrangement = Arrangement.spacedBy(2.dp),
-                    verticalAlignment = Alignment.CenterVertically,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
                         text = "최신순",
-                        style = MaterialTheme.typography.displayMedium,
+                        style = MaterialTheme.typography.displayMedium
                     )
 
                     Image(
                         modifier = Modifier.size(16.dp),
                         painter = painterResource(R.drawable.arrowdown),
-                        contentDescription = "아래 화살표",
+                        contentDescription = "아래 화살표"
                     )
                 }
             }
         }
 
         items(
-            count = count,
+            count = count
         ) {
             PostCard(
                 modifier = Modifier.padding(horizontal = 16.dp),
@@ -85,12 +85,12 @@ fun CommunitySearchResultScreen(modifier: Modifier = Modifier, communityType: Co
                     CommunityType.REVIEW -> "청년문화예술패스"
                     CommunityType.FREE -> ""
                 },
-                onClick = {},
+                onClick = {}
             )
 
             HorizontalDivider(
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 20.dp),
-                color = gray40,
+                color = gray40
             )
         }
     }

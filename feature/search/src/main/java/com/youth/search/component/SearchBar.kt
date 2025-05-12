@@ -37,7 +37,7 @@ fun SearchBar(
     onClickBack: () -> Unit,
     onTextChange: (String) -> Unit,
     onSearch: (String) -> Unit,
-    onClear: () -> Unit,
+    onClear: () -> Unit
 ) {
     Row(
         modifier = modifier
@@ -46,18 +46,18 @@ fun SearchBar(
             .padding(horizontal = 16.dp)
             .padding(top = 24.dp, bottom = 20.dp),
         horizontalArrangement = Arrangement.spacedBy(10.dp),
-        verticalAlignment = Alignment.CenterVertically,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Image(
             modifier = Modifier
                 .clickable(
                     indication = null,
-                    interactionSource = remember { MutableInteractionSource() },
+                    interactionSource = remember { MutableInteractionSource() }
                 ) {
                     onClickBack()
                 },
             painter = painterResource(R.drawable.arrowleft),
-            contentDescription = "왼쪽 화살표",
+            contentDescription = "왼쪽 화살표"
         )
 
         BasicTextField(
@@ -65,40 +65,40 @@ fun SearchBar(
                 .fillMaxWidth()
                 .background(
                     color = gray30,
-                    shape = RoundedCornerShape(6.dp),
+                    shape = RoundedCornerShape(6.dp)
                 )
                 .padding(horizontal = 14.dp, vertical = 10.dp),
             value = text,
             onValueChange = onTextChange,
             textStyle = MaterialTheme.typography.titleSmall,
             keyboardOptions = KeyboardOptions(
-                imeAction = ImeAction.Done,
+                imeAction = ImeAction.Done
             ),
             keyboardActions = KeyboardActions(
-                onDone = { onSearch(text) },
-            ),
+                onDone = { onSearch(text) }
+            )
         ) { innerTextField ->
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
-                verticalAlignment = Alignment.CenterVertically,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Image(
                     modifier = Modifier.size(20.dp),
                     painter = painterResource(R.drawable.search),
                     contentDescription = "검색",
-                    colorFilter = ColorFilter.tint(color = gray70),
+                    colorFilter = ColorFilter.tint(color = gray70)
                 )
 
                 Box(
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier.weight(1f)
                 ) {
                     if (text.isEmpty()) {
                         Text(
                             text = hint,
                             style = MaterialTheme.typography.titleSmall.copy(
-                                color = gray70,
-                            ),
+                                color = gray70
+                            )
                         )
                     }
                     innerTextField()
@@ -109,13 +109,13 @@ fun SearchBar(
                         modifier = Modifier
                             .clickable(
                                 indication = null,
-                                interactionSource = remember { MutableInteractionSource() },
+                                interactionSource = remember { MutableInteractionSource() }
                             ) {
                                 onClear()
                             }
                             .padding(start = 14.dp),
                         painter = painterResource(R.drawable.closecircle),
-                        contentDescription = "초기화",
+                        contentDescription = "초기화"
                     )
                 }
             }

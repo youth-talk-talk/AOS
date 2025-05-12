@@ -20,14 +20,14 @@ import com.youthtalk.model.Policy
 import com.youthtalk.model.Post
 import com.youthtalk.model.SearchPolicy
 import com.youthtalk.utils.ErrorUtils.throwableError
+import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import javax.inject.Inject
 
 class SearchRepositoryImpl @Inject constructor(
     private val policyService: PolicyService,
     private val dataSource: DataStoreDataSource,
-    private val communityService: CommunityService,
+    private val communityService: CommunityService
 ) : SearchRepository {
     override fun getRecentList(): Flow<List<String>> = dataSource.getRecentSearchList()
 
@@ -38,14 +38,14 @@ class SearchRepositoryImpl @Inject constructor(
                     SearchPolicyPagingSource(
                         policyService = policyService,
                         filterInfo = filterInfo,
-                        keyword = keyword,
+                        keyword = keyword
                     )
                 },
                 config = PagingConfig(
                     pageSize = PagingSize.SEARCH_PAGE_SIZE,
-                    initialLoadSize = PagingSize.SEARCH_PAGE_SIZE,
-                ),
-            ).flow,
+                    initialLoadSize = PagingSize.SEARCH_PAGE_SIZE
+                )
+            ).flow
         )
     }
 
@@ -55,14 +55,14 @@ class SearchRepositoryImpl @Inject constructor(
             categories = null,
             employmentCodeList = filterInfo.employmentCodeList,
             keyword = keyword,
-            isFinished = filterInfo.isFinished,
+            isFinished = filterInfo.isFinished
         ).toRequestBody()
 
         runCatching {
             policyService.postSpecPolicies(
                 requestBody = requestBody,
                 page = 0,
-                size = 10,
+                size = 10
             )
         }
             .onSuccess { response ->
@@ -86,14 +86,14 @@ class SearchRepositoryImpl @Inject constructor(
                     SearchPostPagingSource(
                         communityService = communityService,
                         type = type,
-                        keyword = keyword,
+                        keyword = keyword
                     )
                 },
                 config = PagingConfig(
                     pageSize = PagingSize.SEARCH_PAGE_SIZE,
-                    initialLoadSize = PagingSize.SEARCH_PAGE_SIZE,
-                ),
-            ).flow,
+                    initialLoadSize = PagingSize.SEARCH_PAGE_SIZE
+                )
+            ).flow
         )
     }
 
@@ -103,7 +103,7 @@ class SearchRepositoryImpl @Inject constructor(
                 keyword = keyword,
                 type = type,
                 page = 0,
-                size = PagingSize.SEARCH_PAGE_SIZE,
+                size = PagingSize.SEARCH_PAGE_SIZE
             )
         }
             .onSuccess { response ->
@@ -121,12 +121,12 @@ class SearchRepositoryImpl @Inject constructor(
             pagingSourceFactory = {
                 SearchPoliciesTitlePagingSource(
                     title = title,
-                    policyService = policyService,
+                    policyService = policyService
                 )
             },
             config = PagingConfig(
-                pageSize = PagingSize.SEARCH_PAGE_SIZE,
-            ),
+                pageSize = PagingSize.SEARCH_PAGE_SIZE
+            )
         ).flow
     }
 }

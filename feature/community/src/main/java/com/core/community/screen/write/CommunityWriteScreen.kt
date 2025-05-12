@@ -33,13 +33,13 @@ fun CommunityWriteScreen(modifier: Modifier = Modifier, communityType: Community
     NavHost(
         modifier = modifier,
         navController = navController,
-        startDestination = CommunityWriteNavigation.Write,
+        startDestination = CommunityWriteNavigation.Write
     ) {
         composable<CommunityWriteNavigation.Write> {
             WriteScreen(
                 communityType = communityType,
                 onClickPolicySearch = { navController.navigate(CommunityWriteNavigation.PolicySearch) },
-                onClickPicture = { navController.navigate(CommunityWriteNavigation.Picture) },
+                onClickPicture = { navController.navigate(CommunityWriteNavigation.Picture) }
             )
         }
 
@@ -85,7 +85,7 @@ fun Modifier.onClickNoIndicator(click: () -> Unit): Modifier = composed {
             MutableInteractionSource()
         },
         indication = null,
-        onClick = click,
+        onClick = click
     )
 }
 
@@ -102,7 +102,7 @@ fun Modifier.onEmptyHeight(isEmpty: Boolean): Modifier = composed {
 private fun CommunityWriteFreeScreenPreview() {
     YongProjectTheme {
         CommunityWriteScreen(
-            communityType = CommunityType.FREE,
+            communityType = CommunityType.FREE
         )
     }
 }
@@ -112,7 +112,7 @@ private fun CommunityWriteFreeScreenPreview() {
 private fun CommunityWriteReviewScreenPreview() {
     YongProjectTheme {
         CommunityWriteScreen(
-            communityType = CommunityType.REVIEW,
+            communityType = CommunityType.REVIEW
         )
     }
 }

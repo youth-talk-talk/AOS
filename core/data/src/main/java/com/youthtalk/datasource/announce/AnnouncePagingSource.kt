@@ -5,12 +5,12 @@ import androidx.paging.PagingState
 import com.youthtalk.data.AnnounceService
 import com.youthtalk.mapper.toData
 import com.youthtalk.model.Announce
-import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
+import retrofit2.HttpException
 
 class AnnouncePagingSource @Inject constructor(
-    private val announceService: AnnounceService,
+    private val announceService: AnnounceService
 ) : PagingSource<Int, Announce>() {
 
     override fun getRefreshKey(state: PagingState<Int, Announce>): Int? {
@@ -26,7 +26,7 @@ class AnnouncePagingSource @Inject constructor(
 
             val response = announceService.getAllAnnounce(
                 page = pageNumber,
-                size = params.loadSize,
+                size = params.loadSize
             )
 
             val data = response.data?.announcementList?.map { it.toData() } ?: listOf()
@@ -34,7 +34,7 @@ class AnnouncePagingSource @Inject constructor(
             return LoadResult.Page(
                 data = data,
                 prevKey = if (pageNumber == 0) null else pageNumber - 1,
-                nextKey = if (response.data?.totalPage == pageNumber) null else pageNumber + 1,
+                nextKey = if (response.data?.totalPage == pageNumber) null else pageNumber + 1
             )
         } catch (e: IOException) {
             return LoadResult.Error(e)

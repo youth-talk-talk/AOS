@@ -6,13 +6,13 @@ import com.youthtalk.data.CommunityService
 import com.youthtalk.datasource.PagingSize.MY_PAGE_POSTS_SIZE
 import com.youthtalk.mapper.toData
 import com.youthtalk.model.ScrapPost
-import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
+import retrofit2.HttpException
 
 class MyPagePostsPagingSource @Inject constructor(
     private val communityService: CommunityService,
-    private val type: String,
+    private val type: String
 ) : PagingSource<Int, ScrapPost>() {
     override fun getRefreshKey(state: PagingState<Int, ScrapPost>): Int? {
         return state.anchorPosition?.let { anchorPosition ->
@@ -28,7 +28,7 @@ class MyPagePostsPagingSource @Inject constructor(
             val response = communityService.getMyPagePosts(
                 type = type,
                 page = pageNumber,
-                size = MY_PAGE_POSTS_SIZE,
+                size = MY_PAGE_POSTS_SIZE
             )
 
             val data = response.data?.map { it.toData() } ?: listOf()
@@ -36,7 +36,7 @@ class MyPagePostsPagingSource @Inject constructor(
             return LoadResult.Page(
                 data = data,
                 prevKey = if (pageNumber == 0) null else pageNumber - 1,
-                nextKey = if (data.isEmpty()) null else pageNumber + (params.loadSize / MY_PAGE_POSTS_SIZE),
+                nextKey = if (data.isEmpty()) null else pageNumber + (params.loadSize / MY_PAGE_POSTS_SIZE)
             )
         } catch (e: IOException) {
             return LoadResult.Error(e)

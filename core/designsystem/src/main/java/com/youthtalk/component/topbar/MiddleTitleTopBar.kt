@@ -26,22 +26,22 @@ fun MiddleTitleTopBar(modifier: Modifier = Modifier, title: String = "", onBack:
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.background)
             .padding(horizontal = 16.dp)
-            .padding(top = 24.dp, bottom = 20.dp),
+            .padding(top = 24.dp, bottom = 20.dp)
     ) {
         Image(
             modifier = Modifier
                 .align(Alignment.CenterStart)
                 .clickableSingle { onBack() },
             painter = painterResource(R.drawable.arrowleft),
-            contentDescription = "뒤로가기",
+            contentDescription = "뒤로가기"
         )
 
         Text(
             modifier = Modifier.align(Alignment.Center),
             text = title,
             style = MaterialTheme.typography.bodyMedium.copy(
-                color = gray100,
-            ),
+                color = gray100
+            )
         )
 
         tails?.let {
@@ -58,7 +58,7 @@ private fun MiddleTitleTopBarPreview() {
     YongProjectTheme {
         MiddleTitleTopBar(
             title = "계정관리",
-            onBack = {},
+            onBack = {}
         )
     }
 }

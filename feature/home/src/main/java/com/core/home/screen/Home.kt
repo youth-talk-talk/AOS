@@ -37,10 +37,10 @@ fun Home(
     onClickRecentViewPolicy: () -> Unit,
     onClickDeadlinePolicy: () -> Unit,
     onClickCommunitySearch: (CommunityType) -> Unit,
-    onClickPostDetail: () -> Unit,
-    onClickPolicyDetail: () -> Unit,
+    onClickPostDetail: (Long) -> Unit,
+    onClickPolicyDetail: (Long) -> Unit,
     onClickCommunityWrite: (CommunityType) -> Unit,
-    goLogin: () -> Unit,
+    goLogin: () -> Unit
 ) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -51,27 +51,29 @@ fun Home(
             modifier = Modifier
                 .weight(1f),
             navController = navController,
-            startDestination = HomeTabNavigation.Home,
+            startDestination = HomeTabNavigation.Home
         ) {
             homeTabNavigation(
                 onClickPolicySearch = onClickPolicySearch,
                 onClickPopularPolicy = onClickPopularPolicy,
                 onClickNewPolicy = onClickNewPolicy,
                 onClickPolicyDetail = onClickPolicyDetail,
+                onClickPolicyOverView = navController::navigatePolicyOverView,
+                onClickPostDetail = onClickPostDetail
             )
             communityNavigation(
                 onClickCommunitySearch = onClickCommunitySearch,
                 onClickPostDetail = onClickPostDetail,
-                onClickCommunityWrite = onClickCommunityWrite,
+                onClickCommunityWrite = onClickCommunityWrite
             )
             navigation(
                 route = "policy_tab",
-                startDestination = "Policy",
+                startDestination = "Policy"
             ) {
                 policyTabNavigation(
                     onClickRecentViewPolicy = onClickRecentViewPolicy,
                     onClickDeadlinePolicy = onClickDeadlinePolicy,
-                    onClickPolicyOverView = navController::navigatePolicyOverView,
+                    onClickPolicyOverView = navController::navigatePolicyOverView
                 )
                 policyOverViewNavigation()
             }
@@ -83,7 +85,7 @@ fun Home(
                 onClickSettingPost = onClickSettingPost,
                 onClickSettingComment = onClickSettingComment,
                 onClickSettingNotification = onClickSettingNotification,
-                goLogin = goLogin,
+                goLogin = goLogin
             )
         }
 
@@ -95,15 +97,15 @@ fun Home(
                         saveState = true
                     }
                 }
-            },
+            }
         )
     }
 }
 
-private fun String.toHomeTabNavigation(): HomeTabNavigation = when (this) {
-    "Home" -> HomeTabNavigation.Home
-    "Setting", "Account" -> HomeTabNavigation.Setting
-    "Community" -> HomeTabNavigation.Community
-    "Policy", "PolicyOverView" -> HomeTabNavigation.Policy
+private fun String.toHomeTabNavigation(): HomeTabNavigation = when {
+    contains("Home") -> HomeTabNavigation.Home
+    contains("Setting") || contains("Account") -> HomeTabNavigation.Setting
+    contains("Community") -> HomeTabNavigation.Community
+    contains("Policy") || contains("PolicyOverView") -> HomeTabNavigation.Policy
     else -> HomeTabNavigation.Home
 }

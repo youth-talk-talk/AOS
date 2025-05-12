@@ -4,24 +4,24 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 enum class Region(val region: String) {
+    ALL("전국"),
     SEOUL("서울"),
-    GYEONGGI("경기"),
+    BUSAN("부산"),
+    DAEGU("대구"),
     INCHEON("인천"),
-    SEJONG("세종"),
+    GWANGJU("광주"),
     DAEJEON("대전"),
+    ULSAN("울산"),
+    GYEONGGI("경기"),
+    GANGWON("강원"),
     CHUNGBUK("충북"),
     CHUNGNAM("충남"),
-    GANGWON("강원"),
-    GYEONGBUK("경북"),
-    GYEONGNAM("경남"),
-    DAEGU("대구"),
-    ULSAN("울산"),
-    BUSAN("부산"),
-    GWANGJU("광주"),
     JEONBUK("전북"),
     JEONNAM("전남"),
+    GYEONGBUK("경북"),
+    GYEONGNAM("경남"),
     JEJU("제주"),
-    ALL("전국"),
+    SEJONG("세종")
 }
 
 fun String.toRegion(): Region = when (this) {

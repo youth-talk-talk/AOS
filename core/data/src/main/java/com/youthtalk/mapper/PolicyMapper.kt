@@ -13,7 +13,7 @@ fun PolicyResponse.toData() = Policy(
     title = title,
     deadlineStatus = deadlineStatus,
     hostDep = hostDep,
-    scrap = scrap,
+    scrap = scrap
 )
 
 fun PolicyDetailResponse.toData() = PolicyDetail(
@@ -40,10 +40,10 @@ fun PolicyDetailResponse.toData() = PolicyDetail(
     refUrl1 = refUrl1,
     refUrl2 = refUrl2,
     formattedApplUrl = formattedApplUrl,
-    isScrap = isScrap,
+    isScrap = isScrap
 )
 
 fun SearchPoliciesResponse.toData() = SearchPolicy(
     title = title,
-    policyId = policyId,
+    policyId = policyId
 )

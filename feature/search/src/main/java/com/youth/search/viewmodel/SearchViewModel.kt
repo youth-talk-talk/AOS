@@ -7,6 +7,7 @@ import com.core.domain.usercase.search.PostRecentListUseCase
 import com.youth.search.model.SearchUiEvent
 import com.youth.search.model.SearchUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -14,12 +15,11 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @HiltViewModel
 class SearchViewModel @Inject constructor(
     private val getRecentListUseCase: GetRecentListUseCase,
-    private val postRecentListUseCase: PostRecentListUseCase,
+    private val postRecentListUseCase: PostRecentListUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<SearchUiState>(SearchUiState.Loading)
     val uiState = _uiState.asStateFlow()
@@ -29,7 +29,7 @@ class SearchViewModel @Inject constructor(
             getRecentListUseCase()
                 .map {
                     SearchUiState.Success(
-                        recentList = it.toPersistentList(),
+                        recentList = it.toPersistentList()
                     )
                 }
                 .catch {
@@ -57,7 +57,7 @@ class SearchViewModel @Inject constructor(
         viewModelScope.launch {
             postRecentListUseCase(recently)
             _uiState.value = state.copy(
-                recentList = recently.toPersistentList(),
+                recentList = recently.toPersistentList()
             )
         }
     }
@@ -79,7 +79,7 @@ class SearchViewModel @Inject constructor(
         viewModelScope.launch {
             postRecentListUseCase(recently)
             _uiState.value = state.copy(
-                recentList = recently.toPersistentList(),
+                recentList = recently.toPersistentList()
             )
         }
     }

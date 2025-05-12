@@ -12,31 +12,31 @@ import com.youth.app.core.navigation.R
 sealed class MainNav(
     override val icon: Int,
     override val title: String,
-    override val route: String,
+    override val route: String
 ) : IconDestination {
 
     data object Home : MainNav(
         route = MAIN_HOME,
         title = NavigationTitle.MAIN_HOME,
-        icon = R.drawable.home,
+        icon = R.drawable.home
     )
 
     data object Community : MainNav(
         route = MAIN_COMMUNITY,
         title = NavigationTitle.MAIN_COMMUNITY,
-        icon = R.drawable.community,
+        icon = R.drawable.community
     )
 
     data object MyPage : MainNav(
         route = MAIN_MY_PAGE,
         title = NavigationTitle.MAIN_MY_PAGE,
-        icon = R.drawable.person,
+        icon = R.drawable.person
     )
 
     data object Policy : MainNav(
         route = MAIN_MY_PAGE,
         title = NavigationTitle.MAIN_MY_PAGE,
-        icon = R.drawable.person,
+        icon = R.drawable.person
     )
 
     companion object {
@@ -63,19 +63,19 @@ sealed class MainNav(
 }
 
 sealed class Nav(
-    override val route: String,
+    override val route: String
 ) : Destination {
 
     data object PolicyDetail : Nav(
-        route = POLICY_DETAIL,
+        route = POLICY_DETAIL
     )
 
     data object SpecPolicy : Nav(
-        route = SPEC_POLICY,
+        route = SPEC_POLICY
     )
 
     data object Search : Nav(
-        route = SEARCH,
+        route = SEARCH
     )
 }
 

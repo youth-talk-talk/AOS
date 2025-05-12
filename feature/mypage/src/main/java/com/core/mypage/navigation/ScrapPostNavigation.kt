@@ -17,7 +17,7 @@ fun NavGraphBuilder.settingScrapPostNavigation() {
     composable<ScrapPost> {
         val route = it.toRoute<ScrapPost>()
         ScrapPostScreen(
-            type = route.type,
+            type = route.type
         )
     }
 }

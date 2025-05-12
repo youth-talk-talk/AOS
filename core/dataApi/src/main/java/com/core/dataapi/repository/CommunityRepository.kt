@@ -7,8 +7,8 @@ import com.youthtalk.model.PostDetail
 import com.youthtalk.model.PostType
 import com.youthtalk.model.ReviewPost
 import com.youthtalk.model.WriteInfo
-import kotlinx.coroutines.flow.Flow
 import java.io.File
+import kotlinx.coroutines.flow.Flow
 
 interface CommunityRepository {
     fun postReviewPost(): Flow<PagingData<ReviewPost>>

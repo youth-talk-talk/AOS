@@ -48,7 +48,7 @@ fun WriteScreen(modifier: Modifier = Modifier, communityType: CommunityType, onC
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(gray10),
+            .background(gray10)
     ) {
         MiddleTitleTopBar(
             title = when (communityType) {
@@ -60,10 +60,10 @@ fun WriteScreen(modifier: Modifier = Modifier, communityType: CommunityType, onC
                 Text(
                     text = "등록",
                     style = MaterialTheme.typography.labelSmall.copy(
-                        color = gray70,
-                    ),
+                        color = gray70
+                    )
                 )
-            },
+            }
         )
 
         if (communityType == CommunityType.REVIEW) {
@@ -72,28 +72,28 @@ fun WriteScreen(modifier: Modifier = Modifier, communityType: CommunityType, onC
                     .fillMaxWidth()
                     .clickable(
                         indication = null,
-                        interactionSource = remember { MutableInteractionSource() },
+                        interactionSource = remember { MutableInteractionSource() }
                     ) {
                         onClickPolicySearch()
                     }
                     .padding(horizontal = 16.dp, vertical = 11.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
                     text = "정책 선택",
-                    style = MaterialTheme.typography.titleSmall,
+                    style = MaterialTheme.typography.titleSmall
                 )
 
                 Image(
                     modifier = Modifier.size(24.dp),
                     painter = painterResource(R.drawable.search),
                     contentDescription = "검색",
-                    colorFilter = ColorFilter.tint(color = gray100),
+                    colorFilter = ColorFilter.tint(color = gray100)
                 )
             }
             HorizontalDivider(
                 modifier = Modifier.padding(horizontal = 16.dp),
-                color = gray40,
+                color = gray40
             )
         }
 
@@ -104,15 +104,15 @@ fun WriteScreen(modifier: Modifier = Modifier, communityType: CommunityType, onC
             value = title,
             onValueChange = { title = it },
             textStyle = MaterialTheme.typography.titleMedium,
-            maxLines = 1,
+            maxLines = 1
         ) { innerTextField ->
             Box {
                 if (title.isEmpty()) {
                     Text(
                         text = "제목을 입력해주세요.",
                         style = MaterialTheme.typography.titleMedium.copy(
-                            color = gray80,
-                        ),
+                            color = gray80
+                        )
                     )
                 }
                 innerTextField()
@@ -120,7 +120,7 @@ fun WriteScreen(modifier: Modifier = Modifier, communityType: CommunityType, onC
         }
         HorizontalDivider(
             modifier = Modifier.padding(horizontal = 16.dp),
-            color = gray40,
+            color = gray40
         )
 
         BasicTextField(
@@ -131,12 +131,12 @@ fun WriteScreen(modifier: Modifier = Modifier, communityType: CommunityType, onC
             value = contents,
             onValueChange = { contents = it },
             textStyle = MaterialTheme.typography.titleMedium,
-            maxLines = 1,
+            maxLines = 1
         ) { innerTextField ->
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
+                    .padding(horizontal = 16.dp)
             ) {
                 if (contents.isEmpty()) {
                     Text(
@@ -145,8 +145,8 @@ fun WriteScreen(modifier: Modifier = Modifier, communityType: CommunityType, onC
                             CommunityType.FREE -> stringResource(R.string.free_content_hint)
                         },
                         style = MaterialTheme.typography.labelSmall.copy(
-                            color = gray80,
-                        ),
+                            color = gray80
+                        )
                     )
                 }
                 innerTextField()
@@ -154,7 +154,7 @@ fun WriteScreen(modifier: Modifier = Modifier, communityType: CommunityType, onC
         }
 
         HorizontalDivider(
-            color = gray40,
+            color = gray40
         )
 
         Image(
@@ -162,12 +162,12 @@ fun WriteScreen(modifier: Modifier = Modifier, communityType: CommunityType, onC
                 .padding(horizontal = 16.dp, vertical = 14.dp)
                 .clickable(
                     indication = null,
-                    interactionSource = remember { MutableInteractionSource() },
+                    interactionSource = remember { MutableInteractionSource() }
                 ) {
                     onClickPicture()
                 },
             painter = painterResource(R.drawable.add_picture),
-            contentDescription = "사진 추가",
+            contentDescription = "사진 추가"
         )
     }
 }

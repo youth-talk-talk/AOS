@@ -49,9 +49,9 @@ import com.youthtalk.designsystem.gray40
 import com.youthtalk.designsystem.gray70
 import com.youthtalk.model.Category
 import com.youthtalk.model.Region
+import java.time.LocalDate
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.time.LocalDate
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -59,7 +59,7 @@ fun PolicyScreen(
     modifier: Modifier = Modifier,
     onClickRecentViewPolicy: () -> Unit,
     onClickDeadlinePolicy: () -> Unit,
-    onClickPolicyOverView: () -> Unit,
+    onClickPolicyOverView: (Category) -> Unit
 ) {
     var selectDay by remember {
         mutableStateOf(LocalDate.now())
@@ -79,13 +79,13 @@ fun PolicyScreen(
     }
 
     Column(
-        modifier = modifier,
+        modifier = modifier
     ) {
         AnimatedVisibility(visible = isScrollingUp) {
             RegionTopBar(
                 region = Region.SEOUL,
                 onClickRegion = {},
-                onClickSearch = {},
+                onClickSearch = {}
             )
         }
 
@@ -94,25 +94,25 @@ fun PolicyScreen(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .verticalScroll(state = scrollState),
+                    .verticalScroll(state = scrollState)
             ) {
                 RecentViewPolicy(
-                    onClickRecentViewPolicy = onClickRecentViewPolicy,
+                    onClickRecentViewPolicy = onClickRecentViewPolicy
                 )
                 DDayPolicy(
                     selectedDay = selectDay,
                     onClickDay = { selectDay = it },
-                    onClickDeadlinePolicy = onClickDeadlinePolicy,
+                    onClickDeadlinePolicy = onClickDeadlinePolicy
                 )
 
                 Column(
                     modifier = Modifier
-                        .height(screenHeight),
+                        .height(screenHeight)
                 ) {
                     TitleItem(
                         modifier = Modifier.padding(top = 20.dp, bottom = 15.dp),
                         title = "모든 정책 한눈에 보기",
-                        onClick = onClickPolicyOverView,
+                        onClick = { onClickPolicyOverView(Category.ALL) }
                     )
 
                     PrimaryTabRow(
@@ -120,9 +120,9 @@ fun PolicyScreen(
                         containerColor = gray10,
                         divider = {
                             HorizontalDivider(
-                                color = gray70,
+                                color = gray70
                             )
-                        },
+                        }
                     ) {
                         categories.forEachIndexed { index, category ->
                             Tab(
@@ -133,20 +133,20 @@ fun PolicyScreen(
                                         text = category.categoryName,
                                         style = if (pagerState.currentPage == index) {
                                             MaterialTheme.typography.displayLarge.copy(
-                                                color = MaterialTheme.colorScheme.primary,
+                                                color = MaterialTheme.colorScheme.primary
                                             )
                                         } else {
                                             MaterialTheme.typography.displaySmall.copy(
-                                                color = gray70,
+                                                color = gray70
                                             )
-                                        },
+                                        }
                                     )
                                 },
                                 onClick = {
                                     scope.launch {
                                         pagerState.animateScrollToPage(index)
                                     }
-                                },
+                                }
                             )
                         }
                     }
@@ -178,13 +178,13 @@ fun PolicyScreen(
                                             } else {
                                                 Offset(
                                                     x = 0f,
-                                                    y = -scrollState.dispatchRawDelta(-available.y),
+                                                    y = -scrollState.dispatchRawDelta(-available.y)
                                                 )
                                             }
                                         }
                                     }
-                                },
-                            ),
+                                }
+                            )
                     ) { page: Int ->
                         ListLazyColumn(50)
                     }
@@ -200,7 +200,7 @@ fun ListLazyColumn(items: Int) {
         modifier = Modifier
             .fillMaxSize(),
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 10.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         items(items) { index ->
             PolicyCard(
@@ -208,13 +208,13 @@ fun ListLazyColumn(items: Int) {
                     .fillMaxWidth()
                     .background(
                         color = gray10,
-                        shape = RoundedCornerShape(12.dp),
+                        shape = RoundedCornerShape(12.dp)
                     )
                     .border(
                         width = 1.dp,
                         color = gray40,
-                        shape = RoundedCornerShape(12.dp),
-                    ),
+                        shape = RoundedCornerShape(12.dp)
+                    )
             )
         }
     }

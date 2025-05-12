@@ -10,7 +10,7 @@ data class CommonResponse<T>(
     val status: Int,
     val message: String,
     val code: String,
-    val data: T?,
+    val data: T?
 )
 
 inline fun <reified T> toResponseBody(request: CommonResponse<T>) = Json.encodeToString(serializer<CommonResponse<T>>(), request).toResponseBody()

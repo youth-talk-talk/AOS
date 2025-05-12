@@ -23,34 +23,34 @@ import com.youthtalk.designsystem.gray40
 fun PopularPolicyScreen(modifier: Modifier = Modifier, onBack: () -> Unit) {
     Column(
         modifier = modifier
-            .fillMaxSize(),
+            .fillMaxSize()
     ) {
         MiddleTitleTopBar(
             title = "우리지역 인기 정책",
-            onBack = onBack,
+            onBack = onBack
         )
 
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize(),
             contentPadding = PaddingValues(horizontal = 16.dp, vertical = 10.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             items(
-                count = 10,
+                count = 10
             ) {
                 PolicyCard(
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(
                             color = gray10,
-                            shape = RoundedCornerShape(12.dp),
+                            shape = RoundedCornerShape(12.dp)
                         )
                         .border(
                             width = 1.dp,
                             color = gray40,
-                            shape = RoundedCornerShape(12.dp),
-                        ),
+                            shape = RoundedCornerShape(12.dp)
+                        )
                 )
             }
         }
@@ -62,7 +62,7 @@ fun PopularPolicyScreen(modifier: Modifier = Modifier, onBack: () -> Unit) {
 fun PopularPolicyScreenPreview() {
     YongProjectTheme {
         PopularPolicyScreen(
-            onBack = {},
+            onBack = {}
         )
     }
 }

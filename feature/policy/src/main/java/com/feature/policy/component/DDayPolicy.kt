@@ -26,21 +26,21 @@ fun DDayPolicy(modifier: Modifier = Modifier, selectedDay: LocalDate, onClickDay
     Column(modifier = modifier) {
         TitleItem(
             title = "곧 마감되니 서둘러 지원해 보세요!",
-            onClick = onClickDeadlinePolicy,
+            onClick = onClickDeadlinePolicy
         )
 
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = 16.dp, end = 16.dp, top = 14.dp, bottom = 20.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
             DateUtils.getWeeks().forEach {
                 DayChip(
                     dayOfWeek = DateUtils.weekToString(it),
                     day = it.dayOfMonth,
                     isSelected = selectedDay == it,
-                    onClick = { onClickDay(it) },
+                    onClick = { onClickDay(it) }
                 )
             }
         }
@@ -49,7 +49,7 @@ fun DDayPolicy(modifier: Modifier = Modifier, selectedDay: LocalDate, onClickDay
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 38.dp, start = 16.dp, end = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             repeat(5) {
                 PolicyCard(
@@ -57,20 +57,20 @@ fun DDayPolicy(modifier: Modifier = Modifier, selectedDay: LocalDate, onClickDay
                         .fillMaxWidth()
                         .background(
                             color = gray10,
-                            shape = RoundedCornerShape(12.dp),
+                            shape = RoundedCornerShape(12.dp)
                         )
                         .border(
                             width = 1.dp,
                             color = gray40,
-                            shape = RoundedCornerShape(12.dp),
-                        ),
+                            shape = RoundedCornerShape(12.dp)
+                        )
                 )
             }
         }
 
         HorizontalDivider(
             thickness = 10.dp,
-            color = gray30,
+            color = gray30
         )
     }
 }

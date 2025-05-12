@@ -27,25 +27,25 @@ import com.youthtalk.model.Region
 import com.youthtalk.model.ScrapPost
 import com.youthtalk.model.User
 import com.youthtalk.utils.ErrorUtils.throwableError
+import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import javax.inject.Inject
 
 class MyPageRepositoryImpl @Inject constructor(
     private val policyService: PolicyService,
     private val communityService: CommunityService,
     private val userService: UserService,
     private val appDatabase: YouthDatabase,
-    private val dataSource: DataStoreDataSource,
+    private val dataSource: DataStoreDataSource
 ) : MyPageRepository {
     override fun getScrapPolicies(): Flow<Flow<PagingData<Policy>>> = flow {
         emit(
             Pager(
                 pagingSourceFactory = { ScrapPolicyPagingSource(policyService) },
                 config = PagingConfig(
-                    pageSize = SCRAP_PAGE_SIZE,
-                ),
-            ).flow,
+                    pageSize = SCRAP_PAGE_SIZE
+                )
+            ).flow
         )
     }
 
@@ -54,11 +54,11 @@ class MyPageRepositoryImpl @Inject constructor(
         remoteMediator = ScrapPostRemoteMediator(
             communityService = communityService,
             youthDatabase = appDatabase,
-            type = type,
+            type = type
         ),
         config = PagingConfig(
-            pageSize = MY_PAGE_POSTS_SIZE,
-        ),
+            pageSize = MY_PAGE_POSTS_SIZE
+        )
     ) {
         if (type == "scrap") appDatabase.scrapPostDao().getScrapPostPagingSource() else appDatabase.scrapPostDao().getPostPagingSource()
     }.flow

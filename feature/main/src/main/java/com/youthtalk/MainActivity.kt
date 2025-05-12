@@ -40,12 +40,12 @@ class MainActivity : ComponentActivity() {
                             goLogin = {
                                 loginNavigator.navigateFrom(
                                     activity = this@MainActivity,
-                                    withFinish = true,
+                                    withFinish = true
                                 )
                             },
                             checkPermission = { permission ->
                                 ActivityCompat.shouldShowRequestPermissionRationale(this@MainActivity, permission)
-                            },
+                            }
                         )
                     }
                     CustomStatusBarColor(color = Color.Transparent)
@@ -61,7 +61,7 @@ class MainActivity : ComponentActivity() {
             modifier = Modifier
                 .fillMaxWidth()
                 .height(insets.calculateTopPadding())
-                .background(color),
+                .background(color)
         )
     }
 }

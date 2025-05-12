@@ -32,6 +32,8 @@ import com.youthtalk.model.PostType
 import com.youthtalk.model.ReviewPost
 import com.youthtalk.model.WriteInfo
 import com.youthtalk.utils.ErrorUtils.throwableError
+import java.io.File
+import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
@@ -39,26 +41,24 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import timber.log.Timber
-import java.io.File
-import javax.inject.Inject
 
 class CommunityRepositoryImpl @Inject constructor(
     private val communityService: CommunityService,
     private val commentService: CommentService,
     private val youthDatabase: YouthDatabase,
-    private val dataStoreDataSource: DataStoreDataSource,
+    private val dataStoreDataSource: DataStoreDataSource
 ) : CommunityRepository {
     @OptIn(ExperimentalPagingApi::class)
     override fun postReviewPost(): Flow<PagingData<ReviewPost>> = Pager(
         config = PagingConfig(
             pageSize = 50,
-            prefetchDistance = 2,
+            prefetchDistance = 2
         ),
         remoteMediator = ReviewPostRemoteMediator(
             communityService = communityService,
             youthDatabase = youthDatabase,
-            dataSource = dataStoreDataSource,
-        ),
+            dataSource = dataStoreDataSource
+        )
     ) {
         youthDatabase.reviewPostDao().getPagingSource()
     }.flow
@@ -69,7 +69,7 @@ class CommunityRepositoryImpl @Inject constructor(
             communityService.postReviewPosts(
                 categories = categories,
                 size = 0,
-                page = 0,
+                page = 0
             )
         }
             .onSuccess { response ->
@@ -85,12 +85,12 @@ class CommunityRepositoryImpl @Inject constructor(
     @OptIn(ExperimentalPagingApi::class)
     override fun getPosts(): Flow<PagingData<Post>> = Pager(
         config = PagingConfig(
-            pageSize = 20,
+            pageSize = 20
         ),
         remoteMediator = PostRemoteMediator(
             communityService = communityService,
-            youthDatabase = youthDatabase,
-        ),
+            youthDatabase = youthDatabase
+        )
     ) {
         youthDatabase.postDao().getPagingSource()
     }.flow
@@ -99,7 +99,7 @@ class CommunityRepositoryImpl @Inject constructor(
         runCatching {
             communityService.getPosts(
                 size = 0,
-                page = 0,
+                page = 0
             )
         }
             .onSuccess { response ->
@@ -129,8 +129,8 @@ class CommunityRepositoryImpl @Inject constructor(
                 youthDatabase.reviewPostDao().updatePost(
                     reviewPost.copy(
                         scrap = !scrap,
-                        scraps = reviewPost.scraps + if (!scrap) 1 else -1,
-                    ),
+                        scraps = reviewPost.scraps + if (!scrap) 1 else -1
+                    )
                 )
             }
 
@@ -138,8 +138,8 @@ class CommunityRepositoryImpl @Inject constructor(
                 youthDatabase.postDao().updatePost(
                     post.copy(
                         scrap = !scrap,
-                        scraps = post.scraps + if (!scrap) 1 else -1,
-                    ),
+                        scraps = post.scraps + if (!scrap) 1 else -1
+                    )
                 )
             }
         }
@@ -148,8 +148,8 @@ class CommunityRepositoryImpl @Inject constructor(
             youthDatabase.scrapPostDao().updatePost(
                 scrapPost.copy(
                     scrap = !scrap,
-                    scraps = scrapPost.scraps + if (!scrap) 1 else -1,
-                ),
+                    scraps = scrapPost.scraps + if (!scrap) 1 else -1
+                )
             )
         }
     }
@@ -245,7 +245,7 @@ class CommunityRepositoryImpl @Inject constructor(
             postType = postType,
             title = title,
             policyId = policyId,
-            contentList = contentList.toList(),
+            contentList = contentList.toList()
         ).toRequestBody()
 
         runCatching { communityService.postCreate(requestBody) }
@@ -261,7 +261,7 @@ class CommunityRepositoryImpl @Inject constructor(
                             scrap = false,
                             comments = 0,
                             policyId = data.policyId,
-                            policyTitle = data.policyTitle,
+                            policyTitle = data.policyTitle
                         )
                         youthDatabase.reviewPostDao().insertAll(listOf(reviewPost))
                     } else {
@@ -274,7 +274,7 @@ class CommunityRepositoryImpl @Inject constructor(
                             scrap = false,
                             comments = 0,
                             policyId = data.policyId,
-                            policyTitle = data.policyTitle,
+                            policyTitle = data.policyTitle
                         )
                         youthDatabase.postDao().insertAll(listOf(post))
                     }
@@ -301,12 +301,12 @@ class CommunityRepositoryImpl @Inject constructor(
             policyId = policyId,
             contentList = contentList,
             addImgUrlList = listOf(),
-            deletedImgUrlList = listOf(),
+            deletedImgUrlList = listOf()
         ).toRequestBody()
         runCatching {
             communityService.postModifyPost(
                 id = postId,
-                requestBody = requestBody,
+                requestBody = requestBody
             )
         }
             .onSuccess { response ->
@@ -318,9 +318,9 @@ class CommunityRepositoryImpl @Inject constructor(
                                     title = data.title,
                                     policyId = data.policyId,
                                     writerId = data.writerId,
-                                    policyTitle = data.policyTitle,
+                                    policyTitle = data.policyTitle
 //                                    content = data.content,
-                                ),
+                                )
                             )
                         }
                     } else {
@@ -330,9 +330,9 @@ class CommunityRepositoryImpl @Inject constructor(
                                     title = data.title,
                                     policyId = data.policyId,
                                     writerId = data.writerId,
-                                    policyTitle = data.policyTitle,
+                                    policyTitle = data.policyTitle
 //                                    content = data.content,
-                                ),
+                                )
                             )
                         }
                     }

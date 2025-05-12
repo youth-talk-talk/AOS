@@ -18,12 +18,12 @@ data object ScrapPolicy
 
 @Serializable
 data class ScrapPost(
-    val type: ScrapPostType,
+    val type: ScrapPostType
 )
 
 @Serializable
 data class Comment(
-    val type: CommentType,
+    val type: CommentType
 )
 
 @Serializable
@@ -34,7 +34,7 @@ data object PolicySearch
 
 @Serializable
 data class CommunitySearch(
-    val communityType: CommunityType,
+    val communityType: CommunityType
 )
 
 @Serializable
@@ -50,12 +50,16 @@ data object RecentlyViewPolicy
 data object DeadlinePolicy
 
 @Serializable
-data object CommunityDetail
-
-@Serializable
-data class CommunityWrite(
-    val communityType: CommunityType,
+data class CommunityDetail(
+    val postId: Long
 )
 
 @Serializable
-data object PolicyDetail
+data class CommunityWrite(
+    val communityType: CommunityType
+)
+
+@Serializable
+data class PolicyDetail(
+    val policyId: Long
+)

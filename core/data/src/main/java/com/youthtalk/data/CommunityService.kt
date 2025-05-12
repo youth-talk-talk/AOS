@@ -24,7 +24,7 @@ interface CommunityService {
     suspend fun postReviewPosts(
         @Query("page") page: Int,
         @Query("size") size: Int,
-        @Query("categories") categories: List<String>,
+        @Query("categories") categories: List<String>
     ): CommonResponse<PostResponse>
 
     @GET("/api/v1/posts/post")
@@ -34,7 +34,7 @@ interface CommunityService {
     suspend fun getMyPagePosts(
         @Path("type") type: String,
         @Query("page") page: Int,
-        @Query("size") size: Int,
+        @Query("size") size: Int
     ): CommonResponse<List<ScrapPostDataResponse>>
 
     @GET("/api/v1/posts/keyword")
@@ -42,7 +42,7 @@ interface CommunityService {
         @Query("keyword") keyword: String,
         @Query("type") type: String,
         @Query("page") page: Int,
-        @Query("size") size: Int,
+        @Query("size") size: Int
     ): CommonResponse<PostSearchResponse>
 
     @POST("/api/v1/posts/{id}/scrap")

@@ -9,15 +9,15 @@ import com.youthtalk.data.CommunityService
 import com.youthtalk.datasource.room.YouthDatabase
 import com.youthtalk.mapper.toData
 import com.youthtalk.model.ScrapPost
-import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
+import retrofit2.HttpException
 
 @OptIn(ExperimentalPagingApi::class)
 class ScrapPostRemoteMediator @Inject constructor(
     private val communityService: CommunityService,
     private val youthDatabase: YouthDatabase,
-    private val type: String,
+    private val type: String
 ) : RemoteMediator<Int, ScrapPost>() {
     private val scrapPostDao = youthDatabase.scrapPostDao()
     private val scrapPostRemoteKeyDao = youthDatabase.scrapPostRemoteKeyDao()
@@ -43,7 +43,7 @@ class ScrapPostRemoteMediator @Inject constructor(
             val response = communityService.getMyPagePosts(
                 page = page,
                 size = state.config.pageSize,
-                type = type,
+                type = type
             )
             val posts = response.data?.map { it.toData() } ?: listOf()
             youthDatabase.withTransaction {

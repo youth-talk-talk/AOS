@@ -6,5 +6,5 @@ import kotlinx.serialization.Serializable
 data class UserResponse(
     val memberId: Long,
     val nickname: String,
-    val region: String,
+    val region: String
 )

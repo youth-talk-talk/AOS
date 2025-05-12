@@ -69,89 +69,89 @@ fun CommunityDetailScreen(modifier: Modifier = Modifier) {
             .fillMaxSize()
             .clickable(
                 indication = null,
-                interactionSource = remember { MutableInteractionSource() },
+                interactionSource = remember { MutableInteractionSource() }
             ) {
                 focusManager.clearFocus()
-            },
+            }
     ) {
         MiddleTitleTopBar(
             onBack = {},
             tails = {
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
                     Image(
                         painter = painterResource(R.drawable.share),
                         contentDescription = "공유하기",
-                        colorFilter = ColorFilter.tint(color = gray100),
+                        colorFilter = ColorFilter.tint(color = gray100)
                     )
 
                     Image(
                         painter = painterResource(R.drawable.bookmark_line),
                         contentDescription = "공유하기",
-                        colorFilter = ColorFilter.tint(color = gray100),
+                        colorFilter = ColorFilter.tint(color = gray100)
                     )
 
                     Image(
                         painter = painterResource(R.drawable.more),
                         contentDescription = "공유하기",
-                        colorFilter = ColorFilter.tint(color = gray100),
+                        colorFilter = ColorFilter.tint(color = gray100)
                     )
                 }
-            },
+            }
         )
 
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(1f),
+                .weight(1f)
         ) {
             item {
                 Row(
                     modifier = Modifier
                         .padding(start = 16.dp, end = 16.dp, top = 4.dp, bottom = 16.dp),
                     horizontalArrangement = Arrangement.spacedBy(10.dp),
-                    verticalAlignment = Alignment.CenterVertically,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Image(
                         painter = painterResource(R.drawable.profile_thumnail),
-                        contentDescription = "기본 이미지",
+                        contentDescription = "기본 이미지"
                     )
 
                     Column {
                         Text(
                             text = "씩씩한청년",
-                            style = MaterialTheme.typography.displayLarge,
+                            style = MaterialTheme.typography.displayLarge
                         )
                         Text(
                             text = "3시간 전",
                             style = MaterialTheme.typography.labelSmall.copy(
-                                color = gray80,
-                            ),
+                                color = gray80
+                            )
                         )
                     }
                 }
                 HorizontalDivider(
-                    color = gray40,
+                    color = gray40
                 )
 
                 Box(
                     modifier = Modifier
                         .heightIn(min = 500.dp)
                         .padding(start = 16.dp, end = 16.dp, top = 20.dp, bottom = 30.dp),
-                    contentAlignment = Alignment.Center,
+                    contentAlignment = Alignment.Center
                 ) {
                     Text("여기는 글 상세 부분 추후 작성 예정")
                 }
 
                 HorizontalDivider(
                     thickness = 10.dp,
-                    color = gray30,
+                    color = gray30
                 )
             }
 
             items(
-                count = 10,
+                count = 10
             ) {
                 if (it == 0) {
                     Text(
@@ -159,16 +159,16 @@ fun CommunityDetailScreen(modifier: Modifier = Modifier) {
                             start = 16.dp,
                             end = 16.dp,
                             bottom = 20.dp,
-                            top = 16.dp,
+                            top = 16.dp
                         ),
                         text = "댓글 7",
-                        style = MaterialTheme.typography.displayLarge,
+                        style = MaterialTheme.typography.displayLarge
                     )
                 }
 
                 UserComment(
                     modifier = Modifier
-                        .padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
+                        .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
                 )
             }
         }
@@ -180,12 +180,12 @@ fun CommunityDetailScreen(modifier: Modifier = Modifier) {
                 .padding(horizontal = 16.dp, vertical = 12.dp)
                 .background(
                     color = gray30,
-                    shape = RoundedCornerShape(6.dp),
+                    shape = RoundedCornerShape(6.dp)
                 )
                 .heightIn(max = 80.dp)
                 .padding(horizontal = 14.dp, vertical = 10.dp),
             horizontalArrangement = Arrangement.spacedBy(14.dp),
-            verticalAlignment = Alignment.Top,
+            verticalAlignment = Alignment.Top
         ) {
             BasicTextField(
                 modifier = Modifier
@@ -203,22 +203,22 @@ fun CommunityDetailScreen(modifier: Modifier = Modifier) {
                 onValueChange = { textValue = it },
                 textStyle = MaterialTheme.typography.titleSmall,
                 keyboardOptions = KeyboardOptions.Default.copy(
-                    imeAction = ImeAction.Default,
+                    imeAction = ImeAction.Default
                 ),
                 keyboardActions = KeyboardActions(
-                    onDone = {},
-                ),
+                    onDone = {}
+                )
             ) { innerTextField ->
                 Box(
                     modifier = Modifier
-                        .fillMaxWidth(),
+                        .fillMaxWidth()
                 ) {
                     if (textValue.isEmpty()) {
                         Text(
                             text = "댓글을 입력해 보세요!",
                             style = MaterialTheme.typography.titleSmall.copy(
-                                color = gray70,
-                            ),
+                                color = gray70
+                            )
                         )
                     }
                     innerTextField()
@@ -229,7 +229,7 @@ fun CommunityDetailScreen(modifier: Modifier = Modifier) {
                 modifier = Modifier.size(18.dp),
                 painter = painterResource(R.drawable.send),
                 contentDescription = "보내기",
-                colorFilter = ColorFilter.tint(color = if (textValue.isEmpty()) gray70 else gray90),
+                colorFilter = ColorFilter.tint(color = if (textValue.isEmpty()) gray70 else gray90)
             )
         }
     }

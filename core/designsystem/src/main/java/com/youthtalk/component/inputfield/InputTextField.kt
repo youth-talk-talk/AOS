@@ -39,7 +39,7 @@ fun InputTextField(
     text: String = "",
     enable: Boolean = true,
     onTextChange: (String) -> Unit,
-    onCheckFilter: (String) -> Boolean = { false },
+    onCheckFilter: (String) -> Boolean = { false }
 ) {
     val focus = LocalFocusManager.current
     var inputState by remember {
@@ -70,24 +70,24 @@ fun InputTextField(
         onValueChange = onTextChange,
         enabled = enable,
         textStyle = MaterialTheme.typography.titleSmall.copy(
-            color = gray100,
+            color = gray100
         ),
         keyboardOptions = KeyboardOptions.Default.copy(
-            imeAction = ImeAction.Done,
+            imeAction = ImeAction.Done
         ),
         keyboardActions = KeyboardActions(
             onDone = {
                 focus.clearFocus()
-            },
-        ),
+            }
+        )
     ) { innerTextField ->
         Box {
             if (text.isEmpty() || !enable) {
                 Text(
                     if (enable) hint else disabledHint,
                     style = MaterialTheme.typography.titleSmall.copy(
-                        color = gray60,
-                    ),
+                        color = gray60
+                    )
                 )
             } else {
                 innerTextField()
@@ -99,7 +99,7 @@ fun InputTextField(
 private fun Modifier.stateInput(state: InputState): Modifier {
     val borderColor = when (state) {
         InputState.DEFAULT,
-        InputState.COMPLETE,
+        InputState.COMPLETE
         -> gray50
 
         InputState.PRESSED -> gray100
@@ -115,12 +115,12 @@ private fun Modifier.stateInput(state: InputState): Modifier {
     return this
         .background(
             color = backgroundColor,
-            shape = RoundedCornerShape(6.dp),
+            shape = RoundedCornerShape(6.dp)
         )
         .border(
             width = 1.dp,
             color = borderColor,
-            shape = RoundedCornerShape(6.dp),
+            shape = RoundedCornerShape(6.dp)
         )
 }
 
@@ -134,7 +134,7 @@ private fun InputTextFieldPreview() {
         InputTextField(
             text = text,
             hint = "텍스트를 입력해 주세요.",
-            onTextChange = { text = it },
+            onTextChange = { text = it }
         )
     }
 }
@@ -151,7 +151,7 @@ private fun InputTextFieldDisabledPreview() {
             hint = "텍스트를 입력해 주세요.",
             disabledHint = "텍스트를 입력할 수 없습니다.",
             onTextChange = { text = it },
-            enable = false,
+            enable = false
         )
     }
 }

@@ -58,7 +58,7 @@ kakaoUser = "2.20.1"
 
 # https://github.com/Kotlin/kotlinx.serialization
 #Serialization
-kotlinxSerializationJson = "1.7.0"
+kotlinxSerializationJson = "1.8.0"
 
 #Immutable
 kotlinxCollectionsImmutable = "0.3.7"
@@ -200,4 +200,4 @@ kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref =
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 
 #Serialization
-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlinxSerializationJson" }

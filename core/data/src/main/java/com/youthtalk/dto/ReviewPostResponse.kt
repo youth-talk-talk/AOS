@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class ReviewPostResponse(
     @SerialName("top5_posts") val popularReviewPosts: List<ReviewPostDataResponse>,
-    @SerialName("other_posts") val reviewPosts: List<ReviewPostDataResponse>,
+    @SerialName("other_posts") val reviewPosts: List<ReviewPostDataResponse>
 )
 
 @Serializable
@@ -19,5 +19,5 @@ data class ReviewPostDataResponse(
     val scrap: Boolean,
     val comments: Int,
     val policyId: String,
-    val policyTitle: String,
+    val policyTitle: String
 )

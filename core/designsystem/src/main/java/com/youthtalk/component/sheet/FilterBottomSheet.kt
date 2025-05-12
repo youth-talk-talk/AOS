@@ -67,8 +67,8 @@ import com.youthtalk.designsystem.gray60
 import com.youthtalk.designsystem.gray70
 import com.youthtalk.designsystem.gray90
 import com.youthtalk.model.FilterType
-import kotlinx.coroutines.launch
 import kotlin.math.ceil
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
@@ -91,13 +91,13 @@ fun FilterBottomSheet(modifier: Modifier = Modifier, sheetState: SheetState, onD
             .fillMaxHeight(0.8f),
         sheetState = sheetState,
         containerColor = gray10,
-        onDismissRequest = onDismiss,
+        onDismissRequest = onDismiss
     ) {
         Text(
             modifier = Modifier
                 .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 8.dp),
             text = "필터",
-            style = MaterialTheme.typography.titleLarge,
+            style = MaterialTheme.typography.titleLarge
         )
 
         TabRowComponent(
@@ -111,15 +111,15 @@ fun FilterBottomSheet(modifier: Modifier = Modifier, sheetState: SheetState, onD
             },
             onMeasuredWidth = { index, pair ->
                 tabPositions[index] = pair
-            },
+            }
         )
 
         Box(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth()
         ) {
             HorizontalDivider(
                 thickness = 1.dp,
-                color = gray40,
+                color = gray40
             )
 
             // 인디케이터
@@ -129,13 +129,13 @@ fun FilterBottomSheet(modifier: Modifier = Modifier, sheetState: SheetState, onD
                     .width(animatedWidth)
                     .height(2.dp)
                     .background(color = MaterialTheme.colorScheme.primary)
-                    .align(Alignment.BottomStart),
+                    .align(Alignment.BottomStart)
             )
         }
 
         HorizontalPager(
             modifier = Modifier.weight(1f),
-            state = pagerState,
+            state = pagerState
         ) {
             val focusManager = LocalFocusManager.current
             LaunchedEffect(pagerState.currentPage) {
@@ -153,11 +153,11 @@ fun FilterBottomSheet(modifier: Modifier = Modifier, sheetState: SheetState, onD
                             .fillMaxSize()
                             .padding(20.dp),
                         horizontalArrangement = Arrangement.spacedBy(12.dp),
-                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
                         stringArrayResource(R.array.recruits).forEach {
                             RoundChip(
-                                text = it,
+                                text = it
                             )
                         }
                     }
@@ -169,11 +169,11 @@ fun FilterBottomSheet(modifier: Modifier = Modifier, sheetState: SheetState, onD
                             .fillMaxSize()
                             .padding(20.dp),
                         horizontalArrangement = Arrangement.spacedBy(12.dp),
-                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
                         stringArrayResource(R.array.educations).forEach {
                             RoundChip(
-                                text = it,
+                                text = it
                             )
                         }
                     }
@@ -190,25 +190,25 @@ fun FilterBottomSheet(modifier: Modifier = Modifier, sheetState: SheetState, onD
                 .fillMaxWidth()
                 .padding(horizontal = 20.dp, vertical = 26.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(14.dp),
+            horizontalArrangement = Arrangement.spacedBy(14.dp)
         ) {
             Row(
                 modifier = Modifier
                     .padding(vertical = 12.dp, horizontal = 8.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.CenterVertically,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
                     text = "초기화",
                     style = MaterialTheme.typography.titleSmall.copy(
-                        color = gray70,
-                    ),
+                        color = gray70
+                    )
                 )
 
                 Image(
                     painter = painterResource(R.drawable.refresh),
                     contentDescription = "새로고침",
-                    colorFilter = ColorFilter.tint(color = gray70),
+                    colorFilter = ColorFilter.tint(color = gray70)
                 )
             }
 
@@ -217,7 +217,7 @@ fun FilterBottomSheet(modifier: Modifier = Modifier, sheetState: SheetState, onD
                 text = "적용하기",
                 textColor = gray70,
                 backgroundColor = gray30,
-                onClick = {},
+                onClick = {}
             )
         }
     }
@@ -230,7 +230,7 @@ fun TabRowComponent(
     lazyListState: LazyListState,
     types: List<FilterType>,
     onClickTab: (Int) -> Unit,
-    onMeasuredWidth: (Int, Pair<Float, Float>) -> Unit,
+    onMeasuredWidth: (Int, Pair<Float, Float>) -> Unit
 ) {
     LazyRow(
         modifier = modifier
@@ -239,10 +239,10 @@ fun TabRowComponent(
         state = lazyListState,
         contentPadding = PaddingValues(horizontal = 16.dp),
         horizontalArrangement = Arrangement.spacedBy(24.dp),
-        verticalAlignment = Alignment.CenterVertically,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         items(
-            count = types.size,
+            count = types.size
         ) {
             val title = when (types[it]) {
                 FilterType.POLICY_TYPE -> "정책분야"
@@ -264,9 +264,9 @@ fun TabRowComponent(
                     },
                 text = title,
                 style = MaterialTheme.typography.displayLarge.copy(
-                    color = if (currentPage == it) MaterialTheme.colorScheme.primary else gray70,
+                    color = if (currentPage == it) MaterialTheme.colorScheme.primary else gray70
                 ),
-                textAlign = TextAlign.Center,
+                textAlign = TextAlign.Center
             )
         }
     }
@@ -279,21 +279,21 @@ fun PolicyType(modifier: Modifier = Modifier) {
         modifier = modifier
             .fillMaxSize()
             .padding(20.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         RoundChip(
-            text = "전체지역",
+            text = "전체지역"
         )
 
         FlowRow(
             modifier = Modifier
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(12.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             stringArrayResource(R.array.categories).forEach {
                 RoundChip(
-                    text = it,
+                    text = it
                 )
             }
         }
@@ -307,21 +307,21 @@ fun RegionType(modifier: Modifier = Modifier) {
         modifier = Modifier
             .fillMaxSize()
             .padding(20.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         RoundChip(
-            text = "전체지역",
+            text = "전체지역"
         )
 
         FlowRow(
             modifier = Modifier
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(12.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             stringArrayResource(R.array.categories).forEach {
                 RoundChip(
-                    text = it,
+                    text = it
                 )
             }
         }
@@ -336,26 +336,26 @@ fun Serialized(modifier: Modifier = Modifier) {
             .fillMaxSize()
             .padding(20.dp)
             .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.spacedBy(20.dp),
+        verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
         Column(
             modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(10.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             Text(
                 text = "직업/산업",
-                style = MaterialTheme.typography.displayLarge,
+                style = MaterialTheme.typography.displayLarge
             )
 
             FlowRow(
                 modifier = Modifier
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 stringArrayResource(R.array.categories).forEach {
                     RoundChip(
-                        text = it,
+                        text = it
                     )
                 }
             }
@@ -363,22 +363,22 @@ fun Serialized(modifier: Modifier = Modifier) {
 
         Column(
             modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(10.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             Text(
                 text = "취약계층",
-                style = MaterialTheme.typography.displayLarge,
+                style = MaterialTheme.typography.displayLarge
             )
 
             FlowRow(
                 modifier = Modifier
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 stringArrayResource(R.array.weaks).forEach {
                     RoundChip(
-                        text = it,
+                        text = it
                     )
                 }
             }
@@ -386,22 +386,22 @@ fun Serialized(modifier: Modifier = Modifier) {
 
         Column(
             modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(10.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             Text(
                 text = "기타",
-                style = MaterialTheme.typography.displayLarge,
+                style = MaterialTheme.typography.displayLarge
             )
 
             FlowRow(
                 modifier = Modifier
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 stringArrayResource(R.array.etc).forEach {
                     RoundChip(
-                        text = it,
+                        text = it
                     )
                 }
             }
@@ -409,22 +409,22 @@ fun Serialized(modifier: Modifier = Modifier) {
 
         Column(
             modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(10.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             Text(
                 text = "혼인 여부",
-                style = MaterialTheme.typography.displayLarge,
+                style = MaterialTheme.typography.displayLarge
             )
 
             FlowRow(
                 modifier = Modifier
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 stringArrayResource(R.array.marriages).forEach {
                     RoundChip(
-                        text = it,
+                        text = it
                     )
                 }
             }
@@ -449,26 +449,26 @@ fun AgeEarn(modifier: Modifier = Modifier) {
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
             .padding(20.dp),
-        verticalArrangement = Arrangement.spacedBy(20.dp),
+        verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
         Column(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth()
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
                     text = "연소득",
-                    style = MaterialTheme.typography.displayLarge,
+                    style = MaterialTheme.typography.displayLarge
                 )
 
                 Text(
                     text = count,
                     style = MaterialTheme.typography.displayMedium.copy(
-                        color = MaterialTheme.colorScheme.primary,
-                    ),
+                        color = MaterialTheme.colorScheme.primary
+                    )
                 )
             }
 
@@ -481,7 +481,7 @@ fun AgeEarn(modifier: Modifier = Modifier) {
                 colors = SliderDefaults.colors(
                     thumbColor = gray10,
                     activeTrackColor = MaterialTheme.colorScheme.primary,
-                    inactiveTrackColor = gray50,
+                    inactiveTrackColor = gray50
                 ),
                 steps = 19,
                 valueRange = 0f..19.1f,
@@ -489,30 +489,30 @@ fun AgeEarn(modifier: Modifier = Modifier) {
                     val start = salaries[ceil(sliderPosition.start.toDouble()).toInt()]
                     val end = salaries[ceil(sliderPosition.endInclusive.toDouble()).toInt()]
                     count = "${if (start != "0") start else ""} ${if (end != "0") "~ $end" else "0"}"
-                },
+                }
             )
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
                     text = "0원",
                     style = MaterialTheme.typography.labelMedium.copy(
-                        color = gray70,
-                    ),
+                        color = gray70
+                    )
                 )
                 Text(
                     text = "2500만원",
                     style = MaterialTheme.typography.labelMedium.copy(
-                        color = gray70,
-                    ),
+                        color = gray70
+                    )
                 )
                 Text(
                     text = "최대",
                     style = MaterialTheme.typography.labelMedium.copy(
-                        color = gray70,
-                    ),
+                        color = gray70
+                    )
                 )
             }
         }
@@ -520,21 +520,21 @@ fun AgeEarn(modifier: Modifier = Modifier) {
         Column(
             modifier = Modifier
                 .fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(10.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             Text(
                 text = "연령",
-                style = MaterialTheme.typography.displayLarge,
+                style = MaterialTheme.typography.displayLarge
             )
 
             Row(
-                verticalAlignment = Alignment.CenterVertically,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
                     text = "만",
                     style = MaterialTheme.typography.displayMedium.copy(
-                        color = gray90,
-                    ),
+                        color = gray90
+                    )
                 )
 
                 BasicTextField(
@@ -543,27 +543,27 @@ fun AgeEarn(modifier: Modifier = Modifier) {
                         .border(
                             width = 1.dp,
                             color = gray50,
-                            shape = RoundedCornerShape(6.dp),
+                            shape = RoundedCornerShape(6.dp)
                         )
                         .padding(vertical = 10.dp, horizontal = 12.dp),
                     value = text,
                     onValueChange = { text = it },
                     textStyle = MaterialTheme.typography.titleSmall.copy(
-                        textAlign = TextAlign.End,
-                    ),
+                        textAlign = TextAlign.End
+                    )
                 ) { innerTextField ->
                     Box(
                         modifier = Modifier
                             .width(120.dp)
                             .padding(horizontal = 12.dp),
-                        contentAlignment = Alignment.CenterEnd,
+                        contentAlignment = Alignment.CenterEnd
                     ) {
                         if (text.isEmpty()) {
                             Text(
                                 text = "20",
                                 style = MaterialTheme.typography.titleSmall.copy(
-                                    color = gray60,
-                                ),
+                                    color = gray60
+                                )
                             )
                         }
                         innerTextField()
@@ -573,8 +573,8 @@ fun AgeEarn(modifier: Modifier = Modifier) {
                 Text(
                     text = "세",
                     style = MaterialTheme.typography.displayMedium.copy(
-                        color = gray90,
-                    ),
+                        color = gray90
+                    )
                 )
             }
         }

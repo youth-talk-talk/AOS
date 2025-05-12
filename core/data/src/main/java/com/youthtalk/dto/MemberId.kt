@@ -4,5 +4,5 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class MemberId(
-    val memberId: Long,
+    val memberId: Long
 )

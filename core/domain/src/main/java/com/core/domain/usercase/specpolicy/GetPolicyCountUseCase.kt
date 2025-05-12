@@ -5,7 +5,7 @@ import com.youthtalk.model.Category
 import javax.inject.Inject
 
 class GetPolicyCountUseCase @Inject constructor(
-    private val specPolicyRepository: SpecPolicyRepository,
+    private val specPolicyRepository: SpecPolicyRepository
 ) {
     operator fun invoke(categories: List<Category>?, keyword: String?) = specPolicyRepository.getCount(categories, keyword)
 }

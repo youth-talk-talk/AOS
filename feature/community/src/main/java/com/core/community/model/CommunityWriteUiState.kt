@@ -22,6 +22,6 @@ sealed class CommunityWriteUiState {
         val searchPolicies: Flow<PagingData<SearchPolicy>> = emptyFlow(),
         val selectPolicy: SearchPolicy? = null,
         val contentsInfo: ContentInfo = ContentInfo(0, 0),
-        val isLoading: Boolean = false,
+        val isLoading: Boolean = false
     ) : CommunityWriteUiState()
 }

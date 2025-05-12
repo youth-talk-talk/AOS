@@ -40,45 +40,45 @@ fun UserComment(modifier: Modifier = Modifier, isMine: Boolean = false) {
         mutableStateOf(false)
     }
     val state = rememberModalBottomSheetState(
-        skipPartiallyExpanded = true,
+        skipPartiallyExpanded = true
     )
 
     Row(
         modifier = modifier
             .fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(10.dp),
+        horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         Image(
             painter = painterResource(R.drawable.profile_thumnail),
-            contentDescription = "이미지",
+            contentDescription = "이미지"
         )
 
         Column(
             modifier = Modifier
-                .fillMaxWidth(),
+                .fillMaxWidth()
         ) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Row(
                     modifier = Modifier
                         .padding(vertical = 6.dp)
                         .weight(1f),
                     horizontalArrangement = Arrangement.spacedBy(6.dp),
-                    verticalAlignment = Alignment.CenterVertically,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
                         text = "다른 청년",
-                        style = MaterialTheme.typography.displayLarge,
+                        style = MaterialTheme.typography.displayLarge
                     )
 
                     Text(
                         text = "3시간 전",
                         style = MaterialTheme.typography.labelSmall.copy(
-                            color = gray80,
-                        ),
+                            color = gray80
+                        )
                     )
                 }
                 Image(
@@ -86,51 +86,51 @@ fun UserComment(modifier: Modifier = Modifier, isMine: Boolean = false) {
                         .size(18.dp)
                         .clickable(
                             indication = null,
-                            interactionSource = remember { MutableInteractionSource() },
+                            interactionSource = remember { MutableInteractionSource() }
                         ) {
                             bottomSheet = true
                         },
                     painter = painterResource(R.drawable.more),
                     contentDescription = "더보기",
-                    colorFilter = ColorFilter.tint(color = gray90),
+                    colorFilter = ColorFilter.tint(color = gray90)
                 )
             }
 
             Text(
                 text = "댓글 내용 댓글 내용 댓글 내용 댓글 내용 댓글 내용 댓글 내용 댓글 내용 ",
-                style = MaterialTheme.typography.displaySmall,
+                style = MaterialTheme.typography.displaySmall
             )
 
             Row(
                 modifier = Modifier
                     .padding(
-                        top = 10.dp,
+                        top = 10.dp
                     ),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(18.dp),
+                horizontalArrangement = Arrangement.spacedBy(18.dp)
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(2.dp),
+                    horizontalArrangement = Arrangement.spacedBy(2.dp)
                 ) {
                     Image(
                         modifier = Modifier.size(16.dp),
                         painter = painterResource(R.drawable.favorite_line),
                         contentDescription = "좋아요",
-                        colorFilter = ColorFilter.tint(color = gray70),
+                        colorFilter = ColorFilter.tint(color = gray70)
                     )
                     Text(
                         text = "좋아요",
                         style = MaterialTheme.typography.labelSmall.copy(
-                            color = gray80,
-                        ),
+                            color = gray80
+                        )
                     )
                 }
                 Text(
                     text = "답글쓰기",
                     style = MaterialTheme.typography.labelSmall.copy(
-                        color = gray80,
-                    ),
+                        color = gray80
+                    )
                 )
             }
         }
@@ -138,28 +138,28 @@ fun UserComment(modifier: Modifier = Modifier, isMine: Boolean = false) {
         if (bottomSheet) {
             ModalBottomSheet(
                 sheetState = state,
-                onDismissRequest = { bottomSheet = false },
+                onDismissRequest = { bottomSheet = false }
             ) {
                 val list = if (isMine) listOf("수정하기", "삭제하기") else listOf("댓글 신고하기", "사용자 차단하기")
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(start = 16.dp, end = 16.dp, top = 6.dp, bottom = 20.dp),
+                        .padding(start = 16.dp, end = 16.dp, top = 6.dp, bottom = 20.dp)
                 ) {
                     list.forEach {
                         Text(
                             modifier = Modifier.padding(vertical = 14.dp),
                             text = it,
-                            style = MaterialTheme.typography.displaySmall,
+                            style = MaterialTheme.typography.displaySmall
                         )
                     }
                     HorizontalDivider(
-                        color = gray40,
+                        color = gray40
                     )
                     Text(
                         modifier = Modifier.padding(vertical = 14.dp),
                         text = "취소하기",
-                        style = MaterialTheme.typography.displaySmall,
+                        style = MaterialTheme.typography.displaySmall
                     )
                 }
             }

@@ -5,5 +5,5 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class ReviewPostRemoteKey(
-    @PrimaryKey val nextPage: Int,
+    @PrimaryKey val nextPage: Int
 )

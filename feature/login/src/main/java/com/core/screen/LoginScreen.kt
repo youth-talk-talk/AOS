@@ -69,9 +69,9 @@ fun LoginScreen(viewModel: LoginViewModel, goAgreeScreen: () -> Unit) {
                 context,
                 onSuccess = { userId ->
                     viewModel.postLogin(userId)
-                },
+                }
             )
-        },
+        }
     )
 }
 
@@ -133,12 +133,12 @@ fun LoginScreen(onClick: () -> Unit) {
     Surface(
         modifier =
         Modifier
-            .fillMaxSize(),
+            .fillMaxSize()
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Image(
                 modifier = Modifier
@@ -147,9 +147,9 @@ fun LoginScreen(onClick: () -> Unit) {
                     .padding(horizontal = 32.dp),
                 painter = rememberAsyncImagePainter(
                     ImageRequest.Builder(context).data(R.drawable.login_image).build(),
-                    imageLoader = imageLoader,
+                    imageLoader = imageLoader
                 ),
-                contentDescription = null,
+                contentDescription = null
             )
 
             Text(
@@ -157,18 +157,18 @@ fun LoginScreen(onClick: () -> Unit) {
                 text = stringResource(id = R.string.login_title),
                 style = MaterialTheme.typography.bodyLarge.copy(
                     fontSize = 30.sp,
-                    fontWeight = FontWeight.Bold,
-                ),
+                    fontWeight = FontWeight.Bold
+                )
             )
 
             Text(
                 text = stringResource(id = R.string.login_screen_description),
                 style =
-                MaterialTheme.typography.titleMedium.copy(color = gray100),
+                MaterialTheme.typography.titleMedium.copy(color = gray100)
             )
             KaKaoImage(
                 modifier = Modifier.padding(top = 70.dp),
-                onClick = onClick,
+                onClick = onClick
             )
         }
     }
@@ -184,10 +184,10 @@ fun KaKaoImage(modifier: Modifier = Modifier, onClick: () -> Unit) {
             .clickable { onClick() },
         painter =
         painterResource(
-            id = R.drawable.kakao_large_wide_kr,
+            id = R.drawable.kakao_large_wide_kr
         ),
         contentScale = ContentScale.FillWidth,
-        contentDescription = stringResource(id = R.string.kakao_description),
+        contentDescription = stringResource(id = R.string.kakao_description)
     )
 }
 

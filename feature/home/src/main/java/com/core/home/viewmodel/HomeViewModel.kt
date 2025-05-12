@@ -1,129 +1,80 @@
 package com.core.home.viewmodel
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.cachedIn
-import com.core.domain.usercase.ChangeCategoriesUseCase
-import com.core.domain.usercase.GetCategoriesUseCase
-import com.core.domain.usercase.PostPolicyScrapUseCase
-import com.core.domain.usercase.home.GetAllPoliciesUseCase
-import com.core.domain.usercase.home.GetHomePolicyMapUseCase
-import com.core.domain.usercase.home.GetPopularPoliciesUseCase
+import com.core.base.BaseViewModel
+import com.core.domain.usercase.GetUserUseCase
+import com.core.domain.usercase.home.GetHomeDataUseCase
+import com.core.domain.usercase.home.GetNewPolicesUseCase
+import com.core.domain.usercase.mypage.PostUserUseCase
+import com.core.home.model.HomeUiEffect
+import com.core.home.model.HomeUiEvent
 import com.core.home.model.HomeUiState
-import com.youthtalk.model.Category
+import com.youthtalk.model.Region
+import com.youthtalk.model.User
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.collections.immutable.toPersistentList
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.asStateFlow
+import javax.inject.Inject
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val getCategoriesUseCase: GetCategoriesUseCase,
-    private val changeCategoriesUseCase: ChangeCategoriesUseCase,
-    private val getAllPoliciesUseCase: GetAllPoliciesUseCase,
-    private val getPopularPoliciesUseCase: GetPopularPoliciesUseCase,
-    private val postPolicyScrapUseCase: PostPolicyScrapUseCase,
-    private val getHomePolicyMapUseCase: GetHomePolicyMapUseCase,
-) : ViewModel() {
-
-    private val _errorHandler = MutableSharedFlow<Throwable>()
-    val errorHandler = _errorHandler.asSharedFlow()
-
-    private val _uiState = MutableStateFlow<HomeUiState>(HomeUiState.Loading)
-    val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
+    private val getHomeDataUseCase: GetHomeDataUseCase,
+    private val getNewPolicesUseCase: GetNewPolicesUseCase,
+    private val getUserUseCase: GetUserUseCase,
+    private val postUserUseCase: PostUserUseCase
+) : BaseViewModel<HomeUiState, HomeUiEvent, HomeUiEffect>(
+    initialState = HomeUiState()
+) {
 
     init {
+        setEvent(HomeUiEvent.GetHomeData())
+    }
+
+    override fun handleEvents(event: HomeUiEvent) {
+        when (event) {
+            is HomeUiEvent.GetHomeData -> getHomeData(isLoading = event.isLoading)
+            is HomeUiEvent.PostRegion -> postUser(event.user, event.region)
+        }
+    }
+
+    private fun postUser(user: User, region: Region) {
+        viewModelScope.launch {
+            postUserUseCase(user.nickname, region)
+                .catch {
+                    Timber.e("HomeViewModel postUser error $it")
+                }
+                .collectLatest {
+                    setEvent(HomeUiEvent.GetHomeData())
+                }
+        }
+    }
+
+    private fun getHomeData(isLoading: Boolean = true) {
         viewModelScope.launch {
             combine(
-                getCategoriesUseCase(),
-                getPopularPoliciesUseCase(),
-                getHomePolicyMapUseCase(),
-            ) { categories, policies, map ->
-                HomeUiState.Success(
-                    categoryList = categories.toPersistentList(),
-                    popularPolicies = policies.toPersistentList(),
-                    allPolicies = getAllPoliciesUseCase().cachedIn(viewModelScope),
-                    scrap = map,
+                getUserUseCase(),
+                getHomeDataUseCase(),
+                getNewPolicesUseCase()
+            ) { user, homeData, newPolices ->
+                HomeUiState(
+                    isLoading = false,
+                    user = user,
+                    homeData = homeData,
+                    newPolicies = newPolices
                 )
             }
-                .map {
-                    it
+                .onStart {
+                    setState { copy(isLoading = isLoading) }
                 }
                 .catch {
-                    Timber.Forest.e("Home Init error " + it.message)
+                    Timber.e("HomeViewModel getHomeData error $it")
                 }
-                .collectLatest {
-                    Timber.Forest.e("init CollectLatest")
-                    _uiState.value = it
-                }
-        }
-    }
-
-    fun changeCategoryCheck(category: Category?) {
-        category?.let {
-            val state = uiState.value
-            if (state !is HomeUiState.Success) return
-
-            val categories = state.categoryList.toMutableList()
-            if (categories.contains(category) && categories.size <= 1) return
-
-            if (categories.contains(category)) {
-                categories.remove(category)
-            } else {
-                categories.add(category)
-            }
-
-            viewModelScope.launch {
-                changeCategoriesUseCase(categories)
-            }
-        }
-    }
-
-    fun postScrap(id: String, isScrap: Boolean) {
-        val state = uiState.value
-        if (state !is HomeUiState.Success) return
-
-        viewModelScope.launch {
-            postPolicyScrapUseCase(id, isScrap)
-                .catch {
-                    Timber.Forest.e("HomeViewModel postScrap error " + it.message)
-                }
-                .collectLatest {
-                    _uiState.value = state.copy(
-                        scrap = it,
-                    )
-                }
-        }
-    }
-
-    fun onResume() {
-        val state = uiState.value
-        if (state !is HomeUiState.Success) return
-        viewModelScope.launch {
-            combine(
-                getPopularPoliciesUseCase(),
-                getHomePolicyMapUseCase(),
-            ) { popular, map ->
-                state.copy(
-                    popularPolicies = popular.toPersistentList(),
-                    scrap = map,
-                )
-            }
-                .catch {
-                    Timber.Forest.e("Home Init error " + it.message)
-                }
-                .collectLatest {
-                    _uiState.value = it
+                .collectLatest { uiState ->
+                    setState { uiState }
                 }
         }
     }

@@ -27,10 +27,10 @@ fun NavGraphBuilder.homeNavigation(
     onClickRecentViewPolicy: () -> Unit,
     onClickDeadlinePolicy: () -> Unit,
     onClickCommunitySearch: (CommunityType) -> Unit,
-    onClickPostDetail: () -> Unit,
-    onClickPolicyDetail: () -> Unit,
+    onClickPostDetail: (Long) -> Unit,
+    onClickPolicyDetail: (Long) -> Unit,
     onClickCommunityWrite: (CommunityType) -> Unit,
-    goLogin: () -> Unit,
+    goLogin: () -> Unit
 ) {
     composable<Navigation.Main> {
         Home(
@@ -49,7 +49,7 @@ fun NavGraphBuilder.homeNavigation(
             onClickPostDetail = onClickPostDetail,
             onClickPolicyDetail = onClickPolicyDetail,
             onClickCommunityWrite = onClickCommunityWrite,
-            goLogin = goLogin,
+            goLogin = goLogin
         )
     }
 }

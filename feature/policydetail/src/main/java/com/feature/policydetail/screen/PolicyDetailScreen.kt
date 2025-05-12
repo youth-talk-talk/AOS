@@ -86,7 +86,7 @@ fun PolicyDetailScreen(modifier: Modifier = Modifier) {
     var measuredOnce by remember { mutableStateOf(false) }
     val animatedHeight by animateDpAsState(
         targetValue = if (!isExpanded && contentHeight > screenHeight * 0.4f) screenHeight * 0.4f else contentHeight,
-        label = "expandHeight",
+        label = "expandHeight"
     )
 
     Column(
@@ -96,38 +96,38 @@ fun PolicyDetailScreen(modifier: Modifier = Modifier) {
                 detectTapGestures { offset ->
                     ime?.hide()
                 }
-            },
+            }
     ) {
         MiddleTitleTopBar(
             onBack = {},
             tails = {
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
                     Image(
                         painter = painterResource(R.drawable.share),
                         contentDescription = "공유하기",
-                        colorFilter = ColorFilter.tint(color = gray100),
+                        colorFilter = ColorFilter.tint(color = gray100)
                     )
 
                     Image(
                         painter = painterResource(R.drawable.bookmark_line),
                         contentDescription = "공유하기",
-                        colorFilter = ColorFilter.tint(color = gray100),
+                        colorFilter = ColorFilter.tint(color = gray100)
                     )
                 }
-            },
+            }
         )
 
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f),
-            verticalArrangement = Arrangement.spacedBy(20.dp),
+            verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
             header(
                 isExpand = isPolicySummaryExpanded,
-                onClickExpand = { isPolicySummaryExpanded = !isPolicySummaryExpanded },
+                onClickExpand = { isPolicySummaryExpanded = !isPolicySummaryExpanded }
             )
             policyContent(
                 screenHeight = screenHeight,
@@ -146,7 +146,7 @@ fun PolicyDetailScreen(modifier: Modifier = Modifier) {
                 },
                 onClickExpanded = {
                     isExpanded = !isExpanded
-                },
+                }
             )
             policyFooter()
         }
@@ -158,12 +158,12 @@ fun PolicyDetailScreen(modifier: Modifier = Modifier) {
                 .padding(horizontal = 16.dp, vertical = 12.dp)
                 .background(
                     color = gray30,
-                    shape = RoundedCornerShape(6.dp),
+                    shape = RoundedCornerShape(6.dp)
                 )
                 .heightIn(max = 80.dp)
                 .padding(horizontal = 14.dp, vertical = 10.dp),
             horizontalArrangement = Arrangement.spacedBy(14.dp),
-            verticalAlignment = Alignment.Top,
+            verticalAlignment = Alignment.Top
         ) {
             BasicTextField(
                 modifier = Modifier
@@ -179,18 +179,18 @@ fun PolicyDetailScreen(modifier: Modifier = Modifier) {
                     },
                 value = textValue,
                 onValueChange = { textValue = it },
-                textStyle = MaterialTheme.typography.titleSmall,
+                textStyle = MaterialTheme.typography.titleSmall
             ) { innerTextField ->
                 Box(
                     modifier = Modifier
-                        .fillMaxWidth(),
+                        .fillMaxWidth()
                 ) {
                     if (textValue.isEmpty()) {
                         Text(
                             text = "댓글을 입력해 보세요!",
                             style = MaterialTheme.typography.titleSmall.copy(
-                                color = gray70,
-                            ),
+                                color = gray70
+                            )
                         )
                     }
                     innerTextField()
@@ -201,7 +201,7 @@ fun PolicyDetailScreen(modifier: Modifier = Modifier) {
                 modifier = Modifier.size(18.dp),
                 painter = painterResource(R.drawable.send),
                 contentDescription = "보내기",
-                colorFilter = ColorFilter.tint(color = if (textValue.isEmpty()) gray70 else gray90),
+                colorFilter = ColorFilter.tint(color = if (textValue.isEmpty()) gray70 else gray90)
             )
         }
     }
@@ -238,7 +238,7 @@ fun WebViewScreen(modifier: Modifier = Modifier, url: String) {
         },
         update = { webView ->
             webView.loadUrl(url)
-        },
+        }
     )
 }
 

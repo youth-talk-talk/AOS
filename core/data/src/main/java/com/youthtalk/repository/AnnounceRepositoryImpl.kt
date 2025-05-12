@@ -12,23 +12,23 @@ import com.youthtalk.mapper.toData
 import com.youthtalk.model.Announce
 import com.youthtalk.model.AnnounceDetail
 import com.youthtalk.utils.ErrorUtils.throwableError
+import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import javax.inject.Inject
 
 class AnnounceRepositoryImpl @Inject constructor(
-    private val announceService: AnnounceService,
+    private val announceService: AnnounceService
 ) : AnnounceRepository {
 
     override fun getAnnounces(): Flow<PagingData<Announce>> {
         return Pager(
             config = PagingConfig(
                 pageSize = 10,
-                initialLoadSize = 10,
+                initialLoadSize = 10
             ),
             pagingSourceFactory = {
                 AnnouncePagingSource(announceService)
-            },
+            }
         ).flow
     }
 

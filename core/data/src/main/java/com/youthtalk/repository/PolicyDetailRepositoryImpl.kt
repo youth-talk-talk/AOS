@@ -8,13 +8,13 @@ import com.youthtalk.dto.PolicyDetailResponse
 import com.youthtalk.mapper.toData
 import com.youthtalk.model.PolicyDetail
 import com.youthtalk.utils.ErrorUtils.throwableError
+import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import timber.log.Timber
-import javax.inject.Inject
 
 class PolicyDetailRepositoryImpl @Inject constructor(
-    private val policyService: PolicyService,
+    private val policyService: PolicyService
 ) : PolicyDetailRepository {
 
     override fun getPolicyDetail(policyId: String): Flow<PolicyDetail> = flow {

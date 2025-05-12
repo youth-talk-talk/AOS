@@ -14,7 +14,7 @@ fun NavController.navigatePopularPolicy(navOptions: NavOptions? = null) {
 fun NavGraphBuilder.popularPolicyNavigation(onBack: () -> Unit) {
     composable<NewPolicy> {
         PopularPolicyScreen(
-            onBack = onBack,
+            onBack = onBack
         )
     }
 }

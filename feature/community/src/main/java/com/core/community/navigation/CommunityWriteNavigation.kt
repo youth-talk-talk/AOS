@@ -17,7 +17,7 @@ fun NavGraphBuilder.communityWriteNavigation() {
     composable<CommunityWrite> {
         val data = it.toRoute<CommunityWrite>()
         CommunityWriteScreen(
-            communityType = data.communityType,
+            communityType = data.communityType
         )
     }
 }

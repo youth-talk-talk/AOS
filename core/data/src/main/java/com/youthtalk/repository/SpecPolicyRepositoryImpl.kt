@@ -17,16 +17,16 @@ import com.youthtalk.model.Category
 import com.youthtalk.model.FilterInfo
 import com.youthtalk.model.Policy
 import com.youthtalk.utils.ErrorUtils.throwableError
+import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
-import javax.inject.Inject
 
 class SpecPolicyRepositoryImpl @Inject constructor(
     private val policyService: PolicyService,
     private val commentService: CommentService,
-    private val dataSource: DataStoreDataSource,
+    private val dataSource: DataStoreDataSource
 ) : SpecPolicyRepository {
     override fun getPolicies(categories: List<Category>?, keyword: String?): Flow<Flow<PagingData<Policy>>> = flow {
         emit(
@@ -36,15 +36,15 @@ class SpecPolicyRepositoryImpl @Inject constructor(
                         policyService = policyService,
                         dataSource = dataSource,
                         category = categories,
-                        keyword = keyword,
+                        keyword = keyword
                     )
                 },
                 config = PagingConfig(
                     pageSize = 10,
                     initialLoadSize = 10,
-                    enablePlaceholders = true,
-                ),
-            ).flow,
+                    enablePlaceholders = true
+                )
+            ).flow
         )
     }
 
@@ -54,14 +54,14 @@ class SpecPolicyRepositoryImpl @Inject constructor(
             categories = categories,
             employmentCodeList = dataSource.getEmployCode().first(),
             keyword = keyword,
-            isFinished = dataSource.getFinish().first(),
+            isFinished = dataSource.getFinish().first()
         ).toRequestBody()
 
         runCatching {
             policyService.postSpecPolicies(
                 requestBody = requestBody,
                 page = 0,
-                size = 10,
+                size = 10
             )
         }
             .onSuccess { response ->
@@ -77,7 +77,7 @@ class SpecPolicyRepositoryImpl @Inject constructor(
     override fun getFilterInfo(): Flow<FilterInfo> = combine(
         dataSource.getAge(),
         dataSource.getEmployCode(),
-        dataSource.getFinish(),
+        dataSource.getFinish()
     ) { age, employCode, isFinished ->
         FilterInfo(age, employCode, isFinished)
     }
@@ -85,7 +85,7 @@ class SpecPolicyRepositoryImpl @Inject constructor(
     override fun saveFilterInfo(filterInfo: FilterInfo): Flow<FilterInfo> = flow {
         dataSource.setAge(filterInfo.age)
         dataSource.setFinish(
-            if (filterInfo.isFinished == true || filterInfo.isFinished == null) null else false,
+            if (filterInfo.isFinished == true || filterInfo.isFinished == null) null else false
         )
         dataSource.setEmployCodeFilter(filterInfo.employmentCodeList)
         emit(filterInfo)
@@ -106,7 +106,7 @@ class SpecPolicyRepositoryImpl @Inject constructor(
     override fun postAddComment(policyId: String, text: String): Flow<Long> = flow {
         runCatching {
             policyService.postAddComment(
-                CommentRequest(policyId, text).toRequestBody(),
+                CommentRequest(policyId, text).toRequestBody()
             )
         }
             .onSuccess { response ->

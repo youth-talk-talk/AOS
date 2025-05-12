@@ -22,9 +22,9 @@ import com.youthtalk.model.ScrapPost
         ReviewPost::class,
         ReviewPostRemoteKey::class,
         ScrapPost::class,
-        ScrapPostRemoteKey::class,
+        ScrapPostRemoteKey::class
     ],
-    version = 1,
+    version = 1
 )
 abstract class YouthDatabase : RoomDatabase() {
     abstract fun postDao(): PostDao

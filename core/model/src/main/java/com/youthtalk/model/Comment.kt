@@ -6,5 +6,5 @@ data class Comment(
     val content: String,
     val isLikedByMember: Boolean,
     val policyId: String? = null,
-    val postId: Long? = null,
+    val postId: Long? = null
 )

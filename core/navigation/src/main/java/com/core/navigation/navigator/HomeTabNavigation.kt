@@ -1,5 +1,6 @@
 package com.core.navigation.navigator
 
+import com.youthtalk.model.Category
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -27,4 +28,6 @@ data object Account
 
 @Serializable
 @SerialName("PolicyOverView")
-data object PolicyOverView
+data class PolicyOverView(
+    val category: Category
+)

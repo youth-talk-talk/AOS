@@ -10,6 +10,8 @@
     <string name="arrow_down">아래화살표</string>
     <string name="search">검색</string>
     <string name="policy_scrap_title">총 %d회 스크랩 됐어요!</string>
+    <string name="bottom_sheet_button_text">적용하기</string>
+    <string name="bottom_sheet_title">지역을 선택해 주세요</string>
 
     <string-array name="category">
         <item>전체선택</item>

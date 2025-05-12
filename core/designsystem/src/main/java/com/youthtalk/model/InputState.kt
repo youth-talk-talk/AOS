@@ -5,5 +5,5 @@ enum class InputState {
     PRESSED,
     COMPLETE,
     DISABLED,
-    ERROR,
+    ERROR
 }

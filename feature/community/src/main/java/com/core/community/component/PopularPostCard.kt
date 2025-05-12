@@ -28,21 +28,21 @@ fun PopularPostCard(modifier: Modifier = Modifier, header: String = "", communit
         modifier = modifier
             .clickable(
                 indication = null,
-                interactionSource = remember { MutableInteractionSource() },
+                interactionSource = remember { MutableInteractionSource() }
             ) {
                 onClick()
             }
-            .padding(horizontal = 16.dp, vertical = 20.dp),
+            .padding(horizontal = 16.dp, vertical = 20.dp)
     ) {
         if (header.isNotEmpty()) {
             Text(
                 modifier = Modifier.padding(bottom = 8.dp),
                 text = header,
                 style = MaterialTheme.typography.labelMedium.copy(
-                    color = gray80,
+                    color = gray80
                 ),
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
+                overflow = TextOverflow.Ellipsis
             )
         }
 
@@ -50,56 +50,56 @@ fun PopularPostCard(modifier: Modifier = Modifier, header: String = "", communit
             text = communityTitle,
             style = MaterialTheme.typography.titleMedium,
             maxLines = 2,
-            overflow = TextOverflow.Ellipsis,
+            overflow = TextOverflow.Ellipsis
         )
 
         Text(
             modifier = Modifier.padding(top = 4.dp, bottom = 10.dp),
             text = content,
             style = MaterialTheme.typography.labelSmall.copy(
-                color = gray90,
+                color = gray90
             ),
             maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
+            overflow = TextOverflow.Ellipsis
         )
 
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(10.dp),
+            horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(2.dp),
+                horizontalArrangement = Arrangement.spacedBy(2.dp)
             ) {
                 Image(
                     modifier = Modifier.size(16.dp),
                     painter = painterResource(R.drawable.message),
                     contentDescription = "댓글",
-                    colorFilter = ColorFilter.tint(color = gray80),
+                    colorFilter = ColorFilter.tint(color = gray80)
                 )
                 Text(
                     text = "13",
                     style = MaterialTheme.typography.labelSmall.copy(
-                        color = gray80,
-                    ),
+                        color = gray80
+                    )
                 )
             }
 
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(2.dp),
+                horizontalArrangement = Arrangement.spacedBy(2.dp)
             ) {
                 Image(
                     modifier = Modifier.size(16.dp),
                     painter = painterResource(R.drawable.bookmark_line),
                     contentDescription = "북마크",
-                    colorFilter = ColorFilter.tint(color = gray80),
+                    colorFilter = ColorFilter.tint(color = gray80)
                 )
                 Text(
                     text = "13",
                     style = MaterialTheme.typography.labelSmall.copy(
-                        color = gray80,
-                    ),
+                        color = gray80
+                    )
                 )
             }
         }

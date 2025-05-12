@@ -5,7 +5,7 @@ import com.youthtalk.model.FilterInfo
 import javax.inject.Inject
 
 class PostFilterUseCase @Inject constructor(
-    private val specPolicyRepository: SpecPolicyRepository,
+    private val specPolicyRepository: SpecPolicyRepository
 ) {
     operator fun invoke(filterInfo: FilterInfo) = specPolicyRepository.saveFilterInfo(filterInfo)
 }

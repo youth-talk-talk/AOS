@@ -50,7 +50,7 @@ fun PolicySearchScreen(modifier: Modifier = Modifier, onBack: () -> Unit) {
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(color = gray10),
+            .background(color = gray10)
     ) {
         SearchBar(
             text = search,
@@ -61,11 +61,11 @@ fun PolicySearchScreen(modifier: Modifier = Modifier, onBack: () -> Unit) {
             },
             onClear = {
                 search = ""
-            },
+            }
         )
 
         Crossfade(
-            targetState = state,
+            targetState = state
         ) {
             when (it) {
                 SearchState.NONE -> {
@@ -82,7 +82,7 @@ fun PolicySearchScreen(modifier: Modifier = Modifier, onBack: () -> Unit) {
                             },
                             onClickItem = {
                                 state = SearchState.SEARCH
-                            },
+                            }
                         )
                     }
                 }
@@ -101,32 +101,32 @@ fun SearchScreen(
     recents: List<String>,
     onDeleteAll: () -> Unit,
     onDelete: (String) -> Unit,
-    onClickItem: (String) -> Unit,
+    onClickItem: (String) -> Unit
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 10.dp, bottom = 20.dp, start = 16.dp, end = 16.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
             text = "최근 검색",
-            style = MaterialTheme.typography.displayLarge,
+            style = MaterialTheme.typography.displayLarge
         )
 
         Text(
             modifier = Modifier
                 .clickable(
                     indication = null,
-                    interactionSource = remember { MutableInteractionSource() },
+                    interactionSource = remember { MutableInteractionSource() }
                 ) {
                     onDeleteAll()
                 },
             text = "전체 삭제",
             style = MaterialTheme.typography.labelSmall.copy(
-                color = gray80,
-            ),
+                color = gray80
+            )
         )
     }
 
@@ -135,13 +135,13 @@ fun SearchScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             recents.forEach {
                 RecentText(
                     text = it,
                     onClick = { onClickItem(it) },
-                    onDelete = { onDelete(it) },
+                    onDelete = { onDelete(it) }
                 )
             }
         }
@@ -150,7 +150,7 @@ fun SearchScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 100.dp),
-            emptyTitle = "최근 검색된 내역이 없습니다.",
+            emptyTitle = "최근 검색된 내역이 없습니다."
         )
     }
 }

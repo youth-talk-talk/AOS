@@ -19,6 +19,7 @@ import com.core.exception.BadRequestException
 import com.youthtalk.model.Comment
 import com.youthtalk.model.PostType
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,7 +29,6 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import javax.inject.Inject
 
 @HiltViewModel
 class CommunityDetailViewModel @Inject constructor(
@@ -41,7 +41,7 @@ class CommunityDetailViewModel @Inject constructor(
     private val patchCommentUseCase: PatchCommentUseCase,
     private val postPostScrapUseCase: PostPostScrapUseCase,
     private val deletePostUseCase: DeletePostUseCase,
-    private val savedStateHandle: SavedStateHandle,
+    private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     init {
@@ -76,8 +76,8 @@ class CommunityDetailViewModel @Inject constructor(
             uiEffect.emit(
                 CommunityDetailUiEffect.CommunityWrite(
                     state.post.postId,
-                    state.post.postType,
-                ),
+                    state.post.postType
+                )
             )
         }
     }
@@ -93,7 +93,7 @@ class CommunityDetailViewModel @Inject constructor(
                 }
                 .collectLatest {
                     _uiState.value = state.copy(
-                        post = state.post.copy(scrap = !isScrap),
+                        post = state.post.copy(scrap = !isScrap)
                     )
                 }
         }
@@ -110,7 +110,7 @@ class CommunityDetailViewModel @Inject constructor(
                 }
                 .collectLatest {
                     _uiState.value = state.copy(
-                        comments = state.comments.map { if (id == it.commentId) it.copy(content = content) else it }.toPersistentList(),
+                        comments = state.comments.map { if (id == it.commentId) it.copy(content = content) else it }.toPersistentList()
                     )
                 }
         }
@@ -130,7 +130,7 @@ class CommunityDetailViewModel @Inject constructor(
                         commentId = it,
                         nickname = state.user.nickname,
                         content = text,
-                        isLikedByMember = false,
+                        isLikedByMember = false
                     )
                     val comment = state.comments.toMutableList()
                     comment.add(newComment)
@@ -150,7 +150,7 @@ class CommunityDetailViewModel @Inject constructor(
                 }
                 .collectLatest {
                     _uiState.value = state.copy(
-                        comments = state.comments.map { if (it.commentId == id) it.copy(isLikedByMember = !isLike) else it }.toPersistentList(),
+                        comments = state.comments.map { if (it.commentId == id) it.copy(isLikedByMember = !isLike) else it }.toPersistentList()
                     )
                 }
         }
@@ -161,12 +161,12 @@ class CommunityDetailViewModel @Inject constructor(
             combine(
                 getPostDetailUseCase(id),
                 getUserUseCase(),
-                getPostDetailCommentUseCase(id),
+                getPostDetailCommentUseCase(id)
             ) { post, user, comments ->
                 CommunityDetailUiState.Success(
                     post = post,
                     user = user,
-                    comments = comments.toPersistentList(),
+                    comments = comments.toPersistentList()
                 )
             }
                 .catch {
@@ -194,7 +194,7 @@ class CommunityDetailViewModel @Inject constructor(
                     val comments = state.comments.toMutableList()
                     comments.removeAt(index)
                     _uiState.value = state.copy(
-                        comments = comments.toPersistentList(),
+                        comments = comments.toPersistentList()
                     )
                 }
         }

@@ -14,7 +14,7 @@ fun NavController.navigateSettingEtc(navOptions: NavOptions? = null) {
 fun NavGraphBuilder.settingEtcNavigation(goLogin: () -> Unit) {
     composable<Etc> {
         EtcScreen(
-            goLogin = goLogin,
+            goLogin = goLogin
         )
     }
 }

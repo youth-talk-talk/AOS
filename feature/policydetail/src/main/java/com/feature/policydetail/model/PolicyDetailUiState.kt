@@ -19,7 +19,7 @@ interface PolicyDetailUiState {
     data class Success(
         val policyDetail: PolicyDetail,
         val myInfo: User,
-        val comments: ImmutableList<Comment> = persistentListOf(),
+        val comments: ImmutableList<Comment> = persistentListOf()
     ) : PolicyDetailUiState {
         companion object {
             val defaultDetail = PolicyDetail(
@@ -46,13 +46,13 @@ interface PolicyDetailUiState {
                 refUrl1 = "",
                 refUrl2 = "",
                 formattedApplUrl = "",
-                isScrap = false,
+                isScrap = false
             )
 
             val user = User(
                 memberId = 0,
                 nickname = "",
-                region = Region.ALL,
+                region = Region.ALL
             )
         }
     }

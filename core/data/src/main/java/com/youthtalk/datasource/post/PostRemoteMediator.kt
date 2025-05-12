@@ -9,14 +9,14 @@ import com.youthtalk.data.CommunityService
 import com.youthtalk.datasource.room.YouthDatabase
 import com.youthtalk.mapper.toData
 import com.youthtalk.model.Post
-import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
+import retrofit2.HttpException
 
 @OptIn(ExperimentalPagingApi::class)
 class PostRemoteMediator @Inject constructor(
     private val communityService: CommunityService,
-    private val youthDatabase: YouthDatabase,
+    private val youthDatabase: YouthDatabase
 ) : RemoteMediator<Int, Post>() {
     private val postDao = youthDatabase.postDao()
     private val postRemoteKeyDao = youthDatabase.postRemoteKeyDao()
@@ -41,7 +41,7 @@ class PostRemoteMediator @Inject constructor(
             val page = remoteKey?.nextPage ?: 0
             val response = communityService.getPosts(
                 page = page,
-                size = state.config.pageSize,
+                size = state.config.pageSize
             )
             val posts = response.data?.posts?.map { it.toData() } ?: listOf()
             youthDatabase.withTransaction {

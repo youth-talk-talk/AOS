@@ -43,70 +43,70 @@ fun LazyListScope.header(isExpand: Boolean, onClickExpand: () -> Unit) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = 16.dp, end = 16.dp, bottom = 30.dp),
-            verticalArrangement = Arrangement.spacedBy(14.dp),
+            verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                    horizontalArrangement = Arrangement.spacedBy(6.dp)
                 ) {
                     Text(
                         text = "한 눈에 보는 정책 요약",
-                        style = MaterialTheme.typography.titleLarge,
+                        style = MaterialTheme.typography.titleLarge
                     )
 
                     Image(
                         painter = painterResource(R.drawable.policy_summary_title),
-                        contentDescription = "요약 이미지",
+                        contentDescription = "요약 이미지"
                     )
                 }
 
                 Text(
                     text = "상시 모집",
                     style = MaterialTheme.typography.titleLarge.copy(
-                        color = MaterialTheme.colorScheme.errorContainer,
-                    ),
+                        color = MaterialTheme.colorScheme.errorContainer
+                    )
                 )
             }
 
             Column(
                 modifier = Modifier
                     .fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(
                             color = gray30,
-                            shape = RoundedCornerShape(6.dp),
+                            shape = RoundedCornerShape(6.dp)
                         )
                         .padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(13.dp),
+                    verticalArrangement = Arrangement.spacedBy(13.dp)
                 ) {
                     PolicySummaryContent(
                         title = "주관 기관",
-                        content = "고용노동부",
+                        content = "고용노동부"
                     )
 
                     PolicySummaryContent(
                         title = "정책 분야",
-                        content = "일자리",
+                        content = "일자리"
                     )
 
                     PolicySummaryContent(
                         title = "신청 기간",
-                        content = "상시",
+                        content = "상시"
                     )
 
                     PolicySummaryContentExpand(
                         isExpand = isExpand,
-                        onClick = onClickExpand,
+                        onClick = onClickExpand
                     )
                 }
 
@@ -116,7 +116,7 @@ fun LazyListScope.header(isExpand: Boolean, onClickExpand: () -> Unit) {
 
         HorizontalDivider(
             color = gray30,
-            thickness = 10.dp,
+            thickness = 10.dp
         )
     }
 }
@@ -129,23 +129,23 @@ fun LinkButton(modifier: Modifier = Modifier) {
             .border(
                 width = 1.dp,
                 color = gray40,
-                shape = RoundedCornerShape(6.dp),
+                shape = RoundedCornerShape(6.dp)
             )
             .padding(vertical = 10.dp),
-        contentAlignment = Alignment.Center,
+        contentAlignment = Alignment.Center
     ) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(10.dp),
-            verticalAlignment = Alignment.CenterVertically,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
                 text = "사이트에서 자세히 보기",
-                style = MaterialTheme.typography.displayMedium,
+                style = MaterialTheme.typography.displayMedium
             )
 
             Image(
                 painter = painterResource(R.drawable.link),
-                contentDescription = "링크",
+                contentDescription = "링크"
             )
         }
     }
@@ -157,13 +157,13 @@ fun PolicySummaryContent(modifier: Modifier = Modifier, title: String, content: 
         modifier = modifier
             .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(20.dp),
+        horizontalArrangement = Arrangement.spacedBy(20.dp)
     ) {
         Text(
             text = title,
             style = MaterialTheme.typography.displayMedium.copy(
-                color = gray80,
-            ),
+                color = gray80
+            )
         )
 
         Text(
@@ -171,8 +171,8 @@ fun PolicySummaryContent(modifier: Modifier = Modifier, title: String, content: 
             text = content,
             style = MaterialTheme.typography.displayMedium.copy(
                 color = gray90,
-                textAlign = TextAlign.End,
-            ),
+                textAlign = TextAlign.End
+            )
         )
     }
 }
@@ -181,32 +181,32 @@ fun PolicySummaryContent(modifier: Modifier = Modifier, title: String, content: 
 fun PolicySummaryContentExpand(modifier: Modifier = Modifier, isExpand: Boolean, onClick: () -> Unit) {
     Column(
         modifier = modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .clickable(
                     indication = null,
-                    interactionSource = remember { MutableInteractionSource() },
+                    interactionSource = remember { MutableInteractionSource() }
                 ) {
                     onClick()
                 },
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
                 text = "정책 요약",
                 style = MaterialTheme.typography.displayMedium.copy(
-                    color = gray80,
-                ),
+                    color = gray80
+                )
             )
 
             Image(
                 modifier = Modifier.size(20.dp),
                 painter = painterResource(if (isExpand) R.drawable.arrowup else R.drawable.arrowdown),
                 contentDescription = "위로 화살표",
-                colorFilter = ColorFilter.tint(color = gray100),
+                colorFilter = ColorFilter.tint(color = gray100)
             )
         }
 
@@ -217,16 +217,16 @@ fun PolicySummaryContentExpand(modifier: Modifier = Modifier, isExpand: Boolean,
                     .padding(top = 10.dp)
                     .background(
                         color = gray10,
-                        shape = RoundedCornerShape(6.dp),
+                        shape = RoundedCornerShape(6.dp)
                     )
                     .padding(14.dp),
-                contentAlignment = Alignment.Center,
+                contentAlignment = Alignment.Center
             ) {
                 Text(
                     text = "노동시장 참여자가 디지털 역량 부족으로 노동시장 진입/적응에 어려움을 겪지 않도록 디지털 기초역량 개발 지원",
                     style = MaterialTheme.typography.displayMedium.copy(
-                        color = gray90,
-                    ),
+                        color = gray90
+                    )
                 )
             }
         }
@@ -239,29 +239,29 @@ fun PolicyTitle(modifier: Modifier = Modifier) {
         modifier = modifier
             .fillMaxWidth()
             .padding(start = 16.dp, end = 16.dp, bottom = 20.dp),
-        verticalArrangement = Arrangement.spacedBy(10.dp),
+        verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             KeywordTag(
                 text = "상시 모집",
                 backgroundColor = gray90,
-                textColor = gray10,
+                textColor = gray10
             )
 
             KeywordTag(
-                text = "서울시",
+                text = "서울시"
             )
 
             KeywordTag(
-                text = "주거분야",
+                text = "주거분야"
             )
         }
 
         Text(
             text = "서울시 청년안심주택(공공지원민간임대) 임대보증금 지원",
-            style = MaterialTheme.typography.bodyMedium,
+            style = MaterialTheme.typography.bodyMedium
         )
     }
 }

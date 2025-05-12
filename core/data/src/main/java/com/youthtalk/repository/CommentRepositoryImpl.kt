@@ -7,12 +7,12 @@ import com.youthtalk.dto.CommentResponse
 import com.youthtalk.mapper.toDate
 import com.youthtalk.model.Comment
 import com.youthtalk.utils.ErrorUtils.throwableError
+import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import javax.inject.Inject
 
 class CommentRepositoryImpl @Inject constructor(
-    private val commentService: CommentService,
+    private val commentService: CommentService
 ) : CommentRepository {
     override fun getPolicyComment(policyId: String): Flow<List<Comment>> = flow {
         runCatching {

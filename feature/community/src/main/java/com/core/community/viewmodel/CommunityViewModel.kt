@@ -15,6 +15,7 @@ import com.core.domain.usercase.review.SetReviewCategoriesUseCase
 import com.youthtalk.model.Category
 import com.youthtalk.model.PostType
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,7 +26,6 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import javax.inject.Inject
 
 @HiltViewModel
 class CommunityViewModel @Inject constructor(
@@ -35,7 +35,7 @@ class CommunityViewModel @Inject constructor(
     private val postPopularReviewPostsUseCase: PostPopularReviewPostsUseCase,
     private val getPopularPostsUseCase: GetPopularPostsUseCase,
     private val getPostsUseCase: GetPostsUseCase,
-    private val postPostScrapUseCase: PostPostScrapUseCase,
+    private val postPostScrapUseCase: PostPostScrapUseCase
 ) : ViewModel() {
 
     private val _error = MutableSharedFlow<Throwable>()
@@ -63,11 +63,11 @@ class CommunityViewModel @Inject constructor(
         viewModelScope.launch {
             combine(
                 postPopularReviewPostsUseCase(),
-                getPopularPostsUseCase(),
+                getPopularPostsUseCase()
             ) { popularReviewPosts, popularPosts ->
                 state.copy(
                     popularReviewPosts = popularReviewPosts.toPersistentList(),
-                    popularPosts = popularPosts.toPersistentList(),
+                    popularPosts = popularPosts.toPersistentList()
                 )
             }
                 .catch {
@@ -84,14 +84,14 @@ class CommunityViewModel @Inject constructor(
             combine(
                 getReviewCategoriesUseCase(),
                 postPopularReviewPostsUseCase(),
-                getPopularPostsUseCase(),
+                getPopularPostsUseCase()
             ) { categories, popularReviewPosts, popularPosts ->
                 CommunityUiState.Success(
                     categories = categories.toPersistentList(),
                     popularReviewPosts = popularReviewPosts.toPersistentList(),
                     reviewPosts = postReviewPostsUseCase().cachedIn(viewModelScope),
                     posts = getPostsUseCase().cachedIn(viewModelScope),
-                    popularPosts = popularPosts.toPersistentList(),
+                    popularPosts = popularPosts.toPersistentList()
                 )
             }
                 .catch {
@@ -120,14 +120,14 @@ class CommunityViewModel @Inject constructor(
                                 if (post.postId == postId) {
                                     post.copy(
                                         scrap = !scrap,
-                                        scraps = if (!scrap) post.scraps + 1 else post.scraps - 1,
+                                        scraps = if (!scrap) post.scraps + 1 else post.scraps - 1
                                     )
                                 } else {
                                     post
                                 }
                             }
                             _uiState.value = state.copy(
-                                popularPosts = list.toPersistentList(),
+                                popularPosts = list.toPersistentList()
                             )
                         }
 
@@ -136,14 +136,14 @@ class CommunityViewModel @Inject constructor(
                                 if (post.postId == postId) {
                                     post.copy(
                                         scrap = !scrap,
-                                        scraps = if (!scrap) post.scraps + 1 else post.scraps - 1,
+                                        scraps = if (!scrap) post.scraps + 1 else post.scraps - 1
                                     )
                                 } else {
                                     post
                                 }
                             }
                             _uiState.value = state.copy(
-                                popularReviewPosts = list.toPersistentList(),
+                                popularReviewPosts = list.toPersistentList()
                             )
                         }
                     }
@@ -167,7 +167,7 @@ class CommunityViewModel @Inject constructor(
             viewModelScope.launch {
                 _uiState.value = state.copy(
                     reviewPosts = setReviewCategoriesUseCase(categories).cachedIn(viewModelScope),
-                    categories = categories.toPersistentList(),
+                    categories = categories.toPersistentList()
                 )
             }
         }

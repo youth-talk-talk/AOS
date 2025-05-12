@@ -33,7 +33,7 @@ fun ScrapPostScreen(modifier: Modifier = Modifier, type: ScrapPostType) {
 
     Column(
         modifier = modifier
-            .fillMaxSize(),
+            .fillMaxSize()
     ) {
         NoBackMiddleTitleTopBar(
             title = when (type) {
@@ -43,14 +43,14 @@ fun ScrapPostScreen(modifier: Modifier = Modifier, type: ScrapPostType) {
             tails = {
                 Image(
                     painter = painterResource(R.drawable.close),
-                    contentDescription = stringResource(R.string.close),
+                    contentDescription = stringResource(R.string.close)
                 )
-            },
+            }
         )
 
         LazyColumn(
             modifier = Modifier
-                .padding(horizontal = 16.dp),
+                .padding(horizontal = 16.dp)
         ) {
             item {
                 Text(
@@ -60,7 +60,7 @@ fun ScrapPostScreen(modifier: Modifier = Modifier, type: ScrapPostType) {
                         ScrapPostType.MY -> "작성글 10"
                         ScrapPostType.SCRAP -> "게시글 10"
                     },
-                    style = MaterialTheme.typography.labelMedium,
+                    style = MaterialTheme.typography.labelMedium
                 )
             }
 
@@ -69,12 +69,12 @@ fun ScrapPostScreen(modifier: Modifier = Modifier, type: ScrapPostType) {
                     communityTitle = "영화 보는 거 좋아하는 사람? 꿀팁 알려드림!",
                     communitySubTitle = "영화 보는 거 좋아하는 사람? 꿀팁 알려드림!",
                     policyTitle = if (it % 3 == 0) "청년문화예술패스" else "",
-                    onClick = {},
+                    onClick = {}
                 )
                 HorizontalDivider(
                     modifier = Modifier.padding(vertical = 20.dp),
                     color = gray40,
-                    thickness = 1.dp,
+                    thickness = 1.dp
                 )
             }
         }
@@ -86,7 +86,7 @@ fun ScrapPostScreen(modifier: Modifier = Modifier, type: ScrapPostType) {
 private fun ScrapPostScreenPreview() {
     YongProjectTheme {
         ScrapPostScreen(
-            type = ScrapPostType.SCRAP,
+            type = ScrapPostType.SCRAP
         )
     }
 }

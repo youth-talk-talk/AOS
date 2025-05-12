@@ -23,6 +23,6 @@ interface CommunityUiState {
         val popularReviewPosts: ImmutableList<ReviewPost> = persistentListOf(),
         val reviewPosts: Flow<PagingData<ReviewPost>> = emptyFlow(),
         val popularPosts: ImmutableList<Post> = persistentListOf(),
-        val posts: Flow<PagingData<Post>> = emptyFlow(),
+        val posts: Flow<PagingData<Post>> = emptyFlow()
     ) : CommunityUiState
 }

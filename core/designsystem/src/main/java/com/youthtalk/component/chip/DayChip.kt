@@ -30,30 +30,30 @@ fun DayChip(modifier: Modifier = Modifier, isSelected: Boolean = false, dayOfWee
             .widthIn(min = 40.dp)
             .background(
                 color = if (isSelected) MaterialTheme.colorScheme.primary else gray10,
-                shape = if (isSelected) RoundedCornerShape(20.dp) else RectangleShape,
+                shape = if (isSelected) RoundedCornerShape(20.dp) else RectangleShape
             )
             .clickable(
                 indication = null,
-                interactionSource = remember { MutableInteractionSource() },
+                interactionSource = remember { MutableInteractionSource() }
             ) {
                 onClick()
             }
             .padding(horizontal = 9.dp, vertical = 11.dp),
         verticalArrangement = Arrangement.spacedBy(2.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
             text = dayOfWeek,
             style = MaterialTheme.typography.labelMedium.copy(
-                color = if (isSelected) gray10 else gray80,
-            ),
+                color = if (isSelected) gray10 else gray80
+            )
         )
 
         Text(
             text = "$day",
             style = MaterialTheme.typography.bodyMedium.copy(
-                color = if (isSelected) gray10 else gray70,
-            ),
+                color = if (isSelected) gray10 else gray70
+            )
         )
     }
 }
@@ -64,7 +64,7 @@ private fun DayChipPreview() {
     YongProjectTheme {
         DayChip(
             day = LocalDate.now().dayOfMonth,
-            onClick = {},
+            onClick = {}
         )
     }
 }
@@ -76,7 +76,7 @@ private fun DayChipIsSelectedPreview() {
         DayChip(
             isSelected = true,
             day = LocalDate.now().plusDays(10).dayOfMonth,
-            onClick = {},
+            onClick = {}
         )
     }
 }

@@ -6,14 +6,14 @@ import com.core.datastore.datasource.DataStoreDataSource
 import com.youthtalk.data.PolicyService
 import com.youthtalk.mapper.toData
 import com.youthtalk.model.Policy
-import kotlinx.coroutines.flow.first
-import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
+import kotlinx.coroutines.flow.first
+import retrofit2.HttpException
 
 class HomePagingSource @Inject constructor(
     private val policyService: PolicyService,
-    private val dataSource: DataStoreDataSource,
+    private val dataSource: DataStoreDataSource
 ) : PagingSource<Int, Policy>() {
 
     override fun getRefreshKey(state: PagingState<Int, Policy>): Int? {
@@ -31,7 +31,7 @@ class HomePagingSource @Inject constructor(
             val response = policyService.getPolices(
                 categories = getCategories,
                 page = pageNumber,
-                size = params.loadSize,
+                size = params.loadSize
             )
 
             val policies = response.data?.allPolicies?.map { it.toData() } ?: listOf()
@@ -39,7 +39,7 @@ class HomePagingSource @Inject constructor(
             return LoadResult.Page(
                 data = policies,
                 prevKey = null,
-                nextKey = if (policies.size != params.loadSize) null else pageNumber + (params.loadSize / 10),
+                nextKey = if (policies.size != params.loadSize) null else pageNumber + (params.loadSize / 10)
             )
         } catch (e: IOException) {
             return LoadResult.Error(e)

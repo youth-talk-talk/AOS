@@ -13,6 +13,7 @@ import com.core.domain.usercase.post.PatchCommentUseCase
 import com.feature.policydetail.model.PolicyDetailUiState
 import com.youthtalk.model.Comment
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,7 +24,6 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import javax.inject.Inject
 
 @HiltViewModel
 class PolicyDetailViewModel @Inject constructor(
@@ -34,7 +34,7 @@ class PolicyDetailViewModel @Inject constructor(
     private val postPolicyAddCommentUseCase: PostPolicyAddCommentUseCase,
     private val postDeleteCommentUseCase: PostDeleteCommentUseCase,
     private val patchCommentUseCase: PatchCommentUseCase,
-    private val postCommentLikeUseCase: PostCommentLikeUseCase,
+    private val postCommentLikeUseCase: PostCommentLikeUseCase
 ) : ViewModel() {
 
     private val _error = MutableSharedFlow<Throwable>()
@@ -48,12 +48,12 @@ class PolicyDetailViewModel @Inject constructor(
             combine(
                 getPolicyDetailUseCase(policyId),
                 getPolicyDetailCommentUseCase(policyId),
-                getUserUseCase(),
+                getUserUseCase()
             ) { policyDetail, comments, user ->
                 PolicyDetailUiState.Success(
                     policyDetail = policyDetail,
                     myInfo = user,
-                    comments = comments.toPersistentList(),
+                    comments = comments.toPersistentList()
                 )
             }
                 .catch {
@@ -67,22 +67,22 @@ class PolicyDetailViewModel @Inject constructor(
     }
 
     fun postScrap(id: String, scrap: Boolean) {
-        val state = _uiState.value
-        if (state !is PolicyDetailUiState.Success) return
-
-        viewModelScope.launch {
-            postPolicyScrapUseCase(id, scrap)
-                .catch {
-                    Timber.Forest.e("PolicyDetailViewModel postScrap error " + it.message)
-                }
-                .collectLatest {
-                    _uiState.value = state.copy(
-                        policyDetail = state.policyDetail.copy(
-                            isScrap = !state.policyDetail.isScrap,
-                        ),
-                    )
-                }
-        }
+//        val state = _uiState.value
+//        if (state !is PolicyDetailUiState.Success) return
+//
+//        viewModelScope.launch {
+//            postPolicyScrapUseCase(id, scrap)
+//                .catch {
+//                    Timber.Forest.e("PolicyDetailViewModel postScrap error " + it.message)
+//                }
+//                .collectLatest {
+//                    _uiState.value = state.copy(
+//                        policyDetail = state.policyDetail.copy(
+//                            isScrap = !state.policyDetail.isScrap,
+//                        ),
+//                    )
+//                }
+//        }
     }
 
     fun addComment(policyId: String, text: String) {
@@ -99,12 +99,12 @@ class PolicyDetailViewModel @Inject constructor(
                         commentId = it,
                         nickname = state.myInfo.nickname,
                         content = text,
-                        isLikedByMember = false,
+                        isLikedByMember = false
                     )
                     val comment = state.comments.toMutableList()
                     comment.add(0, newComment)
                     _uiState.value = state.copy(
-                        comments = comment.toPersistentList(),
+                        comments = comment.toPersistentList()
                     )
                 }
         }
@@ -123,7 +123,7 @@ class PolicyDetailViewModel @Inject constructor(
                     val comments = state.comments.toMutableList()
                     comments.removeAt(index)
                     _uiState.value = state.copy(
-                        comments = comments.toPersistentList(),
+                        comments = comments.toPersistentList()
                     )
                 }
         }
@@ -140,7 +140,7 @@ class PolicyDetailViewModel @Inject constructor(
                 }
                 .collectLatest {
                     _uiState.value = state.copy(
-                        comments = state.comments.map { if (it.commentId == id) it.copy(content = content) else it }.toPersistentList(),
+                        comments = state.comments.map { if (it.commentId == id) it.copy(content = content) else it }.toPersistentList()
                     )
                 }
         }
@@ -157,7 +157,7 @@ class PolicyDetailViewModel @Inject constructor(
                 }
                 .collectLatest {
                     _uiState.value = state.copy(
-                        comments = state.comments.map { if (it.commentId == id) it.copy(isLikedByMember = !isLike) else it }.toPersistentList(),
+                        comments = state.comments.map { if (it.commentId == id) it.copy(isLikedByMember = !isLike) else it }.toPersistentList()
                     )
                 }
         }

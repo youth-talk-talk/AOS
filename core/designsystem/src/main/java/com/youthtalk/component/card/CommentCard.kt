@@ -48,40 +48,40 @@ fun CommentCard(modifier: Modifier = Modifier, isMine: Boolean = false) {
         modifier = modifier
             .fillMaxWidth()
             .background(color = gray10),
-        verticalArrangement = Arrangement.spacedBy(10.dp),
+        verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         Column(
             modifier = modifier
                 .fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(6.dp),
+            verticalArrangement = Arrangement.spacedBy(6.dp)
         ) {
             if (!isMine) {
                 Text(
                     text = "User",
-                    style = MaterialTheme.typography.displayLarge,
+                    style = MaterialTheme.typography.displayLarge
                 )
             }
 
             Row(
-                horizontalArrangement = Arrangement.spacedBy(20.dp),
+                horizontalArrangement = Arrangement.spacedBy(20.dp)
             ) {
                 Text(
                     modifier = Modifier
                         .weight(1f),
                     text = "댓글 내용 댓글 내용 댓글 내용 댓글 내용 댓글 내용 댓글 내용 댓글 내용 댓글 내용 댓글 내용 댓글 내용",
-                    style = MaterialTheme.typography.displaySmall,
+                    style = MaterialTheme.typography.displaySmall
                 )
 
                 Image(
                     modifier = Modifier
                         .clickable(
                             indication = null,
-                            interactionSource = remember { MutableInteractionSource() },
+                            interactionSource = remember { MutableInteractionSource() }
                         ) {
                             bottomSheet = true
                         },
                     painter = painterResource(R.drawable.more),
-                    contentDescription = "더보기",
+                    contentDescription = "더보기"
                 )
             }
         }
@@ -92,74 +92,74 @@ fun CommentCard(modifier: Modifier = Modifier, isMine: Boolean = false) {
                 .border(
                     width = 1.dp,
                     color = gray50,
-                    shape = RoundedCornerShape(4.dp),
+                    shape = RoundedCornerShape(4.dp)
                 )
                 .padding(horizontal = 16.dp)
                 .padding(top = 10.dp, bottom = 11.dp),
             horizontalArrangement = Arrangement.spacedBy(10.dp),
-            verticalAlignment = Alignment.CenterVertically,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             KeywordTag(
-                text = "자유게시판",
+                text = "자유게시판"
             )
 
             Text(
                 text = "글 제목",
                 style = MaterialTheme.typography.displaySmall.copy(
-                    color = gray90,
+                    color = gray90
                 ),
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
+                overflow = TextOverflow.Ellipsis
             )
         }
 
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(2.dp),
+            horizontalArrangement = Arrangement.spacedBy(2.dp)
         ) {
             Icon(
                 painter = painterResource(R.drawable.favorite_line),
                 contentDescription = "좋아요",
-                tint = gray80,
+                tint = gray80
             )
 
             Text(
                 text = "0",
                 style = MaterialTheme.typography.labelSmall.copy(
-                    color = gray80,
-                ),
+                    color = gray80
+                )
             )
         }
     }
 
     if (bottomSheet) {
         ModalBottomSheet(
-            onDismissRequest = { bottomSheet = false },
+            onDismissRequest = { bottomSheet = false }
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 6.dp, start = 16.dp, end = 16.dp, bottom = 20.dp),
+                    .padding(top = 6.dp, start = 16.dp, end = 16.dp, bottom = 20.dp)
             ) {
                 Text(
                     modifier = Modifier.padding(vertical = 14.dp),
                     text = if (isMine) "수정하기" else "댓글 신고하기",
-                    style = MaterialTheme.typography.displaySmall,
+                    style = MaterialTheme.typography.displaySmall
                 )
 
                 Text(
                     modifier = Modifier.padding(vertical = 14.dp),
                     text = if (isMine) "수정하기" else "사용자 차단하기",
-                    style = MaterialTheme.typography.displaySmall,
+                    style = MaterialTheme.typography.displaySmall
                 )
                 HorizontalDivider(
                     thickness = 1.dp,
-                    color = gray40,
+                    color = gray40
                 )
                 Text(
                     modifier = Modifier.padding(vertical = 14.dp),
                     text = "취속하기",
-                    style = MaterialTheme.typography.displaySmall,
+                    style = MaterialTheme.typography.displaySmall
                 )
             }
         }
@@ -179,7 +179,7 @@ private fun CommentCardPreview() {
 private fun CommentCardIsMinePreview() {
     YongProjectTheme {
         CommentCard(
-            isMine = true,
+            isMine = true
         )
     }
 }

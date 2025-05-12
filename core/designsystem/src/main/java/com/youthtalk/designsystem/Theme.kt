@@ -25,7 +25,7 @@ private val DarkColorScheme =
         surfaceContainer = Color.White,
         error = error,
         onError = onError,
-        errorContainer = accent,
+        errorContainer = accent
     )
 
 private val LightColorScheme =
@@ -41,7 +41,7 @@ private val LightColorScheme =
         onSurface = onSurface,
         error = error,
         onError = onError,
-        errorContainer = accent,
+        errorContainer = accent
     )
 
 @Composable
@@ -63,6 +63,6 @@ fun YongProjectTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Compo
     MaterialTheme(
         colorScheme = colorScheme,
         typography = Typography,
-        content = content,
+        content = content
     )
 }

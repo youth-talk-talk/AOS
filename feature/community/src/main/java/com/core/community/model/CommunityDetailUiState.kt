@@ -12,6 +12,6 @@ sealed class CommunityDetailUiState {
     data class Success(
         val post: PostDetail,
         val user: User,
-        val comments: ImmutableList<Comment> = persistentListOf(),
+        val comments: ImmutableList<Comment> = persistentListOf()
     ) : CommunityDetailUiState()
 }
