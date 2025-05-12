@@ -14,7 +14,7 @@ fun NavController.navigateHomeTab(navOptions: NavOptions) {
 
 fun NavGraphBuilder.homeTabNavigation(
     onClickPolicySearch: () -> Unit,
-    onClickPopularPolicy: () -> Unit,
+    onClickPopularPolicy: (String) -> Unit,
     onClickNewPolicy: () -> Unit,
     onClickPolicyDetail: (Long) -> Unit,
     onClickPostDetail: (Long) -> Unit,

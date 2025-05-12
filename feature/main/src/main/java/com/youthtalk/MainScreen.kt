@@ -106,7 +106,10 @@ fun NavHostScreen(
         communitySearchNavigation(
             onBack = { navController.popBackStack() }
         )
-        popularPolicyNavigation(onBack = navController::popBackStack)
+        popularPolicyNavigation(
+            onBack = navController::popBackStack,
+            onClickPolicyDetail = navController::navigatePolicyDetail
+        )
         newPolicyNavigation(
             onBack = navController::popBackStack,
             onClickPolicyDetail = navController::navigatePolicyDetail

@@ -6,9 +6,9 @@ import com.core.domain.usercase.GetUserUseCase
 import com.core.domain.usercase.home.GetHomeDataUseCase
 import com.core.domain.usercase.home.GetNewPolicesUseCase
 import com.core.domain.usercase.mypage.PostUserUseCase
-import com.core.home.model.HomeUiEffect
-import com.core.home.model.HomeUiEvent
-import com.core.home.model.HomeUiState
+import com.core.home.model.home.HomeUiEffect
+import com.core.home.model.home.HomeUiEvent
+import com.core.home.model.home.HomeUiState
 import com.youthtalk.model.Region
 import com.youthtalk.model.User
 import dagger.hilt.android.lifecycle.HiltViewModel

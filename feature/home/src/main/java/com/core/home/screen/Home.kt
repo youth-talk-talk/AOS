@@ -20,6 +20,7 @@ import com.feature.policy.navigation.navigatePolicyOverView
 import com.feature.policy.navigation.policyOverViewNavigation
 import com.feature.policy.navigation.policyTabNavigation
 import com.youthtalk.model.CommunityType
+import com.youthtalk.model.policy.Policy
 import timber.log.Timber
 
 @Composable
@@ -32,7 +33,7 @@ fun Home(
     onClickSettingComment: (CommentType) -> Unit,
     onClickSettingNotification: () -> Unit,
     onClickPolicySearch: () -> Unit,
-    onClickPopularPolicy: () -> Unit,
+    onClickPopularPolicy: (String) -> Unit,
     onClickNewPolicy: () -> Unit,
     onClickRecentViewPolicy: () -> Unit,
     onClickDeadlinePolicy: () -> Unit,

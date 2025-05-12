@@ -1,7 +1,9 @@
 package com.youthtalk.model.policy
 
 import com.youthtalk.model.Category
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class Policy(
     val policyId: Long,
     val category: Category,
