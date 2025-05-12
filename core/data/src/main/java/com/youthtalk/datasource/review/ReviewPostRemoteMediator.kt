@@ -10,16 +10,16 @@ import com.youthtalk.data.CommunityService
 import com.youthtalk.datasource.room.YouthDatabase
 import com.youthtalk.mapper.toReviewData
 import com.youthtalk.model.ReviewPost
-import kotlinx.coroutines.flow.first
-import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
+import kotlinx.coroutines.flow.first
+import retrofit2.HttpException
 
 @OptIn(ExperimentalPagingApi::class)
 class ReviewPostRemoteMediator @Inject constructor(
     private val communityService: CommunityService,
     private val youthDatabase: YouthDatabase,
-    private val dataSource: DataStoreDataSource,
+    private val dataSource: DataStoreDataSource
 ) : RemoteMediator<Int, ReviewPost>() {
     private val reviewPostDao = youthDatabase.reviewPostDao()
     private val reviewPostRemoteKeyDao = youthDatabase.reviewPostRemoteKeyDao()
@@ -46,7 +46,7 @@ class ReviewPostRemoteMediator @Inject constructor(
             val response = communityService.postReviewPosts(
                 categories = categories,
                 page = page,
-                size = state.config.pageSize,
+                size = state.config.pageSize
             )
             val reviewPosts = response.data?.posts?.map { it.toReviewData() } ?: listOf()
             youthDatabase.withTransaction {

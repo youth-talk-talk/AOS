@@ -38,7 +38,7 @@ fun ScrapPolicyScreen(modifier: Modifier = Modifier) {
     }
 
     Column(
-        modifier = modifier,
+        modifier = modifier
     ) {
         NoBackMiddleTitleTopBar(
             title = stringResource(R.string.scrap_policy_topbar_title),
@@ -47,32 +47,32 @@ fun ScrapPolicyScreen(modifier: Modifier = Modifier) {
                     modifier = Modifier
                         .clickable(
                             indication = null,
-                            interactionSource = remember { MutableInteractionSource() },
+                            interactionSource = remember { MutableInteractionSource() }
                         ) {
                         },
                     painter = painterResource(R.drawable.close),
-                    contentDescription = stringResource(R.string.close),
+                    contentDescription = stringResource(R.string.close)
                 )
-            },
+            }
         )
 
         if (size <= 0) {
             Column(
                 modifier = Modifier
                     .fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Spacer(modifier = Modifier.weight(2f))
                 EmptyScreen(
                     modifier = Modifier.weight(5f),
-                    emptyTitle = stringResource(R.string.empty_scrap_policy_title),
+                    emptyTitle = stringResource(R.string.empty_scrap_policy_title)
                 )
             }
         } else {
             Column(
                 modifier = Modifier
                     .padding(horizontal = 16.dp, vertical = 10.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 repeat(size) {
                     PolicyCard(
@@ -80,20 +80,19 @@ fun ScrapPolicyScreen(modifier: Modifier = Modifier) {
                             .fillMaxWidth()
                             .background(
                                 color = gray10,
-                                shape = RoundedCornerShape(12.dp),
+                                shape = RoundedCornerShape(12.dp)
                             )
                             .border(
                                 width = 1.dp,
                                 color = gray40,
-                                shape = RoundedCornerShape(12.dp),
+                                shape = RoundedCornerShape(12.dp)
                             )
                             .clickable(
                                 indication = null,
-                                interactionSource = remember { MutableInteractionSource() },
+                                interactionSource = remember { MutableInteractionSource() }
                             ) {
                                 size--
-                            },
-                        isBookMark = true,
+                            }
                     )
                 }
             }

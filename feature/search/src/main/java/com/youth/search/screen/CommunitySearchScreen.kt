@@ -38,7 +38,7 @@ fun CommunitySearchScreen(modifier: Modifier = Modifier, onBack: () -> Unit, com
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(color = gray10),
+            .background(color = gray10)
     ) {
         SearchBar(
             text = search,
@@ -49,11 +49,11 @@ fun CommunitySearchScreen(modifier: Modifier = Modifier, onBack: () -> Unit, com
             },
             onClear = {
                 search = ""
-            },
+            }
         )
 
         Crossfade(
-            targetState = state,
+            targetState = state
         ) {
             when (it) {
                 SearchState.NONE -> {
@@ -70,14 +70,14 @@ fun CommunitySearchScreen(modifier: Modifier = Modifier, onBack: () -> Unit, com
                             },
                             onClickItem = {
                                 state = SearchState.SEARCH
-                            },
+                            }
                         )
                     }
                 }
 
                 SearchState.SEARCH -> {
                     CommunitySearchResultScreen(
-                        communityType = communityType,
+                        communityType = communityType
                     )
                 }
             }

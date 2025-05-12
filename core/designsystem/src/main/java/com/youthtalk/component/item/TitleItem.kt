@@ -30,22 +30,22 @@ fun TitleItem(modifier: Modifier = Modifier, title: String, isVisibleArrow: Bool
             .padding(horizontal = 16.dp)
             .clickable(
                 indication = null,
-                interactionSource = remember { MutableInteractionSource() },
+                interactionSource = remember { MutableInteractionSource() }
             ) {
                 onClick()
             },
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween,
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
             text = title,
-            style = MaterialTheme.typography.titleLarge,
+            style = MaterialTheme.typography.titleLarge
         )
 
         if (isVisibleArrow) {
             Image(
                 painter = painterResource(R.drawable.arrowright),
-                contentDescription = "오른쪽 화살표",
+                contentDescription = "오른쪽 화살표"
             )
         }
     }
@@ -57,7 +57,7 @@ fun TitleItemPreview(modifier: Modifier = Modifier) {
     YongProjectTheme {
         TitleItem(
             title = "우리 지역 인기 정책",
-            onClick = {},
+            onClick = {}
         )
     }
 }

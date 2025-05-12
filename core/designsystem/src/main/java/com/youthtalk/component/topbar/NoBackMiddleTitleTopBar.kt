@@ -20,14 +20,14 @@ fun NoBackMiddleTitleTopBar(modifier: Modifier = Modifier, title: String, tails:
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.background)
             .padding(horizontal = 16.dp)
-            .padding(top = 24.dp, bottom = 20.dp),
+            .padding(top = 24.dp, bottom = 20.dp)
     ) {
         Text(
             modifier = Modifier.align(Alignment.Center),
             text = title,
             style = MaterialTheme.typography.bodyMedium.copy(
-                color = gray100,
-            ),
+                color = gray100
+            )
         )
 
         tails?.let {

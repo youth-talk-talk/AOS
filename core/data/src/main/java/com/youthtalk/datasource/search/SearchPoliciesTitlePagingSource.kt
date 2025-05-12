@@ -6,13 +6,13 @@ import com.youthtalk.data.PolicyService
 import com.youthtalk.datasource.PagingSize
 import com.youthtalk.mapper.toData
 import com.youthtalk.model.SearchPolicy
-import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
+import retrofit2.HttpException
 
 class SearchPoliciesTitlePagingSource @Inject constructor(
     private val title: String,
-    private val policyService: PolicyService,
+    private val policyService: PolicyService
 ) : PagingSource<Int, SearchPolicy>() {
 
     override fun getRefreshKey(state: PagingState<Int, SearchPolicy>): Int? {
@@ -28,7 +28,7 @@ class SearchPoliciesTitlePagingSource @Inject constructor(
             val response = policyService.getSearchPoliciesTitle(
                 title = title,
                 page = page,
-                size = params.loadSize,
+                size = params.loadSize
             )
 
             val data = response.data?.map { it.toData() } ?: listOf()
@@ -36,7 +36,7 @@ class SearchPoliciesTitlePagingSource @Inject constructor(
             return LoadResult.Page(
                 data = data,
                 prevKey = null,
-                nextKey = if (data.isEmpty()) null else page + (params.loadSize / PagingSize.SEARCH_PAGE_SIZE),
+                nextKey = if (data.isEmpty()) null else page + (params.loadSize / PagingSize.SEARCH_PAGE_SIZE)
             )
         } catch (e: IOException) {
             return LoadResult.Error(e)

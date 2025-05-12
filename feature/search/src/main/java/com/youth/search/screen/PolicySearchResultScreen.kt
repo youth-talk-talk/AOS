@@ -44,21 +44,21 @@ fun PolicySearchResultScreen(modifier: Modifier = Modifier) {
         mutableStateOf(false)
     }
     val state = rememberModalBottomSheetState(
-        skipPartiallyExpanded = true,
+        skipPartiallyExpanded = true
     )
 
     LazyColumn(
         modifier = modifier
-            .fillMaxSize(),
+            .fillMaxSize()
     ) {
         item {
             LazyRow(
                 modifier = Modifier.fillMaxWidth(),
                 contentPadding = PaddingValues(start = 16.dp, end = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 items(
-                    count = FilterType.entries.toList().size,
+                    count = FilterType.entries.toList().size
                 ) {
                     val filters = FilterType.entries.toList()
 
@@ -75,7 +75,7 @@ fun PolicySearchResultScreen(modifier: Modifier = Modifier) {
                         text = title,
                         onClick = {
                             bottomSheet = true
-                        },
+                        }
                     )
                 }
             }
@@ -85,7 +85,7 @@ fun PolicySearchResultScreen(modifier: Modifier = Modifier) {
             HorizontalDivider(
                 modifier = Modifier.padding(top = 14.dp, bottom = 10.dp),
                 thickness = 1.dp,
-                color = gray30,
+                color = gray30
             )
         }
 
@@ -96,35 +96,35 @@ fun PolicySearchResultScreen(modifier: Modifier = Modifier) {
                     .padding(horizontal = 16.dp)
                     .padding(bottom = 10.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
                     text = "총 1,000건",
-                    style = MaterialTheme.typography.displayMedium,
+                    style = MaterialTheme.typography.displayMedium
                 )
 
                 Row(
                     modifier = Modifier
                         .padding(horizontal = 6.dp, vertical = 2.dp),
                     horizontalArrangement = Arrangement.spacedBy(2.dp),
-                    verticalAlignment = Alignment.CenterVertically,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
                         text = "최신순",
-                        style = MaterialTheme.typography.displayMedium,
+                        style = MaterialTheme.typography.displayMedium
                     )
 
                     Image(
                         modifier = Modifier.size(16.dp),
                         painter = painterResource(R.drawable.arrowdown),
-                        contentDescription = "아래 화살표",
+                        contentDescription = "아래 화살표"
                     )
                 }
             }
         }
 
         items(
-            count = 10,
+            count = 10
         ) {
             PolicyCard(
                 modifier = Modifier
@@ -133,13 +133,13 @@ fun PolicySearchResultScreen(modifier: Modifier = Modifier) {
                     .padding(bottom = 16.dp)
                     .background(
                         color = gray10,
-                        shape = RoundedCornerShape(12.dp),
+                        shape = RoundedCornerShape(12.dp)
                     )
                     .border(
                         width = 1.dp,
                         color = gray40,
-                        shape = RoundedCornerShape(12.dp),
-                    ),
+                        shape = RoundedCornerShape(12.dp)
+                    )
             )
         }
     }
@@ -147,7 +147,7 @@ fun PolicySearchResultScreen(modifier: Modifier = Modifier) {
     if (bottomSheet) {
         FilterBottomSheet(
             sheetState = state,
-            onDismiss = { bottomSheet = false },
+            onDismiss = { bottomSheet = false }
         )
     }
 }

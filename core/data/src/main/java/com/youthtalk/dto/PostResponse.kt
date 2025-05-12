@@ -6,13 +6,13 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class PostResponse(
     @SerialName("top5Posts") val popularPosts: List<PostDataResponse>,
-    @SerialName("allPosts") val posts: List<PostDataResponse>,
+    @SerialName("allPosts") val posts: List<PostDataResponse>
 )
 
 @Serializable
 data class PostSearchResponse(
     @SerialName("total") val total: Int,
-    @SerialName("posts") val posts: List<PostDataResponse>,
+    @SerialName("posts") val posts: List<PostDataResponse>
 )
 
 @Serializable
@@ -24,7 +24,7 @@ data class PostDataResponse(
     val scrap: Boolean,
     val comments: Int,
     val policyId: String?,
-    val policyTitle: String?,
+    val policyTitle: String?
 )
 
 @Serializable
@@ -37,5 +37,5 @@ data class ScrapPostDataResponse(
     val scrap: Boolean,
     val comments: Int,
     val policyId: String?,
-    val policyTitle: String?,
+    val policyTitle: String?
 )

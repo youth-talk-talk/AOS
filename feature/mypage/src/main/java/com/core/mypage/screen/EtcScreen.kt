@@ -47,37 +47,37 @@ fun EtcScreen(modifier: Modifier = Modifier, viewModel: EtcViewModel = hiltViewM
 
     Column(
         modifier = modifier
-            .fillMaxSize(),
+            .fillMaxSize()
     ) {
         MiddleTitleTopBar(
             title = stringResource(R.string.etc_topbar_title),
-            onBack = {},
+            onBack = {}
         )
 
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 10.dp, start = 15.dp, end = 17.dp),
-            verticalArrangement = Arrangement.spacedBy(24.dp),
+            verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
                     text = stringResource(R.string.etc_app_version_title),
                     style = MaterialTheme.typography.titleMedium.copy(
-                        color = gray90,
-                    ),
+                        color = gray90
+                    )
                 )
 
                 Text(
                     text = "24.52.1 버전",
                     style = MaterialTheme.typography.titleMedium.copy(
-                        color = gray90,
-                    ),
+                        color = gray90
+                    )
                 )
             }
 
@@ -85,15 +85,15 @@ fun EtcScreen(modifier: Modifier = Modifier, viewModel: EtcViewModel = hiltViewM
                 modifier = Modifier
                     .clickable(
                         indication = null,
-                        interactionSource = remember { MutableInteractionSource() },
+                        interactionSource = remember { MutableInteractionSource() }
                     ) {
                         dialog = true
                     }
                     .fillMaxWidth(),
                 text = stringResource(R.string.withdraw),
                 style = MaterialTheme.typography.titleMedium.copy(
-                    color = gray90,
-                ),
+                    color = gray90
+                )
             )
         }
     }
@@ -105,7 +105,7 @@ fun EtcScreen(modifier: Modifier = Modifier, viewModel: EtcViewModel = hiltViewM
             confirmBackground = MaterialTheme.colorScheme.error,
             confirmText = stringResource(R.string.withdraw),
             onClickConfirm = { viewModel.postLogout(true) },
-            onDismissRequest = { dialog = false },
+            onDismissRequest = { dialog = false }
         )
     }
 }
@@ -115,7 +115,7 @@ fun EtcScreen(modifier: Modifier = Modifier, viewModel: EtcViewModel = hiltViewM
 private fun EtcScreenPreview() {
     YongProjectTheme {
         EtcScreen(
-            goLogin = {},
+            goLogin = {}
         )
     }
 }

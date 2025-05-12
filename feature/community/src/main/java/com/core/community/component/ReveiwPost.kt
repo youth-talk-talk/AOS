@@ -32,25 +32,25 @@ fun ReviewPost(modifier: Modifier = Modifier, lazyListState: LazyListState, cate
         modifier = modifier
             .fillMaxSize(),
         state = lazyListState,
-        contentPadding = PaddingValues(vertical = 20.dp),
+        contentPadding = PaddingValues(vertical = 20.dp)
     ) {
         item {
             Column(
-                verticalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Text(
                     modifier = Modifier
                         .padding(horizontal = 16.dp),
                     text = "\uD83D\uDD25 인기 후기 게시물",
-                    style = MaterialTheme.typography.titleLarge,
+                    style = MaterialTheme.typography.titleLarge
                 )
 
                 LazyRow(
                     horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    contentPadding = PaddingValues(horizontal = 16.dp),
+                    contentPadding = PaddingValues(horizontal = 16.dp)
                 ) {
                     items(
-                        count = 5,
+                        count = 5
                     ) {
                         PopularPostCard(
                             modifier = Modifier
@@ -58,16 +58,16 @@ fun ReviewPost(modifier: Modifier = Modifier, lazyListState: LazyListState, cate
                                 .shadow(
                                     offsetX = 4.dp,
                                     offsetY = 4.dp,
-                                    blurRadius = 12.dp,
+                                    blurRadius = 12.dp
                                 )
                                 .background(
                                     color = gray10,
-                                    shape = RoundedCornerShape(12.dp),
+                                    shape = RoundedCornerShape(12.dp)
                                 ),
                             header = "서울시 취업날개서비스 운영",
                             communityTitle = "면접 정장 비싸서 걱정했는데 공짜로 해결함!",
                             content = "면접 정장 비싸서 걱정했는데 공짜로 해결함!.....",
-                            onClick = onClickPost,
+                            onClick = onClickPost
                         )
                     }
                 }
@@ -76,7 +76,7 @@ fun ReviewPost(modifier: Modifier = Modifier, lazyListState: LazyListState, cate
             HorizontalDivider(
                 modifier = Modifier.padding(vertical = 20.dp),
                 thickness = 10.dp,
-                color = gray30,
+                color = gray30
             )
         }
 
@@ -86,32 +86,32 @@ fun ReviewPost(modifier: Modifier = Modifier, lazyListState: LazyListState, cate
                     .fillMaxWidth()
                     .padding(bottom = 20.dp),
                 contentPadding = PaddingValues(horizontal = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 items(
-                    count = categories.size,
+                    count = categories.size
                 ) {
                     RoundChip(
                         text = categories[it].categoryName,
-                        isSelected = it == 0,
+                        isSelected = it == 0
                     )
                 }
             }
         }
 
         items(
-            count = 10,
+            count = 10
         ) {
             PostCard(
                 modifier = Modifier.padding(horizontal = 16.dp),
                 communityTitle = "영화 보는 거 좋아하는 사람? 꿀팁 알려드림!",
                 communitySubTitle = "영화 보는 거 좋아하는 사람? 꿀팁 알려드림! 영화 보는 거 좋아하는 사람...",
                 policyTitle = "청년문화예술패스",
-                onClick = onClickPost,
+                onClick = onClickPost
             )
             HorizontalDivider(
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 20.dp),
-                color = gray40,
+                color = gray40
             )
         }
     }

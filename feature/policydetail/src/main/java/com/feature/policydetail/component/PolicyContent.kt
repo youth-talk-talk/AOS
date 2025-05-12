@@ -37,7 +37,7 @@ fun LazyListScope.policyContent(
     isExpanded: Boolean,
     measuredOnce: Boolean,
     measureHeight: (Int) -> Unit,
-    onClickExpanded: () -> Unit,
+    onClickExpanded: () -> Unit
 ) {
     item {
         Box {
@@ -49,7 +49,7 @@ fun LazyListScope.policyContent(
                         measureHeight(coordinates.size.height)
                     }
                     .padding(start = 16.dp, end = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(30.dp),
+                verticalArrangement = Arrangement.spacedBy(30.dp)
             ) {
                 PolicySpecContent(
                     title = "신청자격",
@@ -58,16 +58,16 @@ fun LazyListScope.policyContent(
                         "전국",
                         "참여 제한 대상 참고",
                         "현직 공무원, 사립학교 교직원, 졸업예정자 이외 재학생, 연 매출 4억원 이상의 자영업자, 월 임금 300만원 이상인 대규모기업종사자(45세 미만)," +
-                            " 월 소득 500만원 이상의 특수형태근로종사자 등 국민내일배움카드 발급이 불가능한 자는 제외",
-                    ),
+                            " 월 소득 500만원 이상의 특수형태근로종사자 등 국민내일배움카드 발급이 불가능한 자는 제외"
+                    )
                 )
 
                 PolicySpecContent(
                     title = "지원내용",
                     contents = listOf(
                         "□ 국민내일배움카드 훈련비 지원 한도(5년간 300~500만원) 외 50만원(지급 후 1년 한도)의 크레딧 추가 지급\n" +
-                            "※ 추가 지급된 크레딧은 정해진 K-디지털 기초역량훈련(K-Digital Credit) 훈련과정 수강에만 사용 가능하며, 훈련생 개인은 훈련비의 10퍼센트를 부담해야 함",
-                    ),
+                            "※ 추가 지급된 크레딧은 정해진 K-디지털 기초역량훈련(K-Digital Credit) 훈련과정 수강에만 사용 가능하며, 훈련생 개인은 훈련비의 10퍼센트를 부담해야 함"
+                    )
                 )
 
                 PolicySpecContent(
@@ -75,8 +75,8 @@ fun LazyListScope.policyContent(
                     contents = listOf(
                         "국민내일배움카드 발급 후 고용센터 방문 또는 고용24 홈페이지(www.work24.go.kr)를 통해 수강신청",
                         "국민내일배움카드 발급 신청 - 고용센터 심사 후 카드 발급 - 훈련 과정 수강신청- 훈련 기관 훈련생 선발 후 개별 안내",
-                        "https://www.work24.go.kr",
-                    ),
+                        "https://www.work24.go.kr"
+                    )
                 )
             }
 
@@ -90,9 +90,9 @@ fun LazyListScope.policyContent(
                             brush = Brush.verticalGradient(
                                 colors = listOf(Color.Transparent, Color.White),
                                 startY = 0f,
-                                endY = with(LocalDensity.current) { 20.dp.toPx() },
-                            ),
-                        ),
+                                endY = with(LocalDensity.current) { 20.dp.toPx() }
+                            )
+                        )
                 )
             }
         }
@@ -105,27 +105,27 @@ fun LazyListScope.policyContent(
                     .border(
                         width = 1.dp,
                         color = gray40,
-                        shape = RoundedCornerShape(6.dp),
+                        shape = RoundedCornerShape(6.dp)
                     )
                     .clickable(
                         indication = null,
-                        interactionSource = remember { MutableInteractionSource() },
+                        interactionSource = remember { MutableInteractionSource() }
                     ) {
                         onClickExpanded()
                     }
                     .padding(vertical = 12.dp),
-                contentAlignment = Alignment.Center,
+                contentAlignment = Alignment.Center
             ) {
                 Text(
                     text = if (isExpanded) "접기" else "공고 상세보기",
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.titleMedium
                 )
             }
         }
 
         HorizontalDivider(
             thickness = 10.dp,
-            color = gray30,
+            color = gray30
         )
     }
 }
@@ -135,24 +135,24 @@ fun PolicySpecContent(modifier: Modifier = Modifier, title: String, contents: Li
     Column(
         modifier = modifier
             .fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(14.dp),
+        verticalArrangement = Arrangement.spacedBy(14.dp)
     ) {
         Text(
             text = title,
-            style = MaterialTheme.typography.titleLarge,
+            style = MaterialTheme.typography.titleLarge
         )
 
         Column(
             modifier = Modifier
                 .fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             contents.forEach {
                 Text(
                     text = it,
                     style = MaterialTheme.typography.displaySmall.copy(
-                        color = gray90,
-                    ),
+                        color = gray90
+                    )
                 )
             }
         }

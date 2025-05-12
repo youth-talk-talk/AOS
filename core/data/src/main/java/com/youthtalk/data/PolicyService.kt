@@ -5,8 +5,10 @@ import com.youthtalk.dto.HomePoliciesResponse
 import com.youthtalk.dto.PolicyDetailResponse
 import com.youthtalk.dto.PostAddCommentResponse
 import com.youthtalk.dto.SearchPoliciesResponse
+import com.youthtalk.dto.home.HomeDataResponse
 import com.youthtalk.dto.specpolicy.SpecPoliciesResponse
 import com.youthtalk.model.PolicyResponse
+import com.youthtalk.model.enum.SortType
 import okhttp3.RequestBody
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -16,11 +18,14 @@ import retrofit2.http.Query
 
 interface PolicyService {
 
+    @GET("/api/v1/home?sort=RECENT")
+    suspend fun getHome(@Query("sort") sort: SortType = SortType.RECENT): CommonResponse<HomeDataResponse>
+
     @GET("/api/v1/policies")
     suspend fun getPolices(
         @Query("categories") categories: List<String>,
         @Query("page") page: Int,
-        @Query("size") size: Int,
+        @Query("size") size: Int
     ): CommonResponse<HomePoliciesResponse>
 
     @GET("/api/v1/policies/{policyid}")
@@ -30,7 +35,7 @@ interface PolicyService {
     suspend fun postSpecPolicies(
         @Body requestBody: RequestBody,
         @Query("page") page: Int,
-        @Query("size") size: Int,
+        @Query("size") size: Int
     ): CommonResponse<SpecPoliciesResponse>
 
     @POST("/api/v1/policies/{id}/scrap")
@@ -49,6 +54,6 @@ interface PolicyService {
     suspend fun getSearchPoliciesTitle(
         @Query("title") title: String,
         @Query("page") page: Int,
-        @Query("size") size: Int,
+        @Query("size") size: Int
     ): CommonResponse<List<SearchPoliciesResponse>>
 }

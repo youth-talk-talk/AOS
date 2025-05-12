@@ -46,7 +46,7 @@ fun SettingScreen(
     onClickSettingScrap: () -> Unit,
     onClickSettingPost: (ScrapPostType) -> Unit,
     onClickSettingComment: (CommentType) -> Unit,
-    onClickSettingNotification: () -> Unit,
+    onClickSettingNotification: () -> Unit
 ) {
     SettingMain(
         onClickProfileCard = onClickProfileCard,
@@ -55,7 +55,7 @@ fun SettingScreen(
         onClickSettingScrap = onClickSettingScrap,
         onClickSettingPost = onClickSettingPost,
         onClickSettingComment = onClickSettingComment,
-        onClickSettingNotification = onClickSettingNotification,
+        onClickSettingNotification = onClickSettingNotification
     )
 }
 
@@ -68,33 +68,33 @@ fun SettingMain(
     onClickSettingScrap: () -> Unit,
     onClickSettingPost: (ScrapPostType) -> Unit,
     onClickSettingComment: (CommentType) -> Unit,
-    onClickSettingNotification: () -> Unit,
+    onClickSettingNotification: () -> Unit
 ) {
     Column(
         modifier = modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState()),
+            .verticalScroll(rememberScrollState())
     ) {
         MiddleTitleTopBar(
             title = stringResource(R.string.appbar),
-            onBack = {},
+            onBack = {}
         )
         ProfileCard(
             modifier = Modifier
                 .padding(horizontal = 16.dp, vertical = 12.dp),
             username = "울적한 쿠키",
             email = "abcd@kakao.com",
-            onClick = onClickProfileCard,
+            onClick = onClickProfileCard
         )
 
         ScrapPolicyAndNotification(
             onClickSettingScrap = onClickSettingScrap,
-            onClickSettingNotification = onClickSettingNotification,
+            onClickSettingNotification = onClickSettingNotification
         )
 
         HorizontalDivider(
             thickness = 10.dp,
-            color = gray30,
+            color = gray30
         )
 
         SettingList<CommunityModel>(
@@ -120,12 +120,12 @@ fun SettingMain(
                         onClickSettingPost(ScrapPostType.MY)
                     }
                 }
-            },
+            }
         )
 
         HorizontalDivider(
             thickness = 10.dp,
-            color = gray30,
+            color = gray30
         )
 
         SettingList<ManageModel>(
@@ -139,7 +139,7 @@ fun SettingMain(
                     is ManageModel.Inquire -> {}
                     is ManageModel.Etc -> onClickEtc()
                 }
-            },
+            }
         )
     }
 }
@@ -149,15 +149,15 @@ private fun <T : SettingModel> SettingList(modifier: Modifier = Modifier, title:
     Column(
         modifier = modifier
             .fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(20.dp),
+        verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
         Text(
             text = title,
-            style = MaterialTheme.typography.titleLarge,
+            style = MaterialTheme.typography.titleLarge
         )
 
         Column(
-            verticalArrangement = Arrangement.spacedBy(24.dp),
+            verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
             contents.forEach {
                 Row(
@@ -165,22 +165,22 @@ private fun <T : SettingModel> SettingList(modifier: Modifier = Modifier, title:
                         .fillMaxWidth()
                         .clickable(
                             indication = null,
-                            interactionSource = remember { MutableInteractionSource() },
+                            interactionSource = remember { MutableInteractionSource() }
                         ) {
                             onClick(it)
                         },
-                    horizontalArrangement = Arrangement.SpaceBetween,
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
                         text = it.getSettingName(),
                         style = MaterialTheme.typography.titleMedium.copy(
-                            color = gray90,
-                        ),
+                            color = gray90
+                        )
                     )
 
                     Image(
                         painter = painterResource(R.drawable.arrowright),
-                        contentDescription = stringResource(R.string.next),
+                        contentDescription = stringResource(R.string.next)
                     )
                 }
             }
@@ -193,57 +193,57 @@ fun ScrapPolicyAndNotification(modifier: Modifier = Modifier, onClickSettingScra
     Row(
         modifier = modifier
             .fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Column(
             modifier = modifier
                 .clickable(
                     indication = null,
-                    interactionSource = remember { MutableInteractionSource() },
+                    interactionSource = remember { MutableInteractionSource() }
                 ) {
                     onClickSettingScrap()
                 }
                 .padding(top = 16.dp, bottom = 24.dp)
                 .weight(1f),
             verticalArrangement = Arrangement.spacedBy(6.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Image(
                 painter = painterResource(R.drawable.bookmark_line),
-                contentDescription = stringResource(R.string.scrap_title),
+                contentDescription = stringResource(R.string.scrap_title)
             )
             Text(
                 text = stringResource(R.string.scrap_title),
-                style = MaterialTheme.typography.displayMedium,
+                style = MaterialTheme.typography.displayMedium
             )
         }
 
         VerticalDivider(
             modifier = Modifier.height(52.dp),
             thickness = 1.dp,
-            color = gray40,
+            color = gray40
         )
 
         Column(
             modifier = modifier
                 .clickable(
                     indication = null,
-                    interactionSource = remember { MutableInteractionSource() },
+                    interactionSource = remember { MutableInteractionSource() }
                 ) {
                     onClickSettingNotification()
                 }
                 .padding(top = 16.dp, bottom = 24.dp)
                 .weight(1f),
             verticalArrangement = Arrangement.spacedBy(6.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Image(
                 painter = painterResource(R.drawable.notification),
-                contentDescription = stringResource(R.string.notification),
+                contentDescription = stringResource(R.string.notification)
             )
             Text(
                 text = stringResource(R.string.notification),
-                style = MaterialTheme.typography.displayMedium,
+                style = MaterialTheme.typography.displayMedium
             )
         }
     }
@@ -260,7 +260,7 @@ private fun SettingScreenPreview() {
             onClickSettingScrap = {},
             onClickSettingPost = {},
             onClickSettingComment = {},
-            onClickSettingNotification = {},
+            onClickSettingNotification = {}
         )
     }
 }

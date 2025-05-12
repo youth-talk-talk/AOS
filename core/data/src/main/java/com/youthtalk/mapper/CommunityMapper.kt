@@ -18,7 +18,7 @@ fun PostDataResponse.toData() = Post(
     scrap = scrap,
     comments = comments,
     policyId = policyId,
-    policyTitle = policyTitle,
+    policyTitle = policyTitle
 )
 
 fun PostDataResponse.toReviewData() = ReviewPost(
@@ -29,7 +29,7 @@ fun PostDataResponse.toReviewData() = ReviewPost(
     scrap = scrap,
     comments = comments,
     policyId = policyId,
-    policyTitle = policyTitle,
+    policyTitle = policyTitle
 )
 
 fun ScrapPostDataResponse.toData() = ScrapPost(
@@ -41,7 +41,7 @@ fun ScrapPostDataResponse.toData() = ScrapPost(
     scrap = scrap,
     comments = comments,
     policyId = policyId,
-    policyTitle = policyTitle,
+    policyTitle = policyTitle
 )
 
 fun PostDetailResponse.toData() = PostDetail(
@@ -56,10 +56,10 @@ fun PostDetailResponse.toData() = PostDetail(
     view = view,
     images = images,
     category = category,
-    scrap = scrap,
+    scrap = scrap
 )
 
 fun PostContentInfoResponse.toData() = PostContentInfo(
     content = this.content,
-    type = this.type,
+    type = this.type
 )

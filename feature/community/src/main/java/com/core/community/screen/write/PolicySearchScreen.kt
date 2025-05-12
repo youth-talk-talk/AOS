@@ -43,7 +43,7 @@ fun PolicySearchScreen(modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(color = gray10),
+            .background(color = gray10)
     ) {
         NoBackMiddleTitleTopBar(
             title = "정책 검색",
@@ -51,33 +51,33 @@ fun PolicySearchScreen(modifier: Modifier = Modifier) {
                 Image(
                     painter = painterResource(R.drawable.close),
                     contentDescription = "닫기",
-                    colorFilter = ColorFilter.tint(color = gray100),
+                    colorFilter = ColorFilter.tint(color = gray100)
                 )
-            },
+            }
         )
 
         BasicTextField(
             modifier = Modifier.padding(horizontal = 16.dp),
             value = policyName,
             onValueChange = { policyName = it },
-            textStyle = MaterialTheme.typography.titleSmall,
+            textStyle = MaterialTheme.typography.titleSmall
         ) { innerTextField ->
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(
                         color = gray30,
-                        shape = RoundedCornerShape(6.dp),
+                        shape = RoundedCornerShape(6.dp)
                     )
                     .padding(horizontal = 14.dp, vertical = 10.dp),
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
-                verticalAlignment = Alignment.CenterVertically,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Image(
                     modifier = Modifier.size(20.dp),
                     painter = painterResource(R.drawable.search),
                     contentDescription = "검색",
-                    colorFilter = ColorFilter.tint(color = gray70),
+                    colorFilter = ColorFilter.tint(color = gray70)
                 )
 
                 Box(modifier = Modifier.weight(1f)) {
@@ -85,8 +85,8 @@ fun PolicySearchScreen(modifier: Modifier = Modifier) {
                         Text(
                             text = "정책명을 검색해 주세요",
                             style = MaterialTheme.typography.titleSmall.copy(
-                                color = gray70,
-                            ),
+                                color = gray70
+                            )
                         )
                     }
                     innerTextField()
@@ -97,7 +97,7 @@ fun PolicySearchScreen(modifier: Modifier = Modifier) {
                         modifier = Modifier
                             .padding(start = 4.dp),
                         painter = painterResource(R.drawable.closecircle),
-                        contentDescription = "초기화",
+                        contentDescription = "초기화"
                     )
                 }
             }
@@ -107,45 +107,45 @@ fun PolicySearchScreen(modifier: Modifier = Modifier) {
             Box(
                 modifier = Modifier
                     .fillMaxSize(),
-                contentAlignment = Alignment.Center,
+                contentAlignment = Alignment.Center
             ) {
                 Text(
                     text = "후기를 작성할 정책을 검색헤 보세요.",
                     style = MaterialTheme.typography.displaySmall.copy(
-                        color = gray80,
-                    ),
+                        color = gray80
+                    )
                 )
             }
         } else {
             LazyColumn(
                 modifier = Modifier
-                    .fillMaxSize(),
+                    .fillMaxSize()
             ) {
                 items(count = 10) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
                             .background(
-                                color = if (it == 2) MaterialTheme.colorScheme.onPrimary else gray10,
+                                color = if (it == 2) MaterialTheme.colorScheme.onPrimary else gray10
                             )
                             .padding(horizontal = 16.dp, vertical = 14.dp),
                         horizontalArrangement = Arrangement.spacedBy(10.dp),
-                        verticalAlignment = Alignment.CenterVertically,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
                         Image(
                             painter = painterResource(R.drawable.policy),
-                            contentDescription = "정책아이콘",
+                            contentDescription = "정책아이콘"
                         )
 
                         Text(
                             text = "청년 문화예술패스",
-                            style = MaterialTheme.typography.displaySmall,
+                            style = MaterialTheme.typography.displaySmall
                         )
                     }
 
                     if (it != 9) {
                         HorizontalDivider(
-                            color = gray40,
+                            color = gray40
                         )
                     }
                 }

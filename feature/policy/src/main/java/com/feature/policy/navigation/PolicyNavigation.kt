@@ -16,7 +16,7 @@ fun NavGraphBuilder.policyTabNavigation(onClickRecentViewPolicy: () -> Unit, onC
         PolicyScreen(
             onClickRecentViewPolicy = onClickRecentViewPolicy,
             onClickDeadlinePolicy = onClickDeadlinePolicy,
-            onClickPolicyOverView = onClickPolicyOverView,
+            onClickPolicyOverView = onClickPolicyOverView
         )
     }
 }

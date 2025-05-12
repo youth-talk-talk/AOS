@@ -6,5 +6,5 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class HomePoliciesResponse(
     val top5Policies: List<PolicyResponse>,
-    val allPolicies: List<PolicyResponse>,
+    val allPolicies: List<PolicyResponse>
 )

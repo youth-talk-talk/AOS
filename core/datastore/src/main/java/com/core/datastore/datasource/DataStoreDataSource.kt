@@ -16,14 +16,14 @@ import com.core.datastore.datasource.DataStoreDataSource.PreferencesKey.REFRESH_
 import com.core.datastore.datasource.DataStoreDataSource.PreferencesKey.REVIEW_CATEGORIES
 import com.youthtalk.model.Category
 import com.youthtalk.model.EmploymentCode
+import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.encodeToJsonElement
-import javax.inject.Inject
 
 class DataStoreDataSource @Inject constructor(
-    private val dataStore: DataStore<Preferences>,
+    private val dataStore: DataStore<Preferences>
 ) : DataSource {
     object PreferencesKey {
         val ACCESS_TOKEN = stringPreferencesKey("ACCESS_TOKEN")

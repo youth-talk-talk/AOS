@@ -41,7 +41,7 @@ fun NewCommunityScreen(
     modifier: Modifier = Modifier,
     onClickCommunitySearch: (CommunityType) -> Unit,
     onClickPostDetail: () -> Unit,
-    onClickCommunityWrite: (CommunityType) -> Unit,
+    onClickCommunityWrite: (CommunityType) -> Unit
 ) {
     val communityType = CommunityType.entries.toList()
     val pagerState = rememberPagerState { communityType.size }
@@ -50,20 +50,20 @@ fun NewCommunityScreen(
     val lazyColumnStates = List(2) { rememberLazyListState() }
     Box(
         modifier = modifier
-            .fillMaxSize(),
+            .fillMaxSize()
     ) {
         Column(
             modifier = Modifier
-                .fillMaxSize(),
+                .fillMaxSize()
         ) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 20.dp),
+                    .padding(horizontal = 16.dp, vertical = 20.dp)
             ) {
                 Text(
                     text = "커뮤니티",
-                    style = MaterialTheme.typography.bodyMedium,
+                    style = MaterialTheme.typography.bodyMedium
                 )
             }
 
@@ -71,7 +71,7 @@ fun NewCommunityScreen(
                 modifier = Modifier
                     .padding(start = 16.dp, end = 16.dp, bottom = 12.dp),
                 hint = "궁금한 주제가 있나요?",
-                onClick = { onClickCommunitySearch(communityType[pagerState.currentPage]) },
+                onClick = { onClickCommunitySearch(communityType[pagerState.currentPage]) }
             )
 
             SecondaryTabRow(
@@ -82,14 +82,14 @@ fun NewCommunityScreen(
                         Modifier
                             .tabIndicatorOffset(pagerState.currentPage, matchContentSize = false)
                             .padding(horizontal = 16.dp),
-                        color = gray100,
+                        color = gray100
                     )
                 },
                 divider = {
                     HorizontalDivider(
-                        color = gray70,
+                        color = gray70
                     )
-                },
+                }
             ) {
                 communityType.forEachIndexed { index, community ->
                     val title = when (community) {
@@ -104,38 +104,38 @@ fun NewCommunityScreen(
                                 text = title,
                                 style = if (pagerState.currentPage == index) {
                                     MaterialTheme.typography.displayLarge.copy(
-                                        color = gray100,
+                                        color = gray100
                                     )
                                 } else {
                                     MaterialTheme.typography.displayMedium.copy(
-                                        color = gray70,
+                                        color = gray70
                                     )
-                                },
+                                }
                             )
                         },
                         onClick = {
                             scope.launch {
                                 pagerState.animateScrollToPage(index)
                             }
-                        },
+                        }
                     )
                 }
             }
 
             HorizontalPager(
                 modifier = Modifier.weight(1f),
-                state = pagerState,
+                state = pagerState
             ) {
                 when (communityType[it]) {
                     CommunityType.REVIEW -> ReviewPost(
                         categories = categories,
                         lazyListState = lazyColumnStates[it],
-                        onClickPost = onClickPostDetail,
+                        onClickPost = onClickPostDetail
                     )
 
                     CommunityType.FREE -> FreePost(
                         lazyListState = lazyColumnStates[it],
-                        onClickPost = onClickPostDetail,
+                        onClickPost = onClickPostDetail
                     )
                 }
             }
@@ -154,17 +154,17 @@ fun NewCommunityScreen(
                 Icon(
                     Icons.Filled.Edit,
                     "Extended floating action button.",
-                    tint = gray10,
+                    tint = gray10
                 )
             },
             text = {
                 Text(
                     text = "글쓰기",
                     style = MaterialTheme.typography.titleMedium.copy(
-                        color = gray10,
-                    ),
+                        color = gray10
+                    )
                 )
-            },
+            }
         )
     }
 }

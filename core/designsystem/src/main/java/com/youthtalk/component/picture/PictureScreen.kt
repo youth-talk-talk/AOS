@@ -27,37 +27,37 @@ import com.youthtalk.designsystem.gray80
 fun PictureScreen(modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
-            .fillMaxSize(),
+            .fillMaxSize()
     ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp, top = 24.dp, bottom = 20.dp),
+                .padding(start = 16.dp, end = 16.dp, top = 24.dp, bottom = 20.dp)
         ) {
             Image(
                 painter = painterResource(R.drawable.close),
-                contentDescription = "닫기",
+                contentDescription = "닫기"
             )
 
             Text(
                 modifier = Modifier.align(Alignment.Center),
                 text = "최근 항목",
-                style = MaterialTheme.typography.bodyMedium,
+                style = MaterialTheme.typography.bodyMedium
             )
 
             Text(
                 modifier = Modifier.align(Alignment.CenterEnd),
                 text = "첨부",
                 style = MaterialTheme.typography.labelSmall.copy(
-                    color = gray80,
-                ),
+                    color = gray80
+                )
             )
         }
 
         LazyVerticalGrid(
             columns = GridCells.Fixed(3),
             horizontalArrangement = Arrangement.spacedBy(6.dp),
-            verticalArrangement = Arrangement.spacedBy(6.dp),
+            verticalArrangement = Arrangement.spacedBy(6.dp)
         ) {
             item {
                 Box(
@@ -65,25 +65,25 @@ fun PictureScreen(modifier: Modifier = Modifier) {
                         .background(color = gray30)
                         .fillMaxWidth()
                         .aspectRatio(1f),
-                    contentAlignment = Alignment.Center,
+                    contentAlignment = Alignment.Center
                 ) {
                     Image(
                         modifier = Modifier.size(40.dp),
                         painter = painterResource(R.drawable.camera),
-                        contentDescription = "카메라",
+                        contentDescription = "카메라"
                     )
                 }
             }
 
             items(
-                count = 10,
+                count = 10
             ) {
                 Box(
                     modifier = modifier
                         .background(color = gray30)
                         .fillMaxWidth()
                         .aspectRatio(1f),
-                    contentAlignment = Alignment.Center,
+                    contentAlignment = Alignment.Center
                 ) {
                     Text("$it")
                 }

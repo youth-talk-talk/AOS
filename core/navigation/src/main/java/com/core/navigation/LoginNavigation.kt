@@ -1,7 +1,7 @@
 package com.core.navigation
 
 sealed class LoginNavigation(
-    private val route: String,
+    private val route: String
 ) {
     data object Login : LoginNavigation(LoginRouteName.LOGIN_SCREEN)
     data object Agree : LoginNavigation(LoginRouteName.AGREE_SCREEN)

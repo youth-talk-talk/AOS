@@ -14,6 +14,7 @@ import com.core.domain.usercase.search.GetSearchPoliciesTitleUseCase
 import com.youthtalk.model.SearchPolicy
 import com.youthtalk.model.WriteInfo
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,14 +27,13 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import javax.inject.Inject
 
 @HiltViewModel
 class CommunityWriteViewModel @Inject constructor(
     private val getSearchPoliciesTitleUseCase: GetSearchPoliciesTitleUseCase,
     private val postCreatePostUseCase: PostCreatePostUseCase,
     private val postModifyPostUseCase: PostModifyPostUseCase,
-    private val getPostDetailUseCase: GetPostDetailUseCase,
+    private val getPostDetailUseCase: GetPostDetailUseCase
 ) : ViewModel() {
 
     private val _uiState =
@@ -70,7 +70,7 @@ class CommunityWriteViewModel @Inject constructor(
                 postType = type,
                 title = state.title,
                 policyId = state.selectPolicy?.policyId,
-                contents = state.contents,
+                contents = state.contents
             )
                 .onStart {
                     _uiState.value = state.copy(isLoading = true)
@@ -110,12 +110,12 @@ class CommunityWriteViewModel @Inject constructor(
                             selectPolicy = if (it.policyTitle != null && it.policyId != null) {
                                 SearchPolicy(
                                     title = it.policyTitle ?: "",
-                                    policyId = it.policyId ?: "",
+                                    policyId = it.policyId ?: ""
                                 )
                             } else {
                                 null
                             },
-                            contents = contents.toPersistentList(),
+                            contents = contents.toPersistentList()
                         )
                     }
                     .catch {
@@ -161,7 +161,7 @@ class CommunityWriteViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.value = state.copy(
                 contents = contents.toPersistentList(),
-                contentsInfo = ContentInfo(index - 1, contents[index - 1].content?.length ?: 0),
+                contentsInfo = ContentInfo(index - 1, contents[index - 1].content?.length ?: 0)
             )
             _focusRequest.emit(index - 1)
         }
@@ -177,7 +177,7 @@ class CommunityWriteViewModel @Inject constructor(
             if (contents[contentInfo.index].content == "") {
                 contents[contentInfo.index] = contents[contentInfo.index].copy(content = null)
                 _uiState.value = state.copy(
-                    contents = contents.toPersistentList(),
+                    contents = contents.toPersistentList()
                 )
             }
         } else {
@@ -186,7 +186,7 @@ class CommunityWriteViewModel @Inject constructor(
                 viewModelScope.launch {
                     _uiState.value = state.copy(
                         contents = contents.toPersistentList(),
-                        contentsInfo = contentInfo.copy(index = contentInfo.index - 1, pos = contents[contentInfo.index - 1].content?.length ?: 0),
+                        contentsInfo = contentInfo.copy(index = contentInfo.index - 1, pos = contents[contentInfo.index - 1].content?.length ?: 0)
                     )
                     _focusRequest.emit(contentInfo.index - 1)
                 }
@@ -204,7 +204,7 @@ class CommunityWriteViewModel @Inject constructor(
 
             _uiState.value = state.copy(
                 contents = contents.toPersistentList(),
-                contentsInfo = contentInfo,
+                contentsInfo = contentInfo
             )
         }
     }
@@ -218,7 +218,7 @@ class CommunityWriteViewModel @Inject constructor(
             val contents = state.contents.toMutableList()
             val addText = if (contents[index].content.isNullOrEmpty()) null else contents[index].content?.substring(state.contentsInfo.pos)
             contents[index] = contents[index].copy(
-                content = if (contents[index].content.isNullOrEmpty()) null else contents[index].content?.substring(0 until state.contentsInfo.pos),
+                content = if (contents[index].content.isNullOrEmpty()) null else contents[index].content?.substring(0 until state.contentsInfo.pos)
             )
             if (contents.size == index + 1) {
                 contents.add(WriteInfo(uri, addText))
@@ -227,7 +227,7 @@ class CommunityWriteViewModel @Inject constructor(
             }
             _uiState.value = state.copy(
                 contents = contents.toPersistentList(),
-                contentsInfo = ContentInfo(index + 1, addText?.length ?: 0),
+                contentsInfo = ContentInfo(index + 1, addText?.length ?: 0)
             )
             _focusRequest.emit(index + 1)
         }
@@ -237,7 +237,7 @@ class CommunityWriteViewModel @Inject constructor(
         val state = _uiState.value
         if (state !is CommunityWriteUiState.Success) return
         _uiState.value = state.copy(
-            title = text,
+            title = text
         )
     }
 
@@ -247,7 +247,7 @@ class CommunityWriteViewModel @Inject constructor(
 
         _uiState.value = state.copy(
             selectPolicy = policy,
-            searchPolicies = emptyFlow(),
+            searchPolicies = emptyFlow()
         )
     }
 
@@ -257,7 +257,7 @@ class CommunityWriteViewModel @Inject constructor(
 
         viewModelScope.launch {
             _uiState.value = state.copy(
-                searchPolicies = getSearchPoliciesTitleUseCase(title = search).cachedIn(viewModelScope),
+                searchPolicies = getSearchPoliciesTitleUseCase(title = search).cachedIn(viewModelScope)
             )
         }
     }

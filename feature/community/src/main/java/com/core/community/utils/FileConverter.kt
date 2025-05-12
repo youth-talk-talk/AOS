@@ -3,11 +3,11 @@ package com.core.community.utils
 import android.content.Context
 import android.net.Uri
 import android.os.Environment
-import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
+import timber.log.Timber
 
 object FileConverter {
     fun uriToFile(context: Context, uri: Uri): File? {
@@ -27,7 +27,7 @@ object FileConverter {
         return File.createTempFile(
             imageFileName,
             ".jpg",
-            storageDir,
+            storageDir
         )
     }
 

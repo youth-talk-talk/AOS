@@ -40,7 +40,7 @@ fun Home(
     onClickPostDetail: () -> Unit,
     onClickPolicyDetail: () -> Unit,
     onClickCommunityWrite: (CommunityType) -> Unit,
-    goLogin: () -> Unit,
+    goLogin: () -> Unit
 ) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -51,27 +51,27 @@ fun Home(
             modifier = Modifier
                 .weight(1f),
             navController = navController,
-            startDestination = HomeTabNavigation.Home,
+            startDestination = HomeTabNavigation.Home
         ) {
             homeTabNavigation(
                 onClickPolicySearch = onClickPolicySearch,
                 onClickPopularPolicy = onClickPopularPolicy,
                 onClickNewPolicy = onClickNewPolicy,
-                onClickPolicyDetail = onClickPolicyDetail,
+                onClickPolicyDetail = onClickPolicyDetail
             )
             communityNavigation(
                 onClickCommunitySearch = onClickCommunitySearch,
                 onClickPostDetail = onClickPostDetail,
-                onClickCommunityWrite = onClickCommunityWrite,
+                onClickCommunityWrite = onClickCommunityWrite
             )
             navigation(
                 route = "policy_tab",
-                startDestination = "Policy",
+                startDestination = "Policy"
             ) {
                 policyTabNavigation(
                     onClickRecentViewPolicy = onClickRecentViewPolicy,
                     onClickDeadlinePolicy = onClickDeadlinePolicy,
-                    onClickPolicyOverView = navController::navigatePolicyOverView,
+                    onClickPolicyOverView = navController::navigatePolicyOverView
                 )
                 policyOverViewNavigation()
             }
@@ -83,7 +83,7 @@ fun Home(
                 onClickSettingPost = onClickSettingPost,
                 onClickSettingComment = onClickSettingComment,
                 onClickSettingNotification = onClickSettingNotification,
-                goLogin = goLogin,
+                goLogin = goLogin
             )
         }
 
@@ -95,7 +95,7 @@ fun Home(
                         saveState = true
                     }
                 }
-            },
+            }
         )
     }
 }

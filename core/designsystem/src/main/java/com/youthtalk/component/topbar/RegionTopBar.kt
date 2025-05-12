@@ -29,32 +29,32 @@ fun RegionTopBar(modifier: Modifier = Modifier, region: Region, onClickRegion: (
             .fillMaxWidth()
             .background(color = gray10)
             .padding(horizontal = 16.dp, vertical = 15.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Row(
             modifier = Modifier
                 .clickable(
                     indication = null,
-                    interactionSource = remember { MutableInteractionSource() },
+                    interactionSource = remember { MutableInteractionSource() }
                 ) {
                     onClickRegion()
-                },
+                }
         ) {
             Image(
                 modifier = Modifier.padding(end = 2.dp),
                 painter = painterResource(R.drawable.location),
-                contentDescription = stringResource(R.string.location),
+                contentDescription = stringResource(R.string.location)
             )
 
             Text(
                 modifier = Modifier.padding(end = 4.dp),
                 text = region.region,
-                style = MaterialTheme.typography.bodyMedium,
+                style = MaterialTheme.typography.bodyMedium
             )
 
             Image(
                 painter = painterResource(R.drawable.arrowdown),
-                contentDescription = stringResource(R.string.arrow_down),
+                contentDescription = stringResource(R.string.arrow_down)
             )
         }
 
@@ -62,12 +62,12 @@ fun RegionTopBar(modifier: Modifier = Modifier, region: Region, onClickRegion: (
             modifier = Modifier
                 .clickable(
                     indication = null,
-                    interactionSource = remember { MutableInteractionSource() },
+                    interactionSource = remember { MutableInteractionSource() }
                 ) {
                     onClickSearch()
                 },
             painter = painterResource(R.drawable.search),
-            contentDescription = stringResource(R.string.search),
+            contentDescription = stringResource(R.string.search)
         )
     }
 }
@@ -79,7 +79,7 @@ private fun RegionTopBarPreview() {
         RegionTopBar(
             region = Region.SEOUL,
             onClickRegion = {},
-            onClickSearch = {},
+            onClickSearch = {}
         )
     }
 }

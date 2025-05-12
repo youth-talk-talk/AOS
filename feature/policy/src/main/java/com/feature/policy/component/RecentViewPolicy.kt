@@ -25,41 +25,41 @@ fun RecentViewPolicy(modifier: Modifier = Modifier, onClickRecentViewPolicy: () 
     Column(
         modifier = modifier
             .padding(top = 10.dp, bottom = 32.dp),
-        verticalArrangement = Arrangement.spacedBy(14.dp),
+        verticalArrangement = Arrangement.spacedBy(14.dp)
     ) {
         TitleItem(
             title = "최근 본 정책",
-            onClick = onClickRecentViewPolicy,
+            onClick = onClickRecentViewPolicy
         )
 
         LazyRow(
             modifier = Modifier
                 .fillMaxWidth(),
             contentPadding = PaddingValues(horizontal = 16.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             items(
-                count = 10,
+                count = 10
             ) {
                 PolicyCard(
                     modifier = Modifier
                         .width(300.dp)
                         .background(
                             color = gray10,
-                            shape = RoundedCornerShape(12.dp),
+                            shape = RoundedCornerShape(12.dp)
                         )
                         .border(
                             width = 1.dp,
                             color = gray40,
-                            shape = RoundedCornerShape(12.dp),
-                        ),
+                            shape = RoundedCornerShape(12.dp)
+                        )
                 )
             }
         }
 
         HorizontalDivider(
             thickness = 10.dp,
-            color = gray30,
+            color = gray30
         )
     }
 }

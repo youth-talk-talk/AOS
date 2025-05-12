@@ -17,7 +17,7 @@ fun NavGraphBuilder.settingCommentNavigation() {
     composable<Comment> {
         val route = it.toRoute<Comment>()
         CommentScreen(
-            type = route.type,
+            type = route.type
         )
     }
 }

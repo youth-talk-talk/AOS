@@ -7,6 +7,6 @@ sealed class SearchUiState {
     data object Loading : SearchUiState()
 
     data class Success(
-        val recentList: ImmutableList<String> = persistentListOf(),
+        val recentList: ImmutableList<String> = persistentListOf()
     ) : SearchUiState()
 }

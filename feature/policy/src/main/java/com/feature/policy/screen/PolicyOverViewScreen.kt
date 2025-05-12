@@ -51,25 +51,25 @@ fun PolicyOverviewScreen(modifier: Modifier = Modifier) {
     }
     Column(
         modifier = modifier
-            .fillMaxSize(),
+            .fillMaxSize()
     ) {
         MiddleTitleTopBar(
             title = "정책 보아보기",
-            onBack = {},
+            onBack = {}
         )
 
         LazyRow(
             modifier = Modifier
                 .fillMaxWidth(),
             contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 14.dp),
-            horizontalArrangement = Arrangement.spacedBy(20.dp),
+            horizontalArrangement = Arrangement.spacedBy(20.dp)
         ) {
             items(
-                items = Category.entries.toList(),
+                items = Category.entries.toList()
             ) {
                 CategoryItem(
                     category = it,
-                    onClick = {},
+                    onClick = {}
                 )
             }
         }
@@ -77,10 +77,10 @@ fun PolicyOverviewScreen(modifier: Modifier = Modifier) {
         LazyRow(
             modifier = Modifier.fillMaxWidth(),
             contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 15.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             items(
-                count = FilterType.entries.toList().size,
+                count = FilterType.entries.toList().size
             ) {
                 val filters = FilterType.entries.toList()
 
@@ -97,51 +97,51 @@ fun PolicyOverviewScreen(modifier: Modifier = Modifier) {
                     text = title,
                     onClick = {
                         bottomSheet = true
-                    },
+                    }
                 )
             }
         }
 
         HorizontalDivider(
-            color = gray30,
+            color = gray30
         )
 
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize(),
             contentPadding = PaddingValues(horizontal = 16.dp, vertical = 10.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             items(
-                count = count,
+                count = count
             ) {
                 if (it == 0) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(bottom = 10.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
+                        horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(
                             text = "총 ${DecimalFormat("#,###").format(count)}건",
-                            style = MaterialTheme.typography.displayMedium,
+                            style = MaterialTheme.typography.displayMedium
                         )
 
                         Row(
                             modifier = Modifier
                                 .padding(horizontal = 6.dp, vertical = 2.dp),
                             horizontalArrangement = Arrangement.spacedBy(2.dp),
-                            verticalAlignment = Alignment.CenterVertically,
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(
                                 text = "최신순",
-                                style = MaterialTheme.typography.displayMedium,
+                                style = MaterialTheme.typography.displayMedium
                             )
 
                             Image(
                                 modifier = Modifier.size(16.dp),
                                 painter = painterResource(R.drawable.arrowdown),
-                                contentDescription = "아래 화살표",
+                                contentDescription = "아래 화살표"
                             )
                         }
                     }
@@ -152,19 +152,19 @@ fun PolicyOverviewScreen(modifier: Modifier = Modifier) {
                         .fillMaxWidth()
                         .background(
                             color = gray10,
-                            shape = RoundedCornerShape(12.dp),
+                            shape = RoundedCornerShape(12.dp)
                         )
                         .border(
                             width = 1.dp,
                             color = gray40,
-                            shape = RoundedCornerShape(12.dp),
+                            shape = RoundedCornerShape(12.dp)
                         )
                         .clickable(
                             indication = null,
-                            interactionSource = remember { MutableInteractionSource() },
+                            interactionSource = remember { MutableInteractionSource() }
                         ) {
                             count--
-                        },
+                        }
                 )
             }
         }

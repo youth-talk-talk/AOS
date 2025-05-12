@@ -5,7 +5,7 @@ import com.youthtalk.model.WriteInfo
 import javax.inject.Inject
 
 class PostModifyPostUseCase @Inject constructor(
-    private val communityRepository: CommunityRepository,
+    private val communityRepository: CommunityRepository
 ) {
     operator fun invoke(postId: Long, postType: String, title: String, policyId: String?, contents: List<WriteInfo>) =
         communityRepository.postModifyPost(
@@ -13,6 +13,6 @@ class PostModifyPostUseCase @Inject constructor(
             postType = postType,
             title = title,
             policyId = policyId,
-            content = contents,
+            content = contents
         )
 }

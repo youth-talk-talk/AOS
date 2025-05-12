@@ -6,5 +6,5 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class SpecPoliciesResponse(
     val totalCount: Int,
-    val policyList: List<PolicyResponse>,
+    val policyList: List<PolicyResponse>
 )

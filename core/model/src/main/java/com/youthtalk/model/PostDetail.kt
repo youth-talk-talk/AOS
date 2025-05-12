@@ -12,10 +12,10 @@ data class PostDetail(
     val view: Long,
     val images: List<String>,
     val category: String?,
-    val scrap: Boolean,
+    val scrap: Boolean
 )
 
 data class PostContentInfo(
     val content: String,
-    val type: String,
+    val type: String
 )

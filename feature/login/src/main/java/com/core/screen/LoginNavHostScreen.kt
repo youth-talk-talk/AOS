@@ -17,7 +17,7 @@ fun LoginNavHostScreen(modifier: Modifier = Modifier, viewModel: LoginViewModel)
     NavHost(
         modifier = modifier,
         navController = navHostController,
-        startDestination = LoginRouteName.LOGIN_SCREEN,
+        startDestination = LoginRouteName.LOGIN_SCREEN
     ) {
         composable(LoginRouteName.LOGIN_SCREEN) {
             LoginScreen(
@@ -26,7 +26,7 @@ fun LoginNavHostScreen(modifier: Modifier = Modifier, viewModel: LoginViewModel)
                     navHostController.navigate(LoginRouteName.AGREE_SCREEN) {
                         launchSingleTop = true
                     }
-                },
+                }
             )
         }
         composable(LoginRouteName.AGREE_SCREEN) {
@@ -37,7 +37,7 @@ fun LoginNavHostScreen(modifier: Modifier = Modifier, viewModel: LoginViewModel)
                         restoreState = true
                     }
                 },
-                onBack = { navHostController.popBackStack() },
+                onBack = { navHostController.popBackStack() }
             )
         }
         composable(LoginRouteName.INFORMATION_SCREEN) {
@@ -46,7 +46,7 @@ fun LoginNavHostScreen(modifier: Modifier = Modifier, viewModel: LoginViewModel)
                 onBack = { navHostController.popBackStack() },
                 signUp = { nickname, region ->
                     viewModel.postSign(nickname, region)
-                },
+                }
             )
         }
     }

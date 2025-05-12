@@ -15,11 +15,11 @@ data class PostDetailResponse(
     val view: Long,
     val images: List<String>,
     val category: String?,
-    val scrap: Boolean,
+    val scrap: Boolean
 )
 
 @Serializable
 data class PostContentInfoResponse(
     val content: String,
-    val type: String,
+    val type: String
 )

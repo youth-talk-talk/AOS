@@ -41,12 +41,7 @@ import com.youthtalk.designsystem.gray100
 import com.youthtalk.designsystem.gray50
 
 @Composable
-fun DropDownComponent(
-    modifier: Modifier = Modifier,
-    dropDownList: List<String> = listOf(),
-    dropDownClick: (String) -> Unit,
-    selectedRegion: String,
-) {
+fun DropDownComponent(modifier: Modifier = Modifier, dropDownList: List<String> = listOf(), dropDownClick: (String) -> Unit, selectedRegion: String) {
     val keyboardController = LocalSoftwareKeyboardController.current
     var expanded by remember {
         mutableStateOf(false)
@@ -57,7 +52,7 @@ fun DropDownComponent(
     Column(
         modifier =
         modifier
-            .onGloballyPositioned { rowSize = it.size.toSize() },
+            .onGloballyPositioned { rowSize = it.size.toSize() }
     ) {
         DropBar(expanded = expanded, selectedRegion = selectedRegion) {
             keyboardController?.hide()
@@ -71,7 +66,7 @@ fun DropDownComponent(
                 .height(300.dp)
                 .background(MaterialTheme.colorScheme.background),
             expanded = expanded,
-            onDismissRequest = { expanded = false },
+            onDismissRequest = { expanded = false }
         ) {
             dropDownList.forEach {
                 Column(modifier = Modifier.padding(horizontal = 8.dp)) {
@@ -80,14 +75,14 @@ fun DropDownComponent(
                             Text(
                                 text = it,
                                 style = MaterialTheme.typography.titleSmall.copy(
-                                    color = gray50,
-                                ),
+                                    color = gray50
+                                )
                             )
                         },
                         onClick = {
                             dropDownClick(it)
                             expanded = false
-                        },
+                        }
                     )
                     HorizontalDivider(color = Color(0xFF72777A))
                 }
@@ -106,13 +101,13 @@ fun DropBar(expanded: Boolean, selectedRegion: String, onClick: () -> Unit) {
             .border(
                 shape = RoundedCornerShape(8.dp),
                 width = 1.dp,
-                color = gray100,
+                color = gray100
             )
             .padding(horizontal = 13.dp, vertical = 10.dp)
-            .clickable { onClick() },
+            .clickable { onClick() }
     ) {
         Row(
-            verticalAlignment = Alignment.CenterVertically,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
                 text = selectedRegion,
@@ -123,7 +118,7 @@ fun DropBar(expanded: Boolean, selectedRegion: String, onClick: () -> Unit) {
                     MaterialTheme.typography.displayMedium.copy(Color.Gray)
                 } else {
                     MaterialTheme.typography.displayMedium.copy(Color.Black)
-                },
+                }
             )
 
             Icon(
@@ -131,7 +126,7 @@ fun DropBar(expanded: Boolean, selectedRegion: String, onClick: () -> Unit) {
                 imageVector =
                 if (expanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
                 contentDescription = "키 다운",
-                tint = Color.Gray,
+                tint = Color.Gray
             )
         }
     }
@@ -144,7 +139,7 @@ private fun DropDownComponentPreview() {
         DropDownComponent(
             dropDownClick = {},
             selectedRegion = "",
-            dropDownList = listOf(),
+            dropDownList = listOf()
         )
     }
 }

@@ -76,10 +76,10 @@ fun InformationScreen(loading: Boolean, onBack: () -> Unit, signUp: (String, Str
     if (loading) {
         Box(
             modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center,
+            contentAlignment = Alignment.Center
         ) {
             CircularProgressIndicator(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier.fillMaxSize()
             )
         }
     }
@@ -90,11 +90,11 @@ fun InformationScreen(loading: Boolean, onBack: () -> Unit, signUp: (String, Str
             .background(color = Color.White)
             .clickable(
                 indication = null,
-                interactionSource = remember { MutableInteractionSource() },
+                interactionSource = remember { MutableInteractionSource() }
             ) {
                 focusManager.clearFocus()
             }
-            .padding(horizontal = 16.dp),
+            .padding(horizontal = 16.dp)
     ) {
         LoginAppBar(
             onClickBack = {
@@ -104,7 +104,7 @@ fun InformationScreen(loading: Boolean, onBack: () -> Unit, signUp: (String, Str
                         type = SignType.NICK_NAME
                     }
                 }
-            },
+            }
         )
 
         InputTypeScreen(
@@ -117,7 +117,7 @@ fun InformationScreen(loading: Boolean, onBack: () -> Unit, signUp: (String, Str
             },
             onChangeNickname = {
                 if (it.length <= 8) nickname = it
-            },
+            }
         )
 
         CheckButton(
@@ -125,10 +125,10 @@ fun InformationScreen(loading: Boolean, onBack: () -> Unit, signUp: (String, Str
                 .fillMaxWidth()
                 .padding(
                     horizontal = 4.dp,
-                    vertical = 26.dp,
+                    vertical = 26.dp
                 ),
             isCheck = if (type == SignType.NICK_NAME) nickname.isNotEmpty() else nickname.isNotEmpty() && region.isNotEmpty(),
-            text = if (type == SignType.NICK_NAME) stringResource(R.string.next) else stringResource(R.string.done),
+            text = if (type == SignType.NICK_NAME) stringResource(R.string.next) else stringResource(R.string.done)
         ) {
             Timber.i("checkButton")
             when (type) {
@@ -146,7 +146,7 @@ fun InformationScreen(loading: Boolean, onBack: () -> Unit, signUp: (String, Str
             },
             onClick = {
                 region = it
-            },
+            }
         )
     }
 }
@@ -160,23 +160,23 @@ fun RegionBottomSheet(modifier: Modifier = Modifier, region: String, onDismiss: 
     }
     val scope = rememberCoroutineScope()
     val sheetState = rememberModalBottomSheetState(
-        skipPartiallyExpanded = true,
+        skipPartiallyExpanded = true
     )
     ModalBottomSheet(
         modifier = modifier,
         sheetState = sheetState,
         onDismissRequest = onDismiss,
-        containerColor = gray10,
+        containerColor = gray10
     ) {
         Column(
             modifier = Modifier
-                .padding(horizontal = 20.dp),
+                .padding(horizontal = 20.dp)
         ) {
             Text(
                 text = stringResource(R.string.bottom_sheet_title),
                 style = MaterialTheme.typography.bodyMedium.copy(
-                    color = gray100,
-                ),
+                    color = gray100
+                )
             )
             LazyVerticalGrid(
                 modifier = Modifier
@@ -184,12 +184,12 @@ fun RegionBottomSheet(modifier: Modifier = Modifier, region: String, onDismiss: 
                     .padding(top = 20.dp),
                 columns = GridCells.Fixed(3),
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 items(items = regions) {
                     SelectedButton(
                         text = it,
-                        isSelected = selectedRegion == it,
+                        isSelected = selectedRegion == it
                     ) {
                         selectedRegion = it
                     }
@@ -201,7 +201,7 @@ fun RegionBottomSheet(modifier: Modifier = Modifier, region: String, onDismiss: 
                     .fillMaxWidth()
                     .padding(vertical = 26.dp),
                 text = stringResource(R.string.bottom_sheet_button_text),
-                isCheck = selectedRegion.isNotEmpty(),
+                isCheck = selectedRegion.isNotEmpty()
             ) {
                 scope.launch {
                     sheetState.hide()
@@ -220,37 +220,37 @@ fun InputTypeScreen(
     nickname: String,
     region: String,
     onChangeNickname: (String) -> Unit,
-    onSelect: () -> Unit,
+    onSelect: () -> Unit
 ) {
     Crossfade(
         modifier = modifier,
         targetState = type,
-        animationSpec = tween(),
+        animationSpec = tween()
     ) { signType ->
         Column(
             modifier = Modifier
                 .fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             when (signType) {
                 SignType.REGION -> {
                     InputTitle(
                         title = stringResource(R.string.region_title),
-                        subTitle = stringResource(R.string.region_sub_title),
+                        subTitle = stringResource(R.string.region_sub_title)
                     )
 
                     RegionDropDown(
                         modifier = Modifier.padding(top = 40.dp),
                         select = region,
                         hint = stringResource(R.string.input_region_hint),
-                        onSelect = onSelect,
+                        onSelect = onSelect
                     )
                 }
 
                 SignType.NICK_NAME -> {
                     InputTitle(
                         title = stringResource(R.string.nickname_title),
-                        subTitle = stringResource(R.string.nickname_sub_title),
+                        subTitle = stringResource(R.string.nickname_sub_title)
                     )
 
                     InputTextField(
@@ -260,7 +260,7 @@ fun InputTypeScreen(
                         onTextChange = onChangeNickname,
                         onCheckFilter = {
                             it.length > 8
-                        },
+                        }
                     )
                 }
             }
@@ -273,15 +273,15 @@ fun InputTitle(title: String, subTitle: String) {
     Text(
         text = title,
         style = MaterialTheme.typography.bodyMedium.copy(
-            color = gray100,
-        ),
+            color = gray100
+        )
     )
 
     Text(
         text = subTitle,
         style = MaterialTheme.typography.displayMedium.copy(
-            color = gray80,
-        ),
+            color = gray80
+        )
     )
 }
 
@@ -293,7 +293,7 @@ private fun InformationScreenPreview() {
             loading = false,
             onBack = {},
             signUp = { nickname, region ->
-            },
+            }
         )
     }
 }
@@ -306,7 +306,7 @@ private fun InformationScreenLoadingPreview() {
             loading = true,
             onBack = {},
             signUp = { nickname, region ->
-            },
+            }
         )
     }
 }

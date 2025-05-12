@@ -32,7 +32,7 @@ fun CommentScreen(modifier: Modifier = Modifier, type: CommentType) {
     }
     Column(
         modifier = modifier
-            .fillMaxSize(),
+            .fillMaxSize()
     ) {
         NoBackMiddleTitleTopBar(
             title = when (type) {
@@ -42,32 +42,32 @@ fun CommentScreen(modifier: Modifier = Modifier, type: CommentType) {
             tails = {
                 Image(
                     painter = painterResource(R.drawable.close),
-                    contentDescription = stringResource(R.string.close),
+                    contentDescription = stringResource(R.string.close)
                 )
-            },
+            }
         )
 
         LazyColumn(
             modifier = Modifier
-                .padding(horizontal = 16.dp),
+                .padding(horizontal = 16.dp)
         ) {
             item {
                 Text(
                     modifier = Modifier
                         .padding(top = 10.dp, bottom = 14.dp),
                     text = "댓글 10",
-                    style = MaterialTheme.typography.labelMedium,
+                    style = MaterialTheme.typography.labelMedium
                 )
             }
 
             items(size) {
                 CommentCard(
-                    isMine = type == CommentType.MY,
+                    isMine = type == CommentType.MY
                 )
                 HorizontalDivider(
                     modifier = Modifier.padding(vertical = 16.dp),
                     color = gray40,
-                    thickness = 1.dp,
+                    thickness = 1.dp
                 )
             }
         }
@@ -79,7 +79,7 @@ fun CommentScreen(modifier: Modifier = Modifier, type: CommentType) {
 private fun CommentScreenMyPreview() {
     YongProjectTheme {
         CommentScreen(
-            type = CommentType.MY,
+            type = CommentType.MY
         )
     }
 }
@@ -89,7 +89,7 @@ private fun CommentScreenMyPreview() {
 private fun CommentScreenLikePreview() {
     YongProjectTheme {
         CommentScreen(
-            type = CommentType.LIKE,
+            type = CommentType.LIKE
         )
     }
 }

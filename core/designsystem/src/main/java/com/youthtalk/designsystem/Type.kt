@@ -13,7 +13,7 @@ val preTendFont =
     FontFamily(
         Font(R.font.pretendard_regular, FontWeight.Normal, FontStyle.Normal),
         Font(R.font.pretendard_bold, FontWeight.Bold, FontStyle.Normal),
-        Font(R.font.pretendard_semibold, FontWeight.SemiBold, FontStyle.Normal),
+        Font(R.font.pretendard_semibold, FontWeight.SemiBold, FontStyle.Normal)
     )
 
 val Typography =
@@ -24,7 +24,7 @@ val Typography =
             fontFamily = preTendFont,
             fontWeight = FontWeight.W600,
             fontSize = 20.sp,
-            color = gray100,
+            color = gray100
         ),
         // P/18/SemiBold
         bodyMedium =
@@ -32,7 +32,7 @@ val Typography =
             fontFamily = preTendFont,
             fontWeight = FontWeight.W600,
             fontSize = 18.sp,
-            color = gray100,
+            color = gray100
         ),
         // P/18/Medium
         bodySmall =
@@ -40,7 +40,7 @@ val Typography =
             fontFamily = preTendFont,
             fontWeight = FontWeight.W500,
             fontSize = 18.sp,
-            color = gray100,
+            color = gray100
         ),
         // P/16/SemiBold
         titleLarge =
@@ -48,7 +48,7 @@ val Typography =
             fontFamily = preTendFont,
             fontWeight = FontWeight.W600,
             fontSize = 16.sp,
-            color = gray100,
+            color = gray100
         ),
         // P/16/Medium
         titleMedium =
@@ -56,7 +56,7 @@ val Typography =
             fontFamily = preTendFont,
             fontWeight = FontWeight.W500,
             fontSize = 16.sp,
-            color = gray100,
+            color = gray100
         ),
         // P/16/Regular
         titleSmall =
@@ -64,14 +64,14 @@ val Typography =
             fontFamily = preTendFont,
             fontWeight = FontWeight.W400,
             fontSize = 16.sp,
-            color = gray100,
+            color = gray100
         ),
         // P/14/Semibold
         displayLarge = TextStyle(
             fontFamily = preTendFont,
             fontWeight = FontWeight.W600,
             fontSize = 14.sp,
-            color = gray100,
+            color = gray100
         ),
         // P/14/Medium
         displayMedium =
@@ -79,41 +79,41 @@ val Typography =
             fontFamily = preTendFont,
             fontWeight = FontWeight.W500,
             fontSize = 14.sp,
-            color = gray100,
+            color = gray100
         ),
         // P/14/Regular
         displaySmall = TextStyle(
             fontFamily = preTendFont,
             fontWeight = FontWeight.W400,
             fontSize = 14.sp,
-            color = gray100,
+            color = gray100
         ),
         // P/12/Medium
         labelMedium = TextStyle(
             fontFamily = preTendFont,
             fontWeight = FontWeight.W500,
             fontSize = 12.sp,
-            color = gray100,
+            color = gray100
         ),
         // P/12/Regular
         labelSmall = TextStyle(
             fontFamily = preTendFont,
             fontWeight = FontWeight.W400,
             fontSize = 12.sp,
-            color = gray100,
+            color = gray100
         ),
         // P/10/SemiBold
         headlineLarge = TextStyle(
             fontFamily = preTendFont,
             fontWeight = FontWeight.W600,
             fontSize = 10.sp,
-            color = gray100,
+            color = gray100
         ),
         // P/10/Medium
         headlineMedium = TextStyle(
             fontFamily = preTendFont,
             fontWeight = FontWeight.W500,
             fontSize = 10.sp,
-            color = gray100,
-        ),
+            color = gray100
+        )
     )

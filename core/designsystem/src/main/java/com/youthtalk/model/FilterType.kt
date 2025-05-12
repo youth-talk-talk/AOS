@@ -6,5 +6,5 @@ enum class FilterType {
     RECRUIT,
     EDUCATION,
     SPECIALIZED,
-    AGE_EARN,
+    AGE_EARN
 }

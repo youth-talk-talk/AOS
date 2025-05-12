@@ -66,7 +66,7 @@ fun SettingAccount(modifier: Modifier = Modifier, viewModel: AccountViewModel = 
     Column(
         modifier = modifier
             .background(color = gray10)
-            .fillMaxSize(),
+            .fillMaxSize()
     ) {
         MiddleTitleTopBar(
             title = stringResource(R.string.account_topbar_title),
@@ -75,20 +75,20 @@ fun SettingAccount(modifier: Modifier = Modifier, viewModel: AccountViewModel = 
                 Text(
                     text = stringResource(R.string.save),
                     style = MaterialTheme.typography.labelSmall.copy(
-                        color = gray80,
-                    ),
+                        color = gray80
+                    )
                 )
-            },
+            }
         )
 
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 10.dp),
+                .padding(vertical = 10.dp)
         ) {
             Box(
                 modifier = Modifier
-                    .align(Alignment.Center),
+                    .align(Alignment.Center)
             ) {
                 // TODO: 이미지로 바꾸기
                 Box(
@@ -96,13 +96,13 @@ fun SettingAccount(modifier: Modifier = Modifier, viewModel: AccountViewModel = 
                         .size(94.dp)
                         .clip(CircleShape)
                         .background(gray50)
-                        .align(Alignment.Center),
+                        .align(Alignment.Center)
                 )
 
                 Image(
                     modifier = Modifier.align(Alignment.BottomEnd),
                     painter = painterResource(R.drawable.camera),
-                    contentDescription = stringResource(R.string.camera),
+                    contentDescription = stringResource(R.string.camera)
                 )
             }
         }
@@ -110,7 +110,7 @@ fun SettingAccount(modifier: Modifier = Modifier, viewModel: AccountViewModel = 
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 16.dp),
+                .padding(horizontal = 16.dp)
         ) {
             InfoType.entries.forEach {
                 val infoTitle = stringResource(
@@ -118,7 +118,7 @@ fun SettingAccount(modifier: Modifier = Modifier, viewModel: AccountViewModel = 
                         InfoType.NICKNAME -> R.string.nickname
                         InfoType.ACCOUNT -> R.string.account
                         InfoType.REGION -> R.string.favorite_region
-                    },
+                    }
                 )
                 AccountInfo(
                     infoTitle = infoTitle,
@@ -128,11 +128,11 @@ fun SettingAccount(modifier: Modifier = Modifier, viewModel: AccountViewModel = 
                                 Row(
                                     modifier = modifier
                                         .informationShape(),
-                                    verticalAlignment = Alignment.CenterVertically,
+                                    verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     Text(
                                         text = "울적한 쿠키(닉네임)",
-                                        style = MaterialTheme.typography.displayMedium,
+                                        style = MaterialTheme.typography.displayMedium
                                     )
                                 }
                             }
@@ -141,17 +141,17 @@ fun SettingAccount(modifier: Modifier = Modifier, viewModel: AccountViewModel = 
                                 Row(
                                     modifier = modifier
                                         .informationShape(),
-                                    verticalAlignment = Alignment.CenterVertically,
+                                    verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     Image(
                                         modifier = Modifier.padding(end = 8.dp),
                                         painter = painterResource(R.drawable.kakao),
-                                        contentDescription = stringResource(R.string.kakao),
+                                        contentDescription = stringResource(R.string.kakao)
                                     )
 
                                     Text(
                                         text = "abcd@kakao.com",
-                                        style = MaterialTheme.typography.titleSmall,
+                                        style = MaterialTheme.typography.titleSmall
                                     )
                                 }
                             }
@@ -159,18 +159,18 @@ fun SettingAccount(modifier: Modifier = Modifier, viewModel: AccountViewModel = 
                             InfoType.REGION -> {
                                 RegionDropDown(
                                     hint = stringResource(R.string.account_region_hint),
-                                    onSelect = {},
+                                    onSelect = {}
                                 )
                             }
                         }
-                    },
+                    }
                 )
             }
 
             HorizontalDivider(
                 modifier = Modifier.padding(top = 30.dp, bottom = 20.dp),
                 thickness = 1.dp,
-                color = gray40,
+                color = gray40
             )
 
             Text(
@@ -178,15 +178,15 @@ fun SettingAccount(modifier: Modifier = Modifier, viewModel: AccountViewModel = 
                     .fillMaxWidth()
                     .clickable(
                         indication = null,
-                        interactionSource = remember { MutableInteractionSource() },
+                        interactionSource = remember { MutableInteractionSource() }
                     ) {
                         dialog = true
                     },
                 text = stringResource(R.string.logout),
                 style = MaterialTheme.typography.displayMedium.copy(
                     color = gray70,
-                    textAlign = TextAlign.Center,
-                ),
+                    textAlign = TextAlign.Center
+                )
             )
         }
     }
@@ -200,7 +200,7 @@ fun SettingAccount(modifier: Modifier = Modifier, viewModel: AccountViewModel = 
             onClickConfirm = {
                 Timber.e("dialog Clicked")
                 viewModel.postLogout(false)
-            },
+            }
         )
     }
 }
@@ -211,7 +211,7 @@ private fun Modifier.informationShape() = this
     .border(
         width = 1.dp,
         color = gray50,
-        shape = RoundedCornerShape(6.dp),
+        shape = RoundedCornerShape(6.dp)
     )
     .padding(horizontal = 12.dp, vertical = 10.dp)
 
@@ -221,8 +221,8 @@ fun AccountInfo(modifier: Modifier = Modifier, infoTitle: String, body: @Composa
         modifier = modifier.padding(top = 20.dp, bottom = 12.dp),
         text = infoTitle,
         style = MaterialTheme.typography.titleSmall.copy(
-            color = gray90,
-        ),
+            color = gray90
+        )
     )
 
     body()
@@ -233,7 +233,7 @@ fun AccountInfo(modifier: Modifier = Modifier, infoTitle: String, body: @Composa
 private fun SettingAccountPreview() {
     YongProjectTheme {
         SettingAccount(
-            goLogin = {},
+            goLogin = {}
         )
     }
 }

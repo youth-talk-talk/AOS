@@ -12,7 +12,7 @@ data class FilterInfoRequest(
     val age: Int?,
     val employmentCodeList: List<EmploymentCode>?,
     val isFinished: Boolean?,
-    val keyword: String?,
+    val keyword: String?
 ) {
     fun toRequestBody() = Json.encodeToString(serializer(), this).toRequestBody()
 }

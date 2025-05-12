@@ -28,11 +28,11 @@ fun NavGraphBuilder.settingTabNavigation(
     onClickSettingPost: (ScrapPostType) -> Unit,
     onClickSettingComment: (CommentType) -> Unit,
     onClickSettingNotification: () -> Unit,
-    goLogin: () -> Unit,
+    goLogin: () -> Unit
 ) {
     navigation(
         startDestination = "Setting",
-        route = "Setting_graph",
+        route = "Setting_graph"
     ) {
         composable<HomeTabNavigation.Setting> {
             SettingScreen(
@@ -42,13 +42,13 @@ fun NavGraphBuilder.settingTabNavigation(
                 onClickSettingScrap = onClickSettingScrap,
                 onClickSettingPost = onClickSettingPost,
                 onClickSettingComment = onClickSettingComment,
-                onClickSettingNotification = onClickSettingNotification,
+                onClickSettingNotification = onClickSettingNotification
             )
         }
 
         composable<Account> {
             SettingAccount(
-                goLogin = goLogin,
+                goLogin = goLogin
             )
         }
     }

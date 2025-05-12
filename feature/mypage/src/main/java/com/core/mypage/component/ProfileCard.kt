@@ -34,44 +34,44 @@ fun ProfileCard(modifier: Modifier = Modifier, username: String, email: String, 
             .background(color = gray10)
             .clickable(
                 indication = null,
-                interactionSource = remember { MutableInteractionSource() },
+                interactionSource = remember { MutableInteractionSource() }
             ) {
                 onClick()
             },
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween,
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Row(
-            horizontalArrangement = Arrangement.spacedBy(10.dp),
+            horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             Box(
                 modifier = Modifier
                     .size(60.dp)
                     .clip(CircleShape)
-                    .background(gray80),
+                    .background(gray80)
             )
 
             Column(
-                verticalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Text(
                     text = username,
-                    style = MaterialTheme.typography.bodyMedium,
+                    style = MaterialTheme.typography.bodyMedium
                 )
 
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                    horizontalArrangement = Arrangement.spacedBy(6.dp)
                 ) {
                     Image(
                         painter = painterResource(R.drawable.kakao),
-                        contentDescription = "카카오 이미지",
+                        contentDescription = "카카오 이미지"
                     )
 
                     Text(
                         text = email,
                         style = MaterialTheme.typography.labelMedium.copy(
-                            color = gray80,
-                        ),
+                            color = gray80
+                        )
                     )
                 }
             }
@@ -79,7 +79,7 @@ fun ProfileCard(modifier: Modifier = Modifier, username: String, email: String, 
 
         Image(
             painter = painterResource(R.drawable.arrowright),
-            contentDescription = "이동이미지",
+            contentDescription = "이동이미지"
         )
     }
 }
@@ -91,7 +91,7 @@ private fun ProfileCardPreview() {
         ProfileCard(
             username = "놀고픈 청년",
             email = "abcd@kakao.com",
-            onClick = {},
+            onClick = {}
         )
     }
 }

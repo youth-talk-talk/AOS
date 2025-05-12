@@ -9,16 +9,16 @@ import com.youthtalk.dto.specpolicy.FilterInfoRequest
 import com.youthtalk.mapper.toData
 import com.youthtalk.model.Category
 import com.youthtalk.model.Policy
-import kotlinx.coroutines.flow.first
-import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
+import kotlinx.coroutines.flow.first
+import retrofit2.HttpException
 
 class SpecPolicyPagingSource @Inject constructor(
     private val policyService: PolicyService,
     private val dataSource: DataStoreDataSource,
     private val category: List<Category>? = null,
-    private val keyword: String? = null,
+    private val keyword: String? = null
 ) : PagingSource<Int, Policy>() {
     override fun getRefreshKey(state: PagingState<Int, Policy>): Int? {
         return state.anchorPosition?.let { anchorPosition ->
@@ -36,13 +36,13 @@ class SpecPolicyPagingSource @Inject constructor(
                 categories = category,
                 employmentCodeList = dataSource.getEmployCode().first(),
                 keyword = keyword,
-                isFinished = isFinish,
+                isFinished = isFinish
             ).toRequestBody()
 
             val response = policyService.postSpecPolicies(
                 requestBody = requestBody,
                 page = pageNumber,
-                size = params.loadSize,
+                size = params.loadSize
             )
 
             val policies = response.data?.policyList?.map { it.toData() } ?: listOf()
@@ -50,7 +50,7 @@ class SpecPolicyPagingSource @Inject constructor(
             return LoadResult.Page(
                 data = policies,
                 prevKey = null,
-                nextKey = if (policies.isEmpty()) null else pageNumber + (params.loadSize / PagingSize.SEARCH_PAGE_SIZE),
+                nextKey = if (policies.isEmpty()) null else pageNumber + (params.loadSize / PagingSize.SEARCH_PAGE_SIZE)
             )
         } catch (e: IOException) {
             return LoadResult.Error(e)

@@ -29,31 +29,31 @@ fun FilterChip(modifier: Modifier = Modifier, text: String, count: Int = 0, onCl
             .border(
                 width = 1.dp,
                 color = gray50,
-                shape = RoundedCornerShape(100.dp),
+                shape = RoundedCornerShape(100.dp)
             )
             .clickable(
                 indication = null,
-                interactionSource = remember { MutableInteractionSource() },
+                interactionSource = remember { MutableInteractionSource() }
             ) {
                 onClick()
             }
             .padding(horizontal = 11.dp, vertical = 6.dp),
         horizontalArrangement = Arrangement.spacedBy(2.dp),
-        verticalAlignment = Alignment.CenterVertically,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
             text = text,
             style = MaterialTheme.typography.displaySmall.copy(
-                color = if (count == 0) gray80 else MaterialTheme.colorScheme.primary,
-            ),
+                color = if (count == 0) gray80 else MaterialTheme.colorScheme.primary
+            )
         )
         if (count != 0) {
             Text(
                 modifier = Modifier.padding(start = 2.dp),
                 text = text,
                 style = MaterialTheme.typography.displaySmall.copy(
-                    color = MaterialTheme.colorScheme.primary,
-                ),
+                    color = MaterialTheme.colorScheme.primary
+                )
             )
         }
 
@@ -61,7 +61,7 @@ fun FilterChip(modifier: Modifier = Modifier, text: String, count: Int = 0, onCl
             modifier = Modifier.size(16.dp),
             painter = painterResource(R.drawable.arrowdown),
             contentDescription = "아래 화살표",
-            colorFilter = ColorFilter.tint(color = gray80),
+            colorFilter = ColorFilter.tint(color = gray80)
         )
     }
 }

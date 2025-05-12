@@ -5,7 +5,7 @@ import com.youthtalk.model.Category
 import javax.inject.Inject
 
 class PostSpecPoliciesUseCase @Inject constructor(
-    private val specPolicyRepository: SpecPolicyRepository,
+    private val specPolicyRepository: SpecPolicyRepository
 ) {
     operator fun invoke(categories: List<Category>?, keyword: String?) = specPolicyRepository.getPolicies(categories, keyword)
 }

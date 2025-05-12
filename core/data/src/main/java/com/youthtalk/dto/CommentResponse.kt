@@ -9,5 +9,5 @@ data class CommentResponse(
     val content: String,
     val isLikedByMember: Boolean = false,
     val policyId: String? = null,
-    val postId: Long? = null,
+    val postId: Long? = null
 )

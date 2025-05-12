@@ -15,7 +15,7 @@ sealed class CommunityModel(val title: String) : SettingModel {
             Write("작성한 글"),
             Scrap("스크랩한 게시글"),
             Like("좋아요한 댓글"),
-            Comment("내 댓글"),
+            Comment("내 댓글")
         )
     }
 
@@ -31,7 +31,7 @@ sealed class ManageModel(val title: String) : SettingModel {
         fun getList(): List<ManageModel> = listOf(
             Policy("약관 및 정책"),
             Inquire("문의하기"),
-            Etc("기타 관리"),
+            Etc("기타 관리")
         )
     }
 

@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import com.youthtalk.component.card.PolicyCard
 import com.youthtalk.component.chip.RoundChip
 import com.youthtalk.component.topbar.MiddleTitleTopBar
+import com.youthtalk.designsystem.YongProjectTheme
 import com.youthtalk.designsystem.gray10
 import com.youthtalk.designsystem.gray30
 import com.youthtalk.designsystem.gray40
@@ -29,55 +30,55 @@ fun NewPolicyScreen(modifier: Modifier = Modifier, onBack: () -> Unit) {
     val categories = Category.entries.toList()
     Column(
         modifier = modifier
-            .fillMaxSize(),
+            .fillMaxSize()
     ) {
         MiddleTitleTopBar(
             title = "최근 올라온 정책",
-            onBack = onBack,
+            onBack = onBack
         )
 
         LazyRow(
             modifier = Modifier
                 .fillMaxWidth(),
             contentPadding = PaddingValues(start = 16.dp, end = 16.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             items(
-                count = categories.size,
+                count = categories.size
             ) {
                 val title = categories[it].categoryName.split(" ").first()
                 RoundChip(
                     text = title,
-                    isSelected = it == 0,
+                    isSelected = it == 0
                 )
             }
         }
 
         HorizontalDivider(
             modifier = Modifier.padding(top = 14.dp, bottom = 10.dp),
-            color = gray30,
+            color = gray30
         )
 
         LazyColumn(
             modifier = Modifier
                 .padding(horizontal = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             items(
-                count = 10,
+                count = 10
             ) {
                 PolicyCard(
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(
                             color = gray10,
-                            shape = RoundedCornerShape(12.dp),
+                            shape = RoundedCornerShape(12.dp)
                         )
                         .border(
                             width = 1.dp,
                             color = gray40,
-                            shape = RoundedCornerShape(12.dp),
-                        ),
+                            shape = RoundedCornerShape(12.dp)
+                        )
                 )
             }
         }
@@ -87,7 +88,9 @@ fun NewPolicyScreen(modifier: Modifier = Modifier, onBack: () -> Unit) {
 @Preview
 @Composable
 private fun NewPolicyScreenPreview() {
-    NewPolicyScreen(
-        onBack = {},
-    )
+    YongProjectTheme {
+        NewPolicyScreen(
+            onBack = {}
+        )
+    }
 }

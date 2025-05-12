@@ -9,7 +9,7 @@ data class PostCreatePostRequest(
     val title: String,
     val postType: String,
     val policyId: String?,
-    val contentList: List<PostContentRequest>,
+    val contentList: List<PostContentRequest>
 ) {
     fun toRequestBody() = Json.encodeToString(serializer(), this).toRequestBody()
 }
@@ -21,7 +21,7 @@ data class PostModifyPostRequest(
     val policyId: String?,
     val contentList: List<PostContentRequest>,
     val addImgUrlList: List<String>,
-    val deletedImgUrlList: List<String>,
+    val deletedImgUrlList: List<String>
 ) {
     fun toRequestBody() = Json.encodeToString(serializer(), this).toRequestBody()
 }
@@ -29,5 +29,5 @@ data class PostModifyPostRequest(
 @Serializable
 data class PostContentRequest(
     val content: String,
-    val type: String,
+    val type: String
 )

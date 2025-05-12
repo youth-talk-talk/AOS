@@ -21,7 +21,7 @@ enum class Region(val region: String) {
     JEONBUK("전북"),
     JEONNAM("전남"),
     JEJU("제주"),
-    ALL("전국"),
+    ALL("전국")
 }
 
 fun String.toRegion(): Region = when (this) {

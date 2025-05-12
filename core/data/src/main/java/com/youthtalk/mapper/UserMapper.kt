@@ -7,5 +7,5 @@ import com.youthtalk.model.User
 fun UserResponse.toData(): User = User(
     memberId = memberId,
     nickname = nickname,
-    region = Region.entries.find { it.region == region } ?: Region.ALL,
+    region = Region.entries.find { it.region == region } ?: Region.ALL
 )

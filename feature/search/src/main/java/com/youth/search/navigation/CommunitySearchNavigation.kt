@@ -18,7 +18,7 @@ fun NavGraphBuilder.communitySearchNavigation(onBack: () -> Unit) {
         val communitySearch = it.toRoute<CommunitySearch>()
         CommunitySearchScreen(
             onBack = onBack,
-            communityType = communitySearch.communityType,
+            communityType = communitySearch.communityType
         )
     }
 }

@@ -32,6 +32,7 @@ include(
     ":core:navigation",
     ":core:exception",
     ":core:datastore",
+    ":core:base"
 )
 include(
     ":feature",
@@ -42,5 +43,5 @@ include(
     ":feature:login",
     ":feature:policydetail",
     ":feature:search",
+    ":feature:policy"
 )
-include(":feature:policy")

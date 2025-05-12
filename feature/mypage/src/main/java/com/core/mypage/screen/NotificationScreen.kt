@@ -38,16 +38,16 @@ fun NotificationScreen(modifier: Modifier = Modifier) {
 
     Column(
         modifier = modifier
-            .fillMaxSize(),
+            .fillMaxSize()
     ) {
         NoBackMiddleTitleTopBar(
             title = "알림",
             tails = {
                 Image(
                     painter = painterResource(R.drawable.close),
-                    contentDescription = stringResource(R.string.close),
+                    contentDescription = stringResource(R.string.close)
                 )
-            },
+            }
         )
 
         TabRow(
@@ -59,16 +59,16 @@ fun NotificationScreen(modifier: Modifier = Modifier) {
                         Modifier
                             .tabIndicatorOffset(tabPositions[pagerState.currentPage])
                             .padding(horizontal = 16.dp),
-                        color = gray100,
+                        color = gray100
                     )
                 }
             },
             divider = {
                 HorizontalDivider(
                     thickness = 1.dp,
-                    color = gray40,
+                    color = gray40
                 )
-            },
+            }
         ) {
             list.forEachIndexed { index, title ->
                 Tab(
@@ -84,15 +84,15 @@ fun NotificationScreen(modifier: Modifier = Modifier) {
                     text = {
                         Text(
                             text = title,
-                            style = MaterialTheme.typography.displayLarge,
+                            style = MaterialTheme.typography.displayLarge
                         )
-                    },
+                    }
                 )
             }
         }
 
         HorizontalPager(
-            state = pagerState,
+            state = pagerState
         ) {
             NotificationList(communityType = it)
         }
@@ -107,16 +107,16 @@ fun NotificationList(modifier: Modifier = Modifier, communityType: Int) {
     }
 
     LazyColumn(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize()
     ) {
         items(
-            count = list.size,
+            count = list.size
         ) {
             NotificationComponent(
                 notificationTitle = "스크랩 한 정책이 오늘 마감돼요!",
                 notificationSubTitle = "사상구 면접 A to Z 운영’ 정책이 오늘 마감돼요! 지금 확인해 볼까요?",
                 backgroundColor = MaterialTheme.colorScheme.onPrimary,
-                notificationType = list[it],
+                notificationType = list[it]
             )
         }
 
@@ -127,17 +127,17 @@ fun NotificationList(modifier: Modifier = Modifier, communityType: Int) {
                     .fillMaxWidth()
                     .padding(start = 16.dp, end = 16.dp, top = 16.dp),
                 text = "지난 알림",
-                style = MaterialTheme.typography.displayLarge,
+                style = MaterialTheme.typography.displayLarge
             )
         }
 
         items(
-            count = list.size,
+            count = list.size
         ) {
             NotificationComponent(
                 notificationTitle = "스크랩 한 정책이 오늘 마감돼요!",
                 notificationSubTitle = "사상구 면접 A to Z 운영’ 정책이 오늘 마감돼요! 지금 확인해 볼까요?",
-                notificationType = list[it],
+                notificationType = list[it]
             )
         }
     }

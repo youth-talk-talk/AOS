@@ -24,5 +24,5 @@ data class PolicyDetail(
     val refUrl1: String,
     val refUrl2: String,
     val formattedApplUrl: String,
-    val isScrap: Boolean,
+    val isScrap: Boolean
 )

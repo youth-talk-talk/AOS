@@ -27,24 +27,24 @@ fun RecentText(modifier: Modifier = Modifier, text: String, onClick: () -> Unit,
             .fillMaxWidth()
             .clickable(
                 indication = null,
-                interactionSource = remember { MutableInteractionSource() },
+                interactionSource = remember { MutableInteractionSource() }
             ) {
                 onClick()
             }
             .padding(vertical = 4.dp),
-        verticalAlignment = Alignment.CenterVertically,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Image(
             modifier = Modifier.padding(end = 10.dp),
             painter = painterResource(R.drawable.time),
-            contentDescription = "시간",
+            contentDescription = "시간"
         )
         Text(
             modifier = Modifier.weight(1f),
             text = text,
             style = MaterialTheme.typography.titleMedium.copy(
-                color = gray90,
-            ),
+                color = gray90
+            )
         )
 
         Image(
@@ -52,13 +52,13 @@ fun RecentText(modifier: Modifier = Modifier, text: String, onClick: () -> Unit,
                 .size(16.dp)
                 .clickable(
                     indication = null,
-                    interactionSource = remember { MutableInteractionSource() },
+                    interactionSource = remember { MutableInteractionSource() }
                 ) {
                     onDelete()
                 },
             painter = painterResource(R.drawable.close),
             contentDescription = "시간",
-            colorFilter = ColorFilter.tint(color = gray80),
+            colorFilter = ColorFilter.tint(color = gray80)
         )
     }
 }

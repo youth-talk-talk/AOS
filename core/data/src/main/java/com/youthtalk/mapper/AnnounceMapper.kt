@@ -10,7 +10,7 @@ import com.youthtalk.model.ImageInfo
 fun AnnounceResponse.toData() = Announce(
     id = id,
     title = title,
-    updateAt = updateAt,
+    updateAt = updateAt
 )
 
 fun AnnounceDetailResponse.toData() = AnnounceDetail(
@@ -18,10 +18,10 @@ fun AnnounceDetailResponse.toData() = AnnounceDetail(
     title = title,
     content = content,
     imageList = imageList.map { it.toData() },
-    updateAt = updateAt,
+    updateAt = updateAt
 )
 
 fun ImageInfoResponse.toData() = ImageInfo(
     id = id,
-    imgUrl = imgUrl,
+    imgUrl = imgUrl
 )

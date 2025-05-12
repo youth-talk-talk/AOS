@@ -1,26 +1,31 @@
 package com.core.home.model
 
 import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.Stable
-import androidx.paging.PagingData
-import com.youthtalk.model.Category
-import com.youthtalk.model.Policy
-import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.persistentListOf
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emptyFlow
+import com.core.base.model.UiState
+import com.youthtalk.model.Region
+import com.youthtalk.model.User
+import com.youthtalk.model.home.HomeData
+import com.youthtalk.model.home.NewPolicies
 
-@Stable
-sealed interface HomeUiState {
-
-    @Immutable
-    data object Loading : HomeUiState
-
-    @Immutable
-    data class Success(
-        val categoryList: ImmutableList<Category> = persistentListOf(),
-        val popularPolicies: ImmutableList<Policy> = persistentListOf(),
-        val allPolicies: Flow<PagingData<Policy>> = emptyFlow(),
-        val scrap: Map<String, Boolean> = mapOf(),
-    ) : HomeUiState
-}
+@Immutable
+data class HomeUiState(
+    val isLoading: Boolean = true,
+    val user: User = User(
+        memberId = 0,
+        nickname = "",
+        region = Region.ALL
+    ),
+    val homeData: HomeData = HomeData(
+        popularPolicies = listOf(),
+        newPolicies = NewPolicies(
+            all = listOf(),
+            job = listOf(),
+            dwelling = listOf(),
+            education = listOf(),
+            life = listOf(),
+            participation = listOf()
+        ),
+        policiesWithReviews = listOf(),
+        bestPosts = listOf()
+    )
+) : UiState

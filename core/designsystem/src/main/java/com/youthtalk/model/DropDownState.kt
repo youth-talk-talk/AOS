@@ -4,5 +4,5 @@ enum class DropDownState {
     DEFAULT,
     PRESSED,
     COMPLETE,
-    DISABLED,
+    DISABLED
 }

@@ -9,5 +9,5 @@ fun CommentResponse.toDate() = Comment(
     content = content,
     isLikedByMember = isLikedByMember,
     policyId = this.policyId,
-    postId = this.postId,
+    postId = this.postId
 )

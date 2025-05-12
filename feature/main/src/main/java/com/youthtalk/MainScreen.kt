@@ -55,7 +55,7 @@ fun MainScreen(modifier: Modifier = Modifier, goLogin: () -> Unit, checkPermissi
             navController = navHostController,
             homeLazyListScrollState = homeLazyListScrollState,
             goLogin = goLogin,
-            checkPermission = checkPermission,
+            checkPermission = checkPermission
         )
     }
 }
@@ -65,13 +65,13 @@ fun NavHostScreen(
     navController: NavHostController,
     homeLazyListScrollState: LazyListState,
     goLogin: () -> Unit,
-    checkPermission: (String) -> Boolean,
+    checkPermission: (String) -> Boolean
 ) {
     NavHost(
         navController = navController,
         startDestination = Navigation.Main,
         enterTransition = { EnterTransition.None },
-        exitTransition = { ExitTransition.None },
+        exitTransition = { ExitTransition.None }
     ) {
         homeNavigation(
             onClickPopularPolicy = navController::navigatePopularPolicy,
@@ -89,10 +89,10 @@ fun NavHostScreen(
             onClickPostDetail = navController::navigateCommunityDetail,
             onClickPolicyDetail = navController::navigatePolicyDetail,
             onClickCommunityWrite = navController::navigateCommunityWrite,
-            goLogin = goLogin,
+            goLogin = goLogin
         )
         settingEtcNavigation(
-            goLogin = goLogin,
+            goLogin = goLogin
         )
         settingTermsNavigation()
         settingScrapPolicyNavigation()
@@ -101,10 +101,10 @@ fun NavHostScreen(
         settingNotificationNavigation()
 
         policySearchNavigation(
-            onBack = { navController.popBackStack() },
+            onBack = { navController.popBackStack() }
         )
         communitySearchNavigation(
-            onBack = { navController.popBackStack() },
+            onBack = { navController.popBackStack() }
         )
         popularPolicyNavigation(onBack = navController::popBackStack)
         newPolicyNavigation(onBack = navController::popBackStack)
@@ -124,7 +124,7 @@ private fun MainScreenPreview() {
     YongProjectTheme {
         MainScreen(
             goLogin = {},
-            checkPermission = { false },
+            checkPermission = { false }
         )
     }
 }

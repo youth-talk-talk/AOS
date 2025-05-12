@@ -18,7 +18,7 @@ import timber.log.Timber
 class UploadImageWorkManager @AssistedInject constructor(
     @Assisted private val ctx: Context,
     @Assisted private val params: WorkerParameters,
-    private val uploadImageUseCase: PostUploadImageUseCase,
+    private val uploadImageUseCase: PostUploadImageUseCase
 ) : CoroutineWorker(ctx, params) {
 
     override suspend fun doWork(): Result {

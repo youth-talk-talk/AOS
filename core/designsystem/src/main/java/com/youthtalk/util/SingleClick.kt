@@ -36,7 +36,7 @@ fun <T> multipleEventsCutter(content: @Composable (MultipleEventsCutterManager) 
         MutableSharedFlow<() -> Unit>(
             replay = 0,
             extraBufferCapacity = 1,
-            onBufferOverflow = BufferOverflow.DROP_OLDEST,
+            onBufferOverflow = BufferOverflow.DROP_OLDEST
         )
     }
 
@@ -45,7 +45,7 @@ fun <T> multipleEventsCutter(content: @Composable (MultipleEventsCutterManager) 
             override fun processEvent(event: () -> Unit) {
                 debounceState.tryEmit(event)
             }
-        },
+        }
     )
 
     LaunchedEffect(true) {
@@ -76,9 +76,9 @@ fun Modifier.clickableSingle(enabled: Boolean = true, onClickLabel: String? = nu
                     onClick = { manager.processEvent { onClick() } },
                     role = role,
                     indication = null,
-                    interactionSource = remember { MutableInteractionSource() },
+                    interactionSource = remember { MutableInteractionSource() }
                 )
-            },
+            }
         )
-    },
+    }
 )

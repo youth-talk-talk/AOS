@@ -15,14 +15,14 @@ fun NavGraphBuilder.homeTabNavigation(
     onClickPolicySearch: () -> Unit,
     onClickPopularPolicy: () -> Unit,
     onClickNewPolicy: () -> Unit,
-    onClickPolicyDetail: () -> Unit,
+    onClickPolicyDetail: () -> Unit
 ) {
     composable<HomeTabNavigation.Home> {
         HomeScreen(
             onClickPolicySearch = onClickPolicySearch,
             onClickPopularPolicy = onClickPopularPolicy,
             onClickNewPolicy = onClickNewPolicy,
-            onClickPolicyDetail = onClickPolicyDetail,
+            onClickPolicyDetail = onClickPolicyDetail
         )
     }
 }

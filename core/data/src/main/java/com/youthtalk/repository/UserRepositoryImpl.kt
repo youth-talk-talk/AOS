@@ -8,13 +8,13 @@ import com.youthtalk.mapper.toData
 import com.youthtalk.model.Category
 import com.youthtalk.model.User
 import com.youthtalk.utils.ErrorUtils.throwableError
+import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import javax.inject.Inject
 
 class UserRepositoryImpl @Inject constructor(
     private val userService: UserService,
-    private val dataSource: DataStoreDataSource,
+    private val dataSource: DataStoreDataSource
 ) : UserRepository {
 
     override fun getUser(): Flow<User> = flow {

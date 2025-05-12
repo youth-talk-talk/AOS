@@ -1,16 +1,16 @@
 package com.youthtalk.di
 
 import com.core.datastore.datasource.DataStoreDataSource
+import javax.inject.Inject
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import okhttp3.Authenticator
 import okhttp3.Request
 import okhttp3.Response
 import okhttp3.Route
-import javax.inject.Inject
 
 class AuthAuthenticator @Inject constructor(
-    private val dataStoreDataSource: DataStoreDataSource,
+    private val dataStoreDataSource: DataStoreDataSource
 ) : Authenticator {
 
     companion object {

@@ -9,11 +9,11 @@ import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
+import java.util.UUID
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.util.UUID
 
 object UploadWork {
     fun uploadWorkManager(context: Context, scope: CoroutineScope, uuid: UUID, uri: Uri, changeUri: (String) -> Unit) {
@@ -35,7 +35,7 @@ object UploadWork {
         workManager.enqueueUniqueWork(
             uri.toString(),
             ExistingWorkPolicy.KEEP,
-            workRequest,
+            workRequest
         )
 
         scope.launch {

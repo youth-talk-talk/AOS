@@ -6,5 +6,5 @@ data class Policy(
     val title: String,
     val deadlineStatus: String,
     val hostDep: String,
-    val scrap: Boolean,
+    val scrap: Boolean
 )

@@ -7,12 +7,12 @@ data class AnnouncesResponse(
     val pageNum: Int,
     val pageSize: Int,
     val totalPage: Int,
-    val announcementList: List<AnnounceResponse>,
+    val announcementList: List<AnnounceResponse>
 )
 
 @Serializable
 data class AnnounceResponse(
     val id: Long,
     val title: String,
-    val updateAt: String,
+    val updateAt: String
 )

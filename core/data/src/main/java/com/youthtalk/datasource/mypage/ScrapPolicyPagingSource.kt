@@ -6,12 +6,12 @@ import com.youthtalk.data.PolicyService
 import com.youthtalk.datasource.PagingSize.SCRAP_PAGE_SIZE
 import com.youthtalk.mapper.toData
 import com.youthtalk.model.Policy
-import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
+import retrofit2.HttpException
 
 class ScrapPolicyPagingSource @Inject constructor(
-    private val policyService: PolicyService,
+    private val policyService: PolicyService
 ) : PagingSource<Int, Policy>() {
     override fun getRefreshKey(state: PagingState<Int, Policy>): Int? {
         return state.anchorPosition?.let { anchorPosition ->
@@ -30,7 +30,7 @@ class ScrapPolicyPagingSource @Inject constructor(
             return LoadResult.Page(
                 data = policies,
                 prevKey = if (pageNumber == 0) null else pageNumber - 1,
-                nextKey = if (policies.isEmpty()) null else pageNumber + (params.loadSize / SCRAP_PAGE_SIZE),
+                nextKey = if (policies.isEmpty()) null else pageNumber + (params.loadSize / SCRAP_PAGE_SIZE)
             )
         } catch (e: IOException) {
             return LoadResult.Error(e)

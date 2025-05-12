@@ -31,29 +31,29 @@ fun SearchBarComponent(modifier: Modifier = Modifier, hint: String = "", onClick
             .fillMaxWidth()
             .background(
                 color = gray30,
-                shape = RoundedCornerShape(6.dp),
+                shape = RoundedCornerShape(6.dp)
             )
             .clickable(
                 indication = null,
-                interactionSource = remember { MutableInteractionSource() },
+                interactionSource = remember { MutableInteractionSource() }
             ) {
                 onClick()
             }
             .padding(horizontal = 14.dp, vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(10.dp),
+        horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         Image(
             painter = painterResource(R.drawable.search),
             contentDescription = "검색",
-            colorFilter = ColorFilter.tint(color = gray70),
+            colorFilter = ColorFilter.tint(color = gray70)
         )
 
         Text(
             text = hint,
             style = MaterialTheme.typography.titleSmall.copy(
-                color = gray70,
-            ),
+                color = gray70
+            )
         )
     }
 }

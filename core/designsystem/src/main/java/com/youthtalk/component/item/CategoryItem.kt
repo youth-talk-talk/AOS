@@ -34,39 +34,39 @@ fun CategoryItem(modifier: Modifier = Modifier, category: Category, isSelected: 
             Category.JOB -> R.drawable.category_job
             Category.LIFE -> R.drawable.category_life
             Category.PARTICIPATION -> R.drawable.category_participation
-        },
+        }
     )
 
     Column(
         modifier = modifier
             .clickable(
                 indication = null,
-                interactionSource = remember { MutableInteractionSource() },
+                interactionSource = remember { MutableInteractionSource() }
             ) {
                 onClick()
             },
         verticalArrangement = Arrangement.spacedBy(10.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Box(
             modifier = Modifier
                 .background(
                     color = gray30,
-                    shape = RoundedCornerShape(8.73.dp),
+                    shape = RoundedCornerShape(8.73.dp)
                 )
-                .padding(10.2.dp),
+                .padding(10.2.dp)
         ) {
             Image(
                 painter = painter,
-                contentDescription = "카테고리 이미지",
+                contentDescription = "카테고리 이미지"
             )
         }
 
         Text(
             text = category.categoryName,
             style = MaterialTheme.typography.displayLarge.copy(
-                color = if (isSelected) MaterialTheme.colorScheme.primary else gray90,
-            ),
+                color = if (isSelected) MaterialTheme.colorScheme.primary else gray90
+            )
         )
     }
 }
@@ -76,7 +76,7 @@ fun CategoryItem(modifier: Modifier = Modifier, category: Category, isSelected: 
 private fun CategoryItemPreview() {
     YongProjectTheme {
         CategoryItem(
-            category = Category.DWELLING,
+            category = Category.DWELLING
         ) { }
     }
 }
@@ -87,7 +87,7 @@ private fun CategoryItemIsSelectedPreview() {
     YongProjectTheme {
         CategoryItem(
             category = Category.DWELLING,
-            isSelected = true,
+            isSelected = true
         ) { }
     }
 }

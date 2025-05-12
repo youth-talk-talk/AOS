@@ -31,8 +31,8 @@ fun Modifier.shadow(color: Color = Color.Black.copy(alpha = 0.1f), offsetX: Dp =
                 top = topPixel,
                 right = rightPixel,
                 bottom = bottomPixel,
-                paint = paint,
+                paint = paint
             )
         }
-    },
+    }
 )

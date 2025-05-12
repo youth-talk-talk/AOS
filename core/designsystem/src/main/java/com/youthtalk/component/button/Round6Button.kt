@@ -27,22 +27,22 @@ fun Round6Button(modifier: Modifier = Modifier, text: String, textColor: Color =
             .fillMaxWidth()
             .background(
                 color = backgroundColor,
-                shape = RoundedCornerShape(6.dp),
+                shape = RoundedCornerShape(6.dp)
             )
             .clickable(
                 indication = null,
-                interactionSource = remember { MutableInteractionSource() },
+                interactionSource = remember { MutableInteractionSource() }
             ) {
                 onClick()
             }
             .padding(vertical = 12.dp),
-        contentAlignment = Alignment.Center,
+        contentAlignment = Alignment.Center
     ) {
         Text(
             text = text,
             style = MaterialTheme.typography.titleMedium.copy(
-                color = textColor,
-            ),
+                color = textColor
+            )
         )
     }
 }
@@ -55,7 +55,7 @@ private fun Round6ButtonColorPreview() {
             text = "삭제하기",
             textColor = gray10,
             backgroundColor = MaterialTheme.colorScheme.error,
-            onClick = {},
+            onClick = {}
         )
     }
 }
@@ -66,7 +66,7 @@ private fun Round6ButtonPreview() {
     YongProjectTheme {
         Round6Button(
             text = "닫기",
-            onClick = {},
+            onClick = {}
         )
     }
 }

@@ -18,4 +18,6 @@ dependencies {
     implementation(projects.core.model)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
+    implementation(libs.coil3.coil.compose)
+    implementation(libs.coil3.coil.network.okttp)
 }
