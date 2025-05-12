@@ -5,6 +5,7 @@ import com.core.datastore.datasource.DataStoreDataSource
 import com.core.exception.NoDataException
 import com.youthtalk.data.PolicyService
 import com.youthtalk.mapper.toDomain
+import com.youthtalk.model.enum.SortType
 import com.youthtalk.model.home.HomeData
 import com.youthtalk.model.home.NewPolicies
 import com.youthtalk.utils.ErrorUtils.throwableError
@@ -32,9 +33,9 @@ class HomeRepositoryImpl @Inject constructor(
             }
     }
 
-    override fun getNewPolicies(): Flow<NewPolicies> = flow {
+    override fun getNewPolicies(sortType: SortType): Flow<NewPolicies> = flow {
         Timber.e("HomeRepositoryImpl getHome start")
-        runCatching { policyService.getNewPolicies() }
+        runCatching { policyService.getNewPolicies(sortType) }
             .onSuccess { homeData ->
                 Timber.e("HomeRepositoryImpl getNewPolicies Success $homeData")
                 homeData.data?.let { data ->

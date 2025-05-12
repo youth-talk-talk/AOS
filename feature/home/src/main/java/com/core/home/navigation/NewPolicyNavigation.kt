@@ -11,10 +11,11 @@ fun NavController.navigateNewPolicy(navOptions: NavOptions? = null) {
     navigate(PopularPolicy, navOptions)
 }
 
-fun NavGraphBuilder.newPolicyNavigation(onBack: () -> Unit) {
+fun NavGraphBuilder.newPolicyNavigation(onBack: () -> Unit, onClickPolicyDetail: (Long) -> Unit) {
     composable<PopularPolicy> {
         NewPolicyScreen(
-            onBack = onBack
+            onBack = onBack,
+            onClickPolicyDetail = onClickPolicyDetail
         )
     }
 }
