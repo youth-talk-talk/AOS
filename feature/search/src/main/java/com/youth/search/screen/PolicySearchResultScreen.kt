@@ -4,9 +4,10 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -28,18 +29,30 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.paging.compose.LazyPagingItems
 import com.youth.app.feature.search.R
-import com.youth.search.component.FilterBottomSheet
 import com.youth.search.component.FilterChip
 import com.youthtalk.component.card.PolicyCard
+import com.youthtalk.component.empty.EmptyScreen
+import com.youthtalk.component.sheet.FilterBottomSheet
 import com.youthtalk.designsystem.gray10
 import com.youthtalk.designsystem.gray30
 import com.youthtalk.designsystem.gray40
 import com.youthtalk.model.FilterType
+import com.youthtalk.model.policy.Policy
+import com.youthtalk.model.search.SearchFilter
+import java.text.DecimalFormat
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PolicySearchResultScreen(modifier: Modifier = Modifier) {
+fun PolicySearchResultScreen(
+    modifier: Modifier = Modifier,
+    isLoading: Boolean,
+    count: Int,
+    searchFilter: SearchFilter,
+    policies: LazyPagingItems<Policy>,
+    applyFilter: (SearchFilter) -> Unit
+) {
     var bottomSheet by remember {
         mutableStateOf(false)
     }
@@ -89,65 +102,87 @@ fun PolicySearchResultScreen(modifier: Modifier = Modifier) {
             )
         }
 
-        item {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-                    .padding(bottom = 10.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = "총 1,000건",
-                    style = MaterialTheme.typography.displayMedium
-                )
-
+        if (!isLoading) {
+            item {
                 Row(
                     modifier = Modifier
-                        .padding(horizontal = 6.dp, vertical = 2.dp),
-                    horizontalArrangement = Arrangement.spacedBy(2.dp),
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                        .padding(bottom = 10.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "최신순",
+                        text = "총 ${DecimalFormat("#,###").format(count)}건",
                         style = MaterialTheme.typography.displayMedium
                     )
 
-                    Image(
-                        modifier = Modifier.size(16.dp),
-                        painter = painterResource(R.drawable.arrowdown),
-                        contentDescription = "아래 화살표"
+                    Row(
+                        modifier = Modifier
+                            .padding(horizontal = 6.dp, vertical = 2.dp),
+                        horizontalArrangement = Arrangement.spacedBy(2.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "최신순",
+                            style = MaterialTheme.typography.displayMedium
+                        )
+
+                        Image(
+                            modifier = Modifier.size(16.dp),
+                            painter = painterResource(R.drawable.arrowdown),
+                            contentDescription = "아래 화살표"
+                        )
+                    }
+                }
+            }
+
+            items(
+                count = policies.itemCount,
+                key = { policies[it]?.policyId ?: 0 }
+            ) { index ->
+                policies[index]?.let { policy ->
+                    PolicyCard(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
+                            .padding(bottom = 16.dp)
+                            .background(
+                                color = gray10,
+                                shape = RoundedCornerShape(12.dp)
+                            )
+                            .border(
+                                width = 1.dp,
+                                color = gray40,
+                                shape = RoundedCornerShape(12.dp)
+                            ),
+                        policy = policy
                     )
                 }
             }
-        }
-
-        items(
-            count = 10
-        ) {
-            PolicyCard(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-                    .padding(bottom = 16.dp)
-                    .background(
-                        color = gray10,
-                        shape = RoundedCornerShape(12.dp)
+        } else {
+            item {
+                Column(
+                    modifier = Modifier.fillParentMaxHeight(0.8f)
+                ) {
+                    Spacer(modifier = Modifier.weight(2f))
+                    EmptyScreen(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(5f),
+                        emptyTitle = "일치하는 결과가 없습니다."
                     )
-                    .border(
-                        width = 1.dp,
-                        color = gray40,
-                        shape = RoundedCornerShape(12.dp)
-                    )
-            )
+                }
+            }
         }
     }
 
     if (bottomSheet) {
         FilterBottomSheet(
             sheetState = state,
-            onDismiss = { bottomSheet = false }
+            searchFilter = searchFilter,
+            onDismiss = { bottomSheet = false },
+            onClick = applyFilter
         )
     }
 }

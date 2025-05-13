@@ -1,5 +1,6 @@
 package com.youthtalk.repository
 
+import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
@@ -8,58 +9,52 @@ import com.core.datastore.datasource.DataStoreDataSource
 import com.core.exception.NoDataException
 import com.youthtalk.data.CommentService
 import com.youthtalk.data.PolicyService
-import com.youthtalk.datasource.specpolicy.SpecPolicyPagingSource
+import com.youthtalk.datasource.policy.PolicyRemoteMediator
+import com.youthtalk.datasource.room.YouthDatabase
 import com.youthtalk.dto.PostAddCommentResponse
 import com.youthtalk.dto.specpolicy.CommentRequest
-import com.youthtalk.dto.specpolicy.FilterInfoRequest
 import com.youthtalk.dto.specpolicy.SpecPoliciesResponse
-import com.youthtalk.model.Category
 import com.youthtalk.model.FilterInfo
-import com.youthtalk.model.Policy
+import com.youthtalk.model.policy.Policy
+import com.youthtalk.model.policy.PolicyType
+import com.youthtalk.model.search.SearchFilter
 import com.youthtalk.utils.ErrorUtils.throwableError
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 
 class SpecPolicyRepositoryImpl @Inject constructor(
     private val policyService: PolicyService,
     private val commentService: CommentService,
-    private val dataSource: DataStoreDataSource
+    private val dataSource: DataStoreDataSource,
+    private val youthDatabase: YouthDatabase
 ) : SpecPolicyRepository {
-    override fun getPolicies(categories: List<Category>?, keyword: String?): Flow<Flow<PagingData<Policy>>> = flow {
+
+    @OptIn(ExperimentalPagingApi::class)
+    override fun getPolicies(searchFilter: SearchFilter, policyType: PolicyType): Flow<Flow<PagingData<Policy>>> = flow {
         emit(
             Pager(
-                pagingSourceFactory = {
-                    SpecPolicyPagingSource(
-                        policyService = policyService,
-                        dataSource = dataSource,
-                        category = categories,
-                        keyword = keyword
-                    )
-                },
                 config = PagingConfig(
                     pageSize = 10,
-                    initialLoadSize = 10,
-                    enablePlaceholders = true
+                    enablePlaceholders = false
+                ),
+                remoteMediator = PolicyRemoteMediator(
+                    policyService = policyService,
+                    requestBody = searchFilter.toRequestBody(),
+                    policyType = policyType,
+                    youthDatabase = youthDatabase
                 )
-            ).flow
+            ) {
+                youthDatabase.policyDao().getPagingSource(policyType = policyType)
+            }.flow
         )
     }
 
-    override fun getCount(categories: List<Category>?, keyword: String?): Flow<Int> = flow {
-        val requestBody = FilterInfoRequest(
-            age = dataSource.getAge().first(),
-            categories = categories,
-            employmentCodeList = dataSource.getEmployCode().first(),
-            keyword = keyword,
-            isFinished = dataSource.getFinish().first()
-        ).toRequestBody()
-
+    override fun getCount(searchFilter: SearchFilter): Flow<Int> = flow {
         runCatching {
             policyService.postSpecPolicies(
-                requestBody = requestBody,
+                requestBody = searchFilter.toRequestBody(),
                 page = 0,
                 size = 10
             )

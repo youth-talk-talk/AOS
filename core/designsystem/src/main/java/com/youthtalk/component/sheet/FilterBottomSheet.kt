@@ -5,6 +5,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,6 +29,8 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -54,6 +57,8 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.youth.app.core.designsystem.R
@@ -66,25 +71,43 @@ import com.youthtalk.designsystem.gray50
 import com.youthtalk.designsystem.gray60
 import com.youthtalk.designsystem.gray70
 import com.youthtalk.designsystem.gray90
+import com.youthtalk.model.Category
 import com.youthtalk.model.FilterType
+import com.youthtalk.model.Region
+import com.youthtalk.model.enum.EducationType
+import com.youthtalk.model.enum.EmploymentType
+import com.youthtalk.model.enum.MarriageType
+import com.youthtalk.model.enum.SpecializedType
+import com.youthtalk.model.search.SearchFilter
+import com.youthtalk.model.toRegionName
+import com.youthtalk.util.SpecializedUtils.changeSpecialized
+import com.youthtalk.util.SpecializedUtils.etc
+import com.youthtalk.util.SpecializedUtils.getAllList
+import com.youthtalk.util.SpecializedUtils.isChecked
+import com.youthtalk.util.SpecializedUtils.job
+import com.youthtalk.util.SpecializedUtils.weeks
 import kotlin.math.ceil
+import kotlin.math.max
 import kotlinx.coroutines.launch
+import okhttp3.internal.http2.Header
+import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
-fun FilterBottomSheet(modifier: Modifier = Modifier, sheetState: SheetState, onDismiss: () -> Unit) {
+fun FilterBottomSheet(
+    modifier: Modifier = Modifier,
+    searchFilter: SearchFilter,
+    sheetState: SheetState,
+    onDismiss: () -> Unit,
+    onClick: (SearchFilter) -> Unit
+) {
     val pagerState = rememberPagerState { FilterType.entries.size }
     val scope = rememberCoroutineScope()
     val lazyListState = rememberLazyListState()
     val types = FilterType.entries.toList()
-
-    val tabPositions = remember { mutableStateMapOf<Int, Pair<Float, Float>>() }
-
-    val targetX = tabPositions[pagerState.currentPage]?.first ?: 0f
-    val targetWidth = tabPositions[pagerState.currentPage]?.second ?: 0f
-
-    val animatedX by animateDpAsState(targetValue = with(LocalDensity.current) { targetX.toDp() })
-    val animatedWidth by animateDpAsState(targetValue = with(LocalDensity.current) { targetWidth.toDp() })
+    var filter by remember {
+        mutableStateOf(searchFilter)
+    }
     ModalBottomSheet(
         modifier = modifier
             .fillMaxWidth()
@@ -93,14 +116,7 @@ fun FilterBottomSheet(modifier: Modifier = Modifier, sheetState: SheetState, onD
         containerColor = gray10,
         onDismissRequest = onDismiss
     ) {
-        Text(
-            modifier = Modifier
-                .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 8.dp),
-            text = "필터",
-            style = MaterialTheme.typography.titleLarge
-        )
-
-        TabRowComponent(
+        Header(
             currentPage = pagerState.currentPage,
             types = types,
             lazyListState = lazyListState,
@@ -108,30 +124,8 @@ fun FilterBottomSheet(modifier: Modifier = Modifier, sheetState: SheetState, onD
                 scope.launch {
                     pagerState.animateScrollToPage(it)
                 }
-            },
-            onMeasuredWidth = { index, pair ->
-                tabPositions[index] = pair
             }
         )
-
-        Box(
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            HorizontalDivider(
-                thickness = 1.dp,
-                color = gray40
-            )
-
-            // 인디케이터
-            Box(
-                modifier = Modifier
-                    .offset(x = animatedX)
-                    .width(animatedWidth)
-                    .height(2.dp)
-                    .background(color = MaterialTheme.colorScheme.primary)
-                    .align(Alignment.BottomStart)
-            )
-        }
 
         HorizontalPager(
             modifier = Modifier.weight(1f),
@@ -143,27 +137,26 @@ fun FilterBottomSheet(modifier: Modifier = Modifier, sheetState: SheetState, onD
                 lazyListState.animateScrollToItem(pagerState.currentPage)
             }
             when (types[it]) {
-                FilterType.POLICY_TYPE -> PolicyType()
-
-                FilterType.REGION -> RegionType()
-
-                FilterType.RECRUIT -> {
-                    FlowRow(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(20.dp),
-                        horizontalArrangement = Arrangement.spacedBy(12.dp),
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
-                    ) {
-                        stringArrayResource(R.array.recruits).forEach {
-                            RoundChip(
-                                text = it
-                            )
-                        }
+                FilterType.POLICY_TYPE -> PolicyType(
+                    category = filter.category,
+                    onClick = { categories ->
+                        filter = filter.copy(
+                            category = categories
+                        )
                     }
-                }
+                )
+
+                FilterType.REGION -> RegionType(
+                    regions = filter.region,
+                    onClick = { regions ->
+                        filter = filter.copy(
+                            region = regions
+                        )
+                    }
+                )
 
                 FilterType.EDUCATION -> {
+                    val recruits = EducationType.entries
                     FlowRow(
                         modifier = Modifier
                             .fillMaxSize()
@@ -171,17 +164,93 @@ fun FilterBottomSheet(modifier: Modifier = Modifier, sheetState: SheetState, onD
                         horizontalArrangement = Arrangement.spacedBy(12.dp),
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        stringArrayResource(R.array.educations).forEach {
+                        recruits.forEach { recruit ->
                             RoundChip(
-                                text = it
+                                text = recruit.educationName,
+                                isSelected = when (recruit) {
+                                    EducationType.UNRESTRICTED -> filter.education == null
+                                    else -> filter.education?.contains(recruit) == true
+                                },
+                                onClick = {
+                                    when (recruit) {
+                                        EducationType.UNRESTRICTED -> filter = filter.copy(education = null)
+
+                                        else -> {
+                                            val newList = getNewList(filter.education ?: listOf(), recruit)
+                                            filter = filter.copy(
+                                                education = if (newList.isEmpty() || newList.size == recruits.size - 1) null else newList
+                                            )
+                                        }
+                                    }
+                                }
                             )
                         }
                     }
                 }
 
-                FilterType.SPECIALIZED -> Serialized()
+                FilterType.RECRUIT -> {
+                    val employees = EmploymentType.entries
+                    FlowRow(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(20.dp),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        employees.forEach { employee ->
+                            RoundChip(
+                                text = employee.employmentName,
+                                isSelected = when (employee) {
+                                    EmploymentType.UNRESTRICTED -> filter.education == null
+                                    else -> filter.employment?.contains(employee) == true
+                                },
+                                onClick = {
+                                    when (employee) {
+                                        EmploymentType.UNRESTRICTED -> filter = filter.copy(employment = null)
 
-                FilterType.AGE_EARN -> AgeEarn()
+                                        else -> {
+                                            val currentList = filter.employment ?: listOf()
+                                            val newList = getNewList(currentList, employee)
+                                            filter = filter.copy(
+                                                employment = if (newList.isEmpty() || newList.size == employees.size - 1) null else newList
+                                            )
+                                        }
+                                    }
+                                }
+                            )
+                        }
+                    }
+                }
+
+                FilterType.SPECIALIZED -> Serialized(
+                    specials = filter.specialization,
+                    marriage = filter.marriage,
+                    onClickSpecial = { specials ->
+                        Timber.e("specials : $specials")
+                        filter = filter.copy(
+                            specialization = specials
+                        )
+                    },
+                    onClickMarriage = { marriageType ->
+                        filter = filter.copy(
+                            marriage = marriageType
+                        )
+                    }
+                )
+
+                FilterType.AGE_EARN -> AgeEarn(
+                    maxEarn = filter.maxEarn ?: 50_000_000,
+                    minEarn = filter.minEarn ?: 0,
+                    age = filter.age,
+                    onChangeAge = { age -> filter = filter.copy(age = age.ifEmpty { null }) },
+                    onChangeEarn = { min, max ->
+                        val allRange = min == 0 && max == 50_000_000
+                        filter = filter.copy(
+                            minEarn = if (allRange) null else min,
+                            maxEarn = if (allRange) null else max
+                        )
+                    }
+                )
             }
         }
 
@@ -194,6 +263,12 @@ fun FilterBottomSheet(modifier: Modifier = Modifier, sheetState: SheetState, onD
         ) {
             Row(
                 modifier = Modifier
+                    .clickable(
+                        indication = null,
+                        interactionSource = remember { MutableInteractionSource() }
+                    ) {
+                        filter = searchFilter
+                    }
                     .padding(vertical = 12.dp, horizontal = 8.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalAlignment = Alignment.CenterVertically
@@ -215,11 +290,67 @@ fun FilterBottomSheet(modifier: Modifier = Modifier, sheetState: SheetState, onD
             Round6Button(
                 modifier = Modifier.weight(1f),
                 text = "적용하기",
-                textColor = gray70,
-                backgroundColor = gray30,
-                onClick = {}
+                textColor = if (filter == searchFilter) gray70 else gray10,
+                backgroundColor = if (filter == searchFilter) gray30 else MaterialTheme.colorScheme.primary,
+                onClick = {
+                    if (filter != searchFilter) {
+                        onClick(filter)
+                        onDismiss()
+                    }
+                }
             )
         }
+    }
+}
+
+private fun <T> getNewList(currentList: List<T>, value: T) = if (currentList.contains(value)) {
+    currentList - value
+} else {
+    currentList + value
+}
+
+@Composable
+fun Header(currentPage: Int, types: List<FilterType>, lazyListState: LazyListState, onClickTab: (Int) -> Unit) {
+    val tabPositions = remember { mutableStateMapOf<Int, Pair<Float, Float>>() }
+    val targetX = tabPositions[currentPage]?.first ?: 0f
+    val targetWidth = tabPositions[currentPage]?.second ?: 0f
+    val animatedX by animateDpAsState(targetValue = with(LocalDensity.current) { targetX.toDp() })
+    val animatedWidth by animateDpAsState(targetValue = with(LocalDensity.current) { targetWidth.toDp() })
+    Text(
+        modifier = Modifier
+            .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 8.dp),
+        text = "필터",
+        style = MaterialTheme.typography.titleLarge
+    )
+
+    TabRowComponent(
+        currentPage = currentPage,
+        types = types,
+        lazyListState = lazyListState,
+        onClickTab = {
+            onClickTab(it)
+        },
+        onMeasuredWidth = { index, pair ->
+            tabPositions[index] = pair
+        }
+    )
+
+    Box(
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        HorizontalDivider(
+            thickness = 1.dp,
+            color = gray40
+        )
+
+        Box(
+            modifier = Modifier
+                .offset(x = animatedX)
+                .width(animatedWidth)
+                .height(2.dp)
+                .background(color = MaterialTheme.colorScheme.primary)
+                .align(Alignment.BottomStart)
+        )
     }
 }
 
@@ -274,7 +405,8 @@ fun TabRowComponent(
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun PolicyType(modifier: Modifier = Modifier) {
+fun PolicyType(modifier: Modifier = Modifier, category: List<Category>?, onClick: (List<Category>?) -> Unit) {
+    val exceptionAllCategories = Category.entries.filter { c -> c != Category.ALL }
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -282,7 +414,9 @@ fun PolicyType(modifier: Modifier = Modifier) {
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         RoundChip(
-            text = "전체지역"
+            text = "전체지역",
+            isSelected = category == null,
+            onClick = { onClick(null) }
         )
 
         FlowRow(
@@ -291,9 +425,21 @@ fun PolicyType(modifier: Modifier = Modifier) {
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            stringArrayResource(R.array.categories).forEach {
+            exceptionAllCategories.forEach {
                 RoundChip(
-                    text = it
+                    text = it.categoryName.split(" ").first(),
+                    isSelected = category?.size != exceptionAllCategories.size &&
+                        (category?.contains(it) == true),
+                    onClick = {
+                        val newCategory = if (category?.contains(it) == true) {
+                            category - it
+                        } else {
+                            (category ?: listOf()) + it
+                        }
+                        onClick(
+                            if (newCategory.isEmpty() || newCategory.size == exceptionAllCategories.size) null else newCategory
+                        )
+                    }
                 )
             }
         }
@@ -302,15 +448,18 @@ fun PolicyType(modifier: Modifier = Modifier) {
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun RegionType(modifier: Modifier = Modifier) {
+fun RegionType(modifier: Modifier = Modifier, regions: List<Region>?, onClick: (List<Region>?) -> Unit) {
+    val exceptionAllRegion = Region.entries.filter { region -> region != Region.ALL }
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .padding(20.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         RoundChip(
-            text = "전체지역"
+            text = "전체지역",
+            isSelected = regions == null,
+            onClick = { onClick(null) }
         )
 
         FlowRow(
@@ -319,9 +468,20 @@ fun RegionType(modifier: Modifier = Modifier) {
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            stringArrayResource(R.array.categories).forEach {
+            exceptionAllRegion.forEach { region ->
                 RoundChip(
-                    text = it
+                    text = region.toRegionName(),
+                    isSelected = regions?.contains(region) == true,
+                    onClick = {
+                        val newRegions = if (regions?.contains(region) == true) {
+                            regions - region
+                        } else {
+                            (regions ?: listOf()) + region
+                        }
+                        onClick(
+                            if (newRegions.isEmpty() || newRegions.size == exceptionAllRegion.size) null else newRegions
+                        )
+                    }
                 )
             }
         }
@@ -330,7 +490,13 @@ fun RegionType(modifier: Modifier = Modifier) {
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun Serialized(modifier: Modifier = Modifier) {
+fun Serialized(
+    modifier: Modifier = Modifier,
+    specials: List<SpecializedType>?,
+    marriage: MarriageType?,
+    onClickSpecial: (List<SpecializedType>?) -> Unit,
+    onClickMarriage: (MarriageType?) -> Unit
+) {
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -353,9 +519,13 @@ fun Serialized(modifier: Modifier = Modifier) {
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                stringArrayResource(R.array.categories).forEach {
+                getAllList(job).forEach { item ->
                     RoundChip(
-                        text = it
+                        text = item.specialName,
+                        isSelected = isChecked(job, item, specials),
+                        onClick = {
+                            onClickSpecial(changeSpecialized(job, item, specials))
+                        }
                     )
                 }
             }
@@ -376,9 +546,13 @@ fun Serialized(modifier: Modifier = Modifier) {
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                stringArrayResource(R.array.weaks).forEach {
+                getAllList(weeks).forEach { item ->
                     RoundChip(
-                        text = it
+                        text = item.specialName,
+                        isSelected = isChecked(weeks, item, specials),
+                        onClick = {
+                            onClickSpecial(changeSpecialized(weeks, item, specials))
+                        }
                     )
                 }
             }
@@ -399,9 +573,13 @@ fun Serialized(modifier: Modifier = Modifier) {
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                stringArrayResource(R.array.etc).forEach {
+                getAllList(etc).forEach { item ->
                     RoundChip(
-                        text = it
+                        text = item.specialName,
+                        isSelected = isChecked(etc, item, specials),
+                        onClick = {
+                            onClickSpecial(changeSpecialized(etc, item, specials))
+                        }
                     )
                 }
             }
@@ -422,9 +600,21 @@ fun Serialized(modifier: Modifier = Modifier) {
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                stringArrayResource(R.array.marriages).forEach {
+                MarriageType.entries.forEach { type ->
                     RoundChip(
-                        text = it
+                        text = type.marriageName,
+                        isSelected = when (type) {
+                            MarriageType.UNRESTRICTED -> marriage == null
+                            else -> marriage == type
+                        },
+                        onClick = {
+                            onClickMarriage(
+                                when (type) {
+                                    MarriageType.UNRESTRICTED -> null
+                                    else -> type
+                                }
+                            )
+                        }
                     )
                 }
             }
@@ -433,17 +623,31 @@ fun Serialized(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun AgeEarn(modifier: Modifier = Modifier) {
+fun AgeEarn(
+    modifier: Modifier = Modifier,
+    minEarn: Int,
+    maxEarn: Int,
+    age: String?,
+    onChangeAge: (String) -> Unit,
+    onChangeEarn: (Int, Int) -> Unit
+) {
+    val focusManager = LocalFocusManager.current
+    val money = listOf(
+        0, 12_000_000, 14_000_000, 16_000_000,
+        18_000_000, 20_000_000, 21_000_000, 22_000_000,
+        23_000_000, 24_000_000, 25_000_000, 27_500_000,
+        30_000_000, 32_500_000, 35_000_000, 37_500_000,
+        40_000_000, 42_500_000, 45_000_000, 47_500_000, 50_000_000
+    )
     var sliderPosition by remember {
-        mutableStateOf(0f..0f)
-    }
-    var text by remember {
-        mutableStateOf("")
-    }
-    var count by remember {
-        mutableStateOf("0")
+        mutableStateOf(money.indexOf(minEarn).toFloat()..money.indexOf(maxEarn).toFloat())
     }
     val salaries = stringArrayResource(R.array.salaries).toList()
+    var start = salaries[ceil(sliderPosition.start.toDouble()).toInt()]
+    var end = salaries[ceil(sliderPosition.endInclusive.toDouble()).toInt()]
+    var count by remember {
+        mutableStateOf("${if (start != "0") start else ""} ${if (end != "0") "~ $end" else "0"}")
+    }
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -476,6 +680,9 @@ fun AgeEarn(modifier: Modifier = Modifier) {
                 modifier = Modifier.padding(top = 10.dp, bottom = 6.dp),
                 value = sliderPosition,
                 onValueChange = {
+                    start = salaries[ceil(it.start.toDouble()).toInt()]
+                    end = salaries[ceil(it.endInclusive.toDouble()).toInt()]
+                    count = "${if (start != "0") start else ""} ${if (end != "0") "~ $end" else "0"}"
                     sliderPosition = it
                 },
                 colors = SliderDefaults.colors(
@@ -486,9 +693,7 @@ fun AgeEarn(modifier: Modifier = Modifier) {
                 steps = 19,
                 valueRange = 0f..19.1f,
                 onValueChangeFinished = {
-                    val start = salaries[ceil(sliderPosition.start.toDouble()).toInt()]
-                    val end = salaries[ceil(sliderPosition.endInclusive.toDouble()).toInt()]
-                    count = "${if (start != "0") start else ""} ${if (end != "0") "~ $end" else "0"}"
+                    onChangeEarn(money[ceil(sliderPosition.start.toDouble()).toInt()], money[ceil(sliderPosition.endInclusive.toDouble()).toInt()])
                 }
             )
             Row(
@@ -546,10 +751,19 @@ fun AgeEarn(modifier: Modifier = Modifier) {
                             shape = RoundedCornerShape(6.dp)
                         )
                         .padding(vertical = 10.dp, horizontal = 12.dp),
-                    value = text,
-                    onValueChange = { text = it },
+                    value = age ?: "",
+                    onValueChange = onChangeAge,
                     textStyle = MaterialTheme.typography.titleSmall.copy(
                         textAlign = TextAlign.End
+                    ),
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = ImeAction.Done,
+                        keyboardType = KeyboardType.Number
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onDone = {
+                            focusManager.clearFocus()
+                        }
                     )
                 ) { innerTextField ->
                     Box(
@@ -558,7 +772,7 @@ fun AgeEarn(modifier: Modifier = Modifier) {
                             .padding(horizontal = 12.dp),
                         contentAlignment = Alignment.CenterEnd
                     ) {
-                        if (text.isEmpty()) {
+                        if (age.isNullOrEmpty()) {
                             Text(
                                 text = "20",
                                 style = MaterialTheme.typography.titleSmall.copy(

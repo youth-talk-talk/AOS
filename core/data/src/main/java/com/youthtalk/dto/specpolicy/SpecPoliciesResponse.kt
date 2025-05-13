@@ -1,6 +1,6 @@
 package com.youthtalk.dto.specpolicy
 
-import com.youthtalk.model.PolicyResponse
+import com.youthtalk.dto.policy.PolicyResponse
 import kotlinx.serialization.Serializable
 
 @Serializable

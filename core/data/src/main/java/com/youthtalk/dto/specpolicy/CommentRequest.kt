@@ -2,6 +2,7 @@ package com.youthtalk.dto.specpolicy
 
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.serializer
 import okhttp3.RequestBody.Companion.toRequestBody
 
 @Serializable

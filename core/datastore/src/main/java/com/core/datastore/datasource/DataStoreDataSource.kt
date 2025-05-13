@@ -130,8 +130,14 @@ class DataStoreDataSource @Inject constructor(
     }
 
     override suspend fun setRecentList(list: List<String>) {
-        dataStore.edit { prefs ->
-            prefs[RECENT_LIST] = list.joinToString(",")
+        if (list.isNotEmpty()) {
+            dataStore.edit { prefs ->
+                prefs[RECENT_LIST] = list.joinToString(",")
+            }
+        } else {
+            dataStore.edit {
+                it.remove(RECENT_LIST)
+            }
         }
     }
 

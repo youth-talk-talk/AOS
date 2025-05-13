@@ -2,9 +2,9 @@ package com.core.dataapi.repository
 
 import androidx.paging.PagingData
 import com.youthtalk.model.FilterInfo
-import com.youthtalk.model.Policy
 import com.youthtalk.model.Post
 import com.youthtalk.model.SearchPolicy
+import com.youthtalk.model.policy.Policy
 import kotlinx.coroutines.flow.Flow
 
 interface SearchRepository {

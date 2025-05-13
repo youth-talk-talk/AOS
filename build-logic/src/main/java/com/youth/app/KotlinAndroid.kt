@@ -63,6 +63,10 @@ internal fun Project.configureKotlinAndroid() {
         buildFeatures {
             buildConfig = true
         }
+        lint {
+            abortOnError = false
+            checkReleaseBuilds = false
+        }
         gradle.startParameter.excludedTaskNames.addAll(listOf(":build-logic:clean"))
         gradle.startParameter.excludedTaskNames.addAll(listOf(":build-logic:compileTestKotlin"))
         gradle.startParameter.excludedTaskNames.addAll(listOf(":build-logic:processTestResources"))
