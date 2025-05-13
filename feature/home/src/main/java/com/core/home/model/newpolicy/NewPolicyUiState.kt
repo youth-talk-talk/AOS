@@ -1,8 +1,8 @@
 package com.core.home.model.newpolicy
 
 import com.core.base.model.UiState
-import com.youthtalk.model.enum.SortType
 import com.youthtalk.model.home.NewPolicies
+import com.youthtalk.model.typeenum.SortType
 
 data class NewPolicyUiState(
     val isLoading: Boolean,

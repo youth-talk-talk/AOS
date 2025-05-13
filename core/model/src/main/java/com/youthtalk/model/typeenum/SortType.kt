@@ -1,4 +1,4 @@
-package com.youthtalk.model.enum
+package com.youthtalk.model.typeenum
 
 import kotlinx.serialization.Serializable
 

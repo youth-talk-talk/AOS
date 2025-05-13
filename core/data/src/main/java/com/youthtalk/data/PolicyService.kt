@@ -9,7 +9,7 @@ import com.youthtalk.dto.home.HomeDataResponse
 import com.youthtalk.dto.home.NewPoliciesResponse
 import com.youthtalk.dto.specpolicy.SpecPoliciesResponse
 import com.youthtalk.model.PolicyResponse
-import com.youthtalk.model.enum.SortType
+import com.youthtalk.model.typeenum.SortType
 import okhttp3.RequestBody
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -38,6 +38,7 @@ interface PolicyService {
     @POST("/api/v1/policies/search")
     suspend fun postSpecPolicies(
         @Body requestBody: RequestBody,
+        @Query("sort") sort: SortType,
         @Query("page") page: Int,
         @Query("size") size: Int
     ): CommonResponse<SpecPoliciesResponse>

@@ -1,7 +1,7 @@
 package com.core.domain.usercase.home
 
 import com.core.dataapi.repository.HomeRepository
-import com.youthtalk.model.enum.SortType
+import com.youthtalk.model.typeenum.SortType
 import javax.inject.Inject
 
 class GetNewPolicesUseCase @Inject constructor(

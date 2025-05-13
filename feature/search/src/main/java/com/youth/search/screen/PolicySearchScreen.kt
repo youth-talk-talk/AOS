@@ -11,39 +11,47 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Text
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.youth.search.component.RecentText
 import com.youth.search.component.SearchBar
 import com.youth.search.model.SearchState
+import com.youth.search.model.policysearch.PolicySearchUiEvent
+import com.youth.search.viewmodel.PolicySearchViewModel
 import com.youthtalk.component.empty.EmptyScreen
 import com.youthtalk.designsystem.gray10
 import com.youthtalk.designsystem.gray80
+import timber.log.Timber
 
 @Composable
-fun PolicySearchScreen(modifier: Modifier = Modifier, onBack: () -> Unit) {
-    var search by remember {
-        mutableStateOf("")
-    }
-    var recents by remember {
-        mutableStateOf(listOf("월제 지원", "서울시 청년보조", "학자금 대출 이자"))
-    }
-    var state by remember {
-        mutableStateOf(SearchState.NONE)
+fun PolicySearchScreen(
+    modifier: Modifier = Modifier,
+    viewModel: PolicySearchViewModel = hiltViewModel(),
+    onBack: () -> Unit,
+    onClickPolicyDetail: (Long) -> Unit
+) {
+    val uiState by viewModel.state.collectAsStateWithLifecycle()
+    val policies = uiState.policies.collectAsLazyPagingItems()
+    var search by rememberSaveable {
+        mutableStateOf(uiState.searchFilter.keyword ?: "")
     }
 
     BackHandler {
-        when (state) {
+        when (uiState.state) {
             SearchState.NONE -> onBack()
-            SearchState.SEARCH -> state = SearchState.NONE
+            SearchState.SEARCH -> viewModel.setEvent(PolicySearchUiEvent.SetState(SearchState.NONE))
         }
     }
 
@@ -57,7 +65,7 @@ fun PolicySearchScreen(modifier: Modifier = Modifier, onBack: () -> Unit) {
             onClickBack = {},
             onTextChange = { search = it },
             onSearch = {
-                state = SearchState.SEARCH
+                viewModel.setEvent(PolicySearchUiEvent.Search(it))
             },
             onClear = {
                 search = ""
@@ -65,30 +73,39 @@ fun PolicySearchScreen(modifier: Modifier = Modifier, onBack: () -> Unit) {
         )
 
         Crossfade(
-            targetState = state
+            targetState = uiState.state
         ) {
             when (it) {
                 SearchState.NONE -> {
                     Column {
                         SearchScreen(
-                            recents = recents,
-                            onDelete = {
-                                val list = recents.toMutableList()
-                                list.remove(it)
-                                recents = list
+                            recents = uiState.recently,
+                            onDelete = { search ->
+                                viewModel.setEvent(PolicySearchUiEvent.SetRecently(uiState.recently.filter { value -> value != search }))
                             },
                             onDeleteAll = {
-                                recents = mutableListOf()
+                                viewModel.setEvent(PolicySearchUiEvent.SetRecently(listOf()))
                             },
-                            onClickItem = {
-                                state = SearchState.SEARCH
+                            onClickItem = { item ->
+                                search = item
+                                viewModel.setEvent(PolicySearchUiEvent.Search(item))
                             }
                         )
                     }
                 }
 
                 SearchState.SEARCH -> {
-                    PolicySearchResultScreen()
+                    PolicySearchResultScreen(
+                        isLoading = uiState.searchLoading,
+                        count = uiState.count,
+                        searchFilter = uiState.searchFilter,
+                        sortType = uiState.sortType,
+                        policies = policies,
+                        applyFilter = { searchFilter, sortType ->
+                            viewModel.setEvent(PolicySearchUiEvent.SetFilter(searchFilter, sortType))
+                        },
+                        onClickPolicyDetail = onClickPolicyDetail
+                    )
                 }
             }
         }
@@ -104,7 +121,7 @@ fun SearchScreen(
     onClickItem: (String) -> Unit
 ) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(top = 10.dp, bottom = 20.dp, start = 16.dp, end = 16.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -129,7 +146,7 @@ fun SearchScreen(
             )
         )
     }
-
+    Timber.e("recents ${recents.size}")
     if (recents.isNotEmpty()) {
         Column(
             modifier = Modifier

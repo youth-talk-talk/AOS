@@ -28,7 +28,7 @@ import com.youth.app.core.designsystem.R
 import com.youthtalk.designsystem.gray10
 import com.youthtalk.designsystem.gray100
 import com.youthtalk.designsystem.gray90
-import com.youthtalk.model.enum.SortType
+import com.youthtalk.model.typeenum.SortType
 
 @Composable
 fun SortTypeDropDown(modifier: Modifier = Modifier, sortType: SortType, onClickSort: (SortType) -> Unit) {

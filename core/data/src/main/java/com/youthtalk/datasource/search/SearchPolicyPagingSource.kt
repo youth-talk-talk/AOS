@@ -5,9 +5,9 @@ import androidx.paging.PagingState
 import com.youthtalk.data.PolicyService
 import com.youthtalk.datasource.PagingSize.SEARCH_PAGE_SIZE
 import com.youthtalk.dto.specpolicy.FilterInfoRequest
-import com.youthtalk.mapper.toData
 import com.youthtalk.model.FilterInfo
-import com.youthtalk.model.Policy
+import com.youthtalk.model.policy.Policy
+import com.youthtalk.model.typeenum.SortType
 import java.io.IOException
 import javax.inject.Inject
 import retrofit2.HttpException
@@ -27,21 +27,16 @@ class SearchPolicyPagingSource @Inject constructor(
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Policy> {
         try {
             val pageNumber = params.key ?: 0
-            val requestBody = FilterInfoRequest(
-                age = filterInfo.age,
-                categories = null,
-                employmentCodeList = filterInfo.employmentCodeList,
-                keyword = keyword,
-                isFinished = filterInfo.isFinished
-            ).toRequestBody()
+            val requestBody = FilterInfoRequest().toRequestBody()
 
             val response = policyService.postSpecPolicies(
                 requestBody = requestBody,
+                sort = SortType.RECENT,
                 page = pageNumber,
                 size = params.loadSize
             )
 
-            val policies = response.data?.policyList?.map { it.toData() } ?: listOf()
+            val policies = listOf<Policy>()
 
             return LoadResult.Page(
                 data = policies,

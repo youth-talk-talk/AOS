@@ -4,6 +4,7 @@ plugins {
     id("youth.android.library")
     id("youth.android.hilt")
     id("kotlinx-serialization")
+//    id("androidx.room")
     kotlin("plugin.serialization")
 }
 

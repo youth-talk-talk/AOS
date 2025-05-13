@@ -28,7 +28,7 @@ fun FilterChip(modifier: Modifier = Modifier, text: String, count: Int = 0, onCl
         modifier = modifier
             .border(
                 width = 1.dp,
-                color = gray50,
+                color = if (count == 0) gray50 else MaterialTheme.colorScheme.primary,
                 shape = RoundedCornerShape(100.dp)
             )
             .clickable(
@@ -50,7 +50,7 @@ fun FilterChip(modifier: Modifier = Modifier, text: String, count: Int = 0, onCl
         if (count != 0) {
             Text(
                 modifier = Modifier.padding(start = 2.dp),
-                text = text,
+                text = "$count",
                 style = MaterialTheme.typography.displaySmall.copy(
                     color = MaterialTheme.colorScheme.primary
                 )
@@ -61,7 +61,7 @@ fun FilterChip(modifier: Modifier = Modifier, text: String, count: Int = 0, onCl
             modifier = Modifier.size(16.dp),
             painter = painterResource(R.drawable.arrowdown),
             contentDescription = "아래 화살표",
-            colorFilter = ColorFilter.tint(color = gray80)
+            colorFilter = ColorFilter.tint(color = if (count == 0) gray80 else MaterialTheme.colorScheme.primary)
         )
     }
 }

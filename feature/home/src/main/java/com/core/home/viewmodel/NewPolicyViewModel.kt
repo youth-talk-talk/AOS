@@ -6,7 +6,7 @@ import com.core.domain.usercase.home.GetNewPolicesUseCase
 import com.core.home.model.newpolicy.NewPolicyUiEffect
 import com.core.home.model.newpolicy.NewPolicyUiEvent
 import com.core.home.model.newpolicy.NewPolicyUiState
-import com.youthtalk.model.enum.SortType
+import com.youthtalk.model.typeenum.SortType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.catch
