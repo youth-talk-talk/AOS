@@ -101,7 +101,8 @@ fun NavHostScreen(
         settingNotificationNavigation()
 
         policySearchNavigation(
-            onBack = { navController.popBackStack() }
+            onBack = { navController.popBackStack() },
+            onClickPolicyDetail = navController::navigatePolicyDetail
         )
         communitySearchNavigation(
             onBack = { navController.popBackStack() }

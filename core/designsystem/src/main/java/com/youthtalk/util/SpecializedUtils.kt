@@ -1,6 +1,6 @@
 package com.youthtalk.util
 
-import com.youthtalk.model.enum.SpecializedType
+import com.youthtalk.model.typeenum.SpecializedType
 
 object SpecializedUtils {
     val job = listOf(

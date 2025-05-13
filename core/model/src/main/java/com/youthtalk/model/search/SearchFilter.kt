@@ -1,13 +1,13 @@
 package com.youthtalk.model.search
 
 import com.youthtalk.model.Category
-import com.youthtalk.model.Region
-import com.youthtalk.model.enum.EducationType
-import com.youthtalk.model.enum.EmploymentType
-import com.youthtalk.model.enum.MarriageType
-import com.youthtalk.model.enum.SpecializedType
+import com.youthtalk.model.typeenum.EducationType
+import com.youthtalk.model.typeenum.EmploymentType
+import com.youthtalk.model.typeenum.MarriageType
+import com.youthtalk.model.typeenum.SpecializedType
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 
 @Serializable
@@ -19,9 +19,21 @@ data class SearchFilter(
     val education: List<EducationType>? = null,
     val employment: List<EmploymentType>? = null,
     val specialization: List<SpecializedType>? = null,
-    val region: List<Region>? = null,
+    val region: List<String>? = null,
     val minEarn: Int? = null,
     val maxEarn: Int? = null
 ) {
-    fun toRequestBody() = Json.encodeToString(serializer(), this).toRequestBody()
+    fun toRequestBody(): RequestBody {
+        return Json.encodeToString(serializer(), this).toRequestBody()
+    }
+
+    fun isAllNull(): Boolean {
+        return category == null && marriage == null && age == null &&
+            education == null && employment == null && specialization == null &&
+            region == null && minEarn == null && maxEarn == null
+    }
+
+    fun earnToString(): String {
+        return "${minEarn?.let { "${it / 10000}만" }} ~ ${maxEarn?.let { "${it / 10000}만" }} ${if (maxEarn == 50_000_000) "이상" else ""}"
+    }
 }

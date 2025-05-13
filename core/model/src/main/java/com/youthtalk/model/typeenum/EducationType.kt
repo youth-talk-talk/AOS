@@ -1,4 +1,4 @@
-package com.youthtalk.model.enum
+package com.youthtalk.model.typeenum
 
 enum class EducationType(val educationName: String) {
     UNRESTRICTED("전체 선택"),

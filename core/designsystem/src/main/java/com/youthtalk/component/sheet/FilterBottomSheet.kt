@@ -74,12 +74,12 @@ import com.youthtalk.designsystem.gray90
 import com.youthtalk.model.Category
 import com.youthtalk.model.FilterType
 import com.youthtalk.model.Region
-import com.youthtalk.model.enum.EducationType
-import com.youthtalk.model.enum.EmploymentType
-import com.youthtalk.model.enum.MarriageType
-import com.youthtalk.model.enum.SpecializedType
 import com.youthtalk.model.search.SearchFilter
 import com.youthtalk.model.toRegionName
+import com.youthtalk.model.typeenum.EducationType
+import com.youthtalk.model.typeenum.EmploymentType
+import com.youthtalk.model.typeenum.MarriageType
+import com.youthtalk.model.typeenum.SpecializedType
 import com.youthtalk.util.SpecializedUtils.changeSpecialized
 import com.youthtalk.util.SpecializedUtils.etc
 import com.youthtalk.util.SpecializedUtils.getAllList
@@ -87,9 +87,7 @@ import com.youthtalk.util.SpecializedUtils.isChecked
 import com.youthtalk.util.SpecializedUtils.job
 import com.youthtalk.util.SpecializedUtils.weeks
 import kotlin.math.ceil
-import kotlin.math.max
 import kotlinx.coroutines.launch
-import okhttp3.internal.http2.Header
 import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
@@ -448,7 +446,7 @@ fun PolicyType(modifier: Modifier = Modifier, category: List<Category>?, onClick
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun RegionType(modifier: Modifier = Modifier, regions: List<Region>?, onClick: (List<Region>?) -> Unit) {
+fun RegionType(modifier: Modifier = Modifier, regions: List<String>?, onClick: (List<String>?) -> Unit) {
     val exceptionAllRegion = Region.entries.filter { region -> region != Region.ALL }
     Column(
         modifier = modifier
@@ -471,12 +469,12 @@ fun RegionType(modifier: Modifier = Modifier, regions: List<Region>?, onClick: (
             exceptionAllRegion.forEach { region ->
                 RoundChip(
                     text = region.toRegionName(),
-                    isSelected = regions?.contains(region) == true,
+                    isSelected = regions?.contains(region.region) == true,
                     onClick = {
-                        val newRegions = if (regions?.contains(region) == true) {
-                            regions - region
+                        val newRegions = if (regions?.contains(region.region) == true) {
+                            regions - region.region
                         } else {
-                            (regions ?: listOf()) + region
+                            (regions ?: listOf()) + region.region
                         }
                         onClick(
                             if (newRegions.isEmpty() || newRegions.size == exceptionAllRegion.size) null else newRegions

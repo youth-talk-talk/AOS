@@ -11,10 +11,11 @@ fun NavController.navigatePolicySearch(navOptions: NavOptions? = null) {
     navigate(PolicySearch, navOptions)
 }
 
-fun NavGraphBuilder.policySearchNavigation(onBack: () -> Unit) {
+fun NavGraphBuilder.policySearchNavigation(onBack: () -> Unit, onClickPolicyDetail: (Long) -> Unit) {
     composable<PolicySearch> {
         PolicySearchScreen(
-            onBack = onBack
+            onBack = onBack,
+            onClickPolicyDetail = onClickPolicyDetail
         )
     }
 }

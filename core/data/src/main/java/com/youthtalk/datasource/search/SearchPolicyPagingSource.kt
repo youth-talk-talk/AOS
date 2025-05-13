@@ -7,6 +7,7 @@ import com.youthtalk.datasource.PagingSize.SEARCH_PAGE_SIZE
 import com.youthtalk.dto.specpolicy.FilterInfoRequest
 import com.youthtalk.model.FilterInfo
 import com.youthtalk.model.policy.Policy
+import com.youthtalk.model.typeenum.SortType
 import java.io.IOException
 import javax.inject.Inject
 import retrofit2.HttpException
@@ -30,6 +31,7 @@ class SearchPolicyPagingSource @Inject constructor(
 
             val response = policyService.postSpecPolicies(
                 requestBody = requestBody,
+                sort = SortType.RECENT,
                 page = pageNumber,
                 size = params.loadSize
             )

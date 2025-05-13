@@ -13,6 +13,7 @@ import com.youth.search.model.policysearch.PolicySearchUiEvent
 import com.youth.search.model.policysearch.PolicySearchUiState
 import com.youthtalk.model.policy.PolicyType
 import com.youthtalk.model.search.SearchFilter
+import com.youthtalk.model.typeenum.SortType
 import com.youthtalk.util.SpecializedUtils.getFilterList
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -42,19 +43,19 @@ class PolicySearchViewModel @Inject constructor(
             is PolicySearchUiEvent.SetRecently -> setRecentlyListUseCase(event.recently)
             is PolicySearchUiEvent.SetState -> setState(event.state)
             is PolicySearchUiEvent.Search -> search(event.search)
-            is PolicySearchUiEvent.SetFilter -> postSpecPolicies(event.searchFilter)
+            is PolicySearchUiEvent.SetFilter -> postSpecPolicies(event.searchFilter, event.sortType)
         }
     }
 
-    private fun postSpecPolicies(searchFilter: SearchFilter) {
+    private fun postSpecPolicies(searchFilter: SearchFilter, sortType: SortType) {
         val search = searchFilter.copy(
             specialization = getFilterList(searchFilter.specialization)
         )
         viewModelScope.launch {
             Timber.e("PolicySearchViewModel search start")
             combine(
-                getPolicyCountUseCase(search),
-                postSpecPoliciesUseCase(search, PolicyType.SEARCH)
+                getPolicyCountUseCase(search, sortType),
+                postSpecPoliciesUseCase(search, PolicyType.SEARCH, sortType)
             ) { count, policies ->
                 Pair(count, policies)
             }
@@ -67,7 +68,15 @@ class PolicySearchViewModel @Inject constructor(
                 }
                 .collectLatest { (count, policies) ->
                     Timber.e("PolicySearchViewModel search success $count $policies")
-                    setState { copy(searchLoading = false, count = count, policies = policies.cachedIn(viewModelScope), searchFilter = searchFilter) }
+                    setState {
+                        copy(
+                            searchLoading = false,
+                            count = count,
+                            policies = policies.cachedIn(viewModelScope),
+                            searchFilter = searchFilter,
+                            sortType = sortType
+                        )
+                    }
                 }
         }
     }
@@ -85,7 +94,7 @@ class PolicySearchViewModel @Inject constructor(
             setRecentlyListUseCase(list)
 
             setState { copy(searchFilter = searchFilter.copy(keyword = search)) }
-            postSpecPolicies(state.value.searchFilter)
+            postSpecPolicies(state.value.searchFilter, state.value.sortType)
         }
     }
 

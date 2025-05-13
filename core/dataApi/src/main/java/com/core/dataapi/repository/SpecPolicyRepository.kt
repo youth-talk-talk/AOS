@@ -5,11 +5,12 @@ import com.youthtalk.model.FilterInfo
 import com.youthtalk.model.policy.Policy
 import com.youthtalk.model.policy.PolicyType
 import com.youthtalk.model.search.SearchFilter
+import com.youthtalk.model.typeenum.SortType
 import kotlinx.coroutines.flow.Flow
 
 interface SpecPolicyRepository {
-    fun getPolicies(searchFilter: SearchFilter, policyType: PolicyType): Flow<Flow<PagingData<Policy>>>
-    fun getCount(searchFilter: SearchFilter): Flow<Int>
+    fun getPolicies(searchFilter: SearchFilter, policyType: PolicyType, sortType: SortType): Flow<Flow<PagingData<Policy>>>
+    fun getCount(searchFilter: SearchFilter, sortType: SortType): Flow<Int>
     fun getFilterInfo(): Flow<FilterInfo>
     fun saveFilterInfo(filterInfo: FilterInfo): Flow<FilterInfo>
     fun postScrap(id: String): Flow<String>

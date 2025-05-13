@@ -36,7 +36,12 @@ import com.youthtalk.designsystem.gray80
 import timber.log.Timber
 
 @Composable
-fun PolicySearchScreen(modifier: Modifier = Modifier, viewModel: PolicySearchViewModel = hiltViewModel(), onBack: () -> Unit) {
+fun PolicySearchScreen(
+    modifier: Modifier = Modifier,
+    viewModel: PolicySearchViewModel = hiltViewModel(),
+    onBack: () -> Unit,
+    onClickPolicyDetail: (Long) -> Unit
+) {
     val uiState by viewModel.state.collectAsStateWithLifecycle()
     val policies = uiState.policies.collectAsLazyPagingItems()
     var search by rememberSaveable {
@@ -94,10 +99,12 @@ fun PolicySearchScreen(modifier: Modifier = Modifier, viewModel: PolicySearchVie
                         isLoading = uiState.searchLoading,
                         count = uiState.count,
                         searchFilter = uiState.searchFilter,
+                        sortType = uiState.sortType,
                         policies = policies,
-                        applyFilter = { searchFilter ->
-                            viewModel.setEvent(PolicySearchUiEvent.SetFilter(searchFilter))
-                        }
+                        applyFilter = { searchFilter, sortType ->
+                            viewModel.setEvent(PolicySearchUiEvent.SetFilter(searchFilter, sortType))
+                        },
+                        onClickPolicyDetail = onClickPolicyDetail
                     )
                 }
             }

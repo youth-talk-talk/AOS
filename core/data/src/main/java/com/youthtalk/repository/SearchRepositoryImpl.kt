@@ -19,6 +19,7 @@ import com.youthtalk.model.FilterInfo
 import com.youthtalk.model.Post
 import com.youthtalk.model.SearchPolicy
 import com.youthtalk.model.policy.Policy
+import com.youthtalk.model.typeenum.SortType
 import com.youthtalk.utils.ErrorUtils.throwableError
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
@@ -55,6 +56,7 @@ class SearchRepositoryImpl @Inject constructor(
         runCatching {
             policyService.postSpecPolicies(
                 requestBody = requestBody,
+                sort = SortType.RECENT,
                 page = 0,
                 size = 10
             )

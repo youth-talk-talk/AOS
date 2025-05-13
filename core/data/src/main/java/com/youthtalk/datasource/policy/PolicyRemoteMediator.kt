@@ -10,6 +10,7 @@ import com.youthtalk.datasource.room.YouthDatabase
 import com.youthtalk.mapper.toDomain
 import com.youthtalk.model.policy.Policy
 import com.youthtalk.model.policy.PolicyType
+import com.youthtalk.model.typeenum.SortType
 import java.io.IOException
 import javax.inject.Inject
 import okhttp3.RequestBody
@@ -21,6 +22,7 @@ class PolicyRemoteMediator @Inject constructor(
     private val policyService: PolicyService,
     private val requestBody: RequestBody,
     private val policyType: PolicyType,
+    private val sortType: SortType,
     private val youthDatabase: YouthDatabase
 ) : RemoteMediator<Int, Policy>() {
     private val policyDao = youthDatabase.policyDao()
@@ -43,20 +45,23 @@ class PolicyRemoteMediator @Inject constructor(
             }
         }
         try {
-            val page = remoteKey?.nextPage ?: 0
-            val response = policyService.postSpecPolicies(
-                requestBody = requestBody,
-                page = page,
-                size = state.config.pageSize
-            )
-            val totalCount = response.data?.totalCount ?: 0
-            Timber.e("PolicyRemoteMediator page $page, totalCount $totalCount")
-            val policies = response.data?.policyList?.map { it.toDomain().copy(policyType = policyType) } ?: listOf()
             youthDatabase.withTransaction {
                 if (loadType == LoadType.REFRESH) {
                     policyDao.deleteAll(policyType)
                     policyRemoteKeyDao.deleteAll(policyType)
                 }
+            }
+            val page = remoteKey?.nextPage ?: 0
+            val response = policyService.postSpecPolicies(
+                requestBody = requestBody,
+                sort = sortType,
+                page = page,
+                size = state.config.pageSize
+            )
+            val totalCount = response.data?.totalCount ?: 0
+            val policies = response.data?.policyList?.map { it.toDomain().copy(policyType = policyType) } ?: listOf()
+            Timber.e("PolicyRemoteMediator page $page, policies ${policies.map { it.title }}")
+            youthDatabase.withTransaction {
                 policyRemoteKeyDao.insertOrReplace(PolicyRemoteKey(nextPage = page + 1, policyType = policyType))
                 policyDao.insertAll(policies)
             }

@@ -5,9 +5,9 @@ import com.core.datastore.datasource.DataStoreDataSource
 import com.core.exception.NoDataException
 import com.youthtalk.data.PolicyService
 import com.youthtalk.mapper.toDomain
-import com.youthtalk.model.enum.SortType
 import com.youthtalk.model.home.HomeData
 import com.youthtalk.model.home.NewPolicies
+import com.youthtalk.model.typeenum.SortType
 import com.youthtalk.utils.ErrorUtils.throwableError
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow

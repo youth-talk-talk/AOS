@@ -1,4 +1,4 @@
-package com.youthtalk.model.enum
+package com.youthtalk.model.typeenum
 
 enum class InstitutionType(institutionName: String) {
     CENTER("중앙부처"),

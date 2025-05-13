@@ -18,6 +18,7 @@ import com.youthtalk.model.FilterInfo
 import com.youthtalk.model.policy.Policy
 import com.youthtalk.model.policy.PolicyType
 import com.youthtalk.model.search.SearchFilter
+import com.youthtalk.model.typeenum.SortType
 import com.youthtalk.utils.ErrorUtils.throwableError
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
@@ -32,17 +33,18 @@ class SpecPolicyRepositoryImpl @Inject constructor(
 ) : SpecPolicyRepository {
 
     @OptIn(ExperimentalPagingApi::class)
-    override fun getPolicies(searchFilter: SearchFilter, policyType: PolicyType): Flow<Flow<PagingData<Policy>>> = flow {
+    override fun getPolicies(searchFilter: SearchFilter, policyType: PolicyType, sortType: SortType): Flow<Flow<PagingData<Policy>>> = flow {
         emit(
             Pager(
                 config = PagingConfig(
                     pageSize = 10,
-                    enablePlaceholders = false
+                    enablePlaceholders = true
                 ),
                 remoteMediator = PolicyRemoteMediator(
                     policyService = policyService,
                     requestBody = searchFilter.toRequestBody(),
                     policyType = policyType,
+                    sortType = sortType,
                     youthDatabase = youthDatabase
                 )
             ) {
@@ -51,10 +53,11 @@ class SpecPolicyRepositoryImpl @Inject constructor(
         )
     }
 
-    override fun getCount(searchFilter: SearchFilter): Flow<Int> = flow {
+    override fun getCount(searchFilter: SearchFilter, sortType: SortType): Flow<Int> = flow {
         runCatching {
             policyService.postSpecPolicies(
                 requestBody = searchFilter.toRequestBody(),
+                sort = sortType,
                 page = 0,
                 size = 10
             )

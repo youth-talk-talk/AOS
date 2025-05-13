@@ -1,4 +1,4 @@
-package com.youthtalk.model.enum
+package com.youthtalk.model.typeenum
 
 enum class MarriageType(val marriageName: String) {
     UNRESTRICTED("제한 없음"),

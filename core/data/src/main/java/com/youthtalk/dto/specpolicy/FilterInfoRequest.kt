@@ -2,13 +2,12 @@ package com.youthtalk.dto.specpolicy
 
 import com.youthtalk.model.Category
 import com.youthtalk.model.Region
-import com.youthtalk.model.enum.EducationType
-import com.youthtalk.model.enum.EmploymentType
-import com.youthtalk.model.enum.MarriageType
-import com.youthtalk.model.enum.SpecializedType
+import com.youthtalk.model.typeenum.EducationType
+import com.youthtalk.model.typeenum.EmploymentType
+import com.youthtalk.model.typeenum.MarriageType
+import com.youthtalk.model.typeenum.SpecializedType
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.serializer
 import okhttp3.RequestBody.Companion.toRequestBody
 
 @Serializable
