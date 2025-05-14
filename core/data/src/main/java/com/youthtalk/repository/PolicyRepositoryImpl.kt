@@ -1,21 +1,22 @@
 package com.youthtalk.repository
 
-import android.util.Log
-import com.core.dataapi.repository.PolicyDetailRepository
+import com.core.dataapi.repository.PolicyRepository
 import com.core.exception.NoDataException
 import com.youthtalk.data.PolicyService
 import com.youthtalk.dto.PolicyDetailResponse
 import com.youthtalk.mapper.toData
+import com.youthtalk.mapper.toDomain
 import com.youthtalk.model.PolicyDetail
+import com.youthtalk.model.policy.Policy
 import com.youthtalk.utils.ErrorUtils.throwableError
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import timber.log.Timber
 
-class PolicyDetailRepositoryImpl @Inject constructor(
+class PolicyRepositoryImpl @Inject constructor(
     private val policyService: PolicyService
-) : PolicyDetailRepository {
+) : PolicyRepository {
 
     override fun getPolicyDetail(policyId: String): Flow<PolicyDetail> = flow {
         runCatching {
@@ -27,8 +28,22 @@ class PolicyDetailRepositoryImpl @Inject constructor(
                 } ?: throw NoDataException("no Data")
             }
             .onFailure {
-                Log.e("YOON-CHAN", "getPolicyDetail $it")
                 Timber.e("getPolicyDetail $it")
+                throwableError<PolicyDetailResponse>(it)
+            }
+    }
+
+    override fun getRecentlyViewPolicies(): Flow<List<Policy>> = flow {
+        runCatching {
+            policyService.getRecentlyViewPolicies()
+        }
+            .onSuccess { response ->
+                response.data?.let { data ->
+                    emit(data.map { it.toDomain() })
+                } ?: throw NoDataException("no Data")
+            }
+            .onFailure {
+                Timber.e("PolicyRepositoryImpl getRecentlyViewPolicies error $it")
                 throwableError<PolicyDetailResponse>(it)
             }
     }

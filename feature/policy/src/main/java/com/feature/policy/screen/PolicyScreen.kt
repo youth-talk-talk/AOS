@@ -1,221 +1,196 @@
 package com.feature.policy.screen
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.PrimaryTabRow
-import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
-import androidx.compose.ui.input.nestedscroll.NestedScrollSource
-import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemKey
 import com.feature.policy.component.DDayPolicy
 import com.feature.policy.component.RecentViewPolicy
+import com.feature.policy.model.PolicyUiEvent
+import com.feature.policy.viewmodel.PolicyViewModel
 import com.youthtalk.component.card.PolicyCard
+import com.youthtalk.component.chip.RoundChip
+import com.youthtalk.component.dropdown.SortTypeDropDown
 import com.youthtalk.component.item.TitleItem
+import com.youthtalk.component.sheet.RegionBottomSheet
 import com.youthtalk.component.topbar.RegionTopBar
 import com.youthtalk.designsystem.gray10
 import com.youthtalk.designsystem.gray40
-import com.youthtalk.designsystem.gray70
 import com.youthtalk.model.Category
 import com.youthtalk.model.Region
-import java.time.LocalDate
-import kotlinx.coroutines.launch
-import timber.log.Timber
+import com.youthtalk.model.policy.Policy
+import java.text.DecimalFormat
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun PolicyScreen(
     modifier: Modifier = Modifier,
+    viewModel: PolicyViewModel = hiltViewModel(),
     onClickRecentViewPolicy: () -> Unit,
     onClickDeadlinePolicy: () -> Unit,
-    onClickPolicyOverView: (Category) -> Unit
+    onClickPolicyOverView: (Category) -> Unit,
+    onClickPolicyDetail: (Long) -> Unit,
+    onClickPolicySearch: () -> Unit
 ) {
-    var selectDay by remember {
-        mutableStateOf(LocalDate.now())
-    }
+    val state by viewModel.state.collectAsStateWithLifecycle()
     val categories = Category.entries.toList()
-    var pagerState = rememberPagerState { categories.size }
-    val scope = rememberCoroutineScope()
-    val scrollState = rememberScrollState()
-
-    var isScrollingUp by remember { mutableStateOf(true) }
-    var lastOffset by remember { mutableStateOf(0f) }
-
-    LaunchedEffect(scrollState.value) {
-        Timber.e("scrollState ${scrollState.value}, lastOffset $lastOffset")
-        isScrollingUp = scrollState.value <= lastOffset
-        lastOffset = scrollState.value.toFloat()
+    val allPolicies = state.categoryPolicies.collectAsLazyPagingItems()
+    var bottomSheet by remember {
+        mutableStateOf(false)
     }
-
     Column(
         modifier = modifier
     ) {
-        AnimatedVisibility(visible = isScrollingUp) {
-            RegionTopBar(
-                region = Region.SEOUL,
-                onClickRegion = {},
-                onClickSearch = {}
-            )
-        }
+        RegionTopBar(
+            region = state.user.region,
+            onClickRegion = { bottomSheet = true },
+            onClickSearch = onClickPolicySearch
+        )
 
-        BoxWithConstraints {
-            val screenHeight = this.maxHeight
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .verticalScroll(state = scrollState)
-            ) {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
+            item {
                 RecentViewPolicy(
-                    onClickRecentViewPolicy = onClickRecentViewPolicy
+                    policies = state.recentlyPolicies,
+                    onClickRecentViewPolicy = onClickRecentViewPolicy,
+                    onClickPolicyDetail = onClickPolicyDetail
                 )
+            }
+            item {
                 DDayPolicy(
-                    selectedDay = selectDay,
-                    onClickDay = { selectDay = it },
-                    onClickDeadlinePolicy = onClickDeadlinePolicy
+                    selectedDay = state.selectedDay,
+                    count = state.deadlineCount,
+                    deadlinePolicies = state.deadlinePolicies.collectAsLazyPagingItems(),
+                    onClickDay = { viewModel.setEvent(PolicyUiEvent.SelectedDay(it)) },
+                    onClickDeadlinePolicy = onClickDeadlinePolicy,
+                    onClickPolicyDetail = onClickPolicyDetail
                 )
-
-                Column(
-                    modifier = Modifier
-                        .height(screenHeight)
+            }
+            item {
+                TitleItem(
+                    modifier = Modifier.padding(top = 20.dp, bottom = 15.dp),
+                    title = "모든 정책 한눈에 보기",
+                    onClick = { onClickPolicyOverView(Category.ALL) }
+                )
+                LazyRow(
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    contentPadding = PaddingValues(start = 16.dp, end = 16.dp)
                 ) {
-                    TitleItem(
-                        modifier = Modifier.padding(top = 20.dp, bottom = 15.dp),
-                        title = "모든 정책 한눈에 보기",
-                        onClick = { onClickPolicyOverView(Category.ALL) }
-                    )
-
-                    PrimaryTabRow(
-                        selectedTabIndex = pagerState.currentPage,
-                        containerColor = gray10,
-                        divider = {
-                            HorizontalDivider(
-                                color = gray70
-                            )
-                        }
+                    items(
+                        count = categories.size
                     ) {
-                        categories.forEachIndexed { index, category ->
-                            Tab(
-                                selected = pagerState.currentPage == index,
-                                selectedContentColor = gray10,
-                                text = {
-                                    Text(
-                                        text = category.categoryName,
-                                        style = if (pagerState.currentPage == index) {
-                                            MaterialTheme.typography.displayLarge.copy(
-                                                color = MaterialTheme.colorScheme.primary
-                                            )
-                                        } else {
-                                            MaterialTheme.typography.displaySmall.copy(
-                                                color = gray70
-                                            )
-                                        }
-                                    )
-                                },
-                                onClick = {
-                                    scope.launch {
-                                        pagerState.animateScrollToPage(index)
-                                    }
-                                }
-                            )
-                        }
-                    }
-
-                    HorizontalPager(
-                        state = pagerState,
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            .nestedScroll(
-                                remember {
-                                    object : NestedScrollConnection {
-                                        override suspend fun onPostFling(consumed: Velocity, available: Velocity): Velocity {
-                                            Timber.e("NestedScrollConnection onPostFling consumed : $consumed, available $available")
-                                            return super.onPostFling(consumed, available)
-                                        }
-
-                                        override fun onPostScroll(consumed: Offset, available: Offset, source: NestedScrollSource): Offset {
-                                            Timber.e("NestedScrollConnection onPostScroll consumed : $consumed, available $available")
-                                            return super.onPostScroll(consumed, available, source)
-                                        }
-
-                                        override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
-                                            if (available.y != 0f) {
-                                                isScrollingUp = available.y > 0
-                                            }
-                                            Timber.e("NestedScrollConnection onPreScroll $available")
-                                            return if (available.y > 0) {
-                                                Offset.Zero
-                                            } else {
-                                                Offset(
-                                                    x = 0f,
-                                                    y = -scrollState.dispatchRawDelta(-available.y)
-                                                )
-                                            }
-                                        }
-                                    }
-                                }
-                            )
-                    ) { page: Int ->
-                        ListLazyColumn(50)
+                        RoundChip(
+                            text = categories[it].categoryName,
+                            isSelected = state.selectCategory == categories[it],
+                            onClick = {
+                                viewModel.setEvent(PolicyUiEvent.SelectCategory(category = categories[it], sortType = state.sortType))
+                            }
+                        )
                     }
                 }
+                Spacer(modifier = Modifier.height(10.dp))
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                        .padding(bottom = 10.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "총 ${DecimalFormat("#,###").format(state.allCount)}건",
+                        style = MaterialTheme.typography.displayMedium
+                    )
+
+                    SortTypeDropDown(
+                        sortType = state.sortType,
+                        onClickSort = { viewModel.setEvent(PolicyUiEvent.SelectCategory(category = state.selectCategory, sortType = it)) }
+                    )
+                }
+                Spacer(modifier = Modifier.height(10.dp))
             }
+
+            listLazyColumn(policies = allPolicies, onClickPolicyDetail = onClickPolicyDetail)
+        }
+    }
+
+    if (bottomSheet) {
+        RegionBottomSheet(
+            region = state.user.region,
+            onDismiss = { bottomSheet = false }
+        ) {
+            viewModel.setEvent(PolicyUiEvent.PostRegion(state.user, it ?: Region.ALL))
         }
     }
 }
 
-@Composable
-fun ListLazyColumn(items: Int) {
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize(),
-        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 10.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        items(items) { index ->
-            PolicyCard(
+fun LazyListScope.listLazyColumn(policies: LazyPagingItems<Policy>, onClickPolicyDetail: (Long) -> Unit) {
+    if (policies.itemCount != 0 && policies.loadState.refresh is LoadState.NotLoading) {
+        items(
+            count = policies.itemCount,
+            key = policies.itemKey()
+        ) { index ->
+            policies[index]?.let { policy ->
+                PolicyCard(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                        .padding(bottom = 14.dp)
+                        .background(
+                            color = gray10,
+                            shape = RoundedCornerShape(12.dp)
+                        )
+                        .border(
+                            width = 1.dp,
+                            color = gray40,
+                            shape = RoundedCornerShape(12.dp)
+                        ),
+                    policy = policy,
+                    onClick = { onClickPolicyDetail(policy.policyId) }
+                )
+            }
+        }
+    }
+
+    if (policies.loadState.refresh is LoadState.Loading || policies.itemCount == 0) {
+        item {
+            Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .background(
-                        color = gray10,
-                        shape = RoundedCornerShape(12.dp)
-                    )
-                    .border(
-                        width = 1.dp,
-                        color = gray40,
-                        shape = RoundedCornerShape(12.dp)
-                    )
-            )
+                    .fillParentMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
+            }
         }
     }
 }

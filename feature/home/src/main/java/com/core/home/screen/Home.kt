@@ -74,7 +74,9 @@ fun Home(
                 policyTabNavigation(
                     onClickRecentViewPolicy = onClickRecentViewPolicy,
                     onClickDeadlinePolicy = onClickDeadlinePolicy,
-                    onClickPolicyOverView = navController::navigatePolicyOverView
+                    onClickPolicyOverView = navController::navigatePolicyOverView,
+                    onClickPolicyDetail = onClickPolicyDetail,
+                    onClickPolicySearch = onClickPolicySearch
                 )
                 policyOverViewNavigation()
             }

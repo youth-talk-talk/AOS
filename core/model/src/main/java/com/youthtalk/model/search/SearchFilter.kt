@@ -21,7 +21,8 @@ data class SearchFilter(
     val specialization: List<SpecializedType>? = null,
     val region: List<String>? = null,
     val minEarn: Int? = null,
-    val maxEarn: Int? = null
+    val maxEarn: Int? = null,
+    val applyDue: String? = null
 ) {
     fun toRequestBody(): RequestBody {
         return Json.encodeToString(serializer(), this).toRequestBody()
