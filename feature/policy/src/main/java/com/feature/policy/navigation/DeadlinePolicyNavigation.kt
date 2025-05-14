@@ -11,8 +11,11 @@ fun NavController.navigateDeadlinePolicy(navOptions: NavOptions? = null) {
     navigate(DeadlinePolicy, navOptions)
 }
 
-fun NavGraphBuilder.deadlinePolicyNavigation() {
+fun NavGraphBuilder.deadlinePolicyNavigation(onBack: () -> Unit, onClickPolicyDetail: (Long) -> Unit) {
     composable<DeadlinePolicy> {
-        DeadlinePolicyScreen()
+        DeadlinePolicyScreen(
+            onBack = onBack,
+            onClickPolicyDetail = onClickPolicyDetail
+        )
     }
 }

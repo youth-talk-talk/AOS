@@ -8,9 +8,9 @@ import com.core.domain.usercase.mypage.PostUserUseCase
 import com.core.domain.usercase.policy.GetRecentlyViewPolicesUseCase
 import com.core.domain.usercase.specpolicy.GetPolicyCountUseCase
 import com.core.domain.usercase.specpolicy.PostSpecPoliciesUseCase
-import com.feature.policy.model.PolicyUiEffect
-import com.feature.policy.model.PolicyUiEvent
-import com.feature.policy.model.PolicyUiState
+import com.feature.policy.model.policy.PolicyUiEffect
+import com.feature.policy.model.policy.PolicyUiEvent
+import com.feature.policy.model.policy.PolicyUiState
 import com.youthtalk.model.Category
 import com.youthtalk.model.Region
 import com.youthtalk.model.User

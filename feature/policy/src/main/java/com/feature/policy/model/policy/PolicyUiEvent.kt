@@ -1,4 +1,4 @@
-package com.feature.policy.model
+package com.feature.policy.model.policy
 
 import com.core.base.model.UiEvent
 import com.youthtalk.model.Category
