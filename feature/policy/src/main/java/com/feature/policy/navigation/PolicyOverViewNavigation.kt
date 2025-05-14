@@ -12,8 +12,12 @@ fun NavController.navigatePolicyOverView(category: Category, navOptions: NavOpti
     navigate(PolicyOverView(category), navOptions)
 }
 
-fun NavGraphBuilder.policyOverViewNavigation() {
+fun NavGraphBuilder.policyOverViewNavigation(onBack: () -> Unit, onClickPolicyDetail: (Long) -> Unit, onClickPolicySearch: () -> Unit) {
     composable<PolicyOverView> {
-        PolicyOverviewScreen()
+        PolicyOverviewScreen(
+            onBack = onBack,
+            onClickPolicyDetail = onClickPolicyDetail,
+            onClickPolicySearch = onClickPolicySearch
+        )
     }
 }

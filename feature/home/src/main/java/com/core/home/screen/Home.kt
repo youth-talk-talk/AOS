@@ -78,7 +78,11 @@ fun Home(
                     onClickPolicyDetail = onClickPolicyDetail,
                     onClickPolicySearch = onClickPolicySearch
                 )
-                policyOverViewNavigation()
+                policyOverViewNavigation(
+                    onBack = navController::popBackStack,
+                    onClickPolicyDetail = onClickPolicyDetail,
+                    onClickPolicySearch = onClickPolicySearch
+                )
             }
             settingTabNavigation(
                 onClickProfileCard = navController::navigateAccount,
