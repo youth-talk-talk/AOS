@@ -35,7 +35,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import com.feature.policy.component.DDayPolicy
 import com.feature.policy.component.RecentViewPolicy
-import com.feature.policy.model.PolicyUiEvent
+import com.feature.policy.model.policy.PolicyUiEvent
 import com.feature.policy.viewmodel.PolicyViewModel
 import com.youthtalk.component.card.PolicyCard
 import com.youthtalk.component.chip.RoundChip

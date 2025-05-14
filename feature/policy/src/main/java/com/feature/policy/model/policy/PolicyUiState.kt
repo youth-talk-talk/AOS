@@ -1,4 +1,4 @@
-package com.feature.policy.model
+package com.feature.policy.model.policy
 
 import androidx.paging.PagingData
 import com.core.base.model.UiState
