@@ -15,13 +15,17 @@ fun NavController.navigatePolicyTab(navOptions: NavOptions) {
 fun NavGraphBuilder.policyTabNavigation(
     onClickRecentViewPolicy: () -> Unit,
     onClickDeadlinePolicy: () -> Unit,
-    onClickPolicyOverView: (Category) -> Unit
+    onClickPolicyOverView: (Category) -> Unit,
+    onClickPolicyDetail: (Long) -> Unit,
+    onClickPolicySearch: () -> Unit
 ) {
     composable<HomeTabNavigation.Policy> {
         PolicyScreen(
             onClickRecentViewPolicy = onClickRecentViewPolicy,
             onClickDeadlinePolicy = onClickDeadlinePolicy,
-            onClickPolicyOverView = onClickPolicyOverView
+            onClickPolicyOverView = onClickPolicyOverView,
+            onClickPolicyDetail = onClickPolicyDetail,
+            onClickPolicySearch = onClickPolicySearch
         )
     }
 }

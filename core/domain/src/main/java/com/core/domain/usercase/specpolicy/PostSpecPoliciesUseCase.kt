@@ -9,6 +9,6 @@ import javax.inject.Inject
 class PostSpecPoliciesUseCase @Inject constructor(
     private val specPolicyRepository: SpecPolicyRepository
 ) {
-    operator fun invoke(searchFilter: SearchFilter, policyType: PolicyType, sortType: SortType) =
+    operator fun invoke(searchFilter: SearchFilter, policyType: PolicyType, sortType: SortType = SortType.RECENT) =
         specPolicyRepository.getPolicies(searchFilter, policyType, sortType)
 }

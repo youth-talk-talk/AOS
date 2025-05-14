@@ -61,4 +61,7 @@ interface PolicyService {
         @Query("page") page: Int,
         @Query("size") size: Int
     ): CommonResponse<List<SearchPoliciesResponse>>
+
+    @GET("/api/v1/policies/recent-view")
+    suspend fun getRecentlyViewPolicies(): CommonResponse<List<com.youthtalk.dto.policy.PolicyResponse>>
 }

@@ -19,9 +19,15 @@ import com.youthtalk.component.item.TitleItem
 import com.youthtalk.designsystem.gray10
 import com.youthtalk.designsystem.gray30
 import com.youthtalk.designsystem.gray40
+import com.youthtalk.model.policy.Policy
 
 @Composable
-fun RecentViewPolicy(modifier: Modifier = Modifier, onClickRecentViewPolicy: () -> Unit) {
+fun RecentViewPolicy(
+    modifier: Modifier = Modifier,
+    policies: List<Policy>,
+    onClickRecentViewPolicy: () -> Unit,
+    onClickPolicyDetail: (Long) -> Unit
+) {
     Column(
         modifier = modifier
             .padding(top = 10.dp, bottom = 32.dp),
@@ -39,7 +45,7 @@ fun RecentViewPolicy(modifier: Modifier = Modifier, onClickRecentViewPolicy: () 
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             items(
-                count = 10
+                count = policies.size.coerceAtMost(10)
             ) {
                 PolicyCard(
                     modifier = Modifier
@@ -52,7 +58,9 @@ fun RecentViewPolicy(modifier: Modifier = Modifier, onClickRecentViewPolicy: () 
                             width = 1.dp,
                             color = gray40,
                             shape = RoundedCornerShape(12.dp)
-                        )
+                        ),
+                    policy = policies[it],
+                    onClick = { onClickPolicyDetail(policies[it].policyId) }
                 )
             }
         }

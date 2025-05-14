@@ -13,6 +13,7 @@ import com.youthtalk.model.policy.PolicyType
 import com.youthtalk.model.typeenum.SortType
 import java.io.IOException
 import javax.inject.Inject
+import kotlinx.coroutines.delay
 import okhttp3.RequestBody
 import retrofit2.HttpException
 import timber.log.Timber
@@ -50,6 +51,7 @@ class PolicyRemoteMediator @Inject constructor(
                     policyDao.deleteAll(policyType)
                     policyRemoteKeyDao.deleteAll(policyType)
                 }
+                delay(300L)
             }
             val page = remoteKey?.nextPage ?: 0
             val response = policyService.postSpecPolicies(

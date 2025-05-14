@@ -6,7 +6,7 @@ import com.core.dataapi.repository.CommunityRepository
 import com.core.dataapi.repository.HomeRepository
 import com.core.dataapi.repository.LoginRepository
 import com.core.dataapi.repository.MyPageRepository
-import com.core.dataapi.repository.PolicyDetailRepository
+import com.core.dataapi.repository.PolicyRepository
 import com.core.dataapi.repository.SearchRepository
 import com.core.dataapi.repository.SpecPolicyRepository
 import com.core.dataapi.repository.UserRepository
@@ -18,7 +18,7 @@ import com.youthtalk.repository.CommunityRepositoryImpl
 import com.youthtalk.repository.HomeRepositoryImpl
 import com.youthtalk.repository.LoginRepositoryImpl
 import com.youthtalk.repository.MyPageRepositoryImpl
-import com.youthtalk.repository.PolicyDetailRepositoryImpl
+import com.youthtalk.repository.PolicyRepositoryImpl
 import com.youthtalk.repository.SearchRepositoryImpl
 import com.youthtalk.repository.SpecPolicyRepositoryImpl
 import com.youthtalk.repository.UserRepositoryImpl
@@ -44,7 +44,7 @@ abstract class DataModule {
     abstract fun bindsLoginRepository(repository: LoginRepositoryImpl): LoginRepository
 
     @Binds
-    abstract fun bindsPolicyDetailRepository(repository: PolicyDetailRepositoryImpl): PolicyDetailRepository
+    abstract fun bindsPolicyDetailRepository(repository: PolicyRepositoryImpl): PolicyRepository
 
     @Binds
     abstract fun bindsCommentRepository(repository: CommentRepositoryImpl): CommentRepository
