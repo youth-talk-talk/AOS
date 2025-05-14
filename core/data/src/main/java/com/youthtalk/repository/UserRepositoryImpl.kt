@@ -3,10 +3,12 @@ package com.youthtalk.repository
 import com.core.dataapi.repository.UserRepository
 import com.core.datastore.datasource.DataStoreDataSource
 import com.youthtalk.data.UserService
+import com.youthtalk.dto.UserRequest
 import com.youthtalk.dto.UserResponse
 import com.youthtalk.mapper.toData
-import com.youthtalk.model.Category
 import com.youthtalk.model.User
+import com.youthtalk.model.typeenum.Category
+import com.youthtalk.model.typeenum.Region
 import com.youthtalk.utils.ErrorUtils.throwableError
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
@@ -27,6 +29,33 @@ class UserRepositoryImpl @Inject constructor(
             .onFailure {
                 throwableError<UserResponse>(it)
             }
+    }
+
+    override fun postUser(nickname: String, region: Region): Flow<User> = flow {
+        runCatching { userService.postUser(UserRequest(nickname, region.region).toRequestBody()) }
+            .onSuccess { response ->
+                response.data?.let { userResponse ->
+                    emit(userResponse.toData())
+                }
+            }
+            .onFailure {
+                throwableError<UserResponse>(it)
+            }
+    }
+
+    override fun deleteUser(deleteUser: Boolean): Flow<Long> = flow {
+        dataSource.clearData()
+        if (deleteUser) {
+            runCatching { userService.postDeleteUser() }
+                .onSuccess {
+                    emit(0L)
+                }
+                .onFailure {
+                    throwableError<UserResponse>(it)
+                }
+        } else {
+            emit(0L)
+        }
     }
 
     override fun getCategoryList(): Flow<List<Category>> = dataSource.getCategoryFilter()

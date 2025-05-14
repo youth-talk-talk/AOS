@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import com.youth.app.core.designsystem.R
 import com.youthtalk.designsystem.YongProjectTheme
 import com.youthtalk.designsystem.gray10
-import com.youthtalk.model.Region
+import com.youthtalk.model.typeenum.Region
 
 @Composable
 fun RegionTopBar(modifier: Modifier = Modifier, region: Region, onClickRegion: () -> Unit, onClickSearch: () -> Unit) {

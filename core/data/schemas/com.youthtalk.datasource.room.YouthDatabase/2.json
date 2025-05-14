@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 2,
-    "identityHash": "b9ddfadf353d0cbd89c1b5418dbcd722",
+    "identityHash": "dab8308f66b4e5aeeaae2ee3d6a54566",
     "entities": [
       {
         "tableName": "Post",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`postId` INTEGER NOT NULL, `title` TEXT NOT NULL, `writerId` INTEGER, `scraps` INTEGER NOT NULL, `scrap` INTEGER NOT NULL, `comments` INTEGER NOT NULL, `policyId` TEXT, `policyTitle` TEXT, PRIMARY KEY(`postId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`postId` INTEGER NOT NULL, `title` TEXT NOT NULL, `writerId` INTEGER NOT NULL, `policyId` INTEGER, `policyTitle` TEXT, `comments` INTEGER NOT NULL, `contentPreview` TEXT NOT NULL, `scrapCount` INTEGER NOT NULL, `scrap` INTEGER NOT NULL, `createdAt` TEXT NOT NULL, `category` TEXT, `postType` TEXT NOT NULL, PRIMARY KEY(`postId`, `postType`))",
         "fields": [
           {
             "fieldPath": "postId",
@@ -24,11 +24,35 @@
             "fieldPath": "writerId",
             "columnName": "writerId",
             "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "policyId",
+            "columnName": "policyId",
+            "affinity": "INTEGER",
             "notNull": false
           },
           {
-            "fieldPath": "scraps",
-            "columnName": "scraps",
+            "fieldPath": "policyTitle",
+            "columnName": "policyTitle",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "comments",
+            "columnName": "comments",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "contentPreview",
+            "columnName": "contentPreview",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "scrapCount",
+            "columnName": "scrapCount",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -39,28 +63,29 @@
             "notNull": true
           },
           {
-            "fieldPath": "comments",
-            "columnName": "comments",
-            "affinity": "INTEGER",
+            "fieldPath": "createdAt",
+            "columnName": "createdAt",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
-            "fieldPath": "policyId",
-            "columnName": "policyId",
+            "fieldPath": "category",
+            "columnName": "category",
             "affinity": "TEXT",
             "notNull": false
           },
           {
-            "fieldPath": "policyTitle",
-            "columnName": "policyTitle",
+            "fieldPath": "postType",
+            "columnName": "postType",
             "affinity": "TEXT",
-            "notNull": false
+            "notNull": true
           }
         ],
         "primaryKey": {
           "autoGenerate": false,
           "columnNames": [
-            "postId"
+            "postId",
+            "postType"
           ]
         },
         "indices": [],
@@ -68,189 +93,26 @@
       },
       {
         "tableName": "PostRemoteKey",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`nextPage` INTEGER NOT NULL, PRIMARY KEY(`nextPage`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`nextPage` INTEGER NOT NULL, `postType` TEXT NOT NULL, PRIMARY KEY(`nextPage`, `postType`))",
         "fields": [
           {
             "fieldPath": "nextPage",
             "columnName": "nextPage",
             "affinity": "INTEGER",
             "notNull": true
-          }
-        ],
-        "primaryKey": {
-          "autoGenerate": false,
-          "columnNames": [
-            "nextPage"
-          ]
-        },
-        "indices": [],
-        "foreignKeys": []
-      },
-      {
-        "tableName": "ReviewPost",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`postId` INTEGER NOT NULL, `title` TEXT NOT NULL, `writerId` INTEGER, `scraps` INTEGER NOT NULL, `scrap` INTEGER NOT NULL, `comments` INTEGER NOT NULL, `policyId` TEXT, `policyTitle` TEXT, PRIMARY KEY(`postId`))",
-        "fields": [
-          {
-            "fieldPath": "postId",
-            "columnName": "postId",
-            "affinity": "INTEGER",
-            "notNull": true
           },
           {
-            "fieldPath": "title",
-            "columnName": "title",
+            "fieldPath": "postType",
+            "columnName": "postType",
             "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "writerId",
-            "columnName": "writerId",
-            "affinity": "INTEGER",
-            "notNull": false
-          },
-          {
-            "fieldPath": "scraps",
-            "columnName": "scraps",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "scrap",
-            "columnName": "scrap",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "comments",
-            "columnName": "comments",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "policyId",
-            "columnName": "policyId",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "policyTitle",
-            "columnName": "policyTitle",
-            "affinity": "TEXT",
-            "notNull": false
-          }
-        ],
-        "primaryKey": {
-          "autoGenerate": false,
-          "columnNames": [
-            "postId"
-          ]
-        },
-        "indices": [],
-        "foreignKeys": []
-      },
-      {
-        "tableName": "ReviewPostRemoteKey",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`nextPage` INTEGER NOT NULL, PRIMARY KEY(`nextPage`))",
-        "fields": [
-          {
-            "fieldPath": "nextPage",
-            "columnName": "nextPage",
-            "affinity": "INTEGER",
             "notNull": true
           }
         ],
         "primaryKey": {
           "autoGenerate": false,
           "columnNames": [
-            "nextPage"
-          ]
-        },
-        "indices": [],
-        "foreignKeys": []
-      },
-      {
-        "tableName": "ScrapPost",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`scrapId` INTEGER, `postId` INTEGER NOT NULL, `title` TEXT NOT NULL, `writerId` INTEGER, `scraps` INTEGER NOT NULL, `scrap` INTEGER NOT NULL, `comments` INTEGER NOT NULL, `policyId` TEXT, `policyTitle` TEXT, PRIMARY KEY(`postId`))",
-        "fields": [
-          {
-            "fieldPath": "scrapId",
-            "columnName": "scrapId",
-            "affinity": "INTEGER",
-            "notNull": false
-          },
-          {
-            "fieldPath": "postId",
-            "columnName": "postId",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "title",
-            "columnName": "title",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "writerId",
-            "columnName": "writerId",
-            "affinity": "INTEGER",
-            "notNull": false
-          },
-          {
-            "fieldPath": "scraps",
-            "columnName": "scraps",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "scrap",
-            "columnName": "scrap",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "comments",
-            "columnName": "comments",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "policyId",
-            "columnName": "policyId",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "policyTitle",
-            "columnName": "policyTitle",
-            "affinity": "TEXT",
-            "notNull": false
-          }
-        ],
-        "primaryKey": {
-          "autoGenerate": false,
-          "columnNames": [
-            "postId"
-          ]
-        },
-        "indices": [],
-        "foreignKeys": []
-      },
-      {
-        "tableName": "ScrapPostRemoteKey",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`nextPage` INTEGER NOT NULL, PRIMARY KEY(`nextPage`))",
-        "fields": [
-          {
-            "fieldPath": "nextPage",
-            "columnName": "nextPage",
-            "affinity": "INTEGER",
-            "notNull": true
-          }
-        ],
-        "primaryKey": {
-          "autoGenerate": false,
-          "columnNames": [
-            "nextPage"
+            "nextPage",
+            "postType"
           ]
         },
         "indices": [],
@@ -333,19 +195,26 @@
       },
       {
         "tableName": "PolicyRemoteKey",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`nextPage` INTEGER NOT NULL, PRIMARY KEY(`nextPage`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`nextPage` INTEGER NOT NULL, `policyType` TEXT NOT NULL, PRIMARY KEY(`nextPage`, `policyType`))",
         "fields": [
           {
             "fieldPath": "nextPage",
             "columnName": "nextPage",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "policyType",
+            "columnName": "policyType",
+            "affinity": "TEXT",
+            "notNull": true
           }
         ],
         "primaryKey": {
           "autoGenerate": false,
           "columnNames": [
-            "nextPage"
+            "nextPage",
+            "policyType"
           ]
         },
         "indices": [],
@@ -355,7 +224,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'b9ddfadf353d0cbd89c1b5418dbcd722')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'dab8308f66b4e5aeeaae2ee3d6a54566')"
     ]
   }
 }

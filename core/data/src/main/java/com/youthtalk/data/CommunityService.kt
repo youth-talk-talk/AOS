@@ -4,7 +4,6 @@ import com.youthtalk.dto.CommonResponse
 import com.youthtalk.dto.PostAddCommentResponse
 import com.youthtalk.dto.PostResponse
 import com.youthtalk.dto.PostSearchResponse
-import com.youthtalk.dto.ScrapPostDataResponse
 import com.youthtalk.dto.community.PostDetailResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -29,13 +28,6 @@ interface CommunityService {
 
     @GET("/api/v1/posts/post")
     suspend fun getPosts(@Query("page") page: Int, @Query("size") size: Int): CommonResponse<PostResponse>
-
-    @GET("/api/v1/posts/{type}")
-    suspend fun getMyPagePosts(
-        @Path("type") type: String,
-        @Query("page") page: Int,
-        @Query("size") size: Int
-    ): CommonResponse<List<ScrapPostDataResponse>>
 
     @GET("/api/v1/posts/keyword")
     suspend fun getSearchPosts(

@@ -2,7 +2,7 @@ package com.core.mypage.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.core.domain.usercase.mypage.PostUserLogoutUseCase
+import com.core.domain.usercase.user.PostUserLogoutUseCase
 import com.core.mypage.model.account.AccountUiEffect
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject

@@ -24,10 +24,10 @@ import androidx.navigation.compose.rememberNavController
 import com.core.navigation.CommunityWriteNavigation
 import com.youthtalk.component.picture.PictureScreen
 import com.youthtalk.designsystem.YongProjectTheme
-import com.youthtalk.model.CommunityType
+import com.youthtalk.model.post.PostSubject
 
 @Composable
-fun CommunityWriteScreen(modifier: Modifier = Modifier, communityType: CommunityType) {
+fun CommunityWriteScreen(modifier: Modifier = Modifier, communityType: PostSubject) {
     val navController = rememberNavController()
 
     NavHost(
@@ -102,7 +102,7 @@ fun Modifier.onEmptyHeight(isEmpty: Boolean): Modifier = composed {
 private fun CommunityWriteFreeScreenPreview() {
     YongProjectTheme {
         CommunityWriteScreen(
-            communityType = CommunityType.FREE
+            communityType = PostSubject.FREE
         )
     }
 }
@@ -112,7 +112,7 @@ private fun CommunityWriteFreeScreenPreview() {
 private fun CommunityWriteReviewScreenPreview() {
     YongProjectTheme {
         CommunityWriteScreen(
-            communityType = CommunityType.REVIEW
+            communityType = PostSubject.REVIEW
         )
     }
 }

@@ -9,13 +9,11 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import com.core.datastore.datasource.DataStoreDataSource.PreferencesKey.ACCESS_TOKEN
 import com.core.datastore.datasource.DataStoreDataSource.PreferencesKey.AGE
 import com.core.datastore.datasource.DataStoreDataSource.PreferencesKey.CATEGORIES
-import com.core.datastore.datasource.DataStoreDataSource.PreferencesKey.EMPLOY_CODE
 import com.core.datastore.datasource.DataStoreDataSource.PreferencesKey.IS_FINISH
 import com.core.datastore.datasource.DataStoreDataSource.PreferencesKey.RECENT_LIST
 import com.core.datastore.datasource.DataStoreDataSource.PreferencesKey.REFRESH_TOKEN
 import com.core.datastore.datasource.DataStoreDataSource.PreferencesKey.REVIEW_CATEGORIES
-import com.youthtalk.model.Category
-import com.youthtalk.model.EmploymentCode
+import com.youthtalk.model.typeenum.Category
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -91,19 +89,6 @@ class DataStoreDataSource @Inject constructor(
         val listToString = Json.encodeToJsonElement<List<Category>>(categories)
         dataStore.edit { prefs ->
             prefs[REVIEW_CATEGORIES] = listToString.toString()
-        }
-    }
-
-    override fun getEmployCode(): Flow<List<EmploymentCode>?> = dataStore.data.map { prefs ->
-        prefs[EMPLOY_CODE]?.let { employCode ->
-            Json.decodeFromString<List<EmploymentCode>>(employCode)
-        }
-    }
-
-    override suspend fun setEmployCodeFilter(employmentCodes: List<EmploymentCode>?) {
-        val listToString = Json.encodeToJsonElement<List<EmploymentCode>>(employmentCodes ?: listOf())
-        dataStore.edit { prefs ->
-            prefs[EMPLOY_CODE] = listToString.toString()
         }
     }
 

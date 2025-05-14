@@ -31,32 +31,13 @@ import com.youthtalk.designsystem.gray10
 import com.youthtalk.designsystem.gray50
 import com.youthtalk.designsystem.gray80
 import com.youthtalk.designsystem.gray90
-import com.youthtalk.model.Category
-import com.youthtalk.model.community.Post
+import com.youthtalk.model.post.Post
+import com.youthtalk.model.post.PostType
+import com.youthtalk.model.typeenum.Category
 import java.time.LocalDateTime
 
 @Composable
-fun PostCard(
-    modifier: Modifier = Modifier,
-    post: Post = Post(
-        postId = 0,
-        title = "",
-        writerId = 0,
-        policyId = 0,
-        policyTitle = "",
-        comments = 0,
-        contentPreview = "",
-        scrapCount = 0,
-        scrap = false,
-        createdAt = LocalDateTime.now()
-    ),
-    keyword: String = "",
-    communityTitle: String,
-    communitySubTitle: String,
-    policyTitle: String = "",
-    isVisiblePolicyTitle: Boolean = false,
-    onClick: () -> Unit
-) {
+fun PostCard(modifier: Modifier = Modifier, post: Post, isVisiblePolicyTitle: Boolean = false, onClick: () -> Unit) {
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -69,8 +50,8 @@ fun PostCard(
             },
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
-        if (keyword.isNotEmpty()) {
-            KeywordTag(text = keyword)
+        post.category?.let { keyword ->
+            KeywordTag(text = keyword.categoryName)
         }
 
         Column(
@@ -182,8 +163,20 @@ fun PostCard(
 private fun PostCardPreview() {
     YongProjectTheme {
         PostCard(
-            communityTitle = "영화 보는 거 좋아하는 사람? 꿀팁 알려드림!",
-            communitySubTitle = "영화 보는 거 좋아하는 사람? 꿀팁 알려드림!",
+            post = Post(
+                postId = 0,
+                title = "",
+                writerId = 0,
+                policyId = null,
+                policyTitle = null,
+                comments = 0,
+                contentPreview = "",
+                scrapCount = 0,
+                scrap = false,
+                category = Category.JOB,
+                createdAt = LocalDateTime.now(),
+                postType = PostType.COMMUNITY_TAB_FREE
+            ),
             onClick = {}
         )
     }
@@ -194,9 +187,20 @@ private fun PostCardPreview() {
 private fun PostCardWithTagPreview() {
     YongProjectTheme {
         PostCard(
-            keyword = Category.PARTICIPATION.categoryName.split(" ").first(),
-            communityTitle = "영화 보는 거 좋아하는 사람? 꿀팁 알려드림!",
-            communitySubTitle = "영화 보는 거 좋아하는 사람? 꿀팁 알려드림!",
+            post = Post(
+                postId = 0,
+                title = "",
+                writerId = 0,
+                policyId = null,
+                policyTitle = null,
+                comments = 0,
+                contentPreview = "",
+                scrapCount = 0,
+                scrap = false,
+                createdAt = LocalDateTime.now(),
+                category = Category.JOB,
+                postType = PostType.COMMUNITY_TAB_FREE
+            ),
             onClick = {}
         )
     }

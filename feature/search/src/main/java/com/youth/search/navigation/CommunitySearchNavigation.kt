@@ -7,9 +7,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.core.navigation.navigator.CommunitySearch
 import com.youth.search.screen.CommunitySearchScreen
-import com.youthtalk.model.CommunityType
+import com.youthtalk.model.post.PostSubject
 
-fun NavController.navigateCommunitySearch(communityType: CommunityType, navOptions: NavOptions? = null) {
+fun NavController.navigateCommunitySearch(communityType: PostSubject, navOptions: NavOptions? = null) {
     navigate(CommunitySearch(communityType), navOptions)
 }
 

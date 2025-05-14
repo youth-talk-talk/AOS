@@ -14,7 +14,6 @@ import com.youthtalk.datasource.room.YouthDatabase
 import com.youthtalk.dto.PostAddCommentResponse
 import com.youthtalk.dto.specpolicy.CommentRequest
 import com.youthtalk.dto.specpolicy.SpecPoliciesResponse
-import com.youthtalk.model.FilterInfo
 import com.youthtalk.model.policy.Policy
 import com.youthtalk.model.policy.PolicyType
 import com.youthtalk.model.search.SearchFilter
@@ -22,7 +21,6 @@ import com.youthtalk.model.typeenum.SortType
 import com.youthtalk.utils.ErrorUtils.throwableError
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flow
 
 class SpecPolicyRepositoryImpl @Inject constructor(
@@ -70,23 +68,6 @@ class SpecPolicyRepositoryImpl @Inject constructor(
             .onFailure {
                 throwableError<SpecPoliciesResponse>(it)
             }
-    }
-
-    override fun getFilterInfo(): Flow<FilterInfo> = combine(
-        dataSource.getAge(),
-        dataSource.getEmployCode(),
-        dataSource.getFinish()
-    ) { age, employCode, isFinished ->
-        FilterInfo(age, employCode, isFinished)
-    }
-
-    override fun saveFilterInfo(filterInfo: FilterInfo): Flow<FilterInfo> = flow {
-        dataSource.setAge(filterInfo.age)
-        dataSource.setFinish(
-            if (filterInfo.isFinished == true || filterInfo.isFinished == null) null else false
-        )
-        dataSource.setEmployCodeFilter(filterInfo.employmentCodeList)
-        emit(filterInfo)
     }
 
     override fun postScrap(id: String): Flow<String> = flow {

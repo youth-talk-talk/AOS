@@ -2,10 +2,10 @@ package com.core.home.model.home
 
 import androidx.compose.runtime.Immutable
 import com.core.base.model.UiState
-import com.youthtalk.model.Region
 import com.youthtalk.model.User
 import com.youthtalk.model.home.HomeData
 import com.youthtalk.model.home.NewPolicies
+import com.youthtalk.model.typeenum.Region
 
 @Immutable
 data class HomeUiState(

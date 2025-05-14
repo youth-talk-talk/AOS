@@ -6,7 +6,7 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.core.navigation.navigator.PolicyOverView
 import com.feature.policy.screen.PolicyOverviewScreen
-import com.youthtalk.model.Category
+import com.youthtalk.model.typeenum.Category
 
 fun NavController.navigatePolicyOverView(category: Category, navOptions: NavOptions? = null) {
     navigate(PolicyOverView(category), navOptions)

@@ -1,7 +1,7 @@
 package com.youthtalk.model.policy
 
 import androidx.room.Entity
-import com.youthtalk.model.Category
+import com.youthtalk.model.typeenum.Category
 import kotlinx.serialization.Serializable
 
 @Entity(primaryKeys = ["policyId", "policyType"])

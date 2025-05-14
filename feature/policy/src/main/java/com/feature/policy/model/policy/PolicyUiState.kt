@@ -2,10 +2,10 @@ package com.feature.policy.model.policy
 
 import androidx.paging.PagingData
 import com.core.base.model.UiState
-import com.youthtalk.model.Category
-import com.youthtalk.model.Region
 import com.youthtalk.model.User
 import com.youthtalk.model.policy.Policy
+import com.youthtalk.model.typeenum.Category
+import com.youthtalk.model.typeenum.Region
 import com.youthtalk.model.typeenum.SortType
 import java.time.LocalDate
 import kotlinx.coroutines.flow.Flow

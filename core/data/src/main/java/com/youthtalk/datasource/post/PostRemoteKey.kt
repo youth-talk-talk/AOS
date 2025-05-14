@@ -1,9 +1,10 @@
 package com.youthtalk.datasource.post
 
 import androidx.room.Entity
-import androidx.room.PrimaryKey
+import com.youthtalk.model.post.PostType
 
-@Entity
+@Entity(primaryKeys = ["nextPage", "postType"])
 data class PostRemoteKey(
-    @PrimaryKey val nextPage: Int
+    val nextPage: Int,
+    val postType: PostType
 )

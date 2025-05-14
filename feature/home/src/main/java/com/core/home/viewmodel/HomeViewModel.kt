@@ -5,12 +5,12 @@ import com.core.base.BaseViewModel
 import com.core.domain.usercase.GetUserUseCase
 import com.core.domain.usercase.home.GetHomeDataUseCase
 import com.core.domain.usercase.home.GetNewPolicesUseCase
-import com.core.domain.usercase.mypage.PostUserUseCase
+import com.core.domain.usercase.user.PostUserUseCase
 import com.core.home.model.home.HomeUiEffect
 import com.core.home.model.home.HomeUiEvent
 import com.core.home.model.home.HomeUiState
-import com.youthtalk.model.Region
 import com.youthtalk.model.User
+import com.youthtalk.model.typeenum.Region
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.catch

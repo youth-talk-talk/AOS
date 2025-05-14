@@ -1,8 +1,8 @@
 package com.youthtalk.model.home
 
-import com.youthtalk.model.community.Post
 import com.youthtalk.model.policy.PoliciesWithReview
 import com.youthtalk.model.policy.Policy
+import com.youthtalk.model.post.Post
 
 data class HomeData(
     val popularPolicies: List<Policy>,

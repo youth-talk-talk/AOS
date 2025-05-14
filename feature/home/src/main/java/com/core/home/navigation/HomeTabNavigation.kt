@@ -6,7 +6,7 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.core.home.screen.HomeScreen
 import com.core.navigation.navigator.HomeTabNavigation
-import com.youthtalk.model.Category
+import com.youthtalk.model.typeenum.Category
 
 fun NavController.navigateHomeTab(navOptions: NavOptions) {
     navigate(HomeTabNavigation.Home, navOptions)

@@ -6,12 +6,12 @@ import com.youthtalk.dto.policy.PoliciesWithReviewResponse
 import com.youthtalk.dto.policy.PolicyResponse
 import com.youthtalk.dto.policy.ReviewResponse
 import com.youthtalk.dto.post.PostResponse
-import com.youthtalk.model.community.Post
 import com.youthtalk.model.home.HomeData
 import com.youthtalk.model.home.NewPolicies
 import com.youthtalk.model.policy.PoliciesWithReview
 import com.youthtalk.model.policy.Policy
 import com.youthtalk.model.policy.Review
+import com.youthtalk.model.post.Post
 import java.time.LocalDateTime
 
 fun HomeDataResponse.toDomain(): HomeData = HomeData(
@@ -68,5 +68,6 @@ fun PostResponse.toDomain(): Post = Post(
     contentPreview = contentPreview,
     scrapCount = scrapCount,
     scrap = scrap,
+    category = category,
     createdAt = LocalDateTime.parse(createdAt.replace(" ", "T"))
 )

@@ -7,9 +7,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.core.community.screen.write.CommunityWriteScreen
 import com.core.navigation.navigator.CommunityWrite
-import com.youthtalk.model.CommunityType
+import com.youthtalk.model.post.PostSubject
 
-fun NavController.navigateCommunityWrite(communityType: CommunityType, navOptions: NavOptions? = null) {
+fun NavController.navigateCommunityWrite(communityType: PostSubject, navOptions: NavOptions? = null) {
     navigate(CommunityWrite(communityType), navOptions)
 }
 

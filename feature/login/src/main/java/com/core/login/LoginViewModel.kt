@@ -3,8 +3,8 @@ package com.core.login
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.core.domain.usercase.GetUserUseCase
-import com.core.domain.usercase.PostLoginUseCase
-import com.core.domain.usercase.PostSignUseCase
+import com.core.domain.usercase.user.PostLoginUseCase
+import com.core.domain.usercase.user.PostSignUseCase
 import com.core.model.login.LoginUiEffect
 import com.youthtalk.model.User
 import dagger.hilt.android.lifecycle.HiltViewModel

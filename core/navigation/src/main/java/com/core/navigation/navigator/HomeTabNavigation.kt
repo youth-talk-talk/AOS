@@ -1,6 +1,6 @@
 package com.core.navigation.navigator
 
-import com.youthtalk.model.Category
+import com.youthtalk.model.typeenum.Category
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 

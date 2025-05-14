@@ -2,6 +2,7 @@ package com.core.community.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,22 +13,37 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.itemKey
 import com.youthtalk.component.card.PostCard
 import com.youthtalk.component.chip.RoundChip
 import com.youthtalk.designsystem.gray10
 import com.youthtalk.designsystem.gray30
 import com.youthtalk.designsystem.gray40
 import com.youthtalk.extentions.shadow
-import com.youthtalk.model.Category
+import com.youthtalk.model.post.Post
+import com.youthtalk.model.typeenum.Category
 
 @Composable
-fun ReviewPost(modifier: Modifier = Modifier, lazyListState: LazyListState, categories: List<Category>, onClickPost: (Long) -> Unit) {
+fun ReviewPost(
+    modifier: Modifier = Modifier,
+    popularReviews: List<Post>,
+    reviews: LazyPagingItems<Post>,
+    lazyListState: LazyListState,
+    category: Category,
+    onClickPost: (Long) -> Unit,
+    onClickCategory: (Category) -> Unit
+) {
+    val categories = Category.entries.toList()
     LazyColumn(
         modifier = modifier
             .fillMaxSize(),
@@ -50,7 +66,7 @@ fun ReviewPost(modifier: Modifier = Modifier, lazyListState: LazyListState, cate
                     contentPadding = PaddingValues(horizontal = 16.dp)
                 ) {
                     items(
-                        count = 5
+                        count = popularReviews.size
                     ) {
                         PopularPostCard(
                             modifier = Modifier
@@ -64,10 +80,8 @@ fun ReviewPost(modifier: Modifier = Modifier, lazyListState: LazyListState, cate
                                     color = gray10,
                                     shape = RoundedCornerShape(12.dp)
                                 ),
-                            header = "서울시 취업날개서비스 운영",
-                            communityTitle = "면접 정장 비싸서 걱정했는데 공짜로 해결함!",
-                            content = "면접 정장 비싸서 걱정했는데 공짜로 해결함!.....",
-                            onClick = { onClickPost(0L) }
+                            post = popularReviews[it],
+                            onClick = { onClickPost(popularReviews[it].postId) }
                         )
                     }
                 }
@@ -93,26 +107,42 @@ fun ReviewPost(modifier: Modifier = Modifier, lazyListState: LazyListState, cate
                 ) {
                     RoundChip(
                         text = categories[it].categoryName,
-                        isSelected = it == 0
+                        isSelected = categories[it] == category,
+                        onClick = { onClickCategory(categories[it]) }
                     )
                 }
             }
         }
 
-        items(
-            count = 10
-        ) {
-            PostCard(
-                modifier = Modifier.padding(horizontal = 16.dp),
-                communityTitle = "영화 보는 거 좋아하는 사람? 꿀팁 알려드림!",
-                communitySubTitle = "영화 보는 거 좋아하는 사람? 꿀팁 알려드림! 영화 보는 거 좋아하는 사람...",
-                policyTitle = "청년문화예술패스",
-                onClick = { onClickPost(0L) }
-            )
-            HorizontalDivider(
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 20.dp),
-                color = gray40
-            )
+        if (reviews.loadState.refresh is LoadState.NotLoading) {
+            items(
+                count = reviews.itemCount,
+                key = reviews.itemKey()
+            ) {
+                reviews[it]?.let { post ->
+                    PostCard(
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                        post = post,
+                        onClick = { onClickPost(post.postId) }
+                    )
+                    HorizontalDivider(
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 20.dp),
+                        color = gray40
+                    )
+                }
+            }
+        }
+
+        if (reviews.loadState.refresh is LoadState.Loading) {
+            item {
+                Box(
+                    modifier = Modifier
+                        .fillParentMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
+            }
         }
     }
 }

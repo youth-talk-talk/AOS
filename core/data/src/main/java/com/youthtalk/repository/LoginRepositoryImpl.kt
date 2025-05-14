@@ -7,7 +7,7 @@ import com.youthtalk.data.LoginService
 import com.youthtalk.dto.MemberId
 import com.youthtalk.dto.login.LoginRequest
 import com.youthtalk.dto.login.SignRequest
-import com.youthtalk.model.toRegion
+import com.youthtalk.model.typeenum.toRegion
 import com.youthtalk.utils.ErrorUtils.throwableError
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow

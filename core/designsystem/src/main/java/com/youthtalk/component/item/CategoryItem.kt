@@ -22,7 +22,7 @@ import com.youth.app.core.designsystem.R
 import com.youthtalk.designsystem.YongProjectTheme
 import com.youthtalk.designsystem.gray30
 import com.youthtalk.designsystem.gray90
-import com.youthtalk.model.Category
+import com.youthtalk.model.typeenum.Category
 
 @Composable
 fun CategoryItem(modifier: Modifier = Modifier, category: Category, isSelected: Boolean = false, onClick: () -> Unit) {

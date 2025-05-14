@@ -27,7 +27,8 @@ import com.youthtalk.designsystem.YongProjectTheme
 import com.youthtalk.designsystem.gray10
 import com.youthtalk.designsystem.gray80
 import com.youthtalk.extentions.shadow
-import com.youthtalk.model.community.Post
+import com.youthtalk.model.post.Post
+import com.youthtalk.model.typeenum.Category
 import com.youthtalk.util.getTime
 import java.time.LocalDateTime
 
@@ -159,6 +160,7 @@ private fun BestCardPreview() {
                 contentPreview = "",
                 scrapCount = 0,
                 scrap = false,
+                category = Category.JOB,
                 createdAt = LocalDateTime.now()
             ),
             onClickPostDetail = {}

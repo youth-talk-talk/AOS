@@ -2,8 +2,8 @@ package com.feature.policy.model.overview
 
 import androidx.paging.PagingData
 import com.core.base.model.UiState
-import com.youthtalk.model.Category
 import com.youthtalk.model.policy.Policy
+import com.youthtalk.model.typeenum.Category
 import com.youthtalk.model.typeenum.SortType
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow

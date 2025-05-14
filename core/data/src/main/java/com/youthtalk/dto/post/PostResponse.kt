@@ -1,5 +1,6 @@
 package com.youthtalk.dto.post
 
+import com.youthtalk.model.typeenum.Category
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -13,5 +14,6 @@ data class PostResponse(
     val contentPreview: String,
     val scrapCount: Int,
     val scrap: Boolean,
+    val category: Category? = null,
     val createdAt: String
 )

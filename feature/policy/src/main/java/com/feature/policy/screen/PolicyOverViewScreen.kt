@@ -34,7 +34,6 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import com.feature.policy.model.overview.OverViewUiEvent
 import com.feature.policy.viewmodel.PolicyOverviewViewModel
-import com.youth.app.feature.policy.R
 import com.youthtalk.component.card.PolicyCard
 import com.youthtalk.component.dropdown.SortTypeDropDown
 import com.youthtalk.component.item.CategoryItem
@@ -42,7 +41,7 @@ import com.youthtalk.component.topbar.MiddleTitleTopBar
 import com.youthtalk.designsystem.gray10
 import com.youthtalk.designsystem.gray30
 import com.youthtalk.designsystem.gray40
-import com.youthtalk.model.Category
+import com.youthtalk.model.typeenum.Category
 
 @Composable
 fun PolicyOverviewScreen(

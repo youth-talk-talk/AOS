@@ -36,7 +36,7 @@ import com.youthtalk.component.sheet.RegionBottomSheet
 import com.youthtalk.designsystem.YongProjectTheme
 import com.youthtalk.designsystem.gray100
 import com.youthtalk.designsystem.gray80
-import com.youthtalk.model.Region
+import com.youthtalk.model.typeenum.Region
 import timber.log.Timber
 
 @Composable
