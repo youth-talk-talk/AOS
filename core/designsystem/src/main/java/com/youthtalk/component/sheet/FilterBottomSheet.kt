@@ -56,7 +56,6 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -94,12 +93,13 @@ import timber.log.Timber
 @Composable
 fun FilterBottomSheet(
     modifier: Modifier = Modifier,
+    startIndex: Int = 0,
     searchFilter: SearchFilter,
     sheetState: SheetState,
     onDismiss: () -> Unit,
     onClick: (SearchFilter) -> Unit
 ) {
-    val pagerState = rememberPagerState { FilterType.entries.size }
+    val pagerState = rememberPagerState(initialPage = startIndex) { FilterType.entries.size }
     val scope = rememberCoroutineScope()
     val lazyListState = rememberLazyListState()
     val types = FilterType.entries.toList()
@@ -237,12 +237,12 @@ fun FilterBottomSheet(
                 )
 
                 FilterType.AGE_EARN -> AgeEarn(
-                    maxEarn = filter.maxEarn ?: 50_000_000,
+                    maxEarn = filter.maxEarn ?: 5000,
                     minEarn = filter.minEarn ?: 0,
                     age = filter.age,
                     onChangeAge = { age -> filter = filter.copy(age = age.ifEmpty { null }) },
                     onChangeEarn = { min, max ->
-                        val allRange = min == 0 && max == 50_000_000
+                        val allRange = min == 0 && max == 5000
                         filter = filter.copy(
                             minEarn = if (allRange) null else min,
                             maxEarn = if (allRange) null else max
@@ -631,20 +631,19 @@ fun AgeEarn(
 ) {
     val focusManager = LocalFocusManager.current
     val money = listOf(
-        0, 12_000_000, 14_000_000, 16_000_000,
-        18_000_000, 20_000_000, 21_000_000, 22_000_000,
-        23_000_000, 24_000_000, 25_000_000, 27_500_000,
-        30_000_000, 32_500_000, 35_000_000, 37_500_000,
-        40_000_000, 42_500_000, 45_000_000, 47_500_000, 50_000_000
+        0, 1200, 1400, 1600,
+        1800, 2000, 2100, 2200,
+        2300, 2400, 2500, 2750,
+        3000, 3250, 3500, 3750,
+        4000, 4250, 4500, 4750, 5000
     )
     var sliderPosition by remember {
-        mutableStateOf(money.indexOf(minEarn).toFloat()..money.indexOf(maxEarn).toFloat())
+        mutableStateOf(money.indexOf(minEarn).toFloat()..money.indexOf(maxEarn).toFloat().coerceAtMost(19.1f))
     }
-    val salaries = stringArrayResource(R.array.salaries).toList()
-    var start = salaries[ceil(sliderPosition.start.toDouble()).toInt()]
-    var end = salaries[ceil(sliderPosition.endInclusive.toDouble()).toInt()]
+    var start = money[ceil(sliderPosition.start.toDouble()).toInt()]
+    var end = money[ceil(sliderPosition.endInclusive.toDouble()).toInt()]
     var count by remember {
-        mutableStateOf("${if (start != "0") start else ""} ${if (end != "0") "~ $end" else "0"}")
+        mutableStateOf(getEarnString(start, end))
     }
     Column(
         modifier = modifier
@@ -678,9 +677,10 @@ fun AgeEarn(
                 modifier = Modifier.padding(top = 10.dp, bottom = 6.dp),
                 value = sliderPosition,
                 onValueChange = {
-                    start = salaries[ceil(it.start.toDouble()).toInt()]
-                    end = salaries[ceil(it.endInclusive.toDouble()).toInt()]
-                    count = "${if (start != "0") start else ""} ${if (end != "0") "~ $end" else "0"}"
+                    start = money[ceil(it.start.toDouble()).toInt()]
+                    end = money[ceil(it.endInclusive.toDouble()).toInt()]
+                    Timber.e("startIndex :${it.start.toDouble()}, endIndex: ${it.endInclusive.toDouble()}")
+                    count = getEarnString(start, end)
                     sliderPosition = it
                 },
                 colors = SliderDefaults.colors(
@@ -791,4 +791,12 @@ fun AgeEarn(
             }
         }
     }
+}
+
+fun getEarnString(minEarn: Int, maxEarn: Int): String {
+    return if (minEarn == maxEarn) {
+        "${maxEarn}만"
+    } else {
+        "${if (minEarn != 0) "${minEarn}만" else ""} ${if (maxEarn != 0) "~ ${maxEarn}만" else ""}"
+    } + if (maxEarn == 5000) " 이상" else ""
 }
