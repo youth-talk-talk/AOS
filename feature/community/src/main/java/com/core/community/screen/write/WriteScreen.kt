@@ -33,10 +33,10 @@ import com.youthtalk.designsystem.gray100
 import com.youthtalk.designsystem.gray40
 import com.youthtalk.designsystem.gray70
 import com.youthtalk.designsystem.gray80
-import com.youthtalk.model.CommunityType
+import com.youthtalk.model.post.PostSubject
 
 @Composable
-fun WriteScreen(modifier: Modifier = Modifier, communityType: CommunityType, onClickPolicySearch: () -> Unit, onClickPicture: () -> Unit) {
+fun WriteScreen(modifier: Modifier = Modifier, communityType: PostSubject, onClickPolicySearch: () -> Unit, onClickPicture: () -> Unit) {
     var title by remember {
         mutableStateOf("")
     }
@@ -52,8 +52,8 @@ fun WriteScreen(modifier: Modifier = Modifier, communityType: CommunityType, onC
     ) {
         MiddleTitleTopBar(
             title = when (communityType) {
-                CommunityType.REVIEW -> "후기 글쓰기"
-                CommunityType.FREE -> "자유 글쓰기"
+                PostSubject.REVIEW -> "후기 글쓰기"
+                PostSubject.FREE -> "자유 글쓰기"
             },
             onBack = {},
             tails = {
@@ -66,7 +66,7 @@ fun WriteScreen(modifier: Modifier = Modifier, communityType: CommunityType, onC
             }
         )
 
-        if (communityType == CommunityType.REVIEW) {
+        if (communityType == PostSubject.REVIEW) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -141,8 +141,8 @@ fun WriteScreen(modifier: Modifier = Modifier, communityType: CommunityType, onC
                 if (contents.isEmpty()) {
                     Text(
                         text = when (communityType) {
-                            CommunityType.REVIEW -> stringResource(R.string.review_content_hint)
-                            CommunityType.FREE -> stringResource(R.string.free_content_hint)
+                            PostSubject.REVIEW -> stringResource(R.string.review_content_hint)
+                            PostSubject.FREE -> stringResource(R.string.free_content_hint)
                         },
                         style = MaterialTheme.typography.labelSmall.copy(
                             color = gray80

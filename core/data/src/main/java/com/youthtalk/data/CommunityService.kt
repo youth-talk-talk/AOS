@@ -6,6 +6,7 @@ import com.youthtalk.dto.PostResponse
 import com.youthtalk.dto.PostSearchResponse
 import com.youthtalk.dto.ScrapPostDataResponse
 import com.youthtalk.dto.community.PostDetailResponse
+import com.youthtalk.model.typeenum.Category
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.Body
@@ -24,7 +25,7 @@ interface CommunityService {
     suspend fun postReviewPosts(
         @Query("page") page: Int,
         @Query("size") size: Int,
-        @Query("categories") categories: List<String>
+        @Query("categories") categories: List<Category>
     ): CommonResponse<PostResponse>
 
     @GET("/api/v1/posts/post")

@@ -26,7 +26,7 @@ import com.youthtalk.component.button.CheckButton
 import com.youthtalk.component.button.SelectedButton
 import com.youthtalk.designsystem.gray10
 import com.youthtalk.designsystem.gray100
-import com.youthtalk.model.Region
+import com.youthtalk.model.typeenum.Region
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)

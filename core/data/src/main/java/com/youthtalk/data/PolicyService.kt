@@ -1,14 +1,11 @@
 package com.youthtalk.data
 
 import com.youthtalk.dto.CommonResponse
-import com.youthtalk.dto.HomePoliciesResponse
 import com.youthtalk.dto.PolicyDetailResponse
 import com.youthtalk.dto.PostAddCommentResponse
-import com.youthtalk.dto.SearchPoliciesResponse
 import com.youthtalk.dto.home.HomeDataResponse
 import com.youthtalk.dto.home.NewPoliciesResponse
 import com.youthtalk.dto.specpolicy.SpecPoliciesResponse
-import com.youthtalk.model.PolicyResponse
 import com.youthtalk.model.typeenum.SortType
 import okhttp3.RequestBody
 import retrofit2.http.Body
@@ -24,13 +21,6 @@ interface PolicyService {
 
     @GET("/api/v1/home/new-policies")
     suspend fun getNewPolicies(@Query("sort") sort: SortType = SortType.RECENT): CommonResponse<NewPoliciesResponse>
-
-    @GET("/api/v1/policies")
-    suspend fun getPolices(
-        @Query("categories") categories: List<String>,
-        @Query("page") page: Int,
-        @Query("size") size: Int
-    ): CommonResponse<HomePoliciesResponse>
 
     @GET("/api/v1/policies/{policyid}")
     suspend fun getPolicyDetail(@Path("policyid") policyId: String): CommonResponse<PolicyDetailResponse>
@@ -48,19 +38,6 @@ interface PolicyService {
 
     @POST("/api/v1/policies/comments")
     suspend fun postAddComment(@Body requestBody: RequestBody): CommonResponse<PostAddCommentResponse>
-
-    @GET("/api/v1/policies/scrap")
-    suspend fun getScrapPolicies(@Query("page") page: Int, @Query("size") size: Int): CommonResponse<List<PolicyResponse>>
-
-    @GET("/api/v1/policies/scrapped/upcoming-deadline")
-    suspend fun getDeadLinePolicies(): CommonResponse<List<PolicyResponse>>
-
-    @GET("/api/v1/policies/search")
-    suspend fun getSearchPoliciesTitle(
-        @Query("title") title: String,
-        @Query("page") page: Int,
-        @Query("size") size: Int
-    ): CommonResponse<List<SearchPoliciesResponse>>
 
     @GET("/api/v1/policies/recent-view")
     suspend fun getRecentlyViewPolicies(): CommonResponse<List<com.youthtalk.dto.policy.PolicyResponse>>

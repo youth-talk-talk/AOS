@@ -38,8 +38,8 @@ import com.youthtalk.designsystem.gray40
 import com.youthtalk.designsystem.gray60
 import com.youthtalk.designsystem.gray80
 import com.youthtalk.designsystem.gray90
-import com.youthtalk.model.Category
 import com.youthtalk.model.policy.Policy
+import com.youthtalk.model.typeenum.Category
 import timber.log.Timber
 
 // TODO: 추후 Policy 기본값 제거

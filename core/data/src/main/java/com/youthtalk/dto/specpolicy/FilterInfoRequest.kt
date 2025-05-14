@@ -1,10 +1,10 @@
 package com.youthtalk.dto.specpolicy
 
-import com.youthtalk.model.Category
-import com.youthtalk.model.Region
+import com.youthtalk.model.typeenum.Category
 import com.youthtalk.model.typeenum.EducationType
 import com.youthtalk.model.typeenum.EmploymentType
 import com.youthtalk.model.typeenum.MarriageType
+import com.youthtalk.model.typeenum.Region
 import com.youthtalk.model.typeenum.SpecializedType
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json

@@ -2,7 +2,7 @@ package com.core.navigation.navigator
 
 import com.core.navigation.model.CommentType
 import com.core.navigation.model.ScrapPostType
-import com.youthtalk.model.CommunityType
+import com.youthtalk.model.post.PostSubject
 import kotlinx.serialization.Serializable
 
 interface MainNavigator : Navigator
@@ -34,7 +34,7 @@ data object PolicySearch
 
 @Serializable
 data class CommunitySearch(
-    val communityType: CommunityType
+    val communityType: PostSubject
 )
 
 @Serializable
@@ -58,7 +58,7 @@ data class CommunityDetail(
 
 @Serializable
 data class CommunityWrite(
-    val communityType: CommunityType
+    val communityType: PostSubject
 )
 
 @Serializable

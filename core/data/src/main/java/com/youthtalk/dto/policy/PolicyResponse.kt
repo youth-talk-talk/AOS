@@ -1,6 +1,6 @@
 package com.youthtalk.dto.policy
 
-import com.youthtalk.model.Category
+import com.youthtalk.model.typeenum.Category
 import kotlinx.serialization.Serializable
 
 @Serializable

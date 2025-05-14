@@ -8,15 +8,22 @@ import androidx.room.withTransaction
 import com.youthtalk.data.CommunityService
 import com.youthtalk.datasource.room.YouthDatabase
 import com.youthtalk.mapper.toData
-import com.youthtalk.model.Post
+import com.youthtalk.model.post.Post
+import com.youthtalk.model.post.PostSubject
+import com.youthtalk.model.post.PostType
+import com.youthtalk.model.typeenum.Category
 import java.io.IOException
 import javax.inject.Inject
+import kotlinx.coroutines.delay
 import retrofit2.HttpException
 
 @OptIn(ExperimentalPagingApi::class)
 class PostRemoteMediator @Inject constructor(
     private val communityService: CommunityService,
-    private val youthDatabase: YouthDatabase
+    private val youthDatabase: YouthDatabase,
+    private val postType: PostType,
+    private val postSubject: PostSubject,
+    private val categories: List<Category>
 ) : RemoteMediator<Int, Post>() {
     private val postDao = youthDatabase.postDao()
     private val postRemoteKeyDao = youthDatabase.postRemoteKeyDao()
@@ -30,26 +37,40 @@ class PostRemoteMediator @Inject constructor(
             LoadType.REFRESH -> {
                 null
             }
+
             LoadType.PREPEND -> {
                 return MediatorResult.Success(true)
             }
+
             LoadType.APPEND -> {
                 postRemoteKeyDao.getNextKey()
             }
         }
         try {
-            val page = remoteKey?.nextPage ?: 0
-            val response = communityService.getPosts(
-                page = page,
-                size = state.config.pageSize
-            )
-            val posts = response.data?.posts?.map { it.toData() } ?: listOf()
             youthDatabase.withTransaction {
                 if (loadType == LoadType.REFRESH) {
-                    postDao.deleteAll()
+                    postDao.deleteAll(postType)
                     postRemoteKeyDao.deleteAll()
                 }
-                postRemoteKeyDao.insertOrReplace(PostRemoteKey(nextPage = page + 1))
+                delay(300)
+            }
+
+            val page = remoteKey?.nextPage ?: 0
+            val response = when (postSubject) {
+                PostSubject.REVIEW -> communityService.postReviewPosts(
+                    categories = categories,
+                    page = page,
+                    size = state.config.pageSize
+                )
+
+                PostSubject.FREE -> communityService.getPosts(
+                    page = page,
+                    size = state.config.pageSize
+                )
+            }
+            val posts = response.data?.posts?.map { it.toData().copy(postType = postType) } ?: listOf()
+            youthDatabase.withTransaction {
+                postRemoteKeyDao.insertOrReplace(PostRemoteKey(nextPage = page + 1, postType = postType))
                 postDao.insertAll(posts)
             }
             return MediatorResult.Success(posts.size != state.config.pageSize)

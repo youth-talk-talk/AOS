@@ -45,9 +45,9 @@ import com.youthtalk.component.sheet.RegionBottomSheet
 import com.youthtalk.component.topbar.RegionTopBar
 import com.youthtalk.designsystem.gray10
 import com.youthtalk.designsystem.gray40
-import com.youthtalk.model.Category
-import com.youthtalk.model.Region
 import com.youthtalk.model.policy.Policy
+import com.youthtalk.model.typeenum.Category
+import com.youthtalk.model.typeenum.Region
 import java.text.DecimalFormat
 
 @Composable

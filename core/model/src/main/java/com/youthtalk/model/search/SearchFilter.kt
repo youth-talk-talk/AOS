@@ -1,6 +1,6 @@
 package com.youthtalk.model.search
 
-import com.youthtalk.model.Category
+import com.youthtalk.model.typeenum.Category
 import com.youthtalk.model.typeenum.EducationType
 import com.youthtalk.model.typeenum.EmploymentType
 import com.youthtalk.model.typeenum.MarriageType

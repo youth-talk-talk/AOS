@@ -31,8 +31,8 @@ import com.youthtalk.designsystem.gray10
 import com.youthtalk.designsystem.gray50
 import com.youthtalk.designsystem.gray80
 import com.youthtalk.designsystem.gray90
-import com.youthtalk.model.Category
 import com.youthtalk.model.community.Post
+import com.youthtalk.model.typeenum.Category
 import java.time.LocalDateTime
 
 @Composable

@@ -23,12 +23,12 @@ import androidx.compose.ui.unit.dp
 import com.youth.app.feature.search.R
 import com.youthtalk.component.card.PostCard
 import com.youthtalk.designsystem.gray40
-import com.youthtalk.model.Category
-import com.youthtalk.model.CommunityType
+import com.youthtalk.model.post.PostSubject
+import com.youthtalk.model.typeenum.Category
 import java.text.DecimalFormat
 
 @Composable
-fun CommunitySearchResultScreen(modifier: Modifier = Modifier, communityType: CommunityType) {
+fun CommunitySearchResultScreen(modifier: Modifier = Modifier, communityType: PostSubject) {
     var count by remember {
         mutableStateOf(10)
     }
@@ -76,14 +76,14 @@ fun CommunitySearchResultScreen(modifier: Modifier = Modifier, communityType: Co
             PostCard(
                 modifier = Modifier.padding(horizontal = 16.dp),
                 keyword = when (communityType) {
-                    CommunityType.REVIEW -> Category.PARTICIPATION.categoryName.split(" ").first()
-                    CommunityType.FREE -> ""
+                    PostSubject.REVIEW -> Category.PARTICIPATION.categoryName.split(" ").first()
+                    PostSubject.FREE -> ""
                 },
                 communityTitle = "영화 보는 거 좋아하는 사람? 꿀팁 알려드림!",
                 communitySubTitle = "영화 보는 거 좋아하는 사람? 꿀팁 알려드림! 영화 보는 거 좋아하는 사람...",
                 policyTitle = when (communityType) {
-                    CommunityType.REVIEW -> "청년문화예술패스"
-                    CommunityType.FREE -> ""
+                    PostSubject.REVIEW -> "청년문화예술패스"
+                    PostSubject.FREE -> ""
                 },
                 onClick = {}
             )

@@ -24,7 +24,7 @@ import com.youthtalk.designsystem.gray10
 import com.youthtalk.designsystem.gray30
 import com.youthtalk.designsystem.gray40
 import com.youthtalk.extentions.shadow
-import com.youthtalk.model.Category
+import com.youthtalk.model.typeenum.Category
 
 @Composable
 fun ReviewPost(modifier: Modifier = Modifier, lazyListState: LazyListState, categories: List<Category>, onClickPost: (Long) -> Unit) {

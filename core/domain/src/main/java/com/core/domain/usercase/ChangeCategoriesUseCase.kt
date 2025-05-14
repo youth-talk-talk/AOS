@@ -1,7 +1,7 @@
 package com.core.domain.usercase
 
 import com.core.dataapi.repository.UserRepository
-import com.youthtalk.model.Category
+import com.youthtalk.model.typeenum.Category
 import javax.inject.Inject
 class ChangeCategoriesUseCase @Inject constructor(
     private val userRepository: UserRepository

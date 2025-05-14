@@ -65,11 +65,11 @@ import com.youthtalk.designsystem.gray40
 import com.youthtalk.designsystem.gray80
 import com.youthtalk.designsystem.gray90
 import com.youthtalk.extentions.shadow
-import com.youthtalk.model.Category
-import com.youthtalk.model.Region
 import com.youthtalk.model.home.NewPolicies
 import com.youthtalk.model.policy.PoliciesWithReview
 import com.youthtalk.model.policy.Policy
+import com.youthtalk.model.typeenum.Category
+import com.youthtalk.model.typeenum.Region
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import kotlinx.serialization.json.Json

@@ -1,7 +1,6 @@
 package com.youthtalk.repository
 
 import com.core.dataapi.repository.HomeRepository
-import com.core.datastore.datasource.DataStoreDataSource
 import com.core.exception.NoDataException
 import com.youthtalk.data.PolicyService
 import com.youthtalk.mapper.toDomain
@@ -15,8 +14,7 @@ import kotlinx.coroutines.flow.flow
 import timber.log.Timber
 
 class HomeRepositoryImpl @Inject constructor(
-    private val policyService: PolicyService,
-    private val dataSource: DataStoreDataSource
+    private val policyService: PolicyService
 ) : HomeRepository {
     override fun getHome(): Flow<HomeData> = flow {
         Timber.e("HomeRepositoryImpl getHome start")

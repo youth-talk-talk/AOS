@@ -24,7 +24,8 @@ data class PostDataResponse(
     val scrap: Boolean,
     val comments: Int,
     val policyId: String?,
-    val policyTitle: String?
+    val policyTitle: String?,
+    val contentPreview: String
 )
 
 @Serializable

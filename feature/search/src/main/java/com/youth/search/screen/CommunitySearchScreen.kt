@@ -14,10 +14,10 @@ import androidx.compose.ui.Modifier
 import com.youth.search.component.SearchBar
 import com.youth.search.model.SearchState
 import com.youthtalk.designsystem.gray10
-import com.youthtalk.model.CommunityType
+import com.youthtalk.model.post.PostSubject
 
 @Composable
-fun CommunitySearchScreen(modifier: Modifier = Modifier, onBack: () -> Unit, communityType: CommunityType) {
+fun CommunitySearchScreen(modifier: Modifier = Modifier, onBack: () -> Unit, communityType: PostSubject) {
     var search by remember {
         mutableStateOf("")
     }

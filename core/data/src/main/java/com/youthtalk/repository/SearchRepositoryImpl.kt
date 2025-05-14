@@ -1,25 +1,11 @@
 package com.youthtalk.repository
 
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.PagingData
 import com.core.dataapi.repository.SearchRepository
 import com.core.datastore.datasource.DataStoreDataSource
-import com.core.exception.NoDataException
 import com.youthtalk.data.CommunityService
 import com.youthtalk.data.PolicyService
 import com.youthtalk.datasource.PagingSize
-import com.youthtalk.datasource.search.SearchPoliciesTitlePagingSource
-import com.youthtalk.datasource.search.SearchPolicyPagingSource
-import com.youthtalk.datasource.search.SearchPostPagingSource
 import com.youthtalk.dto.PostSearchResponse
-import com.youthtalk.dto.specpolicy.FilterInfoRequest
-import com.youthtalk.dto.specpolicy.SpecPoliciesResponse
-import com.youthtalk.model.FilterInfo
-import com.youthtalk.model.Post
-import com.youthtalk.model.SearchPolicy
-import com.youthtalk.model.policy.Policy
-import com.youthtalk.model.typeenum.SortType
 import com.youthtalk.utils.ErrorUtils.throwableError
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
@@ -32,65 +18,8 @@ class SearchRepositoryImpl @Inject constructor(
 ) : SearchRepository {
     override fun getRecentList(): Flow<List<String>> = dataSource.getRecentSearchList()
 
-    override fun getPolicies(filterInfo: FilterInfo, keyword: String): Flow<Flow<PagingData<Policy>>> = flow {
-        emit(
-            Pager(
-                pagingSourceFactory = {
-                    SearchPolicyPagingSource(
-                        policyService = policyService,
-                        filterInfo = filterInfo,
-                        keyword = keyword
-                    )
-                },
-                config = PagingConfig(
-                    pageSize = PagingSize.SEARCH_PAGE_SIZE,
-                    initialLoadSize = PagingSize.SEARCH_PAGE_SIZE
-                )
-            ).flow
-        )
-    }
-
-    override fun getPoliciesCount(filterInfo: FilterInfo, keyword: String): Flow<Int> = flow {
-        val requestBody = FilterInfoRequest().toRequestBody()
-
-        runCatching {
-            policyService.postSpecPolicies(
-                requestBody = requestBody,
-                sort = SortType.RECENT,
-                page = 0,
-                size = 10
-            )
-        }
-            .onSuccess { response ->
-                response.data?.let { specPolicyInfo ->
-                    emit(specPolicyInfo.totalCount)
-                } ?: throw NoDataException()
-            }
-            .onFailure {
-                throwableError<SpecPoliciesResponse>(it)
-            }
-    }
-
     override suspend fun postRecentList(recentList: List<String>) {
         dataSource.setRecentList(recentList)
-    }
-
-    override fun getPosts(type: String, keyword: String): Flow<Flow<PagingData<Post>>> = flow {
-        emit(
-            Pager(
-                pagingSourceFactory = {
-                    SearchPostPagingSource(
-                        communityService = communityService,
-                        type = type,
-                        keyword = keyword
-                    )
-                },
-                config = PagingConfig(
-                    pageSize = PagingSize.SEARCH_PAGE_SIZE,
-                    initialLoadSize = PagingSize.SEARCH_PAGE_SIZE
-                )
-            ).flow
-        )
     }
 
     override fun getPostsCount(type: String, keyword: String): Flow<Int> = flow {
@@ -110,19 +39,5 @@ class SearchRepositoryImpl @Inject constructor(
             .onFailure {
                 throwableError<PostSearchResponse>(it)
             }
-    }
-
-    override fun getSearchPolicies(title: String): Flow<PagingData<SearchPolicy>> {
-        return Pager(
-            pagingSourceFactory = {
-                SearchPoliciesTitlePagingSource(
-                    title = title,
-                    policyService = policyService
-                )
-            },
-            config = PagingConfig(
-                pageSize = PagingSize.SEARCH_PAGE_SIZE
-            )
-        ).flow
     }
 }

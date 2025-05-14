@@ -9,9 +9,9 @@ import com.core.domain.usercase.specpolicy.PostSpecPoliciesUseCase
 import com.feature.policy.model.overview.OverViewUiEffect
 import com.feature.policy.model.overview.OverViewUiEvent
 import com.feature.policy.model.overview.OverViewUiState
-import com.youthtalk.model.Category
 import com.youthtalk.model.policy.PolicyType
 import com.youthtalk.model.search.SearchFilter
+import com.youthtalk.model.typeenum.Category
 import com.youthtalk.model.typeenum.SortType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
