@@ -7,11 +7,10 @@ import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
 import com.youthtalk.data.CommunityService
 import com.youthtalk.datasource.room.YouthDatabase
-import com.youthtalk.mapper.toData
+import com.youthtalk.mapper.toDomain
 import com.youthtalk.model.post.Post
 import com.youthtalk.model.post.PostSubject
 import com.youthtalk.model.post.PostType
-import com.youthtalk.model.typeenum.Category
 import java.io.IOException
 import javax.inject.Inject
 import kotlinx.coroutines.delay
@@ -23,7 +22,7 @@ class PostRemoteMediator @Inject constructor(
     private val youthDatabase: YouthDatabase,
     private val postType: PostType,
     private val postSubject: PostSubject,
-    private val categories: List<Category>
+    private val categories: List<String>
 ) : RemoteMediator<Int, Post>() {
     private val postDao = youthDatabase.postDao()
     private val postRemoteKeyDao = youthDatabase.postRemoteKeyDao()
@@ -68,7 +67,7 @@ class PostRemoteMediator @Inject constructor(
                     size = state.config.pageSize
                 )
             }
-            val posts = response.data?.posts?.map { it.toData().copy(postType = postType) } ?: listOf()
+            val posts = response.data?.posts?.map { it.toDomain().copy(postType = postType) } ?: listOf()
             youthDatabase.withTransaction {
                 postRemoteKeyDao.insertOrReplace(PostRemoteKey(nextPage = page + 1, postType = postType))
                 postDao.insertAll(posts)

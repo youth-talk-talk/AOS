@@ -1,13 +1,23 @@
 package com.core.community.viewmodel
 
+import androidx.lifecycle.viewModelScope
+import androidx.paging.cachedIn
 import com.core.base.BaseViewModel
 import com.core.community.model.community.CommunityUiEffect
 import com.core.community.model.community.CommunityUiEvent
 import com.core.community.model.community.CommunityUiState
 import com.core.domain.usercase.post.GetPopularPostsUseCase
 import com.core.domain.usercase.post.GetPostsUseCase
+import com.youthtalk.model.post.PostSubject
+import com.youthtalk.model.post.PostType
+import com.youthtalk.model.typeenum.Category
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @HiltViewModel
@@ -18,7 +28,60 @@ class CommunityViewModel @Inject constructor(
     initialState = CommunityUiState.initState
 ) {
 
+    init {
+        setEvent(CommunityUiEvent.InitData)
+    }
+
     override fun handleEvents(event: CommunityUiEvent) {
-        Timber.e("handleEvents")
+        when (event) {
+            is CommunityUiEvent.InitData -> initData()
+            is CommunityUiEvent.ChangeCategory -> changeCategory(event.category)
+        }
+    }
+
+    private fun changeCategory(category: Category) {
+        viewModelScope.launch {
+            getPostsUseCase(category, PostType.COMMUNITY_TAB_REVIEW, PostSubject.REVIEW)
+                .onStart { setState { copy(category = category) } }
+                .catch {
+                    Timber.e("CommunityViewModel changeCategory error $it")
+                }
+                .collectLatest {
+                    setState { copy(reviews = it.cachedIn(viewModelScope)) }
+                }
+        }
+    }
+
+    private fun initData() {
+        val currentCategory = state.value.category
+        viewModelScope.launch {
+            combine(
+                combine(
+                    getPostsUseCase(currentCategory, PostType.COMMUNITY_TAB_REVIEW, PostSubject.REVIEW),
+                    getPopularPostsUseCase(category = currentCategory, PostSubject.REVIEW)
+                ) { reviewPosts, popularReviewPost ->
+                    Pair(reviewPosts, popularReviewPost)
+                },
+                combine(
+                    getPostsUseCase(currentCategory, PostType.COMMUNITY_TAB_FREE, PostSubject.FREE),
+                    getPopularPostsUseCase(category = currentCategory, PostSubject.FREE)
+                ) { reviewPosts, popularReviewPost ->
+                    Pair(reviewPosts, popularReviewPost)
+                }
+            ) { reviewInfo, freeInfo ->
+                CommunityUiState.initState.copy(
+                    reviews = reviewInfo.first.cachedIn(viewModelScope),
+                    popularReviews = reviewInfo.second,
+                    frees = freeInfo.first.cachedIn(viewModelScope),
+                    popularFrees = freeInfo.second
+                )
+            }
+                .catch {
+                    Timber.e("CommunityViewModel initData error $it")
+                }
+                .collectLatest {
+                    setState { it }
+                }
+        }
     }
 }

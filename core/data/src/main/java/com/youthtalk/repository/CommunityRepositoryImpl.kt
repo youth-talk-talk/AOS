@@ -10,7 +10,7 @@ import com.youthtalk.data.CommunityService
 import com.youthtalk.datasource.post.PostRemoteMediator
 import com.youthtalk.datasource.room.YouthDatabase
 import com.youthtalk.dto.MemberId
-import com.youthtalk.mapper.toData
+import com.youthtalk.mapper.toDomain
 import com.youthtalk.model.post.Post
 import com.youthtalk.model.post.PostSubject
 import com.youthtalk.model.post.PostType
@@ -26,7 +26,13 @@ class CommunityRepositoryImpl @Inject constructor(
     private val youthDatabase: YouthDatabase
 ) : CommunityRepository {
     override fun getPopularPosts(category: Category, postSubject: PostSubject): Flow<List<Post>> = flow {
-        val categories = if (category == Category.ALL) Category.entries.filter { it != Category.ALL } else listOf(category)
+        val categories = if (category == Category.ALL) {
+            Category.entries.filter { it != Category.ALL }.map { it.name }.toList()
+        } else {
+            listOf(
+                category.name
+            )
+        }
         runCatching {
             when (postSubject) {
                 PostSubject.REVIEW -> communityService.postReviewPosts(categories = categories, page = 0, size = 10)
@@ -36,7 +42,7 @@ class CommunityRepositoryImpl @Inject constructor(
             .onSuccess { data ->
                 Timber.e("CommunityRepositoryImpl getPopularPosts Success $data")
                 data.data?.let { postResponse ->
-                    emit(postResponse.popularPosts.map { it.toData() })
+                    emit(postResponse.popularPosts.map { it.toDomain() })
                 } ?: throw NoDataException()
             }
             .onFailure { error ->
@@ -47,7 +53,13 @@ class CommunityRepositoryImpl @Inject constructor(
 
     @OptIn(ExperimentalPagingApi::class)
     override fun getPosts(category: Category, postType: PostType, postSubject: PostSubject): Flow<Flow<PagingData<Post>>> = flow {
-        val categories = if (category == Category.ALL) Category.entries.filter { it != Category.ALL } else listOf(category)
+        val categories = if (category == Category.ALL) {
+            Category.entries.filter { it != Category.ALL }.map { it.name }.toList()
+        } else {
+            listOf(
+                category.name
+            )
+        }
         emit(
             Pager(
                 config = PagingConfig(

@@ -21,20 +21,23 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.core.community.component.FreePost
 import com.core.community.component.ReviewPost
 import com.core.community.component.SearchBarComponent
+import com.core.community.model.community.CommunityUiEvent
 import com.core.community.viewmodel.CommunityViewModel
 import com.youthtalk.designsystem.gray10
 import com.youthtalk.designsystem.gray100
 import com.youthtalk.designsystem.gray70
 import com.youthtalk.model.post.PostSubject
-import com.youthtalk.model.typeenum.Category
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -46,10 +49,10 @@ fun CommunityScreen(
     onClickPostDetail: (Long) -> Unit,
     onClickCommunityWrite: (PostSubject) -> Unit
 ) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
     val communityType = PostSubject.entries.toList()
     val pagerState = rememberPagerState { communityType.size }
     val scope = rememberCoroutineScope()
-    val categories = Category.entries.toList()
     val lazyColumnStates = List(2) { rememberLazyListState() }
     Box(
         modifier = modifier
@@ -131,13 +134,18 @@ fun CommunityScreen(
             ) {
                 when (communityType[it]) {
                     PostSubject.REVIEW -> ReviewPost(
-                        categories = categories,
+                        category = state.category,
+                        reviews = state.reviews.collectAsLazyPagingItems(),
+                        popularReviews = state.popularReviews,
                         lazyListState = lazyColumnStates[it],
-                        onClickPost = onClickPostDetail
+                        onClickPost = onClickPostDetail,
+                        onClickCategory = { category -> viewModel.setEvent(CommunityUiEvent.ChangeCategory(category)) }
                     )
 
                     PostSubject.FREE -> FreePost(
                         lazyListState = lazyColumnStates[it],
+                        popularFrees = state.popularFrees,
+                        frees = state.frees.collectAsLazyPagingItems(),
                         onClickPost = onClickPostDetail
                     )
                 }

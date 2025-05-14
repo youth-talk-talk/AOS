@@ -21,9 +21,10 @@ import androidx.compose.ui.unit.dp
 import com.youth.app.feature.community.R
 import com.youthtalk.designsystem.gray80
 import com.youthtalk.designsystem.gray90
+import com.youthtalk.model.post.Post
 
 @Composable
-fun PopularPostCard(modifier: Modifier = Modifier, header: String = "", communityTitle: String, content: String, onClick: () -> Unit) {
+fun PopularPostCard(modifier: Modifier = Modifier, post: Post, onClick: () -> Unit) {
     Column(
         modifier = modifier
             .clickable(
@@ -34,7 +35,7 @@ fun PopularPostCard(modifier: Modifier = Modifier, header: String = "", communit
             }
             .padding(horizontal = 16.dp, vertical = 20.dp)
     ) {
-        if (header.isNotEmpty()) {
+        post.policyTitle?.let { header ->
             Text(
                 modifier = Modifier.padding(bottom = 8.dp),
                 text = header,
@@ -47,7 +48,7 @@ fun PopularPostCard(modifier: Modifier = Modifier, header: String = "", communit
         }
 
         Text(
-            text = communityTitle,
+            text = post.title,
             style = MaterialTheme.typography.titleMedium,
             maxLines = 2,
             overflow = TextOverflow.Ellipsis
@@ -55,7 +56,7 @@ fun PopularPostCard(modifier: Modifier = Modifier, header: String = "", communit
 
         Text(
             modifier = Modifier.padding(top = 4.dp, bottom = 10.dp),
-            text = content,
+            text = post.contentPreview,
             style = MaterialTheme.typography.labelSmall.copy(
                 color = gray90
             ),
@@ -78,7 +79,7 @@ fun PopularPostCard(modifier: Modifier = Modifier, header: String = "", communit
                     colorFilter = ColorFilter.tint(color = gray80)
                 )
                 Text(
-                    text = "13",
+                    text = "${post.comments}",
                     style = MaterialTheme.typography.labelSmall.copy(
                         color = gray80
                     )
@@ -91,12 +92,18 @@ fun PopularPostCard(modifier: Modifier = Modifier, header: String = "", communit
             ) {
                 Image(
                     modifier = Modifier.size(16.dp),
-                    painter = painterResource(R.drawable.bookmark_line),
+                    painter = painterResource(
+                        if (post.scrap) {
+                            R.drawable.bookmark_fill
+                        } else {
+                            R.drawable.bookmark_line
+                        }
+                    ),
                     contentDescription = "북마크",
-                    colorFilter = ColorFilter.tint(color = gray80)
+                    colorFilter = ColorFilter.tint(color = if (post.scrap) MaterialTheme.colorScheme.primary else gray80)
                 )
                 Text(
-                    text = "13",
+                    text = "${post.scrapCount}",
                     style = MaterialTheme.typography.labelSmall.copy(
                         color = gray80
                     )

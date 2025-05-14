@@ -21,6 +21,7 @@ object DatabaseModule {
             context = context,
             name = "youth",
             klass = YouthDatabase::class.java
-        ).build()
+        )
+            .build()
     }
 }

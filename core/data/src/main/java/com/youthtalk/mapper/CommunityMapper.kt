@@ -1,23 +1,9 @@
 package com.youthtalk.mapper
 
-import com.youthtalk.dto.PostDataResponse
 import com.youthtalk.dto.community.PostContentInfoResponse
 import com.youthtalk.dto.community.PostDetailResponse
 import com.youthtalk.model.PostContentInfo
 import com.youthtalk.model.PostDetail
-import com.youthtalk.model.post.Post
-
-fun PostDataResponse.toData() = Post(
-    postId = postId,
-    title = title,
-    writerId = writerId,
-    scraps = scraps,
-    scrap = scrap,
-    comments = comments,
-    policyId = policyId,
-    policyTitle = policyTitle,
-    contentPreview = contentPreview
-)
 
 fun PostDetailResponse.toData() = PostDetail(
     postId = postId,

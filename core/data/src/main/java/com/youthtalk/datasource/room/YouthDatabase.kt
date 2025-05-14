@@ -1,7 +1,9 @@
 package com.youthtalk.datasource.room
 
+import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import com.youthtalk.datasource.policy.PolicyDao
 import com.youthtalk.datasource.policy.PolicyRemoteKey
 import com.youthtalk.datasource.policy.PolicyRemoteKeyDao
@@ -18,9 +20,11 @@ import com.youthtalk.model.post.Post
         Policy::class,
         PolicyRemoteKey::class
     ],
-    version = 1,
+    version = 2,
+    autoMigrations = [ AutoMigration(1, 2) ],
     exportSchema = true
 )
+@TypeConverters(value = [DateTimeConverter::class])
 abstract class YouthDatabase : RoomDatabase() {
     abstract fun postDao(): PostDao
     abstract fun postRemoteKeyDao(): PostRemoteKeyDao
