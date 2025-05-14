@@ -8,5 +8,6 @@ enum class PolicyType {
     SEARCH,
     POLICY_TAB_DEADLINE,
     POLICY_TAB_CATEGORY,
-    DEADLINE
+    DEADLINE,
+    OVERVIEW
 }
