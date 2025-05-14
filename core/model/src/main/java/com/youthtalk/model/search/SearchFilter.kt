@@ -33,7 +33,12 @@ data class SearchFilter(
             region == null && minEarn == null && maxEarn == null
     }
 
-    fun earnToString(): String {
-        return "${minEarn?.let { "${it / 10000}만" }} ~ ${maxEarn?.let { "${it / 10000}만" }} ${if (maxEarn == 50_000_000) "이상" else ""}"
+    fun earnToString(): String? {
+        if (maxEarn == null || minEarn == null) return null
+        return if (minEarn == maxEarn) {
+            return "${maxEarn}만" + if (maxEarn == 5000) " 이상" else ""
+        } else {
+            "${minEarn}만 ~ ${maxEarn}만 ${if (maxEarn == 5000) "이상" else ""}"
+        }
     }
 }

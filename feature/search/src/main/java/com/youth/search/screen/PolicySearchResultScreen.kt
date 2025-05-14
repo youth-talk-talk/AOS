@@ -75,10 +75,8 @@ fun PolicySearchResultScreen(
     var bottomSheet by remember {
         mutableStateOf(false)
     }
-    val state = rememberModalBottomSheetState(
-        skipPartiallyExpanded = true
-    )
-
+    val state = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    var startIndex by remember { mutableStateOf(0) }
     LazyColumn(
         modifier = modifier
             .fillMaxSize()
@@ -125,6 +123,7 @@ fun PolicySearchResultScreen(
                         text = title,
                         count = filterCount,
                         onClick = {
+                            startIndex = it
                             bottomSheet = true
                         }
                     )
@@ -227,6 +226,7 @@ fun PolicySearchResultScreen(
         FilterBottomSheet(
             sheetState = state,
             searchFilter = searchFilter,
+            startIndex = startIndex,
             onDismiss = { bottomSheet = false },
             onClick = { applyFilter(it, sortType) }
         )
@@ -290,8 +290,10 @@ fun PolicyFilterInfo(modifier: Modifier = Modifier, searchFilter: SearchFilter, 
             }
 
             if (searchFilter.minEarn != null && searchFilter.maxEarn != null) {
-                FilterButton(text = searchFilter.earnToString()) {
-                    onDeleteSearchFilter(searchFilter.copy(minEarn = null, maxEarn = null))
+                searchFilter.earnToString()?.let { value ->
+                    FilterButton(text = value) {
+                        onDeleteSearchFilter(searchFilter.copy(minEarn = null, maxEarn = null))
+                    }
                 }
             }
 
