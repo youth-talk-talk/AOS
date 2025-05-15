@@ -20,8 +20,8 @@ import com.youthtalk.model.post.Post
         Policy::class,
         PolicyRemoteKey::class
     ],
-    version = 2,
-    autoMigrations = [ AutoMigration(1, 2) ],
+    version = 3,
+    autoMigrations = [ AutoMigration(1, 2), AutoMigration(2, 3) ],
     exportSchema = true
 )
 @TypeConverters(value = [DateTimeConverter::class])

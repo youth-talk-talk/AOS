@@ -8,30 +8,29 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.youth.search.component.SearchBar
 import com.youth.search.model.SearchState
+import com.youth.search.model.communitysearch.CommunityUiEvent
+import com.youth.search.viewmodel.CommunitySearchViewModel
 import com.youthtalk.designsystem.gray10
-import com.youthtalk.model.post.PostSubject
 
 @Composable
-fun CommunitySearchScreen(modifier: Modifier = Modifier, onBack: () -> Unit, communityType: PostSubject) {
-    var search by remember {
+fun CommunitySearchScreen(modifier: Modifier = Modifier, viewModel: CommunitySearchViewModel = hiltViewModel(), onBack: () -> Unit) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
+    var search by rememberSaveable {
         mutableStateOf("")
-    }
-    var recents by remember {
-        mutableStateOf(listOf("월제 지원", "서울시 청년보조", "학자금 대출 이자"))
-    }
-    var state by remember {
-        mutableStateOf(SearchState.NONE)
     }
 
     BackHandler {
-        when (state) {
+        when (state.searchState) {
             SearchState.NONE -> onBack()
-            SearchState.SEARCH -> state = SearchState.NONE
+            SearchState.SEARCH -> viewModel.setEvent(CommunityUiEvent.SetState(SearchState.NONE))
         }
     }
 
@@ -44,8 +43,8 @@ fun CommunitySearchScreen(modifier: Modifier = Modifier, onBack: () -> Unit, com
             text = search,
             onClickBack = {},
             onTextChange = { search = it },
-            onSearch = {
-                state = SearchState.SEARCH
+            onSearch = { keyword ->
+                viewModel.setEvent(CommunityUiEvent.Search(keyword, state.communityType))
             },
             onClear = {
                 search = ""
@@ -53,23 +52,21 @@ fun CommunitySearchScreen(modifier: Modifier = Modifier, onBack: () -> Unit, com
         )
 
         Crossfade(
-            targetState = state
+            targetState = state.searchState
         ) {
             when (it) {
                 SearchState.NONE -> {
                     Column {
                         SearchScreen(
-                            recents = recents,
+                            recents = state.recently,
                             onDelete = {
-                                val list = recents.toMutableList()
-                                list.remove(it)
-                                recents = list
+                                viewModel.setEvent(CommunityUiEvent.SetRecently(state.recently.filter { value -> value != search }))
                             },
                             onDeleteAll = {
-                                recents = mutableListOf()
+                                viewModel.setEvent(CommunityUiEvent.SetRecently(listOf()))
                             },
-                            onClickItem = {
-                                state = SearchState.SEARCH
+                            onClickItem = { keyword ->
+                                viewModel.setEvent(CommunityUiEvent.Search(keyword, state.communityType))
                             }
                         )
                     }
@@ -77,7 +74,9 @@ fun CommunitySearchScreen(modifier: Modifier = Modifier, onBack: () -> Unit, com
 
                 SearchState.SEARCH -> {
                     CommunitySearchResultScreen(
-                        communityType = communityType
+                        communityType = state.communityType,
+                        posts = state.searchPost.collectAsLazyPagingItems(),
+                        totalCount = state.totalCount
                     )
                 }
             }
