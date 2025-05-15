@@ -1,20 +1,29 @@
 package com.youthtalk.repository
 
+import androidx.paging.ExperimentalPagingApi
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import com.core.dataapi.repository.SearchRepository
 import com.core.datastore.datasource.DataStoreDataSource
+import com.core.exception.NoDataException
 import com.youthtalk.data.CommunityService
-import com.youthtalk.data.PolicyService
-import com.youthtalk.datasource.PagingSize
-import com.youthtalk.dto.PostSearchResponse
+import com.youthtalk.datasource.post.PostKeywordRemoteMediator
+import com.youthtalk.datasource.room.YouthDatabase
+import com.youthtalk.dto.PolicyDetailResponse
+import com.youthtalk.model.post.Post
+import com.youthtalk.model.post.PostSubject
+import com.youthtalk.model.post.PostType
 import com.youthtalk.utils.ErrorUtils.throwableError
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import timber.log.Timber
 
 class SearchRepositoryImpl @Inject constructor(
-    private val policyService: PolicyService,
     private val dataSource: DataStoreDataSource,
-    private val communityService: CommunityService
+    private val communityService: CommunityService,
+    private val youthDatabase: YouthDatabase
 ) : SearchRepository {
     override fun getRecentList(): Flow<List<String>> = dataSource.getRecentSearchList()
 
@@ -22,22 +31,48 @@ class SearchRepositoryImpl @Inject constructor(
         dataSource.setRecentList(recentList)
     }
 
-    override fun getPostsCount(type: String, keyword: String): Flow<Int> = flow {
+    @OptIn(ExperimentalPagingApi::class)
+    override fun getKeywordPost(keyword: String, communityType: PostSubject, postType: PostType): Flow<Flow<PagingData<Post>>> = flow {
+        emit(
+            Pager(
+                config = PagingConfig(
+                    pageSize = 10,
+                    enablePlaceholders = true
+                ),
+                remoteMediator = PostKeywordRemoteMediator(
+                    communityService = communityService,
+                    keyword = keyword,
+                    postType = postType,
+                    postSubject = communityType,
+                    youthDatabase = youthDatabase
+                )
+            ) {
+                youthDatabase.postDao().getPagingSource(postType = postType)
+            }.flow
+        )
+    }
+
+    override fun getKeywordPostCount(keyword: String, communityType: PostSubject): Flow<Int> = flow {
+        val type = when (communityType) {
+            PostSubject.REVIEW -> "review"
+            PostSubject.FREE -> "post"
+        }
         runCatching {
             communityService.getSearchPosts(
                 keyword = keyword,
-                type = type,
                 page = 0,
-                size = PagingSize.SEARCH_PAGE_SIZE
+                type = type,
+                size = 1
             )
         }
             .onSuccess { response ->
-                response.data?.let {
-                    emit(it.total)
-                }
+                response.data?.let { data ->
+                    emit(data.total)
+                } ?: throw NoDataException("no Data")
             }
             .onFailure {
-                throwableError<PostSearchResponse>(it)
+                Timber.e("SearchRepositoryImpl getKeywordPostCount error $it")
+                throwableError<PolicyDetailResponse>(it)
             }
     }
 }

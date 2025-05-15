@@ -13,5 +13,6 @@ data class PostResponse(
 @Serializable
 data class PostSearchResponse(
     @SerialName("total") val total: Int,
+    @SerialName("page") val page: Int,
     @SerialName("posts") val posts: List<PostResponse>
 )
