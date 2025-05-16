@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.isImeVisible
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -33,18 +34,33 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.core.community.model.write.CommunityWriteUiEffect
 import com.core.community.model.write.CommunityWriteUiEvent
 import com.core.community.viewmodel.CommunityWriteViewModel
 import com.core.navigation.CommunityWriteNavigation
 import com.youthtalk.component.dialog.ModalDialog
 import com.youthtalk.component.picture.PictureScreen
 import com.youthtalk.designsystem.YongProjectTheme
+import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 
 @Composable
 fun CommunityWriteScreen(modifier: Modifier = Modifier, viewModel: CommunityWriteViewModel = hiltViewModel(), checkPermission: (String) -> Boolean) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val navController = rememberNavController()
+    val scrollState = rememberLazyListState()
+    LaunchedEffect(viewModel.effect) {
+        viewModel.effect.collectLatest {
+            when (it) {
+                is CommunityWriteUiEffect.GoPictureScreen -> navController.navigate(CommunityWriteNavigation.Picture)
+                is CommunityWriteUiEffect.OnBack -> navController.popBackStack()
+                is CommunityWriteUiEffect.ScrollIndex -> {
+                    scrollState.animateScrollToItem(it.index + 2)
+                }
+            }
+        }
+    }
+
     val permissionState = viewModel.permissions
     val permissionList = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         arrayOf(
@@ -63,7 +79,7 @@ fun CommunityWriteScreen(modifier: Modifier = Modifier, viewModel: CommunityWrit
         ActivityResultContracts.RequestMultiplePermissions()
     ) { permissions ->
         if (permissions.all { (_, isGranted) -> isGranted }) {
-            navController.navigate(CommunityWriteNavigation.Picture)
+            viewModel.setEvent(CommunityWriteUiEvent.GetImages)
         } else {
             permissions.forEach { (permission, isGranted) ->
                 Timber.e("permission $permission, isGranted $isGranted")
@@ -116,16 +132,20 @@ fun CommunityWriteScreen(modifier: Modifier = Modifier, viewModel: CommunityWrit
         composable<CommunityWriteNavigation.Write> {
             WriteScreen(
                 state = state,
+                scrollState = scrollState,
                 onClickPolicySearch = { navController.navigate(CommunityWriteNavigation.PolicySearch) },
                 onTextChangeValue = { index, text ->
                     viewModel.setEvent(CommunityWriteUiEvent.OnTextChangeValue(index, text))
                 },
                 checkPermission = {
                     if (permissionList.all { ContextCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED }) {
-                        navController.navigate(CommunityWriteNavigation.Picture)
+                        viewModel.setEvent(CommunityWriteUiEvent.GetImages)
                     } else {
                         launcher.launch(permissionList)
                     }
+                },
+                onChangeFocus = { index, text ->
+                    viewModel.setEvent(CommunityWriteUiEvent.FocusChange(index, text))
                 }
             )
         }
@@ -135,7 +155,11 @@ fun CommunityWriteScreen(modifier: Modifier = Modifier, viewModel: CommunityWrit
         }
 
         composable<CommunityWriteNavigation.Picture> {
-            PictureScreen()
+            PictureScreen(
+                images = state.images,
+                onBack = { navController.popBackStack() },
+                onSelectImage = { viewModel.setEvent(CommunityWriteUiEvent.PostUploadImages(it)) }
+            )
         }
     }
 }
