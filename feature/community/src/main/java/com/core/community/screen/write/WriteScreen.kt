@@ -23,9 +23,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import com.core.community.model.Contents
+import com.core.community.model.write.CommunityWriteUiState
 import com.youth.app.feature.community.R
 import com.youthtalk.component.topbar.MiddleTitleTopBar
 import com.youthtalk.designsystem.gray10
@@ -34,14 +40,17 @@ import com.youthtalk.designsystem.gray40
 import com.youthtalk.designsystem.gray70
 import com.youthtalk.designsystem.gray80
 import com.youthtalk.model.post.PostSubject
+import timber.log.Timber
 
 @Composable
-fun WriteScreen(modifier: Modifier = Modifier, communityType: PostSubject, onClickPolicySearch: () -> Unit, onClickPicture: () -> Unit) {
+fun WriteScreen(
+    modifier: Modifier = Modifier,
+    state: CommunityWriteUiState,
+    onClickPolicySearch: () -> Unit,
+    onTextChangeValue: (Int, TextFieldValue) -> Unit,
+    checkPermission: () -> Unit
+) {
     var title by remember {
-        mutableStateOf("")
-    }
-
-    var contents by remember {
         mutableStateOf("")
     }
 
@@ -51,7 +60,7 @@ fun WriteScreen(modifier: Modifier = Modifier, communityType: PostSubject, onCli
             .background(gray10)
     ) {
         MiddleTitleTopBar(
-            title = when (communityType) {
+            title = when (state.postType) {
                 PostSubject.REVIEW -> "후기 글쓰기"
                 PostSubject.FREE -> "자유 글쓰기"
             },
@@ -66,7 +75,7 @@ fun WriteScreen(modifier: Modifier = Modifier, communityType: PostSubject, onCli
             }
         )
 
-        if (communityType == PostSubject.REVIEW) {
+        if (state.postType == PostSubject.REVIEW) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -123,33 +132,54 @@ fun WriteScreen(modifier: Modifier = Modifier, communityType: PostSubject, onCli
             color = gray40
         )
 
-        BasicTextField(
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 16.dp)
-                .weight(1f),
-            value = contents,
-            onValueChange = { contents = it },
-            textStyle = MaterialTheme.typography.titleMedium,
-            maxLines = 1
-        ) { innerTextField ->
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-            ) {
-                if (contents.isEmpty()) {
-                    Text(
-                        text = when (communityType) {
-                            PostSubject.REVIEW -> stringResource(R.string.review_content_hint)
-                            PostSubject.FREE -> stringResource(R.string.free_content_hint)
-                        },
-                        style = MaterialTheme.typography.labelSmall.copy(
-                            color = gray80
-                        )
-                    )
+                .weight(1f)
+        ) {
+            state.contentList.forEachIndexed { index, content ->
+                when (content) {
+                    is Contents.Text -> {
+                        BasicTextField(
+                            modifier = Modifier
+                                .onKeyEvent {
+                                    if (it.key == Key.Backspace && index != 0) {
+                                        // 여기가 백스페이스 누를 때 처리
+                                    }
+                                    false
+                                },
+                            value = content.textFieldValue,
+                            onValueChange = { textField ->
+                                Timber.e("start cursor index -> ${textField.selection.start}, value : ${textField.text}")
+                                onTextChangeValue(index, textField)
+                            },
+                            textStyle = MaterialTheme.typography.titleMedium
+                        ) { innerTextField ->
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 16.dp)
+                            ) {
+                                if (content.textFieldValue.text.isEmpty() && state.contentList.size == 1) {
+                                    Text(
+                                        text = when (state.postType) {
+                                            PostSubject.REVIEW -> stringResource(R.string.review_content_hint)
+                                            PostSubject.FREE -> stringResource(R.string.free_content_hint)
+                                        },
+                                        style = MaterialTheme.typography.labelSmall.copy(
+                                            color = gray80
+                                        )
+                                    )
+                                }
+                                innerTextField()
+                            }
+                        }
+                    }
+
+                    is Contents.Image -> {
+                    }
                 }
-                innerTextField()
             }
         }
 
@@ -164,7 +194,7 @@ fun WriteScreen(modifier: Modifier = Modifier, communityType: PostSubject, onCli
                     indication = null,
                     interactionSource = remember { MutableInteractionSource() }
                 ) {
-                    onClickPicture()
+                    checkPermission()
                 },
             painter = painterResource(R.drawable.add_picture),
             contentDescription = "사진 추가"

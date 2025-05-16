@@ -122,7 +122,9 @@ fun NavHostScreen(
         )
 
         communityDetailNavigation()
-        communityWriteNavigation()
+        communityWriteNavigation(
+            checkPermission = checkPermission
+        )
 
         policyDetailNavigation()
     }

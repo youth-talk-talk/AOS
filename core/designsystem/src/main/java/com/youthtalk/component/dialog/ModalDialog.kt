@@ -69,20 +69,22 @@ fun ModalDialog(
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                Round6Button(
-                    modifier = Modifier
-                        .weight(1f)
-                        .border(
-                            width = 1.dp,
-                            color = gray50,
-                            shape = RoundedCornerShape(6.dp)
-                        ),
-                    text = cancelText,
-                    onClick = {
-                        onClickCancel()
-                        onDismissRequest()
-                    }
-                )
+                if (cancelText.isNotEmpty()) {
+                    Round6Button(
+                        modifier = Modifier
+                            .weight(1f)
+                            .border(
+                                width = 1.dp,
+                                color = gray50,
+                                shape = RoundedCornerShape(6.dp)
+                            ),
+                        text = cancelText,
+                        onClick = {
+                            onDismissRequest()
+                            onClickCancel()
+                        }
+                    )
+                }
 
                 Round6Button(
                     modifier = Modifier
@@ -91,8 +93,8 @@ fun ModalDialog(
                     textColor = gray10,
                     backgroundColor = confirmBackground,
                     onClick = {
-                        onClickConfirm()
                         onDismissRequest()
+                        onClickConfirm()
                     }
                 )
             }
