@@ -55,7 +55,7 @@ class SearchRepositoryImpl @Inject constructor(
     override fun getKeywordPostCount(keyword: String, communityType: PostSubject): Flow<Int> = flow {
         val type = when (communityType) {
             PostSubject.REVIEW -> "review"
-            PostSubject.FREE -> "post"
+            PostSubject.POST -> "post"
         }
         runCatching {
             communityService.getSearchPosts(

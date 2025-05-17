@@ -4,10 +4,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.navigation
-import androidx.navigation.compose.rememberNavController
 import com.core.community.navigation.communityNavigation
 import com.core.home.navigation.BottomNavigation
 import com.core.home.navigation.homeTabNavigation
@@ -26,6 +26,7 @@ import timber.log.Timber
 @Composable
 fun Home(
     modifier: Modifier = Modifier,
+    navController: NavHostController,
     onClickEtc: () -> Unit,
     onClickTerms: () -> Unit,
     onClickSettingScrap: () -> Unit,
@@ -43,7 +44,6 @@ fun Home(
     onClickCommunityWrite: (PostSubject) -> Unit,
     goLogin: () -> Unit
 ) {
-    val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route ?: "Home"
     Timber.e("currentRoute : $currentRoute")
@@ -112,7 +112,7 @@ fun Home(
 private fun String.toHomeTabNavigation(): HomeTabNavigation = when {
     contains("Home") -> HomeTabNavigation.Home
     contains("Setting") || contains("Account") -> HomeTabNavigation.Setting
-    contains("Community") -> HomeTabNavigation.Community
+    contains("Community") -> HomeTabNavigation.Community()
     contains("Policy") || contains("PolicyOverView") -> HomeTabNavigation.Policy
     else -> HomeTabNavigation.Home
 }

@@ -19,7 +19,7 @@ data class CommunityUiState(
         val initState = CommunityUiState(
             recently = listOf(),
             searchState = SearchState.NONE,
-            communityType = PostSubject.FREE,
+            communityType = PostSubject.POST,
             searchPost = emptyFlow(),
             totalCount = 0
         )

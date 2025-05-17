@@ -15,8 +15,10 @@ import com.youthtalk.data.CommunityService
 import com.youthtalk.datasource.post.PostRemoteMediator
 import com.youthtalk.datasource.room.YouthDatabase
 import com.youthtalk.dto.MemberId
+import com.youthtalk.mapper.toData
 import com.youthtalk.mapper.toDomain
 import com.youthtalk.model.Image
+import com.youthtalk.model.post.CreatePost
 import com.youthtalk.model.post.Post
 import com.youthtalk.model.post.PostSubject
 import com.youthtalk.model.post.PostType
@@ -49,7 +51,7 @@ class CommunityRepositoryImpl @Inject constructor(
         runCatching {
             when (postSubject) {
                 PostSubject.REVIEW -> communityService.postReviewPosts(categories = categories, page = 0, size = 10)
-                PostSubject.FREE -> communityService.getPosts(page = 0, size = 10)
+                PostSubject.POST -> communityService.getPosts(page = 0, size = 10)
             }
         }
             .onSuccess { data ->
@@ -147,6 +149,22 @@ class CommunityRepositoryImpl @Inject constructor(
                 }
             }
             .onFailure {
+                throwableError<String>(it)
+            }
+    }
+
+    override fun postCreatePost(createPost: CreatePost): Flow<Long> = flow {
+        runCatching {
+            communityService.postCreate(createPost.toData().toRequestBody())
+        }
+            .onSuccess { response ->
+                emit(0L)
+//                response.data?.let { uri ->
+//                    emit(uri)
+//                }
+            }
+            .onFailure {
+                Timber.e("postCreatePost error $it")
                 throwableError<String>(it)
             }
     }

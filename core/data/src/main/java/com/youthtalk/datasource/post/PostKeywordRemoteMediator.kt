@@ -57,7 +57,7 @@ class PostKeywordRemoteMediator @Inject constructor(
             val page = remoteKey?.nextPage ?: 0
             val type = when (postSubject) {
                 PostSubject.REVIEW -> "review"
-                PostSubject.FREE -> "post"
+                PostSubject.POST -> "post"
             }
 
             val response = communityService.getSearchPosts(

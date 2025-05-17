@@ -2,6 +2,7 @@ package com.core.dataapi.repository
 
 import androidx.paging.PagingData
 import com.youthtalk.model.Image
+import com.youthtalk.model.post.CreatePost
 import com.youthtalk.model.post.Post
 import com.youthtalk.model.post.PostSubject
 import com.youthtalk.model.post.PostType
@@ -14,4 +15,5 @@ interface CommunityRepository {
     fun getPosts(category: Category, postType: PostType, postSubject: PostSubject): Flow<Flow<PagingData<Post>>>
     fun getListImage(): Flow<List<Image>>
     fun postUploadImage(file: File): Flow<String>
+    fun postCreatePost(createPost: CreatePost): Flow<Long>
 }

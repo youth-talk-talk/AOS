@@ -7,4 +7,5 @@ sealed interface CommunityWriteUiEffect : UiEffect {
     data class GoPictureScreen(val data: List<Image>) : CommunityWriteUiEffect
     data object OnBack : CommunityWriteUiEffect
     data class ScrollIndex(val index: Int) : CommunityWriteUiEffect
+    data object CreatePost : CommunityWriteUiEffect
 }

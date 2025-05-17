@@ -35,7 +35,7 @@ fun BottomNavigation(modifier: Modifier = Modifier, route: HomeTabNavigation, on
         listOf(
             HomeTabNavigation.Home,
             HomeTabNavigation.Policy,
-            HomeTabNavigation.Community,
+            HomeTabNavigation.Community(),
             HomeTabNavigation.Setting
         )
 
@@ -56,10 +56,10 @@ fun BottomNavigation(modifier: Modifier = Modifier, route: HomeTabNavigation, on
             bottomNavigation.forEach { currentRoute ->
                 val color = if (currentRoute == route) MaterialTheme.colorScheme.primary else gray80
                 val pair = when (currentRoute) {
-                    HomeTabNavigation.Community -> Pair(R.drawable.community, "커뮤니티")
-                    HomeTabNavigation.Home -> Pair(R.drawable.home, "홈")
-                    HomeTabNavigation.Policy -> Pair(R.drawable.policy, "청년정책")
-                    HomeTabNavigation.Setting -> Pair(R.drawable.person, "마이페이지")
+                    is HomeTabNavigation.Community -> Pair(R.drawable.community, "커뮤니티")
+                    is HomeTabNavigation.Home -> Pair(R.drawable.home, "홈")
+                    is HomeTabNavigation.Policy -> Pair(R.drawable.policy, "청년정책")
+                    is HomeTabNavigation.Setting -> Pair(R.drawable.person, "마이페이지")
                 }
                 BottomIcon(
                     title = pair.second,

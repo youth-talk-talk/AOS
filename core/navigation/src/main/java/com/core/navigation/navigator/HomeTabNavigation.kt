@@ -1,5 +1,6 @@
 package com.core.navigation.navigator
 
+import com.youthtalk.model.post.PostSubject
 import com.youthtalk.model.typeenum.Category
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -15,7 +16,7 @@ sealed interface HomeTabNavigation {
 
     @Serializable
     @SerialName("Community")
-    data object Community : HomeTabNavigation
+    data class Community(val postType: PostSubject = PostSubject.REVIEW) : HomeTabNavigation
 
     @Serializable
     @SerialName("Policy")

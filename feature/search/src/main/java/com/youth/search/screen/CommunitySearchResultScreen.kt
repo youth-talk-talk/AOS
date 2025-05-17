@@ -85,7 +85,7 @@ fun CommunitySearchResultScreen(modifier: Modifier = Modifier, communityType: Po
                 ) {
                     val title = when (communityType) {
                         PostSubject.REVIEW -> "후기게시글"
-                        PostSubject.FREE -> "자유게시글"
+                        PostSubject.POST -> "자유게시글"
                     }
                     Spacer(modifier.weight(2f))
                     EmptyScreen(

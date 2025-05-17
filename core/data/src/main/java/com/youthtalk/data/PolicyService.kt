@@ -28,7 +28,7 @@ interface PolicyService {
     @POST("/api/v1/policies/search")
     suspend fun postSpecPolicies(
         @Body requestBody: RequestBody,
-        @Query("sort") sort: SortType,
+        @Query("sort") sort: SortType = SortType.RECENT,
         @Query("page") page: Int,
         @Query("size") size: Int
     ): CommonResponse<SpecPoliciesResponse>

@@ -63,8 +63,8 @@ class CommunityViewModel @Inject constructor(
                     Pair(reviewPosts, popularReviewPost)
                 },
                 combine(
-                    getPostsUseCase(currentCategory, PostType.COMMUNITY_TAB_FREE, PostSubject.FREE),
-                    getPopularPostsUseCase(category = currentCategory, PostSubject.FREE)
+                    getPostsUseCase(currentCategory, PostType.COMMUNITY_TAB_FREE, PostSubject.POST),
+                    getPopularPostsUseCase(category = currentCategory, PostSubject.POST)
                 ) { reviewPosts, popularReviewPost ->
                     Pair(reviewPosts, popularReviewPost)
                 }

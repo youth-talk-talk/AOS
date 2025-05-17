@@ -1,5 +1,6 @@
 package com.core.community.screen.write
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -48,6 +49,7 @@ import coil3.compose.AsyncImage
 import com.core.community.model.Contents
 import com.core.community.model.write.CommunityWriteUiState
 import com.youth.app.feature.community.R
+import com.youthtalk.component.dialog.ModalDialog
 import com.youthtalk.component.topbar.MiddleTitleTopBar
 import com.youthtalk.designsystem.gray10
 import com.youthtalk.designsystem.gray100
@@ -64,13 +66,19 @@ fun WriteScreen(
     scrollState: LazyListState,
     onClickPolicySearch: () -> Unit,
     onTextChangeValue: (Int, TextFieldValue) -> Unit,
+    onTextTitleChangeValue: (String) -> Unit,
     onChangeFocus: (Int, TextFieldValue?) -> Unit,
-    checkPermission: () -> Unit
+    checkPermission: () -> Unit,
+    onBack: () -> Unit,
+    onPostCreatePost: () -> Unit
 ) {
-    var title by remember {
-        mutableStateOf("")
-    }
     val focusManager = LocalFocusManager.current
+    var dialog by remember {
+        mutableStateOf(false)
+    }
+    BackHandler {
+        dialog = true
+    }
 
     Column(
         modifier = modifier
@@ -80,14 +88,20 @@ fun WriteScreen(
         MiddleTitleTopBar(
             title = when (state.postType) {
                 PostSubject.REVIEW -> "후기 글쓰기"
-                PostSubject.FREE -> "자유 글쓰기"
+                PostSubject.POST -> "자유 글쓰기"
             },
-            onBack = {},
+            onBack = { dialog = true },
             tails = {
                 Text(
+                    modifier = Modifier.clickable(
+                        indication = null,
+                        interactionSource = remember { MutableInteractionSource() }
+                    ) {
+                        if (state.isValid) onPostCreatePost()
+                    },
                     text = "등록",
                     style = MaterialTheme.typography.labelSmall.copy(
-                        color = gray70
+                        color = if (state.isValid) gray100 else gray70
                     )
                 )
             }
@@ -102,6 +116,7 @@ fun WriteScreen(
             item {
                 if (state.postType == PostSubject.REVIEW) {
                     WritePolicySearch(
+                        title = state.policyName,
                         onClickPolicySearch = onClickPolicySearch
                     )
                 }
@@ -109,8 +124,8 @@ fun WriteScreen(
 
             item {
                 WriteTitleTextField(
-                    title = title,
-                    onTextChange = { title = it }
+                    title = state.title,
+                    onTextChange = onTextTitleChangeValue
                 )
             }
 
@@ -173,6 +188,18 @@ fun WriteScreen(
             CircularProgressIndicator()
         }
     }
+
+    if (dialog) {
+        ModalDialog(
+            title = "글쓰기를 중단할까요?",
+            subTitle = "글쓰기를 중단하면 작성중이던 글이 모두 사라집니다.",
+            confirmText = "작성하기",
+            confirmBackground = MaterialTheme.colorScheme.error,
+            onClickConfirm = { },
+            onClickCancel = onBack,
+            onDismissRequest = { dialog = false }
+        )
+    }
 }
 
 @Composable
@@ -220,7 +247,7 @@ fun WriteContentImage(modifier: Modifier = Modifier, imgUrl: String, onChangeFoc
 }
 
 @Composable
-fun WritePolicySearch(modifier: Modifier = Modifier, onClickPolicySearch: () -> Unit) {
+fun WritePolicySearch(modifier: Modifier = Modifier, title: String?, onClickPolicySearch: () -> Unit) {
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -234,7 +261,7 @@ fun WritePolicySearch(modifier: Modifier = Modifier, onClickPolicySearch: () -> 
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
-            text = "정책 선택",
+            text = title ?: "정책 선택",
             style = MaterialTheme.typography.titleSmall
         )
 
@@ -330,7 +357,7 @@ fun WriteContentText(
                 Text(
                     text = when (postType) {
                         PostSubject.REVIEW -> stringResource(R.string.review_content_hint)
-                        PostSubject.FREE -> stringResource(R.string.free_content_hint)
+                        PostSubject.POST -> stringResource(R.string.free_content_hint)
                     },
                     style = MaterialTheme.typography.labelSmall.copy(
                         color = gray80
