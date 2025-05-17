@@ -10,12 +10,14 @@ import com.core.exception.NoDataException
 import com.youthtalk.data.CommentService
 import com.youthtalk.data.PolicyService
 import com.youthtalk.datasource.policy.PolicyRemoteMediator
+import com.youthtalk.datasource.policy.PolicySearchPagingSource
 import com.youthtalk.datasource.room.YouthDatabase
 import com.youthtalk.dto.PostAddCommentResponse
 import com.youthtalk.dto.specpolicy.CommentRequest
 import com.youthtalk.dto.specpolicy.SpecPoliciesResponse
 import com.youthtalk.model.policy.Policy
 import com.youthtalk.model.policy.PolicyType
+import com.youthtalk.model.policy.SearchPolicy
 import com.youthtalk.model.search.SearchFilter
 import com.youthtalk.model.typeenum.SortType
 import com.youthtalk.utils.ErrorUtils.throwableError
@@ -48,6 +50,25 @@ class SpecPolicyRepositoryImpl @Inject constructor(
             ) {
                 youthDatabase.policyDao().getPagingSource(policyType = policyType)
             }.flow
+        )
+    }
+
+    override fun searchPolicyName(policyName: String): Flow<Flow<PagingData<SearchPolicy>>> = flow {
+        val requestBody = SearchFilter(keyword = policyName).toRequestBody()
+        emit(
+            Pager(
+                config = PagingConfig(
+                    pageSize = 10,
+                    initialLoadSize = 10,
+                    enablePlaceholders = true
+                ),
+                pagingSourceFactory = {
+                    PolicySearchPagingSource(
+                        policyService = policyService,
+                        requestBody = requestBody
+                    )
+                }
+            ).flow
         )
     }
 

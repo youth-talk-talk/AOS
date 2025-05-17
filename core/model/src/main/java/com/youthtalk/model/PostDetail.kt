@@ -5,7 +5,7 @@ data class PostDetail(
     val postType: String,
     val title: String,
     val contentList: List<PostContentInfo>,
-    val policyId: String?,
+    val policyId: Long?,
     val policyTitle: String?,
     val writerId: Long,
     val nickname: String?,

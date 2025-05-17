@@ -2,6 +2,7 @@ package com.core.home.navigation
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavHostController
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.core.home.screen.Home
@@ -15,6 +16,7 @@ fun NavController.navigateHome(navOptions: NavOptions) {
 }
 
 fun NavGraphBuilder.homeNavigation(
+    homeNavController: NavHostController,
     onClickEtc: () -> Unit,
     onClickTerms: () -> Unit,
     onClickSettingScrap: () -> Unit,
@@ -34,6 +36,7 @@ fun NavGraphBuilder.homeNavigation(
 ) {
     composable<Navigation.Main> {
         Home(
+            navController = homeNavController,
             onClickPolicySearch = onClickPolicySearch,
             onClickEtc = onClickEtc,
             onClickTerms = onClickTerms,

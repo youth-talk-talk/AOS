@@ -4,7 +4,6 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
-import androidx.navigation.toRoute
 import com.core.community.screen.write.CommunityWriteScreen
 import com.core.navigation.navigator.CommunityWrite
 import com.youthtalk.model.post.PostSubject
@@ -13,11 +12,12 @@ fun NavController.navigateCommunityWrite(communityType: PostSubject, navOptions:
     navigate(CommunityWrite(communityType), navOptions)
 }
 
-fun NavGraphBuilder.communityWriteNavigation() {
+fun NavGraphBuilder.communityWriteNavigation(checkPermission: (String) -> Boolean, onBack: () -> Unit, onCreate: (PostSubject) -> Unit) {
     composable<CommunityWrite> {
-        val data = it.toRoute<CommunityWrite>()
         CommunityWriteScreen(
-            communityType = data.communityType
+            checkPermission = checkPermission,
+            onBack = onBack,
+            onCreate = onCreate
         )
     }
 }

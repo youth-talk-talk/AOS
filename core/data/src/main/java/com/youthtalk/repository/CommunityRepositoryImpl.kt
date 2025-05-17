@@ -1,5 +1,10 @@
 package com.youthtalk.repository
 
+import android.content.ContentUris
+import android.content.Context
+import android.os.Build
+import android.provider.MediaStore
+import android.provider.MediaStore.Images
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -10,20 +15,30 @@ import com.youthtalk.data.CommunityService
 import com.youthtalk.datasource.post.PostRemoteMediator
 import com.youthtalk.datasource.room.YouthDatabase
 import com.youthtalk.dto.MemberId
+import com.youthtalk.mapper.toData
 import com.youthtalk.mapper.toDomain
+import com.youthtalk.model.Image
+import com.youthtalk.model.post.CreatePost
 import com.youthtalk.model.post.Post
 import com.youthtalk.model.post.PostSubject
 import com.youthtalk.model.post.PostType
 import com.youthtalk.model.typeenum.Category
 import com.youthtalk.utils.ErrorUtils.throwableError
+import java.io.File
 import javax.inject.Inject
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
 import timber.log.Timber
 
 class CommunityRepositoryImpl @Inject constructor(
     private val communityService: CommunityService,
-    private val youthDatabase: YouthDatabase
+    private val youthDatabase: YouthDatabase,
+    private val context: Context
 ) : CommunityRepository {
     override fun getPopularPosts(category: Category, postSubject: PostSubject): Flow<List<Post>> = flow {
         val categories = if (category == Category.ALL) {
@@ -36,7 +51,7 @@ class CommunityRepositoryImpl @Inject constructor(
         runCatching {
             when (postSubject) {
                 PostSubject.REVIEW -> communityService.postReviewPosts(categories = categories, page = 0, size = 10)
-                PostSubject.FREE -> communityService.getPosts(page = 0, size = 10)
+                PostSubject.POST -> communityService.getPosts(page = 0, size = 10)
             }
         }
             .onSuccess { data ->
@@ -77,5 +92,80 @@ class CommunityRepositoryImpl @Inject constructor(
                 youthDatabase.postDao().getPagingSource(postType = postType)
             }.flow
         )
+    }
+
+    override fun getListImage(): Flow<List<Image>> = flow {
+        val contentResolver = context.contentResolver
+        val projection = arrayOf(
+            Images.Media._ID,
+            Images.Media.DISPLAY_NAME,
+            Images.Media.SIZE,
+            Images.Media.MIME_TYPE
+        )
+
+        val collectionUri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL)
+        } else {
+            Images.Media.EXTERNAL_CONTENT_URI
+        }
+
+        val images = mutableListOf<Image>()
+
+        contentResolver.query(
+            collectionUri,
+            projection,
+            null,
+            null,
+            "${Images.Media.DATE_ADDED} DESC"
+        )?.use { cursor ->
+            val idColumn = cursor.getColumnIndexOrThrow(Images.Media._ID)
+            val displayNameColumn = cursor.getColumnIndexOrThrow(Images.Media.DISPLAY_NAME)
+            val sizeColumn = cursor.getColumnIndexOrThrow(Images.Media.SIZE)
+            val mimeTypeColumn = cursor.getColumnIndexOrThrow(Images.Media.MIME_TYPE)
+
+            while (cursor.moveToNext()) {
+                val uri = ContentUris.withAppendedId(collectionUri, cursor.getLong(idColumn))
+                val name = cursor.getString(displayNameColumn)
+                val size = cursor.getLong(sizeColumn)
+                val mimeType = cursor.getString(mimeTypeColumn)
+
+                val image = Image(uri.toString(), name, size, mimeType)
+                images.add(image)
+            }
+        }
+
+        emit(images)
+    }.flowOn(Dispatchers.IO)
+
+    override fun postUploadImage(file: File): Flow<String> = flow {
+        val requestBody = file.asRequestBody("image/*".toMediaTypeOrNull())
+        val imagePart = MultipartBody.Part.createFormData("image", file.name, requestBody)
+        runCatching {
+            communityService.postUploadImage(imagePart)
+        }
+            .onSuccess { response ->
+                response.data?.let { uri ->
+                    emit(uri)
+                }
+            }
+            .onFailure {
+                throwableError<String>(it)
+            }
+    }
+
+    override fun postCreatePost(createPost: CreatePost): Flow<Long> = flow {
+        runCatching {
+            communityService.postCreate(createPost.toData().toRequestBody())
+        }
+            .onSuccess { response ->
+                emit(0L)
+//                response.data?.let { uri ->
+//                    emit(uri)
+//                }
+            }
+            .onFailure {
+                Timber.e("postCreatePost error $it")
+                throwableError<String>(it)
+            }
     }
 }

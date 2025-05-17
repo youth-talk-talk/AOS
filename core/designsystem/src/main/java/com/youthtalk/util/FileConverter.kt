@@ -1,4 +1,4 @@
-package com.core.community.utils
+package com.youthtalk.util
 
 import android.content.Context
 import android.net.Uri

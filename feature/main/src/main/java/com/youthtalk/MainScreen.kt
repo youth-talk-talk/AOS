@@ -13,6 +13,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.core.community.navigation.communityDetailNavigation
 import com.core.community.navigation.communityWriteNavigation
+import com.core.community.navigation.navigateCommunity
 import com.core.community.navigation.navigateCommunityDetail
 import com.core.community.navigation.navigateCommunityWrite
 import com.core.home.navigation.homeNavigation
@@ -48,11 +49,13 @@ import com.youthtalk.designsystem.YongProjectTheme
 @Composable
 fun MainScreen(modifier: Modifier = Modifier, goLogin: () -> Unit, checkPermission: (String) -> Boolean) {
     val navHostController = rememberNavController()
+    val homeNavHostController = rememberNavController()
     val homeLazyListScrollState = rememberLazyListState()
 
     Column(modifier = modifier) {
         NavHostScreen(
             navController = navHostController,
+            homeNavController = homeNavHostController,
             homeLazyListScrollState = homeLazyListScrollState,
             goLogin = goLogin,
             checkPermission = checkPermission
@@ -63,6 +66,7 @@ fun MainScreen(modifier: Modifier = Modifier, goLogin: () -> Unit, checkPermissi
 @Composable
 fun NavHostScreen(
     navController: NavHostController,
+    homeNavController: NavHostController,
     homeLazyListScrollState: LazyListState,
     goLogin: () -> Unit,
     checkPermission: (String) -> Boolean
@@ -74,6 +78,7 @@ fun NavHostScreen(
         exitTransition = { ExitTransition.None }
     ) {
         homeNavigation(
+            homeNavController = homeNavController,
             onClickPopularPolicy = navController::navigatePopularPolicy,
             onClickPolicySearch = navController::navigatePolicySearch,
             onClickEtc = navController::navigateSettingEtc,
@@ -122,7 +127,19 @@ fun NavHostScreen(
         )
 
         communityDetailNavigation()
-        communityWriteNavigation()
+        communityWriteNavigation(
+            checkPermission = checkPermission,
+            onBack = { navController.popBackStack() },
+            onCreate = {
+                homeNavController.navigateCommunity(postType = it) {
+                    popUpTo(homeNavController.graph.id) {
+                        saveState = true
+                        inclusive = true
+                    }
+                }
+                navController.popBackStack()
+            }
+        )
 
         policyDetailNavigation()
     }

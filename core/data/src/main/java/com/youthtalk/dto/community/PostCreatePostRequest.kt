@@ -9,7 +9,9 @@ data class PostCreatePostRequest(
     val title: String,
     val postType: String,
     val policyId: String?,
-    val contentList: List<PostContentRequest>
+    val contentList: List<PostContentRequest>,
+    val addImgUrlList: List<String>? = null,
+    val deletedImgUrlList: List<String>? = null
 ) {
     fun toRequestBody() = Json.encodeToString(serializer(), this).toRequestBody()
 }

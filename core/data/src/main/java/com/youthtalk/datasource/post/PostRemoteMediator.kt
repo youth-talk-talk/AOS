@@ -62,7 +62,7 @@ class PostRemoteMediator @Inject constructor(
                     size = state.config.pageSize
                 )
 
-                PostSubject.FREE -> communityService.getPosts(
+                PostSubject.POST -> communityService.getPosts(
                     page = page,
                     size = state.config.pageSize
                 )

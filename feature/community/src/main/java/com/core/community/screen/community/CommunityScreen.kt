@@ -44,6 +44,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun CommunityScreen(
     modifier: Modifier = Modifier,
+    postType: PostSubject,
     viewModel: CommunityViewModel = hiltViewModel(),
     onClickCommunitySearch: (PostSubject) -> Unit,
     onClickPostDetail: (Long) -> Unit,
@@ -51,7 +52,12 @@ fun CommunityScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val communityType = PostSubject.entries.toList()
-    val pagerState = rememberPagerState { communityType.size }
+    val pagerState = rememberPagerState(
+        when (postType) {
+            PostSubject.REVIEW -> 0
+            PostSubject.POST -> 1
+        }
+    ) { communityType.size }
     val scope = rememberCoroutineScope()
     val lazyColumnStates = List(2) { rememberLazyListState() }
     Box(
@@ -100,7 +106,7 @@ fun CommunityScreen(
                 communityType.forEachIndexed { index, community ->
                     val title = when (community) {
                         PostSubject.REVIEW -> "후기게시판"
-                        PostSubject.FREE -> "자유게시판"
+                        PostSubject.POST -> "자유게시판"
                     }
                     Tab(
                         selected = pagerState.currentPage == index,
@@ -142,7 +148,7 @@ fun CommunityScreen(
                         onClickCategory = { category -> viewModel.setEvent(CommunityUiEvent.ChangeCategory(category)) }
                     )
 
-                    PostSubject.FREE -> FreePost(
+                    PostSubject.POST -> FreePost(
                         lazyListState = lazyColumnStates[it],
                         popularFrees = state.popularFrees,
                         frees = state.frees.collectAsLazyPagingItems(),
