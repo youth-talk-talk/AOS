@@ -9,6 +9,7 @@ import com.core.community.model.detail.CommunityDetailUiEvent
 import com.core.community.model.detail.CommunityDetailUiState
 import com.core.domain.usercase.GetUserUseCase
 import com.core.domain.usercase.comment.PostAddPostCommentUseCase
+import com.core.domain.usercase.comment.PostDeleteCommentUseCase
 import com.core.domain.usercase.post.GetPostDetailCommentsUseCase
 import com.core.domain.usercase.post.GetPostDetailUseCase
 import com.youthtalk.model.Comment
@@ -27,6 +28,7 @@ class CommunityDetailViewModel @Inject constructor(
     private val getPostDetailUseCase: GetPostDetailUseCase,
     private val getPostDetailCommentsUseCase: GetPostDetailCommentsUseCase,
     private val postAddPostCommentUseCase: PostAddPostCommentUseCase,
+    private val postDeleteCommentUseCase: PostDeleteCommentUseCase,
     savedStateHandle: SavedStateHandle
 ) : BaseViewModel<CommunityDetailUiState, CommunityDetailUiEvent, CommunityDetailUiEffect>(
     initialState = CommunityDetailUiState.initState
@@ -41,7 +43,30 @@ class CommunityDetailViewModel @Inject constructor(
         when (event) {
             is CommunityDetailUiEvent.InitData -> initData(event.postId)
             is CommunityDetailUiEvent.ChangeDetailType -> setState { copy(detailType = event.detailType) }
-            is CommunityDetailUiEvent.OnPostAddComment -> postAddPostComment(event.postId, event.message)
+            is CommunityDetailUiEvent.PostAddComment -> postAddPostComment(event.postId, event.message)
+            is CommunityDetailUiEvent.PostDeleteComment -> postDeleteComment(event.comment)
+        }
+    }
+
+    private fun postDeleteComment(comment: Comment) {
+        viewModelScope.launch {
+            postDeleteCommentUseCase(comment.commentId)
+                .catch {
+                    Timber.e("CommunityDetailViewModel postDeleteComment error $it")
+                }
+                .collectLatest {
+                    val newComments = state.value.comments.comments.toMutableList()
+                    newComments.remove(comment)
+                    setState {
+                        copy(
+                            comments = state.value.comments.copy(
+                                commentCount = state.value.comments.commentCount - 1,
+                                comments = newComments
+                            )
+                        )
+                    }
+                    setEffect { CommunityDetailUiEffect.ShowSnackBarDeleteComment }
+                }
         }
     }
 

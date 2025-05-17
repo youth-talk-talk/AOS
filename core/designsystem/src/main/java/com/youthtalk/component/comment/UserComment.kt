@@ -20,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,6 +38,7 @@ import com.youthtalk.designsystem.gray90
 import com.youthtalk.model.Comment
 import com.youthtalk.util.getTime
 import java.time.LocalDateTime
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -45,10 +47,11 @@ fun UserComment(
     comment: Comment,
     isMine: Boolean = false,
     onPostModifyComment: (Comment) -> Unit,
-    onDeleteComment: () -> Unit,
+    onDeleteComment: (Comment) -> Unit,
     onPostReportComment: () -> Unit,
     onPostReportUser: () -> Unit
 ) {
+    val scope = rememberCoroutineScope()
     var bottomSheet by remember {
         mutableStateOf(false)
     }
@@ -170,10 +173,14 @@ fun UserComment(
                                     indication = null,
                                     interactionSource = remember { MutableInteractionSource() }
                                 ) {
+                                    scope.launch {
+                                        state.hide()
+                                        bottomSheet = false
+                                    }
                                     if (index == 0) {
                                         if (isMine) onPostModifyComment(comment) else onPostReportComment()
                                     } else {
-                                        if (isMine) onDeleteComment() else onPostReportUser()
+                                        if (isMine) onDeleteComment(comment) else onPostReportUser()
                                     }
                                 }
                                 .padding(vertical = 14.dp),

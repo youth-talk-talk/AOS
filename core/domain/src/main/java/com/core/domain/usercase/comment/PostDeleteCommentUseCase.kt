@@ -1,4 +1,4 @@
-package com.core.domain.usercase
+package com.core.domain.usercase.comment
 
 import com.core.dataapi.repository.SpecPolicyRepository
 import javax.inject.Inject

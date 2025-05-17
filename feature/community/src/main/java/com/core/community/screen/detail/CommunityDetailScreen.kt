@@ -30,6 +30,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -51,6 +52,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.core.community.model.detail.CommunityDetailType
+import com.core.community.model.detail.CommunityDetailUiEffect
 import com.core.community.model.detail.CommunityDetailUiEvent
 import com.core.community.model.detail.CommunityDetailUiState
 import com.core.community.viewmodel.CommunityDetailViewModel
@@ -67,6 +69,7 @@ import com.youthtalk.designsystem.gray80
 import com.youthtalk.designsystem.gray90
 import com.youthtalk.model.Comment
 import com.youthtalk.model.PostDetail
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @Composable
@@ -87,6 +90,16 @@ fun CommunityDetailScreen(
         }
     }
 
+    LaunchedEffect(viewModel.effect) {
+        viewModel.effect.collectLatest {
+            when (it) {
+                is CommunityDetailUiEffect.ShowSnackBarDeleteComment -> {
+                    showSnackBar("댓글이 성공적으로 삭제됐습니다.")
+                }
+            }
+        }
+    }
+
     if (!state.initLoading) {
         Crossfade(
             modifier = modifier,
@@ -101,7 +114,10 @@ fun CommunityDetailScreen(
                             viewModel.setEvent(CommunityDetailUiEvent.ChangeDetailType(CommunityDetailType.COMMENT))
                         },
                         onPostAddComment = { message ->
-                            viewModel.setEvent(CommunityDetailUiEvent.OnPostAddComment(state.postDetail.postId, message))
+                            viewModel.setEvent(CommunityDetailUiEvent.PostAddComment(state.postDetail.postId, message))
+                        },
+                        onDeleteComment = { comment ->
+                            viewModel.setEvent(CommunityDetailUiEvent.PostDeleteComment(comment))
                         }
                     )
                 }
@@ -173,7 +189,8 @@ fun DetailScreen(
     modifier: Modifier = Modifier,
     state: CommunityDetailUiState,
     onPostAddComment: (String) -> Unit,
-    onPostModifyComment: (Comment) -> Unit
+    onPostModifyComment: (Comment) -> Unit,
+    onDeleteComment: (Comment) -> Unit
 ) {
     val focusManager = LocalFocusManager.current
     Column(
@@ -211,7 +228,6 @@ fun DetailScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
-                .imePadding()
         ) {
             item {
                 PostDetailContent(postDetail = state.postDetail)
@@ -239,7 +255,7 @@ fun DetailScreen(
                         isMine = state.user.memberId == state.postDetail.writerId,
                         modifier = Modifier
                             .padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
-                        onDeleteComment = {},
+                        onDeleteComment = onDeleteComment,
                         onPostReportComment = {},
                         onPostModifyComment = onPostModifyComment,
                         onPostReportUser = {}
