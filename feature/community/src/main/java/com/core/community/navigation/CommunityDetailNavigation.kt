@@ -11,8 +11,11 @@ fun NavController.navigateCommunityDetail(postId: Long, navOptions: NavOptions? 
     navigate(CommunityDetail(postId), navOptions)
 }
 
-fun NavGraphBuilder.communityDetailNavigation() {
+fun NavGraphBuilder.communityDetailNavigation(showSnackBar: (String) -> Unit, onBack: () -> Unit) {
     composable<CommunityDetail> {
-        CommunityDetailScreen()
+        CommunityDetailScreen(
+            showSnackBar = showSnackBar,
+            onBack = onBack
+        )
     }
 }

@@ -6,6 +6,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -26,18 +27,33 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
 import com.youth.app.core.designsystem.R
 import com.youthtalk.designsystem.YongProjectTheme
 import com.youthtalk.designsystem.gray40
 import com.youthtalk.designsystem.gray70
 import com.youthtalk.designsystem.gray80
 import com.youthtalk.designsystem.gray90
+import com.youthtalk.model.Comment
+import com.youthtalk.util.getTime
+import java.time.LocalDateTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun UserComment(modifier: Modifier = Modifier, isMine: Boolean = false) {
+fun UserComment(
+    modifier: Modifier = Modifier,
+    comment: Comment,
+    isMine: Boolean = false,
+    onPostModifyComment: (Comment) -> Unit,
+    onDeleteComment: () -> Unit,
+    onPostReportComment: () -> Unit,
+    onPostReportUser: () -> Unit
+) {
     var bottomSheet by remember {
         mutableStateOf(false)
+    }
+    val dateTime by remember {
+        mutableStateOf(comment.createdAt.getTime())
     }
     val state = rememberModalBottomSheetState(
         skipPartiallyExpanded = true
@@ -48,7 +64,14 @@ fun UserComment(modifier: Modifier = Modifier, isMine: Boolean = false) {
             .fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
-        Image(
+        comment.profileImg?.let { url ->
+            AsyncImage(
+                modifier = Modifier
+                    .fillMaxSize(),
+                model = url,
+                contentDescription = null
+            )
+        } ?: Image(
             painter = painterResource(R.drawable.profile_thumnail),
             contentDescription = "이미지"
         )
@@ -70,12 +93,12 @@ fun UserComment(modifier: Modifier = Modifier, isMine: Boolean = false) {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "다른 청년",
+                        text = comment.nickname,
                         style = MaterialTheme.typography.displayLarge
                     )
 
                     Text(
-                        text = "3시간 전",
+                        text = dateTime,
                         style = MaterialTheme.typography.labelSmall.copy(
                             color = gray80
                         )
@@ -97,7 +120,7 @@ fun UserComment(modifier: Modifier = Modifier, isMine: Boolean = false) {
             }
 
             Text(
-                text = "댓글 내용 댓글 내용 댓글 내용 댓글 내용 댓글 내용 댓글 내용 댓글 내용 ",
+                text = comment.content,
                 style = MaterialTheme.typography.displaySmall
             )
 
@@ -115,9 +138,9 @@ fun UserComment(modifier: Modifier = Modifier, isMine: Boolean = false) {
                 ) {
                     Image(
                         modifier = Modifier.size(16.dp),
-                        painter = painterResource(R.drawable.favorite_line),
+                        painter = painterResource(if (comment.isLikedByMember) R.drawable.favorite_fill else R.drawable.favorite_line),
                         contentDescription = "좋아요",
-                        colorFilter = ColorFilter.tint(color = gray70)
+                        colorFilter = ColorFilter.tint(color = if (comment.isLikedByMember) MaterialTheme.colorScheme.primary else gray70)
                     )
                     Text(
                         text = "좋아요",
@@ -126,12 +149,6 @@ fun UserComment(modifier: Modifier = Modifier, isMine: Boolean = false) {
                         )
                     )
                 }
-                Text(
-                    text = "답글쓰기",
-                    style = MaterialTheme.typography.labelSmall.copy(
-                        color = gray80
-                    )
-                )
             }
         }
 
@@ -146,10 +163,21 @@ fun UserComment(modifier: Modifier = Modifier, isMine: Boolean = false) {
                         .fillMaxWidth()
                         .padding(start = 16.dp, end = 16.dp, top = 6.dp, bottom = 20.dp)
                 ) {
-                    list.forEach {
+                    list.forEachIndexed { index, text ->
                         Text(
-                            modifier = Modifier.padding(vertical = 14.dp),
-                            text = it,
+                            modifier = Modifier
+                                .clickable(
+                                    indication = null,
+                                    interactionSource = remember { MutableInteractionSource() }
+                                ) {
+                                    if (index == 0) {
+                                        if (isMine) onPostModifyComment(comment) else onPostReportComment()
+                                    } else {
+                                        if (isMine) onDeleteComment() else onPostReportUser()
+                                    }
+                                }
+                                .padding(vertical = 14.dp),
+                            text = text,
                             style = MaterialTheme.typography.displaySmall
                         )
                     }
@@ -171,6 +199,20 @@ fun UserComment(modifier: Modifier = Modifier, isMine: Boolean = false) {
 @Composable
 private fun UserCommentPreview() {
     YongProjectTheme {
-        UserComment()
+        UserComment(
+            comment = Comment(
+                commentId = 4615,
+                writerId = 9887,
+                nickname = "Joey Davidson",
+                content = "viderer",
+                isLikedByMember = false,
+                profileImg = null,
+                createdAt = LocalDateTime.now()
+            ),
+            onPostModifyComment = {},
+            onDeleteComment = {},
+            onPostReportComment = {},
+            onPostReportUser = {}
+        )
     }
 }

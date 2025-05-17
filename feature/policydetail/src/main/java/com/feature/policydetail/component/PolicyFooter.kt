@@ -7,6 +7,8 @@ import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.youthtalk.component.comment.UserComment
+import com.youthtalk.model.Comment
+import java.time.LocalDateTime
 
 fun LazyListScope.policyFooter() {
     items(
@@ -26,8 +28,21 @@ fun LazyListScope.policyFooter() {
         }
 
         UserComment(
+            comment = Comment(
+                commentId = 0,
+                writerId = 0,
+                nickname = "",
+                content = "",
+                isLikedByMember = false,
+                profileImg = null,
+                createdAt = LocalDateTime.now()
+            ),
             modifier = Modifier
-                .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
+                .padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
+            onPostReportUser = {},
+            onDeleteComment = {},
+            onPostReportComment = {},
+            onPostModifyComment = {}
         )
     }
 }

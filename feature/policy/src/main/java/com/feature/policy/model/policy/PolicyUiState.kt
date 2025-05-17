@@ -24,7 +24,7 @@ data class PolicyUiState(
 ) : UiState {
     companion object {
         val initState = PolicyUiState(
-            user = User(0, "", Region.ALL),
+            user = User(0, "", null, Region.ALL),
             selectedDay = LocalDate.now(),
             selectCategory = Category.ALL,
             deadlineCount = 0,

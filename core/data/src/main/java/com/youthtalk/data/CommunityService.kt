@@ -1,7 +1,6 @@
 package com.youthtalk.data
 
 import com.youthtalk.dto.CommonResponse
-import com.youthtalk.dto.PostAddCommentResponse
 import com.youthtalk.dto.PostResponse
 import com.youthtalk.dto.PostSearchResponse
 import com.youthtalk.dto.community.PostDetailResponse
@@ -42,9 +41,6 @@ interface CommunityService {
 
     @GET("/api/v1/posts/{id}")
     suspend fun getPostDetail(@Path("id") id: Long): CommonResponse<PostDetailResponse>
-
-    @POST("/api/v1/posts/comments")
-    suspend fun postPostAddComment(@Body requestBody: RequestBody): CommonResponse<PostAddCommentResponse>
 
     @Multipart
     @POST("/api/v1/posts/image")

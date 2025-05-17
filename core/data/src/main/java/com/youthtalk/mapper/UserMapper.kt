@@ -7,5 +7,6 @@ import com.youthtalk.model.typeenum.Region
 fun UserResponse.toData(): User = User(
     memberId = memberId,
     nickname = nickname,
+    profileImgUrl = profileImgUrl,
     region = Region.entries.find { it.region == region } ?: Region.ALL
 )

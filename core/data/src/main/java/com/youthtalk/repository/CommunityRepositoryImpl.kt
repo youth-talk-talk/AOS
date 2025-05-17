@@ -158,13 +158,27 @@ class CommunityRepositoryImpl @Inject constructor(
             communityService.postCreate(createPost.toData().toRequestBody())
         }
             .onSuccess { response ->
-                emit(0L)
-//                response.data?.let { uri ->
-//                    emit(uri)
-//                }
+                response.data?.let { post ->
+                    emit(post.postId)
+                }
             }
             .onFailure {
                 Timber.e("postCreatePost error $it")
+                throwableError<String>(it)
+            }
+    }
+
+    override fun getPostDetail(postId: Long) = flow {
+        runCatching {
+            communityService.getPostDetail(postId)
+        }
+            .onSuccess { response ->
+                response.data?.let { post ->
+                    emit(post.toData())
+                }
+            }
+            .onFailure {
+                Timber.e("postCreatePost getPostDetail $it")
                 throwableError<String>(it)
             }
     }

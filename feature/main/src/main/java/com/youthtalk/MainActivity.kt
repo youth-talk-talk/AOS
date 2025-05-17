@@ -17,7 +17,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.core.app.ActivityCompat
@@ -25,6 +29,7 @@ import com.core.navigation.navigator.LoginNavigator
 import com.youthtalk.designsystem.YongProjectTheme
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -37,8 +42,14 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             YongProjectTheme {
+                val scope = rememberCoroutineScope()
+                val snackbarHostState = remember { SnackbarHostState() }
                 Box {
-                    Scaffold { innerPadding ->
+                    Scaffold(
+                        snackbarHost = {
+                            SnackbarHost(hostState = snackbarHostState)
+                        }
+                    ) { innerPadding ->
                         MainScreen(
                             modifier = Modifier.padding(innerPadding),
                             goLogin = {
@@ -49,6 +60,11 @@ class MainActivity : ComponentActivity() {
                             },
                             checkPermission = { permission ->
                                 ActivityCompat.shouldShowRequestPermissionRationale(this@MainActivity, permission)
+                            },
+                            showSnackBar = { message ->
+                                scope.launch {
+                                    snackbarHostState.showSnackbar(message)
+                                }
                             }
                         )
                     }

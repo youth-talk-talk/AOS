@@ -1,8 +1,8 @@
 package com.youthtalk.data
 
-import com.youthtalk.dto.CommentResponse
 import com.youthtalk.dto.CommonResponse
 import com.youthtalk.dto.UserResponse
+import com.youthtalk.dto.comment.CommentResponse
 import okhttp3.RequestBody
 import retrofit2.http.Body
 import retrofit2.http.GET
