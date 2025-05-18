@@ -7,4 +7,5 @@ interface CommentRepository {
     fun getPolicyComment(policyId: String): Flow<CommentInfo>
     fun getPostDetailComments(postId: Long): Flow<CommentInfo>
     fun postPostAddComment(postId: Long, message: String): Flow<Long>
+    fun patchComment(commentId: Long, message: String): Flow<Long>
 }

@@ -11,3 +11,11 @@ data class AddCommentRequest(
 ) {
     fun toRequestBody() = Json.encodeToString(serializer(), this).toRequestBody()
 }
+
+@Serializable
+data class ModifyCommentRequest(
+    val commentId: Long,
+    val content: String
+) {
+    fun toRequestBody() = Json.encodeToString(serializer(), this).toRequestBody()
+}

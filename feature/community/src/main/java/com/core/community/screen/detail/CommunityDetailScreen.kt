@@ -96,6 +96,9 @@ fun CommunityDetailScreen(
                 is CommunityDetailUiEffect.ShowSnackBarDeleteComment -> {
                     showSnackBar("댓글이 성공적으로 삭제됐습니다.")
                 }
+                is CommunityDetailUiEffect.ShowSnackBarModifyComment -> {
+                    showSnackBar("댓글이 변경됐습니다.")
+                }
             }
         }
     }
@@ -125,7 +128,7 @@ fun CommunityDetailScreen(
                 CommunityDetailType.COMMENT -> CommentModifyScreen(
                     comment = comments.second,
                     onBack = { viewModel.setEvent(CommunityDetailUiEvent.ChangeDetailType(CommunityDetailType.MAIN)) },
-                    onPostCommentModify = {},
+                    onPostCommentModify = { viewModel.setEvent(CommunityDetailUiEvent.PatchModifyComment(comments.first, comments.second)) },
                     onTextChange = { text -> comments = comments.copy(second = text) }
                 )
             }

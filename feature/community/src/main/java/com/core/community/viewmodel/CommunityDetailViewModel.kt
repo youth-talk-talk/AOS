@@ -8,6 +8,7 @@ import com.core.community.model.detail.CommunityDetailUiEffect
 import com.core.community.model.detail.CommunityDetailUiEvent
 import com.core.community.model.detail.CommunityDetailUiState
 import com.core.domain.usercase.GetUserUseCase
+import com.core.domain.usercase.comment.PatchCommentUseCase
 import com.core.domain.usercase.comment.PostAddPostCommentUseCase
 import com.core.domain.usercase.comment.PostDeleteCommentUseCase
 import com.core.domain.usercase.post.GetPostDetailCommentsUseCase
@@ -29,6 +30,7 @@ class CommunityDetailViewModel @Inject constructor(
     private val getPostDetailCommentsUseCase: GetPostDetailCommentsUseCase,
     private val postAddPostCommentUseCase: PostAddPostCommentUseCase,
     private val postDeleteCommentUseCase: PostDeleteCommentUseCase,
+    private val patchCommentUseCase: PatchCommentUseCase,
     savedStateHandle: SavedStateHandle
 ) : BaseViewModel<CommunityDetailUiState, CommunityDetailUiEvent, CommunityDetailUiEffect>(
     initialState = CommunityDetailUiState.initState
@@ -45,6 +47,29 @@ class CommunityDetailViewModel @Inject constructor(
             is CommunityDetailUiEvent.ChangeDetailType -> setState { copy(detailType = event.detailType) }
             is CommunityDetailUiEvent.PostAddComment -> postAddPostComment(event.postId, event.message)
             is CommunityDetailUiEvent.PostDeleteComment -> postDeleteComment(event.comment)
+            is CommunityDetailUiEvent.PatchModifyComment -> patchModifyComment(event.commentId, event.message)
+        }
+    }
+
+    private fun patchModifyComment(commentId: Long, message: String) {
+        viewModelScope.launch {
+            patchCommentUseCase(commentId, message)
+                .catch {
+                    Timber.e("CommunityDetailViewModel patchModifyComment error $it")
+                }
+                .collectLatest {
+                    val newComments = state.value.comments.comments
+                        .map { comment -> if (comment.commentId == commentId) comment.copy(content = message) else comment }
+                    setState {
+                        copy(
+                            comments = state.value.comments.copy(
+                                comments = newComments
+                            ),
+                            detailType = CommunityDetailType.MAIN
+                        )
+                    }
+                    setEffect { CommunityDetailUiEffect.ShowSnackBarModifyComment }
+                }
         }
     }
 
