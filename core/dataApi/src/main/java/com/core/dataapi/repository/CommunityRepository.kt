@@ -18,4 +18,5 @@ interface CommunityRepository {
     fun postUploadImage(file: File): Flow<String>
     fun postCreatePost(createPost: CreatePost): Flow<Long>
     fun getPostDetail(postId: Long): Flow<PostDetail>
+    fun deletePost(postId: Long): Flow<Long>
 }

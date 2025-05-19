@@ -30,6 +30,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.youth.app.core.designsystem.R
+import com.youthtalk.component.dialog.ModalDialog
 import com.youthtalk.designsystem.YongProjectTheme
 import com.youthtalk.designsystem.gray40
 import com.youthtalk.designsystem.gray70
@@ -53,6 +54,9 @@ fun UserComment(
 ) {
     val scope = rememberCoroutineScope()
     var bottomSheet by remember {
+        mutableStateOf(false)
+    }
+    var deleteCommentDialog by remember {
         mutableStateOf(false)
     }
     val dateTime by remember {
@@ -180,7 +184,11 @@ fun UserComment(
                                     if (index == 0) {
                                         if (isMine) onPostModifyComment(comment) else onPostReportComment()
                                     } else {
-                                        if (isMine) onDeleteComment(comment) else onPostReportUser()
+                                        if (isMine) {
+                                            deleteCommentDialog = true
+                                        } else {
+                                            onPostReportUser()
+                                        }
                                     }
                                 }
                                 .padding(vertical = 14.dp),
@@ -192,13 +200,33 @@ fun UserComment(
                         color = gray40
                     )
                     Text(
-                        modifier = Modifier.padding(vertical = 14.dp),
+                        modifier = Modifier
+                            .clickable(
+                                indication = null,
+                                interactionSource = remember { MutableInteractionSource() }
+                            ) {
+                                scope.launch {
+                                    state.hide()
+                                    bottomSheet = false
+                                }
+                            }
+                            .padding(vertical = 14.dp),
                         text = "취소하기",
                         style = MaterialTheme.typography.displaySmall
                     )
                 }
             }
         }
+    }
+
+    if (deleteCommentDialog) {
+        ModalDialog(
+            title = "댓글을 삭제할까요?",
+            confirmBackground = MaterialTheme.colorScheme.error,
+            confirmText = "삭제하기",
+            onDismissRequest = { deleteCommentDialog = false },
+            onClickConfirm = { onDeleteComment(comment) }
+        )
     }
 }
 

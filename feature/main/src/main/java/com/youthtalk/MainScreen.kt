@@ -130,7 +130,10 @@ fun NavHostScreen(
 
         communityDetailNavigation(
             showSnackBar = showSnackBar,
-            onBack = navController::popBackStack
+            onBack = navController::popBackStack,
+            onModifyWriteCommunity = { postType, postId ->
+                navController.navigateCommunityWrite(postType, postId)
+            }
         )
         communityWriteNavigation(
             checkPermission = checkPermission,

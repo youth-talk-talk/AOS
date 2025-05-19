@@ -26,9 +26,12 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -58,6 +61,7 @@ import com.core.community.model.detail.CommunityDetailUiState
 import com.core.community.viewmodel.CommunityDetailViewModel
 import com.youth.app.feature.community.R
 import com.youthtalk.component.comment.UserComment
+import com.youthtalk.component.dialog.ModalDialog
 import com.youthtalk.component.empty.EmptyScreen
 import com.youthtalk.component.topbar.MiddleTitleTopBar
 import com.youthtalk.designsystem.YongProjectTheme
@@ -69,6 +73,7 @@ import com.youthtalk.designsystem.gray80
 import com.youthtalk.designsystem.gray90
 import com.youthtalk.model.Comment
 import com.youthtalk.model.PostDetail
+import com.youthtalk.model.post.PostSubject
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -77,11 +82,15 @@ fun CommunityDetailScreen(
     modifier: Modifier = Modifier,
     viewModel: CommunityDetailViewModel = hiltViewModel(),
     showSnackBar: (String) -> Unit,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    onModifyWriteCommunity: (PostSubject, Long) -> Unit
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     var comments by rememberSaveable {
         mutableStateOf(Pair(0L, ""))
+    }
+    var deletePostDialog by remember {
+        mutableStateOf(Pair<Boolean, Long?>(false, null))
     }
     BackHandler {
         when (state.detailType) {
@@ -96,8 +105,14 @@ fun CommunityDetailScreen(
                 is CommunityDetailUiEffect.ShowSnackBarDeleteComment -> {
                     showSnackBar("댓글이 성공적으로 삭제됐습니다.")
                 }
+
                 is CommunityDetailUiEffect.ShowSnackBarModifyComment -> {
                     showSnackBar("댓글이 변경됐습니다.")
+                }
+
+                is CommunityDetailUiEffect.ShowSnackBarDeletePost -> {
+                    onBack()
+                    showSnackBar("게시글이 성공적으로 삭제됐습니다.")
                 }
             }
         }
@@ -121,7 +136,14 @@ fun CommunityDetailScreen(
                         },
                         onDeleteComment = { comment ->
                             viewModel.setEvent(CommunityDetailUiEvent.PostDeleteComment(comment))
-                        }
+                        },
+                        onPostDeletePost = { postId -> deletePostDialog = Pair(true, postId) },
+                        onPostModifyPost = { postId ->
+                            val postType = if (state.postDetail.postType == "post") PostSubject.POST else PostSubject.REVIEW
+                            onModifyWriteCommunity(postType, postId)
+                        },
+                        onPostReportPost = {},
+                        onPostReportPostUser = {}
                     )
                 }
 
@@ -140,6 +162,19 @@ fun CommunityDetailScreen(
             contentAlignment = Alignment.Center
         ) {
             CircularProgressIndicator()
+        }
+    }
+
+    if (deletePostDialog.first) {
+        deletePostDialog.second?.let { postId ->
+            ModalDialog(
+                title = "게시글을 삭제할까요?",
+                subTitle = "게시글을 삭제하면 모든 데이터가 삭제되고 다시 볼 수 없습니다.",
+                confirmBackground = MaterialTheme.colorScheme.error,
+                confirmText = "삭제하기",
+                onDismissRequest = { deletePostDialog = Pair(false, null) },
+                onClickConfirm = { viewModel.setEvent(CommunityDetailUiEvent.DeletePost(postId)) }
+            )
         }
     }
 }
@@ -187,15 +222,27 @@ fun CommentModifyScreen(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailScreen(
     modifier: Modifier = Modifier,
     state: CommunityDetailUiState,
     onPostAddComment: (String) -> Unit,
     onPostModifyComment: (Comment) -> Unit,
-    onDeleteComment: (Comment) -> Unit
+    onDeleteComment: (Comment) -> Unit,
+    onPostModifyPost: (Long) -> Unit,
+    onPostDeletePost: (Long) -> Unit,
+    onPostReportPost: () -> Unit,
+    onPostReportPostUser: () -> Unit
 ) {
     val focusManager = LocalFocusManager.current
+    var bottomSheet by remember {
+        mutableStateOf(false)
+    }
+    val scope = rememberCoroutineScope()
+    val bottomSheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true
+    )
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -219,6 +266,13 @@ fun DetailScreen(
                     )
 
                     Image(
+                        modifier = Modifier
+                            .clickable(
+                                indication = null,
+                                interactionSource = remember { MutableInteractionSource() }
+                            ) {
+                                bottomSheet = true
+                            },
                         painter = painterResource(R.drawable.more),
                         contentDescription = "더보기",
                         colorFilter = ColorFilter.tint(color = gray100)
@@ -285,6 +339,62 @@ fun DetailScreen(
         ChatTextField(
             onPostAddComment = onPostAddComment
         )
+    }
+
+    if (bottomSheet) {
+        ModalBottomSheet(
+            sheetState = bottomSheetState,
+            onDismissRequest = { bottomSheet = false }
+        ) {
+            val isMine = state.postDetail.writerId == state.user.memberId
+            val list = if (isMine) listOf("수정하기", "삭제하기") else listOf("게시글 신고하기", "사용자 차단하기")
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, end = 16.dp, top = 6.dp, bottom = 20.dp)
+            ) {
+                list.forEachIndexed { index, text ->
+                    Text(
+                        modifier = Modifier
+                            .clickable(
+                                indication = null,
+                                interactionSource = remember { MutableInteractionSource() }
+                            ) {
+                                scope.launch {
+                                    bottomSheetState.hide()
+                                    bottomSheet = false
+                                }
+                                if (index == 0) {
+                                    if (isMine) onPostModifyPost(state.postDetail.postId) else onPostReportPost()
+                                } else {
+                                    if (isMine) onPostDeletePost(state.postDetail.postId) else onPostReportPostUser()
+                                }
+                            }
+                            .padding(vertical = 14.dp),
+                        text = text,
+                        style = MaterialTheme.typography.displaySmall
+                    )
+                }
+                HorizontalDivider(
+                    color = gray40
+                )
+                Text(
+                    modifier = Modifier
+                        .clickable(
+                            indication = null,
+                            interactionSource = remember { MutableInteractionSource() }
+                        ) {
+                            scope.launch {
+                                bottomSheetState.hide()
+                                bottomSheet = false
+                            }
+                        }
+                        .padding(vertical = 14.dp),
+                    text = "취소하기",
+                    style = MaterialTheme.typography.displaySmall
+                )
+            }
+        }
     }
 }
 
@@ -440,7 +550,8 @@ private fun CommunityDetailPreview() {
     YongProjectTheme {
         CommunityDetailScreen(
             showSnackBar = {},
-            onBack = {}
+            onBack = {},
+            onModifyWriteCommunity = { _, _ -> }
         )
     }
 }

@@ -11,6 +11,7 @@ import com.core.domain.usercase.GetUserUseCase
 import com.core.domain.usercase.comment.PatchCommentUseCase
 import com.core.domain.usercase.comment.PostAddPostCommentUseCase
 import com.core.domain.usercase.comment.PostDeleteCommentUseCase
+import com.core.domain.usercase.post.DeletePostUseCase
 import com.core.domain.usercase.post.GetPostDetailCommentsUseCase
 import com.core.domain.usercase.post.GetPostDetailUseCase
 import com.youthtalk.model.Comment
@@ -30,6 +31,7 @@ class CommunityDetailViewModel @Inject constructor(
     private val getPostDetailCommentsUseCase: GetPostDetailCommentsUseCase,
     private val postAddPostCommentUseCase: PostAddPostCommentUseCase,
     private val postDeleteCommentUseCase: PostDeleteCommentUseCase,
+    private val deletePostUseCase: DeletePostUseCase,
     private val patchCommentUseCase: PatchCommentUseCase,
     savedStateHandle: SavedStateHandle
 ) : BaseViewModel<CommunityDetailUiState, CommunityDetailUiEvent, CommunityDetailUiEffect>(
@@ -48,6 +50,19 @@ class CommunityDetailViewModel @Inject constructor(
             is CommunityDetailUiEvent.PostAddComment -> postAddPostComment(event.postId, event.message)
             is CommunityDetailUiEvent.PostDeleteComment -> postDeleteComment(event.comment)
             is CommunityDetailUiEvent.PatchModifyComment -> patchModifyComment(event.commentId, event.message)
+            is CommunityDetailUiEvent.DeletePost -> deletePost(event.postId)
+        }
+    }
+
+    private fun deletePost(postId: Long) {
+        viewModelScope.launch {
+            deletePostUseCase(postId)
+                .catch {
+                    Timber.e("CommunityDetailViewModel deletePost error $it")
+                }
+                .collectLatest {
+                    setEffect { CommunityDetailUiEffect.ShowSnackBarDeletePost }
+                }
         }
     }
 

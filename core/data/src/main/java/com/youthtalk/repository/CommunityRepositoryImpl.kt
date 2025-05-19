@@ -182,4 +182,18 @@ class CommunityRepositoryImpl @Inject constructor(
                 throwableError<String>(it)
             }
     }
+
+    override fun deletePost(postId: Long): Flow<Long> = flow {
+        runCatching {
+            communityService.deletePost(postId)
+        }
+            .onSuccess {
+                youthDatabase.postDao().deletePost(postId)
+                emit(postId)
+            }
+            .onFailure {
+                Timber.e("postCreatePost getPostDetail $it")
+                throwableError<String>(it)
+            }
+    }
 }

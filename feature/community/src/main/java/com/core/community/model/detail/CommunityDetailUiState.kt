@@ -4,7 +4,9 @@ import com.core.base.model.UiState
 import com.youthtalk.model.CommentInfo
 import com.youthtalk.model.PostDetail
 import com.youthtalk.model.User
+import com.youthtalk.model.typeenum.Category
 import com.youthtalk.model.typeenum.Region
+import java.time.LocalDateTime
 
 data class CommunityDetailUiState(
     val initLoading: Boolean,
@@ -29,11 +31,13 @@ data class CommunityDetailUiState(
                 policyId = null,
                 policyTitle = null,
                 writerId = 0,
-                nickname = "",
+                nickname = null,
                 view = 0,
-                images = listOf(),
-                category = null,
+                profileImage = null,
+                category = Category.JOB,
+                updatedAt = LocalDateTime.now(),
                 scrap = false
+
             ),
             comments = CommentInfo(
                 commentCount = 0,

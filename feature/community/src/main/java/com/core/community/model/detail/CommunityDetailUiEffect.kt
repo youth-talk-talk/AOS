@@ -5,4 +5,5 @@ import com.core.base.model.UiEffect
 sealed interface CommunityDetailUiEffect : UiEffect {
     data object ShowSnackBarDeleteComment : CommunityDetailUiEffect
     data object ShowSnackBarModifyComment : CommunityDetailUiEffect
+    data object ShowSnackBarDeletePost : CommunityDetailUiEffect
 }

@@ -58,6 +58,7 @@ data class CommunityDetail(
 
 @Serializable
 data class CommunityWrite(
+    val postId: Long? = null,
     val communityType: PostSubject
 )
 
