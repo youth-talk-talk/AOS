@@ -14,6 +14,7 @@ import com.core.domain.usercase.comment.PostDeleteCommentUseCase
 import com.core.domain.usercase.post.DeletePostUseCase
 import com.core.domain.usercase.post.GetPostDetailCommentsUseCase
 import com.core.domain.usercase.post.GetPostDetailUseCase
+import com.core.domain.usercase.post.PostPostScrapUseCase
 import com.youthtalk.model.Comment
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.LocalDateTime
@@ -32,6 +33,7 @@ class CommunityDetailViewModel @Inject constructor(
     private val postAddPostCommentUseCase: PostAddPostCommentUseCase,
     private val postDeleteCommentUseCase: PostDeleteCommentUseCase,
     private val deletePostUseCase: DeletePostUseCase,
+    private val postPostScrapUseCase: PostPostScrapUseCase,
     private val patchCommentUseCase: PatchCommentUseCase,
     savedStateHandle: SavedStateHandle
 ) : BaseViewModel<CommunityDetailUiState, CommunityDetailUiEvent, CommunityDetailUiEffect>(
@@ -51,6 +53,23 @@ class CommunityDetailViewModel @Inject constructor(
             is CommunityDetailUiEvent.PostDeleteComment -> postDeleteComment(event.comment)
             is CommunityDetailUiEvent.PatchModifyComment -> patchModifyComment(event.commentId, event.message)
             is CommunityDetailUiEvent.DeletePost -> deletePost(event.postId)
+            is CommunityDetailUiEvent.PostPostScrap -> postPostScrap(event.postId, event.scrap)
+        }
+    }
+
+    private fun postPostScrap(postId: Long, scrap: Boolean) {
+        viewModelScope.launch {
+            postPostScrapUseCase(postId, scrap)
+                .catch {
+                    Timber.e("CommunityDetailViewModel postPostScrap error $it")
+                }
+                .collectLatest {
+                    setState {
+                        copy(
+                            postDetail = state.value.postDetail.copy(scrap = !scrap)
+                        )
+                    }
+                }
         }
     }
 

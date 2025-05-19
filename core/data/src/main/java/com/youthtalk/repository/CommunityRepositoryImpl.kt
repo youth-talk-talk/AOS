@@ -18,6 +18,7 @@ import com.youthtalk.dto.MemberId
 import com.youthtalk.mapper.toData
 import com.youthtalk.mapper.toDomain
 import com.youthtalk.model.Image
+import com.youthtalk.model.PostDetail
 import com.youthtalk.model.post.CreatePost
 import com.youthtalk.model.post.Post
 import com.youthtalk.model.post.PostSubject
@@ -164,7 +165,7 @@ class CommunityRepositoryImpl @Inject constructor(
             }
             .onFailure {
                 Timber.e("postCreatePost error $it")
-                throwableError<String>(it)
+                throwableError<Long>(it)
             }
     }
 
@@ -179,7 +180,7 @@ class CommunityRepositoryImpl @Inject constructor(
             }
             .onFailure {
                 Timber.e("postCreatePost getPostDetail $it")
-                throwableError<String>(it)
+                throwableError<PostDetail>(it)
             }
     }
 
@@ -192,8 +193,35 @@ class CommunityRepositoryImpl @Inject constructor(
                 emit(postId)
             }
             .onFailure {
-                Timber.e("postCreatePost getPostDetail $it")
-                throwableError<String>(it)
+                Timber.e("postCreatePost deletePost $it")
+                throwableError<Long>(it)
             }
+    }
+
+    override fun postPostScrap(postId: Long, scrap: Boolean): Flow<Long> = flow {
+        runCatching {
+            communityService.postPostScrap(postId)
+        }
+            .onSuccess {
+                youthDatabase.postDao().updatePostScrap(postId, !scrap)
+                emit(postId)
+            }
+            .onFailure {
+                Timber.e("postCreatePost postPostScrap $it")
+                throwableError<Long>(it)
+            }
+    }
+
+    override fun syncPostScrap(reviews: List<Post>, frees: List<Post>): Flow<Pair<List<Post>, List<Post>>> = flow {
+        val syncReviews = reviews
+            .map { post ->
+                val syncPost = youthDatabase.postDao().getPost(post.postId)?.copy(postType = post.postType)
+                Timber.e("repository syncPostScrap $syncPost")
+                syncPost ?: post
+            }
+        val syncFrees = frees
+            .map { post -> youthDatabase.postDao().getPost(post.postId)?.copy(postType = post.postType) ?: post }
+
+        emit(Pair(syncReviews, syncFrees))
     }
 }

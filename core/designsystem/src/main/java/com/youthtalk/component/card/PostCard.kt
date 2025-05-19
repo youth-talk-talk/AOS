@@ -134,9 +134,9 @@ fun PostCard(modifier: Modifier = Modifier, post: Post, isVisiblePolicyTitle: Bo
                 ) {
                     Icon(
                         modifier = Modifier.size(16.dp),
-                        painter = painterResource(R.drawable.bookmark_line),
+                        painter = painterResource(if (post.scrap) R.drawable.bookmark_fill else R.drawable.bookmark_line),
                         contentDescription = stringResource(R.string.bookmark),
-                        tint = gray80
+                        tint = if (post.scrap) MaterialTheme.colorScheme.primary else gray80
                     )
 
                     Text(

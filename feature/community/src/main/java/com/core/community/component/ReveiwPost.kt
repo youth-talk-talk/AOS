@@ -117,7 +117,7 @@ fun ReviewPost(
         if (reviews.loadState.refresh is LoadState.NotLoading) {
             items(
                 count = reviews.itemCount,
-                key = reviews.itemKey()
+                key = reviews.itemKey { it.postId }
             ) {
                 reviews[it]?.let { post ->
                     PostCard(

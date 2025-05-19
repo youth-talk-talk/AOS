@@ -27,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.core.community.component.FreePost
@@ -37,6 +38,7 @@ import com.core.community.viewmodel.CommunityViewModel
 import com.youthtalk.designsystem.gray10
 import com.youthtalk.designsystem.gray100
 import com.youthtalk.designsystem.gray70
+import com.youthtalk.extentions.rememberLazyListState
 import com.youthtalk.model.post.PostSubject
 import kotlinx.coroutines.launch
 
@@ -59,7 +61,16 @@ fun CommunityScreen(
         }
     ) { communityType.size }
     val scope = rememberCoroutineScope()
-    val lazyColumnStates = List(2) { rememberLazyListState() }
+    val reivews = state.reviews.collectAsLazyPagingItems()
+    val frees = state.frees.collectAsLazyPagingItems()
+    val reviewLazyListState = reivews.rememberLazyListState()
+    val freesLazyListState = frees.rememberLazyListState()
+
+    LifecycleResumeEffect(Unit) {
+        viewModel.setEvent(CommunityUiEvent.SyncPostDate)
+        onPauseOrDispose { }
+    }
+
     Box(
         modifier = modifier
             .fillMaxSize()
@@ -141,17 +152,17 @@ fun CommunityScreen(
                 when (communityType[it]) {
                     PostSubject.REVIEW -> ReviewPost(
                         category = state.category,
-                        reviews = state.reviews.collectAsLazyPagingItems(),
+                        reviews = reivews,
                         popularReviews = state.popularReviews,
-                        lazyListState = lazyColumnStates[it],
+                        lazyListState = reviewLazyListState,
                         onClickPost = onClickPostDetail,
                         onClickCategory = { category -> viewModel.setEvent(CommunityUiEvent.ChangeCategory(category)) }
                     )
 
                     PostSubject.POST -> FreePost(
-                        lazyListState = lazyColumnStates[it],
+                        lazyListState = freesLazyListState,
                         popularFrees = state.popularFrees,
-                        frees = state.frees.collectAsLazyPagingItems(),
+                        frees = frees,
                         onClickPost = onClickPostDetail
                     )
                 }
@@ -166,7 +177,11 @@ fun CommunityScreen(
             containerColor = MaterialTheme.colorScheme.primary,
             contentColor = gray10,
             onClick = { onClickCommunityWrite(communityType[pagerState.currentPage]) },
-            expanded = !lazyColumnStates[pagerState.currentPage].canScrollBackward,
+            expanded = if (pagerState.currentPage == 0) {
+                !reviewLazyListState.canScrollBackward
+            } else {
+                !freesLazyListState.canScrollBackward
+            },
             icon = {
                 Icon(
                     Icons.Filled.Edit,

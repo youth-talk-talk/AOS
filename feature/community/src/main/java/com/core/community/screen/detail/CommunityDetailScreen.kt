@@ -143,7 +143,8 @@ fun CommunityDetailScreen(
                             onModifyWriteCommunity(postType, postId)
                         },
                         onPostReportPost = {},
-                        onPostReportPostUser = {}
+                        onPostReportPostUser = {},
+                        onPostPostScrap = { postId, scrap -> viewModel.setEvent(CommunityDetailUiEvent.PostPostScrap(postId, scrap)) }
                     )
                 }
 
@@ -233,7 +234,8 @@ fun DetailScreen(
     onPostModifyPost: (Long) -> Unit,
     onPostDeletePost: (Long) -> Unit,
     onPostReportPost: () -> Unit,
-    onPostReportPostUser: () -> Unit
+    onPostReportPostUser: () -> Unit,
+    onPostPostScrap: (Long, Boolean) -> Unit
 ) {
     val focusManager = LocalFocusManager.current
     var bottomSheet by remember {
@@ -260,6 +262,14 @@ fun DetailScreen(
                     horizontalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
                     Image(
+                        modifier = Modifier
+                            .size(24.dp)
+                            .clickable(
+                                indication = null,
+                                interactionSource = remember { MutableInteractionSource() }
+                            ) {
+                                onPostPostScrap(state.postDetail.postId, state.postDetail.scrap)
+                            },
                         painter = painterResource(if (state.postDetail.scrap) R.drawable.bookmark_fill else R.drawable.bookmark_line),
                         contentDescription = "스크랩",
                         colorFilter = ColorFilter.tint(color = if (state.postDetail.scrap) MaterialTheme.colorScheme.primary else gray100)

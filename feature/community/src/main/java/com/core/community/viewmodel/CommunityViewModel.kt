@@ -8,6 +8,7 @@ import com.core.community.model.community.CommunityUiEvent
 import com.core.community.model.community.CommunityUiState
 import com.core.domain.usercase.post.GetPopularPostsUseCase
 import com.core.domain.usercase.post.GetPostsUseCase
+import com.core.domain.usercase.post.SyncPopularPostUseCase
 import com.youthtalk.model.post.PostSubject
 import com.youthtalk.model.post.PostType
 import com.youthtalk.model.typeenum.Category
@@ -23,11 +24,11 @@ import timber.log.Timber
 @HiltViewModel
 class CommunityViewModel @Inject constructor(
     private val getPostsUseCase: GetPostsUseCase,
-    private val getPopularPostsUseCase: GetPopularPostsUseCase
+    private val getPopularPostsUseCase: GetPopularPostsUseCase,
+    private val syncPopularPostUseCase: SyncPopularPostUseCase
 ) : BaseViewModel<CommunityUiState, CommunityUiEvent, CommunityUiEffect>(
     initialState = CommunityUiState.initState
 ) {
-
     init {
         setEvent(CommunityUiEvent.InitData)
     }
@@ -36,6 +37,25 @@ class CommunityViewModel @Inject constructor(
         when (event) {
             is CommunityUiEvent.InitData -> initData()
             is CommunityUiEvent.ChangeCategory -> changeCategory(event.category)
+            is CommunityUiEvent.SyncPostDate -> syncPopularPost()
+        }
+    }
+
+    private fun syncPopularPost() {
+        viewModelScope.launch {
+            syncPopularPostUseCase(state.value.popularReviews, state.value.popularFrees)
+                .catch {
+                    Timber.e("CommunityViewModel syncPopularPost error $it")
+                }
+                .collectLatest { (reviews, frees) ->
+                    Timber.e("CommunityViewModel syncPopularPost success $reviews $frees")
+                    setState {
+                        copy(
+                            popularReviews = reviews,
+                            popularFrees = frees
+                        )
+                    }
+                }
         }
     }
 
