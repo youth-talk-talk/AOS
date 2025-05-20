@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.relocation.BringIntoViewRequester
 import androidx.compose.foundation.relocation.bringIntoViewRequester
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
@@ -42,6 +43,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
@@ -74,6 +76,7 @@ import com.youthtalk.designsystem.gray90
 import com.youthtalk.model.Comment
 import com.youthtalk.model.PostDetail
 import com.youthtalk.model.post.PostSubject
+import com.youthtalk.util.getTime
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -410,14 +413,23 @@ fun DetailScreen(
 
 @Composable
 private fun PostDetailContent(modifier: Modifier = Modifier, postDetail: PostDetail) {
+    val postDate by remember {
+        mutableStateOf(postDetail.updatedAt.getTime())
+    }
     Row(
         modifier = modifier
             .padding(start = 16.dp, end = 16.dp, top = 4.dp, bottom = 16.dp),
         horizontalArrangement = Arrangement.spacedBy(10.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // TODO: 작성자 이미지 URL 키값 나올 떄 변경
-        Image(
+        postDetail.profileImage?.let { image ->
+            AsyncImage(
+                modifier = Modifier.size(32.dp).clip(CircleShape),
+                model = image,
+                contentDescription = "기본 이미지"
+            )
+        } ?: Image(
+            modifier = Modifier.size(32.dp).clip(CircleShape),
             painter = painterResource(R.drawable.profile_thumnail),
             contentDescription = "기본 이미지"
         )
@@ -428,7 +440,7 @@ private fun PostDetailContent(modifier: Modifier = Modifier, postDetail: PostDet
                 style = MaterialTheme.typography.displayLarge
             )
             Text(
-                text = "3시간 전",
+                text = postDate,
                 style = MaterialTheme.typography.labelSmall.copy(
                     color = gray80
                 )
