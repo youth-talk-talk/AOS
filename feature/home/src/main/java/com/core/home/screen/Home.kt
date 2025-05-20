@@ -11,7 +11,6 @@ import androidx.navigation.compose.navigation
 import com.core.community.navigation.communityNavigation
 import com.core.home.navigation.BottomNavigation
 import com.core.home.navigation.homeTabNavigation
-import com.core.mypage.navigation.navigateAccount
 import com.core.mypage.navigation.settingTabNavigation
 import com.core.navigation.model.CommentType
 import com.core.navigation.model.ScrapPostType
@@ -42,7 +41,8 @@ fun Home(
     onClickPostDetail: (Long) -> Unit,
     onClickPolicyDetail: (Long) -> Unit,
     onClickCommunityWrite: (PostSubject) -> Unit,
-    goLogin: () -> Unit
+    goLogin: () -> Unit,
+    checkPermission: (String) -> Boolean
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route ?: "Home"
@@ -85,14 +85,14 @@ fun Home(
                 )
             }
             settingTabNavigation(
-                onClickProfileCard = navController::navigateAccount,
                 onClickEtc = onClickEtc,
                 onClickTerms = onClickTerms,
                 onClickSettingScrap = onClickSettingScrap,
                 onClickSettingPost = onClickSettingPost,
                 onClickSettingComment = onClickSettingComment,
                 onClickSettingNotification = onClickSettingNotification,
-                goLogin = goLogin
+                goLogin = goLogin,
+                checkPermission = checkPermission
             )
         }
 

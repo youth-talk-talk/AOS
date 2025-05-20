@@ -96,7 +96,8 @@ fun NavHostScreen(
             onClickPostDetail = navController::navigateCommunityDetail,
             onClickPolicyDetail = navController::navigatePolicyDetail,
             onClickCommunityWrite = navController::navigateCommunityWrite,
-            goLogin = goLogin
+            goLogin = goLogin,
+            checkPermission = checkPermission
         )
         settingEtcNavigation(
             goLogin = goLogin

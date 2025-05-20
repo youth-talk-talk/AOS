@@ -8,7 +8,8 @@ import okhttp3.RequestBody.Companion.toRequestBody
 @Serializable
 data class UserRequest(
     val nickname: String,
-    val region: String
+    val region: String,
+    val profileImgUrl: String? = null
 ) {
     fun toRequestBody(): RequestBody = Json.encodeToString(serializer(), this).toRequestBody()
 }

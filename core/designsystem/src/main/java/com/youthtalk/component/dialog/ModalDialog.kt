@@ -31,7 +31,7 @@ fun ModalDialog(
     confirmBackground: Color = MaterialTheme.colorScheme.primary,
     onDismissRequest: () -> Unit,
     onClickCancel: () -> Unit = {},
-    onClickConfirm: () -> Unit
+    onClickConfirm: () -> Unit = {}
 ) {
     Dialog(
         onDismissRequest = onDismissRequest

@@ -52,7 +52,7 @@ fun RegionDropDown(modifier: Modifier = Modifier, select: String = "", hint: Str
     ) {
         Text(
             modifier = Modifier.weight(1f),
-            text = if (select.isEmpty()) hint else select,
+            text = select.ifEmpty { hint },
             style = MaterialTheme.typography.titleSmall.copy(
                 color = when (select.isEmpty()) {
                     true -> gray60

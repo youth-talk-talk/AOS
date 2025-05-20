@@ -31,8 +31,8 @@ class UserRepositoryImpl @Inject constructor(
             }
     }
 
-    override fun postUser(nickname: String, region: Region): Flow<User> = flow {
-        runCatching { userService.postUser(UserRequest(nickname, region.region).toRequestBody()) }
+    override fun postUser(nickname: String, region: Region, imageUrl: String?): Flow<User> = flow {
+        runCatching { userService.postUser(UserRequest(nickname, region.region, imageUrl).toRequestBody()) }
             .onSuccess { response ->
                 response.data?.let { userResponse ->
                     emit(userResponse.toData())
