@@ -41,6 +41,7 @@ import com.youthtalk.component.topbar.MiddleTitleTopBar
 import com.youthtalk.designsystem.gray10
 import com.youthtalk.designsystem.gray30
 import com.youthtalk.designsystem.gray40
+import com.youthtalk.extentions.rememberLazyListState
 import com.youthtalk.model.typeenum.Category
 
 @Composable
@@ -53,6 +54,7 @@ fun PolicyOverviewScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val policies = state.policies.collectAsLazyPagingItems()
+    val lazyListState = policies.rememberLazyListState()
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -95,6 +97,7 @@ fun PolicyOverviewScreen(
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize(),
+            state = lazyListState,
             contentPadding = PaddingValues(horizontal = 16.dp, vertical = 10.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {

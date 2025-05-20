@@ -33,8 +33,8 @@ class CommunityDetailViewModel @Inject constructor(
     private val postAddPostCommentUseCase: PostAddPostCommentUseCase,
     private val postDeleteCommentUseCase: PostDeleteCommentUseCase,
     private val deletePostUseCase: DeletePostUseCase,
-    private val postPostScrapUseCase: PostPostScrapUseCase,
     private val patchCommentUseCase: PatchCommentUseCase,
+    private val postPostScrapUseCase: PostPostScrapUseCase,
     savedStateHandle: SavedStateHandle
 ) : BaseViewModel<CommunityDetailUiState, CommunityDetailUiEvent, CommunityDetailUiEffect>(
     initialState = CommunityDetailUiState.initState

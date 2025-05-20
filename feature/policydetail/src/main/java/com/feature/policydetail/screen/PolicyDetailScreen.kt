@@ -5,11 +5,15 @@ import android.content.Context
 import android.content.Intent
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import androidx.activity.compose.BackHandler
+import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,17 +26,22 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.relocation.BringIntoViewRequester
 import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,47 +51,142 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.net.toUri
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.feature.policydetail.component.header
 import com.feature.policydetail.component.policyContent
 import com.feature.policydetail.component.policyFooter
+import com.feature.policydetail.model.PolicyDetailType
+import com.feature.policydetail.model.PolicyDetailUiEffect
+import com.feature.policydetail.model.PolicyDetailUiEvent
+import com.feature.policydetail.model.PolicyDetailUiState
+import com.feature.policydetail.viewmode.PolicyDetailViewModel
 import com.youth.app.feature.policydetail.R
+import com.youthtalk.component.screen.CommentModifyScreen
 import com.youthtalk.component.topbar.MiddleTitleTopBar
 import com.youthtalk.designsystem.YongProjectTheme
+import com.youthtalk.designsystem.gray10
 import com.youthtalk.designsystem.gray100
 import com.youthtalk.designsystem.gray30
 import com.youthtalk.designsystem.gray70
 import com.youthtalk.designsystem.gray90
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
+@Composable
+fun PolicyDetailScreenRoot(
+    modifier: Modifier = Modifier,
+    viewModel: PolicyDetailViewModel = hiltViewModel(),
+    onBack: () -> Unit,
+    showSnackBar: (String) -> Unit
+) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+    val lazyListState = rememberLazyListState()
+    var comments by rememberSaveable {
+        mutableStateOf(Pair(0L, ""))
+    }
+
+    LaunchedEffect(viewModel.effect) {
+        viewModel.effect.collectLatest {
+            when (it) {
+                is PolicyDetailUiEffect.LinkBrowser -> {
+                    Timber.e("LinkBrowser ${it.url}")
+                    val intent = Intent(Intent.ACTION_VIEW, it.url.toUri())
+                    context.startActivity(intent)
+                }
+
+                is PolicyDetailUiEffect.Share -> {
+                    shared(context, it.url)
+                }
+
+                is PolicyDetailUiEffect.ShowSnackBarDeleteComment -> {
+                    showSnackBar("댓글이 성공적으로 삭제됐습니다.")
+                }
+
+                is PolicyDetailUiEffect.ShowSnackBarModifyComment -> {
+                    showSnackBar("댓글이 변경됐습니다.")
+                }
+
+                is PolicyDetailUiEffect.ChangeComment -> {
+                    comments = Pair(it.commentId, it.message)
+                }
+            }
+        }
+    }
+
+    BackHandler {
+        when (state.detailType) {
+            PolicyDetailType.MAIN -> onBack()
+            PolicyDetailType.COMMENT -> viewModel.setEvent(PolicyDetailUiEvent.ChangeDetailType(PolicyDetailType.MAIN))
+        }
+    }
+
+    if (!state.isLoading) {
+        Crossfade(
+            modifier = modifier,
+            targetState = state.detailType
+        ) {
+            when (it) {
+                PolicyDetailType.MAIN -> {
+                    PolicyDetailScreen(
+                        state = state,
+                        lazyListState = lazyListState,
+                        actionEvent = viewModel::setEvent
+                    )
+                }
+
+                PolicyDetailType.COMMENT -> CommentModifyScreen(
+                    comment = comments.second,
+                    onBack = { viewModel.setEvent(PolicyDetailUiEvent.ChangeDetailType(PolicyDetailType.MAIN)) },
+                    onPostCommentModify = { viewModel.setEvent(PolicyDetailUiEvent.PatchModifyComment(comments.first, comments.second)) },
+                    onTextChange = { text -> comments = comments.copy(second = text) }
+                )
+            }
+        }
+    } else {
+        Box(
+            modifier = Modifier
+                .fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator()
+        }
+    }
+}
+
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun PolicyDetailScreen(modifier: Modifier = Modifier) {
+fun PolicyDetailScreen(
+    modifier: Modifier = Modifier,
+    lazyListState: LazyListState,
+    state: PolicyDetailUiState,
+    actionEvent: (PolicyDetailUiEvent) -> Unit
+) {
     var textValue by remember {
         mutableStateOf("")
     }
+    val focusManager = LocalFocusManager.current
     val bringIntoViewRequester = remember { BringIntoViewRequester() }
     val focusRequester = remember { FocusRequester() }
     val scope = rememberCoroutineScope()
     val ime = LocalSoftwareKeyboardController.current
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
     val density = LocalDensity.current
-    var isExpanded by remember {
-        mutableStateOf(false)
-    }
-    var isPolicySummaryExpanded by remember {
-        mutableStateOf(true)
-    }
-    var contentHeight by remember {
-        mutableStateOf(0.dp)
-    }
+    var isExpanded by remember { mutableStateOf(false) }
+    var isPolicySummaryExpanded by remember { mutableStateOf(true) }
+    var contentHeight by remember { mutableStateOf(0.dp) }
     var measuredOnce by remember { mutableStateOf(false) }
     val animatedHeight by animateDpAsState(
         targetValue = if (!isExpanded && contentHeight > screenHeight * 0.4f) screenHeight * 0.4f else contentHeight,
@@ -92,8 +196,9 @@ fun PolicyDetailScreen(modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
             .fillMaxSize()
+            .background(color = gray10)
             .pointerInput(Unit) {
-                detectTapGestures { offset ->
+                detectTapGestures {
                     ime?.hide()
                 }
             }
@@ -104,16 +209,33 @@ fun PolicyDetailScreen(modifier: Modifier = Modifier) {
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
-                    Image(
-                        painter = painterResource(R.drawable.share),
-                        contentDescription = "공유하기",
-                        colorFilter = ColorFilter.tint(color = gray100)
-                    )
+                    state.policyDetail.applUrl?.let { url ->
+                        Image(
+                            modifier = Modifier
+                                .clickable(
+                                    indication = null,
+                                    interactionSource = remember { MutableInteractionSource() }
+                                ) {
+                                    actionEvent(PolicyDetailUiEvent.Shared(url))
+                                },
+                            painter = painterResource(R.drawable.share),
+                            contentDescription = "공유하기",
+                            colorFilter = ColorFilter.tint(color = gray100)
+                        )
+                    }
 
                     Image(
-                        painter = painterResource(R.drawable.bookmark_line),
-                        contentDescription = "공유하기",
-                        colorFilter = ColorFilter.tint(color = gray100)
+                        modifier = Modifier
+                            .size(24.dp)
+                            .clickable(
+                                indication = null,
+                                interactionSource = remember { MutableInteractionSource() }
+                            ) {
+                                actionEvent(PolicyDetailUiEvent.PolicyScrap(state.policyId, state.policyDetail.isScrap))
+                            },
+                        painter = painterResource(if (state.policyDetail.isScrap) R.drawable.bookmark_fill else R.drawable.bookmark_line),
+                        contentDescription = "스크랩",
+                        colorFilter = ColorFilter.tint(color = if (state.policyDetail.isScrap) MaterialTheme.colorScheme.primary else gray100)
                     )
                 }
             }
@@ -123,13 +245,16 @@ fun PolicyDetailScreen(modifier: Modifier = Modifier) {
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f),
-            verticalArrangement = Arrangement.spacedBy(20.dp)
+            state = lazyListState
         ) {
             header(
                 isExpand = isPolicySummaryExpanded,
-                onClickExpand = { isPolicySummaryExpanded = !isPolicySummaryExpanded }
+                policyDetail = state.policyDetail,
+                onClickExpand = { isPolicySummaryExpanded = !isPolicySummaryExpanded },
+                onClickLink = { url -> actionEvent(PolicyDetailUiEvent.LinkUrl(url)) }
             )
             policyContent(
+                policyDetail = state.policyDetail,
                 screenHeight = screenHeight,
                 animatedHeight = animatedHeight,
                 measuredOnce = measuredOnce,
@@ -146,9 +271,17 @@ fun PolicyDetailScreen(modifier: Modifier = Modifier) {
                 },
                 onClickExpanded = {
                     isExpanded = !isExpanded
-                }
+                },
+                onClickLink = { url -> actionEvent(PolicyDetailUiEvent.LinkUrl(url)) }
             )
-            policyFooter()
+            policyFooter(
+                commentInfo = state.commentInfo,
+                user = state.user,
+                onPostModifyComment = { comment ->
+                    actionEvent(PolicyDetailUiEvent.ChangeDetailType(PolicyDetailType.COMMENT, comment.commentId, comment.content))
+                },
+                onDeleteComment = { actionEvent(PolicyDetailUiEvent.PostDeleteComment(it)) }
+            )
         }
 
         Row(
@@ -198,7 +331,18 @@ fun PolicyDetailScreen(modifier: Modifier = Modifier) {
             }
 
             Image(
-                modifier = Modifier.size(18.dp),
+                modifier = Modifier
+                    .size(18.dp)
+                    .clickable(
+                        indication = null,
+                        interactionSource = remember { MutableInteractionSource() }
+                    ) {
+                        if (textValue.isNotEmpty()) {
+                            actionEvent(PolicyDetailUiEvent.PostAddPolicyComment(policyId = state.policyId, message = textValue))
+                            textValue = ""
+                            focusManager.clearFocus()
+                        }
+                    },
                 painter = painterResource(R.drawable.send),
                 contentDescription = "보내기",
                 colorFilter = ColorFilter.tint(color = if (textValue.isEmpty()) gray70 else gray90)
@@ -246,6 +390,11 @@ fun WebViewScreen(modifier: Modifier = Modifier, url: String) {
 @Composable
 private fun PolicyDetailScreenPreview() {
     YongProjectTheme {
-        PolicyDetailScreen()
+        val lazyListState = rememberLazyListState()
+        PolicyDetailScreen(
+            state = PolicyDetailUiState.initState,
+            lazyListState = lazyListState,
+            actionEvent = {}
+        )
     }
 }

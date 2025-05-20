@@ -21,4 +21,18 @@ interface PolicyDao {
 
     @Query("DELETE FROM policy WHERE policyId=:policyId")
     suspend fun deletePolicy(policyId: Long)
+
+    @Query(
+        """
+        UPDATE policy
+            SET
+                scrap = :scrap,
+                scrapCount = CASE
+                    WHEN scrap = 0 THEN scrapCount + 1
+                    ELSE scrapCount - 1
+                END
+            WHERE policyId = :policyId;
+    """
+    )
+    suspend fun updatePostScrap(policyId: Long, scrap: Boolean)
 }

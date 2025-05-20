@@ -22,8 +22,8 @@ interface PolicyService {
     @GET("/api/v1/home/new-policies")
     suspend fun getNewPolicies(@Query("sort") sort: SortType = SortType.RECENT): CommonResponse<NewPoliciesResponse>
 
-    @GET("/api/v1/policies/{policyid}")
-    suspend fun getPolicyDetail(@Path("policyid") policyId: String): CommonResponse<PolicyDetailResponse>
+    @GET("/api/v1/policies/{policyId}")
+    suspend fun getPolicyDetail(@Path("policyId") policyId: Long): CommonResponse<PolicyDetailResponse>
 
     @POST("/api/v1/policies/search")
     suspend fun postSpecPolicies(
@@ -34,7 +34,7 @@ interface PolicyService {
     ): CommonResponse<SpecPoliciesResponse>
 
     @POST("/api/v1/policies/{id}/scrap")
-    suspend fun postPolicyScrap(@Path("id") id: String): CommonResponse<Unit>
+    suspend fun postPolicyScrap(@Path("id") id: Long): CommonResponse<Unit>
 
     @POST("/api/v1/policies/comments")
     suspend fun postAddComment(@Body requestBody: RequestBody): CommonResponse<PostAddCommentResponse>

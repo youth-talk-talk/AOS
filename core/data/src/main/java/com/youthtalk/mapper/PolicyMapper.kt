@@ -2,15 +2,15 @@ package com.youthtalk.mapper
 
 import com.youthtalk.dto.PolicyDetailResponse
 import com.youthtalk.model.PolicyDetail
+import com.youthtalk.model.typeenum.Category
+import com.youthtalk.model.typeenum.Region
 
 fun PolicyDetailResponse.toData() = PolicyDetail(
     title = title,
     introduction = introduction,
     supportDetail = supportDetail,
     applyTerm = applyTerm,
-    operationTerm = operationTerm,
     age = age,
-    addrIncome = addrIncome,
     education = education,
     major = major,
     employment = employment,
@@ -23,9 +23,14 @@ fun PolicyDetailResponse.toData() = PolicyDetail(
     submitDoc = submitDoc,
     etc = etc,
     hostDep = hostDep,
-    operatingOrg = operatingOrg,
     refUrl1 = refUrl1,
     refUrl2 = refUrl2,
-    formattedApplUrl = formattedApplUrl,
-    isScrap = isScrap
+    isScrap = isScrap,
+    departmentImgUrl = departmentImgUrl,
+    recruitmentType = recruitmentType,
+    region = Region.entries.find { it.region == region },
+    subRegion = subRegion,
+    category = Category.entries.find { it.categoryName == category },
+    earnEtc = earnEtc,
+    marriage = marriage
 )

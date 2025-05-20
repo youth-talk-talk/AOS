@@ -149,7 +149,10 @@ fun NavHostScreen(
             }
         )
 
-        policyDetailNavigation()
+        policyDetailNavigation(
+            onBack = navController::popBackStack,
+            showSnackBar = showSnackBar
+        )
     }
 }
 

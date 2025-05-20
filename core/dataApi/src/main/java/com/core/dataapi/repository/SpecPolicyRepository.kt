@@ -11,8 +11,8 @@ import kotlinx.coroutines.flow.Flow
 interface SpecPolicyRepository {
     fun getPolicies(searchFilter: SearchFilter, policyType: PolicyType, sortType: SortType): Flow<Flow<PagingData<Policy>>>
     fun getCount(searchFilter: SearchFilter, sortType: SortType): Flow<Int>
-    fun postScrap(id: String): Flow<String>
+    fun postScrap(id: Long, scrap: Boolean): Flow<String>
     fun searchPolicyName(policyName: String): Flow<Flow<PagingData<SearchPolicy>>>
-    fun postAddComment(policyId: String, text: String): Flow<Long>
+    fun postAddComment(policyId: Long, text: String): Flow<Long>
     fun postDeleteComment(commentId: Long): Flow<String>
 }

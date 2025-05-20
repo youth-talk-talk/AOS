@@ -8,5 +8,5 @@ import kotlinx.coroutines.flow.Flow
 class GetPolicyDetailUseCase @Inject constructor(
     private val policyRepository: PolicyRepository
 ) {
-    operator fun invoke(policyId: String): Flow<PolicyDetail> = policyRepository.getPolicyDetail(policyId)
+    operator fun invoke(policyId: Long): Flow<PolicyDetail> = policyRepository.getPolicyDetail(policyId)
 }

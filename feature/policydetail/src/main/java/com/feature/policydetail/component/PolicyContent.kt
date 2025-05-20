@@ -1,8 +1,10 @@
 package com.feature.policydetail.component
 
+import android.util.Patterns
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,28 +18,39 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextLayoutResult
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.feature.policydetail.screen.isMeasure
 import com.youthtalk.designsystem.gray30
 import com.youthtalk.designsystem.gray40
 import com.youthtalk.designsystem.gray90
+import com.youthtalk.model.PolicyDetail
+import timber.log.Timber
 
 fun LazyListScope.policyContent(
+    policyDetail: PolicyDetail,
     screenHeight: Dp,
     animatedHeight: Dp,
     contentHeight: Dp,
     isExpanded: Boolean,
     measuredOnce: Boolean,
     measureHeight: (Int) -> Unit,
-    onClickExpanded: () -> Unit
+    onClickExpanded: () -> Unit,
+    onClickLink: (String) -> Unit
 ) {
     item {
         Box {
@@ -51,33 +64,27 @@ fun LazyListScope.policyContent(
                     .padding(start = 16.dp, end = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(30.dp)
             ) {
-                PolicySpecContent(
-                    title = "신청자격",
-                    contents = listOf(
-                        "만 15세~만 75세",
-                        "전국",
-                        "참여 제한 대상 참고",
-                        "현직 공무원, 사립학교 교직원, 졸업예정자 이외 재학생, 연 매출 4억원 이상의 자영업자, 월 임금 300만원 이상인 대규모기업종사자(45세 미만)," +
-                            " 월 소득 500만원 이상의 특수형태근로종사자 등 국민내일배움카드 발급이 불가능한 자는 제외"
+                if (policyDetail.applyQualifications) {
+                    PolicySpecContent(
+                        title = "신청자격",
+                        contents = policyDetail.getApplyQualifications()
                     )
-                )
+                }
 
-                PolicySpecContent(
-                    title = "지원내용",
-                    contents = listOf(
-                        "□ 국민내일배움카드 훈련비 지원 한도(5년간 300~500만원) 외 50만원(지급 후 1년 한도)의 크레딧 추가 지급\n" +
-                            "※ 추가 지급된 크레딧은 정해진 K-디지털 기초역량훈련(K-Digital Credit) 훈련과정 수강에만 사용 가능하며, 훈련생 개인은 훈련비의 10퍼센트를 부담해야 함"
+                policyDetail.supportDetail?.let { support ->
+                    PolicySpecContent(
+                        title = "지원내용",
+                        contents = listOf(support)
                     )
-                )
+                }
 
-                PolicySpecContent(
-                    title = "신청방법",
-                    contents = listOf(
-                        "국민내일배움카드 발급 후 고용센터 방문 또는 고용24 홈페이지(www.work24.go.kr)를 통해 수강신청",
-                        "국민내일배움카드 발급 신청 - 고용센터 심사 후 카드 발급 - 훈련 과정 수강신청- 훈련 기관 훈련생 선발 후 개별 안내",
-                        "https://www.work24.go.kr"
+                if (policyDetail.applyMethod) {
+                    PolicySpecContent(
+                        title = "신청방법",
+                        contents = policyDetail.getApplyMethod(),
+                        onClickLink = onClickLink
                     )
-                )
+                }
             }
 
             if (!isExpanded && contentHeight > screenHeight * 0.4f) {
@@ -101,7 +108,7 @@ fun LazyListScope.policyContent(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 16.dp, end = 16.dp, bottom = 30.dp, top = 20.dp)
+                    .padding(start = 16.dp, end = 16.dp, bottom = 20.dp, top = 20.dp)
                     .border(
                         width = 1.dp,
                         color = gray40,
@@ -124,6 +131,7 @@ fun LazyListScope.policyContent(
         }
 
         HorizontalDivider(
+            modifier = Modifier.padding(top = 10.dp, bottom = 20.dp),
             thickness = 10.dp,
             color = gray30
         )
@@ -131,7 +139,7 @@ fun LazyListScope.policyContent(
 }
 
 @Composable
-fun PolicySpecContent(modifier: Modifier = Modifier, title: String, contents: List<String>) {
+fun PolicySpecContent(modifier: Modifier = Modifier, title: String, contents: List<String>, onClickLink: (String) -> Unit = {}) {
     Column(
         modifier = modifier
             .fillMaxWidth(),
@@ -148,12 +156,49 @@ fun PolicySpecContent(modifier: Modifier = Modifier, title: String, contents: Li
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             contents.forEach {
-                Text(
-                    text = it,
-                    style = MaterialTheme.typography.displaySmall.copy(
-                        color = gray90
+                if (Patterns.WEB_URL.matcher(it).matches()) {
+                    val annotatedText = buildAnnotatedString {
+                        pushStringAnnotation(
+                            tag = "URL",
+                            annotation = it
+                        )
+                        withStyle(style = SpanStyle(color = Color.Blue, textDecoration = TextDecoration.Underline)) {
+                            append(it)
+                        }
+                        pop()
+                    }
+
+                    val layoutResult = remember { mutableStateOf<TextLayoutResult?>(null) }
+                    val gesture = Modifier.pointerInput(Unit) {
+                        detectTapGestures { pos ->
+                            layoutResult.value?.let { layoutResult ->
+                                val offset = layoutResult.getOffsetForPosition(pos)
+                                annotatedText
+                                    .getStringAnnotations(tag = "URL", start = offset, end = offset)
+                                    .firstOrNull()?.item?.let { url ->
+                                        Timber.e("url : $url")
+                                        onClickLink(url)
+                                    }
+                            }
+                        }
+                    }
+
+                    Text(
+                        text = annotatedText,
+                        modifier = modifier.then(gesture),
+                        style = MaterialTheme.typography.displaySmall,
+                        onTextLayout = { layout ->
+                            layoutResult.value = layout
+                        }
                     )
-                )
+                } else {
+                    Text(
+                        text = it,
+                        style = MaterialTheme.typography.displaySmall.copy(
+                            color = gray90
+                        )
+                    )
+                }
             }
         }
     }

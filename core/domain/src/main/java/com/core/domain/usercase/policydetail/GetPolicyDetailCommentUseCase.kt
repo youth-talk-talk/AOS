@@ -8,5 +8,5 @@ import kotlinx.coroutines.flow.Flow
 class GetPolicyDetailCommentUseCase @Inject constructor(
     private val commentRepository: CommentRepository
 ) {
-    operator fun invoke(policyId: String): Flow<CommentInfo> = commentRepository.getPolicyComment(policyId)
+    operator fun invoke(policyId: Long): Flow<CommentInfo> = commentRepository.getPolicyComment(policyId)
 }
