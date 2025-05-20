@@ -7,7 +7,7 @@ import okhttp3.RequestBody.Companion.toRequestBody
 
 @Serializable
 data class CommentRequest(
-    val policyId: String,
+    val policyId: Long,
     val content: String
 ) {
     fun toRequestBody() = Json.encodeToString(serializer(), this).toRequestBody()

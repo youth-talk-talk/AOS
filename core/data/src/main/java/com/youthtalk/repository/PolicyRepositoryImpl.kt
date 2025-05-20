@@ -4,6 +4,7 @@ import com.core.dataapi.repository.PolicyRepository
 import com.core.exception.NoDataException
 import com.youthtalk.data.PolicyService
 import com.youthtalk.dto.PolicyDetailResponse
+import com.youthtalk.dto.policy.PolicyResponse
 import com.youthtalk.mapper.toData
 import com.youthtalk.mapper.toDomain
 import com.youthtalk.model.PolicyDetail
@@ -18,7 +19,7 @@ class PolicyRepositoryImpl @Inject constructor(
     private val policyService: PolicyService
 ) : PolicyRepository {
 
-    override fun getPolicyDetail(policyId: String): Flow<PolicyDetail> = flow {
+    override fun getPolicyDetail(policyId: Long): Flow<PolicyDetail> = flow {
         runCatching {
             policyService.getPolicyDetail(policyId)
         }
@@ -44,7 +45,7 @@ class PolicyRepositoryImpl @Inject constructor(
             }
             .onFailure {
                 Timber.e("PolicyRepositoryImpl getRecentlyViewPolicies error $it")
-                throwableError<PolicyDetailResponse>(it)
+                throwableError<PolicyResponse>(it)
             }
     }
 }

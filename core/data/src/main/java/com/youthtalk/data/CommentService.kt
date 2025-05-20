@@ -13,7 +13,7 @@ import retrofit2.http.Path
 
 interface CommentService {
     @GET("/api/v1/policies/{policyId}/comments")
-    suspend fun getPolicyComment(@Path("policyId") policyId: String): CommonResponse<CommentInfoResponse>
+    suspend fun getPolicyComment(@Path("policyId") policyId: Long): CommonResponse<CommentInfoResponse>
 
     @DELETE("/api/v1/comments/{commentId}")
     suspend fun postDeleteComment(@Path("commentId") commentId: Long): CommonResponse<PostAddCommentResponse>

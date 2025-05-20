@@ -65,6 +65,7 @@ import com.youth.app.feature.community.R
 import com.youthtalk.component.comment.UserComment
 import com.youthtalk.component.dialog.ModalDialog
 import com.youthtalk.component.empty.EmptyScreen
+import com.youthtalk.component.screen.CommentModifyScreen
 import com.youthtalk.component.topbar.MiddleTitleTopBar
 import com.youthtalk.designsystem.YongProjectTheme
 import com.youthtalk.designsystem.gray100
@@ -183,49 +184,6 @@ fun CommunityDetailScreen(
     }
 }
 
-@Composable
-fun CommentModifyScreen(
-    modifier: Modifier = Modifier,
-    comment: String,
-    onPostCommentModify: () -> Unit,
-    onBack: () -> Unit,
-    onTextChange: (String) -> Unit
-) {
-    Column(
-        modifier = modifier.fillMaxSize()
-    ) {
-        MiddleTitleTopBar(
-            onBack = onBack,
-            tails = {
-                Text(
-                    modifier = Modifier.clickable(
-                        indication = null,
-                        interactionSource = remember { MutableInteractionSource() }
-                    ) {
-                        onPostCommentModify()
-                    },
-                    text = "등록",
-                    style = MaterialTheme.typography.labelSmall.copy(
-                        color = if (comment.isNotEmpty()) gray100 else gray70
-                    )
-                )
-            }
-        )
-
-        BasicTextField(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
-                .padding(horizontal = 16.dp),
-            value = comment,
-            onValueChange = onTextChange,
-            textStyle = MaterialTheme.typography.displaySmall
-        ) { innerTextField ->
-            innerTextField()
-        }
-    }
-}
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailScreen(
@@ -322,7 +280,7 @@ fun DetailScreen(
                 ) {
                     UserComment(
                         comment = state.comments.comments[it],
-                        isMine = state.user.memberId == state.postDetail.writerId,
+                        isMine = state.user.memberId == state.comments.comments[it].writerId,
                         modifier = Modifier
                             .padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
                         onDeleteComment = onDeleteComment,

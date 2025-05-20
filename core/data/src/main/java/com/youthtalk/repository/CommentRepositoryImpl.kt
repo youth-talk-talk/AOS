@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.flow
 class CommentRepositoryImpl @Inject constructor(
     private val commentService: CommentService
 ) : CommentRepository {
-    override fun getPolicyComment(policyId: String): Flow<CommentInfo> = flow {
+    override fun getPolicyComment(policyId: Long): Flow<CommentInfo> = flow {
         runCatching {
             commentService.getPolicyComment(policyId)
         }

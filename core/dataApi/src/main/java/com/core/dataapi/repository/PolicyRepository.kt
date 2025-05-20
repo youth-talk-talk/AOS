@@ -5,6 +5,6 @@ import com.youthtalk.model.policy.Policy
 import kotlinx.coroutines.flow.Flow
 
 interface PolicyRepository {
-    fun getPolicyDetail(policyId: String): Flow<PolicyDetail>
+    fun getPolicyDetail(policyId: Long): Flow<PolicyDetail>
     fun getRecentlyViewPolicies(): Flow<List<Policy>>
 }

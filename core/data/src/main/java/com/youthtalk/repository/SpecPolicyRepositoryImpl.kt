@@ -91,11 +91,12 @@ class SpecPolicyRepositoryImpl @Inject constructor(
             }
     }
 
-    override fun postScrap(id: String): Flow<String> = flow {
+    override fun postScrap(id: Long, scrap: Boolean): Flow<String> = flow {
         runCatching {
             policyService.postPolicyScrap(id)
         }
             .onSuccess { response ->
+                youthDatabase.policyDao().updatePostScrap(id, !scrap)
                 emit(response.message)
             }
             .onFailure {
@@ -103,7 +104,7 @@ class SpecPolicyRepositoryImpl @Inject constructor(
             }
     }
 
-    override fun postAddComment(policyId: String, text: String): Flow<Long> = flow {
+    override fun postAddComment(policyId: Long, text: String): Flow<Long> = flow {
         runCatching {
             policyService.postAddComment(
                 CommentRequest(policyId, text).toRequestBody()
