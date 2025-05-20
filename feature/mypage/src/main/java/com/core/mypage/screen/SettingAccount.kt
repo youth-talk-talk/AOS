@@ -90,7 +90,7 @@ fun SettingAccount(
     ) {
         MiddleTitleTopBar(
             title = stringResource(R.string.account_topbar_title),
-            onBack = {},
+            onBack = { onBackDialog = true },
             tails = {
                 Text(
                     modifier = Modifier.clickable(
@@ -122,7 +122,8 @@ fun SettingAccount(
             onChangeValue = { value ->
                 actionEvent(SettingUiEvent.OnChangeValue(value.trim()))
             },
-            onClickRegion = { bottomSheet = true }
+            onClickRegion = { bottomSheet = true },
+            onClickLogout = { logoutDialog = true }
         )
     }
 
@@ -188,7 +189,14 @@ fun SettingAccount(
 }
 
 @Composable
-private fun UserInfo(modifier: Modifier = Modifier, nickname: String, region: Region, onChangeValue: (String) -> Unit, onClickRegion: () -> Unit) {
+private fun UserInfo(
+    modifier: Modifier = Modifier,
+    nickname: String,
+    region: Region,
+    onChangeValue: (String) -> Unit,
+    onClickRegion: () -> Unit,
+    onClickLogout: () -> Unit
+) {
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -245,7 +253,7 @@ private fun UserInfo(modifier: Modifier = Modifier, nickname: String, region: Re
                             RegionDropDown(
                                 hint = stringResource(R.string.account_region_hint),
                                 select = region.toRegionName(),
-                                onSelect = { bottomSheet = true }
+                                onSelect = onClickRegion
                             )
                         }
                     }
@@ -266,7 +274,7 @@ private fun UserInfo(modifier: Modifier = Modifier, nickname: String, region: Re
                     indication = null,
                     interactionSource = remember { MutableInteractionSource() }
                 ) {
-                    logoutDialog = true
+                    onClickLogout()
                 },
             text = stringResource(R.string.logout),
             style = MaterialTheme.typography.displayMedium.copy(
