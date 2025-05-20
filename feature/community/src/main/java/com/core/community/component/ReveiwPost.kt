@@ -123,7 +123,8 @@ fun ReviewPost(
                     PostCard(
                         modifier = Modifier.padding(horizontal = 16.dp),
                         post = post,
-                        onClick = { onClickPost(post.postId) }
+                        onClick = { onClickPost(post.postId) },
+                        onClickScrap = { postId, scrap -> }
                     )
                     HorizontalDivider(
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 20.dp),

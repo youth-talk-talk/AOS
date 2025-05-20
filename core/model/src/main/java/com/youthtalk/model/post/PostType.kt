@@ -3,5 +3,6 @@ package com.youthtalk.model.post
 enum class PostType {
     COMMUNITY_TAB_REVIEW,
     COMMUNITY_TAB_FREE,
-    SEARCH
+    SEARCH,
+    MY_PAGE
 }

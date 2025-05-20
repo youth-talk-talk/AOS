@@ -104,7 +104,10 @@ fun NavHostScreen(
         )
         settingTermsNavigation()
         settingScrapPolicyNavigation()
-        settingScrapPostNavigation()
+        settingScrapPostNavigation(
+            onClickPostDetail = navController::navigateCommunityDetail,
+            onBack = navController::popBackStack
+        )
         settingCommentNavigation()
         settingNotificationNavigation()
 

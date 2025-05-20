@@ -12,6 +12,7 @@ import androidx.paging.PagingData
 import com.core.dataapi.repository.CommunityRepository
 import com.core.exception.NoDataException
 import com.youthtalk.data.CommunityService
+import com.youthtalk.datasource.post.MyPageRemoteMediator
 import com.youthtalk.datasource.post.PostRemoteMediator
 import com.youthtalk.datasource.room.YouthDatabase
 import com.youthtalk.dto.MemberId
@@ -223,5 +224,48 @@ class CommunityRepositoryImpl @Inject constructor(
             .map { post -> youthDatabase.postDao().getPost(post.postId)?.copy(postType = post.postType) ?: post }
 
         emit(Pair(syncReviews, syncFrees))
+    }
+
+    @OptIn(ExperimentalPagingApi::class)
+    override fun getSettingPosts(isScrapType: Boolean): Flow<Flow<PagingData<Post>>> = flow {
+        emit(
+            Pager(
+                config = PagingConfig(
+                    pageSize = 10,
+                    enablePlaceholders = true
+                ),
+                remoteMediator = MyPageRemoteMediator(
+                    communityService = communityService,
+                    postType = PostType.MY_PAGE,
+                    youthDatabase = youthDatabase,
+                    isScrap = isScrapType
+                )
+            ) {
+                if (isScrapType) {
+                    youthDatabase.postDao().getScrapPagingSource(postType = PostType.MY_PAGE)
+                } else {
+                    youthDatabase.postDao().getPagingSource(postType = PostType.MY_PAGE)
+                }
+            }.flow
+        )
+    }
+
+    override fun getSettingPostCount(isScrapType: Boolean): Flow<Int> = flow {
+        runCatching {
+            if (isScrapType) {
+                communityService.getScrapPosts(0, 1)
+            } else {
+                communityService.getMyPosts(0, 1)
+            }
+        }
+            .onSuccess { response ->
+                response.data?.let {
+                    emit(it.total)
+                }
+            }
+            .onFailure {
+                Timber.e("CommunityRepositoryImpl getSettingPostCount $it")
+                throwableError<Int>(it)
+            }
     }
 }

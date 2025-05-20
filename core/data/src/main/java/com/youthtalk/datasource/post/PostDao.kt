@@ -38,4 +38,7 @@ interface PostDao {
 
     @Query("DELETE FROM post WHERE postId=:postId")
     suspend fun deletePost(postId: Long)
+
+    @Query("SELECT * FROM post where postType=:postType AND scrap=1")
+    fun getScrapPagingSource(postType: PostType): PagingSource<Int, Post>
 }

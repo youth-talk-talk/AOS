@@ -21,4 +21,6 @@ interface CommunityRepository {
     fun deletePost(postId: Long): Flow<Long>
     fun postPostScrap(postId: Long, scrap: Boolean): Flow<Long>
     fun syncPostScrap(reviews: List<Post>, frees: List<Post>): Flow<Pair<List<Post>, List<Post>>>
+    fun getSettingPosts(isScrapType: Boolean): Flow<Flow<PagingData<Post>>>
+    fun getSettingPostCount(isScrapType: Boolean): Flow<Int>
 }
