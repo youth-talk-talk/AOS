@@ -13,6 +13,7 @@ data class HomeUiState(
     val user: User = User(
         memberId = 0,
         nickname = "",
+        profileImgUrl = null,
         region = Region.ALL
     ),
     val homeData: HomeData = HomeData(

@@ -8,8 +8,8 @@ import com.core.community.screen.write.CommunityWriteScreen
 import com.core.navigation.navigator.CommunityWrite
 import com.youthtalk.model.post.PostSubject
 
-fun NavController.navigateCommunityWrite(communityType: PostSubject, navOptions: NavOptions? = null) {
-    navigate(CommunityWrite(communityType), navOptions)
+fun NavController.navigateCommunityWrite(communityType: PostSubject, postId: Long? = null, navOptions: NavOptions? = null) {
+    navigate(CommunityWrite(postId, communityType), navOptions)
 }
 
 fun NavGraphBuilder.communityWriteNavigation(checkPermission: (String) -> Boolean, onBack: () -> Unit, onCreate: (PostSubject) -> Unit) {

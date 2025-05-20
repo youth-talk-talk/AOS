@@ -8,6 +8,7 @@ import com.youthtalk.model.PostContentInfo
 import com.youthtalk.model.PostDetail
 import com.youthtalk.model.post.CreatePost
 import com.youthtalk.model.post.PostContent
+import java.time.LocalDateTime
 
 fun PostDetailResponse.toData() = PostDetail(
     postId = postId,
@@ -19,8 +20,9 @@ fun PostDetailResponse.toData() = PostDetail(
     writerId = writerId,
     nickname = nickname,
     view = view,
-    images = images,
+    profileImage = profileImage,
     category = category,
+    updatedAt = LocalDateTime.parse(updatedAt.replace(" ", "T")),
     scrap = scrap
 )
 

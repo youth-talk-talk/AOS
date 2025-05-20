@@ -1,5 +1,8 @@
 package com.youthtalk.model
 
+import com.youthtalk.model.typeenum.Category
+import java.time.LocalDateTime
+
 data class PostDetail(
     val postId: Long,
     val postType: String,
@@ -10,8 +13,9 @@ data class PostDetail(
     val writerId: Long,
     val nickname: String?,
     val view: Long,
-    val images: List<String>,
-    val category: String?,
+    val profileImage: String?,
+    val category: Category?,
+    val updatedAt: LocalDateTime,
     val scrap: Boolean
 )
 

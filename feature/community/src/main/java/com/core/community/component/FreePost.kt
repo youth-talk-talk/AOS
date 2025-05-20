@@ -91,7 +91,7 @@ fun FreePost(
         if (frees.loadState.refresh is LoadState.NotLoading) {
             items(
                 count = frees.itemCount,
-                key = frees.itemKey()
+                key = frees.itemKey { it.postId }
             ) {
                 frees[it]?.let { post ->
                     PostCard(

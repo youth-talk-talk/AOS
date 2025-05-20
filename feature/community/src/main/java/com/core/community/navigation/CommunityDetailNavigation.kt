@@ -6,13 +6,22 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.core.community.screen.detail.CommunityDetailScreen
 import com.core.navigation.navigator.CommunityDetail
+import com.youthtalk.model.post.PostSubject
 
 fun NavController.navigateCommunityDetail(postId: Long, navOptions: NavOptions? = null) {
     navigate(CommunityDetail(postId), navOptions)
 }
 
-fun NavGraphBuilder.communityDetailNavigation() {
+fun NavGraphBuilder.communityDetailNavigation(
+    showSnackBar: (String) -> Unit,
+    onBack: () -> Unit,
+    onModifyWriteCommunity: (PostSubject, Long) -> Unit
+) {
     composable<CommunityDetail> {
-        CommunityDetailScreen()
+        CommunityDetailScreen(
+            showSnackBar = showSnackBar,
+            onBack = onBack,
+            onModifyWriteCommunity = onModifyWriteCommunity
+        )
     }
 }

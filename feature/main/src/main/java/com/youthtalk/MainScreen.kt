@@ -47,7 +47,7 @@ import com.youth.search.navigation.policySearchNavigation
 import com.youthtalk.designsystem.YongProjectTheme
 
 @Composable
-fun MainScreen(modifier: Modifier = Modifier, goLogin: () -> Unit, checkPermission: (String) -> Boolean) {
+fun MainScreen(modifier: Modifier = Modifier, goLogin: () -> Unit, checkPermission: (String) -> Boolean, showSnackBar: (String) -> Unit) {
     val navHostController = rememberNavController()
     val homeNavHostController = rememberNavController()
     val homeLazyListScrollState = rememberLazyListState()
@@ -58,7 +58,8 @@ fun MainScreen(modifier: Modifier = Modifier, goLogin: () -> Unit, checkPermissi
             homeNavController = homeNavHostController,
             homeLazyListScrollState = homeLazyListScrollState,
             goLogin = goLogin,
-            checkPermission = checkPermission
+            checkPermission = checkPermission,
+            showSnackBar = showSnackBar
         )
     }
 }
@@ -69,7 +70,8 @@ fun NavHostScreen(
     homeNavController: NavHostController,
     homeLazyListScrollState: LazyListState,
     goLogin: () -> Unit,
-    checkPermission: (String) -> Boolean
+    checkPermission: (String) -> Boolean,
+    showSnackBar: (String) -> Unit
 ) {
     NavHost(
         navController = navController,
@@ -126,7 +128,13 @@ fun NavHostScreen(
             onClickPolicyDetail = navController::navigatePolicyDetail
         )
 
-        communityDetailNavigation()
+        communityDetailNavigation(
+            showSnackBar = showSnackBar,
+            onBack = navController::popBackStack,
+            onModifyWriteCommunity = { postType, postId ->
+                navController.navigateCommunityWrite(postType, postId)
+            }
+        )
         communityWriteNavigation(
             checkPermission = checkPermission,
             onBack = { navController.popBackStack() },
@@ -151,7 +159,8 @@ private fun MainScreenPreview() {
     YongProjectTheme {
         MainScreen(
             goLogin = {},
-            checkPermission = { false }
+            checkPermission = { false },
+            showSnackBar = {}
         )
     }
 }

@@ -1,4 +1,4 @@
-package com.youthtalk.dto
+package com.youthtalk.dto.comment
 
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
