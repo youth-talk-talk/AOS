@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.core.base.BaseViewModel
 import com.core.domain.usercase.GetImageListUseCase
 import com.core.domain.usercase.GetUserUseCase
-import com.core.domain.usercase.PostUploadImageUseCase
+import com.core.domain.usercase.user.PostUserImageUseCase
 import com.core.domain.usercase.user.PostUserLogoutUseCase
 import com.core.domain.usercase.user.PostUserUseCase
 import com.core.mypage.model.setting.SettingType
@@ -17,7 +17,7 @@ import java.io.File
 import javax.inject.Inject
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -25,7 +25,7 @@ import timber.log.Timber
 class SettingViewModel @Inject constructor(
     private val getImageListUseCase: GetImageListUseCase,
     private val postUserUseCase: PostUserUseCase,
-    private val postUploadImageUseCase: PostUploadImageUseCase,
+    private val postUserImageUseCase: PostUserImageUseCase,
     private val getUserUseCase: GetUserUseCase,
     private val postUserLogoutUseCase: PostUserLogoutUseCase
 ) : BaseViewModel<SettingUiState, SettingUiEvent, SettingUiEffect>(
@@ -52,53 +52,62 @@ class SettingViewModel @Inject constructor(
             }
 
             is SettingUiEvent.PostLogout -> postLogout(event.deleteUser)
-            is SettingUiEvent.PostUploadImages -> uploadImage(event.file)
+            is SettingUiEvent.SelectImageUrl -> setState {
+                copy(
+                    accountUser = accountUser.copy(profileImgUrl = event.imageUrl),
+                    settingInfoType = SettingType.ACCOUNT
+                )
+            }
+
             is SettingUiEvent.OnChangeValue -> setState { copy(accountUser = accountUser.copy(nickname = event.nickname)) }
             is SettingUiEvent.OnChangeRegion -> setState { copy(accountUser = accountUser.copy(region = event.region)) }
-            is SettingUiEvent.OnSaveUser -> saveUser()
+            is SettingUiEvent.OnSaveUser -> saveUser(file = event.file)
         }
     }
 
-    private fun saveUser() {
+    private fun saveUser(file: File?) {
         if (state.value.user == state.value.accountUser) {
             setState { copy(settingInfoType = SettingType.MAIN) }
         } else {
             viewModelScope.launch {
-                Timber.e("saveUser profileImage : ${state.value.accountUser.profileImgUrl}")
-                postUserUseCase(state.value.accountUser.nickname, state.value.accountUser.region, state.value.accountUser.profileImgUrl)
-                    .catch {
-                        Timber.e("SettingViewModel saveUser error $it")
+                if (state.value.user.profileImgUrl != state.value.accountUser.profileImgUrl) {
+                    Timber.e("saveUser profileImage : ${state.value.accountUser.profileImgUrl}")
+                    combine(
+                        postUserImageUseCase(file),
+                        postUserUseCase(state.value.accountUser.nickname, state.value.accountUser.region)
+                    ) { url, user ->
+                        Pair(url, user)
                     }
-                    .collectLatest { user ->
-                        Timber.e("SettingViewModel saveUser success $user")
-                        setState {
-                            copy(user = user, settingInfoType = SettingType.MAIN)
+                        .catch {
+                            Timber.e("SettingViewModel saveUser error $it")
                         }
-                    }
+                        .collectLatest { (url, user) ->
+                            Timber.e("SettingViewModel saveUser success $user")
+                            setState {
+                                copy(
+                                    user = user.copy(
+                                        profileImgUrl = file?.let { url }
+                                    ),
+                                    settingInfoType = SettingType.MAIN
+                                )
+                            }
+                        }
+                } else {
+                    postUserUseCase(state.value.accountUser.nickname, state.value.accountUser.region)
+                        .catch {
+                            Timber.e("SettingViewModel saveUser error $it")
+                        }
+                        .collectLatest { user ->
+                            Timber.e("SettingViewModel saveUser success $user")
+                            setState {
+                                copy(
+                                    user = user,
+                                    settingInfoType = SettingType.MAIN
+                                )
+                            }
+                        }
+                }
             }
-        }
-    }
-
-    private fun uploadImage(file: File) {
-        viewModelScope.launch {
-            postUploadImageUseCase(file)
-                .onStart {
-                    setState {
-                        copy(uploadLoading = true, settingInfoType = SettingType.ACCOUNT)
-                    }
-                }
-                .catch {
-                    Timber.e("SettingViewModel uploadImage error $it")
-                }
-                .collectLatest { image ->
-                    Timber.e("SettingViewModel uploadImage success $image")
-                    setState {
-                        copy(
-                            uploadLoading = false,
-                            accountUser = accountUser.copy(profileImgUrl = image)
-                        )
-                    }
-                }
         }
     }
 

@@ -30,6 +30,7 @@ import com.youthtalk.component.dialog.ModalDialog
 import com.youthtalk.component.picture.PictureScreen
 import com.youthtalk.designsystem.YongProjectTheme
 import com.youthtalk.model.post.PostSubject
+import com.youthtalk.util.FileConverter
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 
@@ -169,7 +170,11 @@ fun CommunityWriteScreen(
             PictureScreen(
                 images = state.images,
                 onBack = { navController.popBackStack() },
-                onSelectImage = { viewModel.setEvent(CommunityWriteUiEvent.PostUploadImages(it)) }
+                onSelectImage = { uri ->
+                    FileConverter.uriToFile(context, uri)?.let {
+                        viewModel.setEvent(CommunityWriteUiEvent.PostUploadImages(it))
+                    }
+                }
             )
         }
     }

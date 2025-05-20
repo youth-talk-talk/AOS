@@ -182,7 +182,9 @@ fun SettingScreen(
             SettingType.IMAGE -> PictureScreen(
                 images = state.images,
                 onBack = { viewModel.setEvent(SettingUiEvent.ChangeSettingType(SettingType.ACCOUNT)) },
-                onSelectImage = { file -> viewModel.setEvent(SettingUiEvent.PostUploadImages(file)) }
+                onSelectImage = { uri ->
+                    viewModel.setEvent(SettingUiEvent.SelectImageUrl(uri.toString()))
+                }
             )
         }
     }

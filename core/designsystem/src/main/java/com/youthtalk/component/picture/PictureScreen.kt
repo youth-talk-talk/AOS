@@ -41,12 +41,11 @@ import com.youthtalk.designsystem.gray30
 import com.youthtalk.designsystem.gray40
 import com.youthtalk.designsystem.gray80
 import com.youthtalk.model.Image
-import com.youthtalk.util.FileConverter
 import java.io.File
 import timber.log.Timber
 
 @Composable
-fun PictureScreen(modifier: Modifier = Modifier, images: List<Image>, onBack: () -> Unit, onSelectImage: (File) -> Unit) {
+fun PictureScreen(modifier: Modifier = Modifier, images: List<Image>, onBack: () -> Unit, onSelectImage: (Uri) -> Unit) {
     var selected by remember {
         mutableStateOf<Image?>(null)
     }
@@ -59,9 +58,7 @@ fun PictureScreen(modifier: Modifier = Modifier, images: List<Image>, onBack: ()
         if (success && photoUri != null) {
             Timber.e("CameraCapture 사진 URI: $photoUri")
             photoUri?.let { uri ->
-                FileConverter.uriToFile(context, uri)?.let { file ->
-                    onSelectImage(file)
-                }
+                onSelectImage(uri)
             }
         }
     }
@@ -100,9 +97,8 @@ fun PictureScreen(modifier: Modifier = Modifier, images: List<Image>, onBack: ()
                         interactionSource = remember { MutableInteractionSource() }
                     ) {
                         selected?.let { img ->
-                            FileConverter.uriToFile(context, img.uri.toUri())?.let { file ->
-                                onSelectImage(file)
-                            }
+                            Timber.e("사진 URI: ${img.uri}")
+                            onSelectImage(img.uri.toUri())
                         }
                     },
                 text = "첨부",

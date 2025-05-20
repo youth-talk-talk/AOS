@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import android.os.Environment
 import java.io.File
+import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
@@ -11,12 +12,18 @@ import timber.log.Timber
 
 object FileConverter {
     fun uriToFile(context: Context, uri: Uri): File? {
-        val inputStream: InputStream? = context.contentResolver.openInputStream(uri)
-        inputStream?.let {
-            val file = createTempImageFile(context)
-            copyInputStreamToFile(it, file)
-            return file
+        try {
+            val inputStream: InputStream? = context.contentResolver.openInputStream(uri)
+            inputStream?.let {
+                val file = createTempImageFile(context)
+                copyInputStreamToFile(it, file)
+                return file
+            }
+        } catch (e: FileNotFoundException) {
+            Timber.e("파일 찾기 실패 $uri")
+            return null
         }
+
         return null
     }
 
