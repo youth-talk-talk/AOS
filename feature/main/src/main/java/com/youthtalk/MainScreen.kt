@@ -134,7 +134,10 @@ fun NavHostScreen(
             onBack = navController::popBackStack,
             onClickPolicyDetail = navController::navigatePolicyDetail
         )
-        recentlyViewPolicyNavigation()
+        recentlyViewPolicyNavigation(
+            onBack = navController::popBackStack,
+            onClickPolicyDetail = navController::navigatePolicyDetail
+        )
         deadlinePolicyNavigation(
             onBack = navController::popBackStack,
             onClickPolicyDetail = navController::navigatePolicyDetail

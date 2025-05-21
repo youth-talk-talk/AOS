@@ -25,6 +25,7 @@ import com.youthtalk.utils.ErrorUtils.throwableError
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import timber.log.Timber
 
 class SpecPolicyRepositoryImpl @Inject constructor(
     private val policyService: PolicyService,
@@ -150,5 +151,18 @@ class SpecPolicyRepositoryImpl @Inject constructor(
                 youthDatabase.policyDao().getScrapPagingSource(policyType = PolicyType.SCRAP)
             }.flow
         )
+    }
+
+    override fun deleteAllRecentlyViewPolicies(): Flow<String> = flow {
+        runCatching {
+            policyService.deleteAllRecentlyViewPolicies()
+        }
+            .onSuccess { response ->
+                emit(response.data ?: response.message)
+            }
+            .onFailure {
+                Timber.e("deleteAll error $it")
+                throwableError<String>(it)
+            }
     }
 }

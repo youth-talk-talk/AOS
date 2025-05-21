@@ -12,4 +12,6 @@ sealed interface PolicyUiEvent : UiEvent {
     data class SelectedDay(val selectedDay: LocalDate) : PolicyUiEvent
     data class SelectCategory(val category: Category, val sortType: SortType) : PolicyUiEvent
     data class PostRegion(val user: User, val region: Region) : PolicyUiEvent
+    data class PostScrapPolicy(val policyId: Long, val scrap: Boolean) : PolicyUiEvent
+    data object Refresh : PolicyUiEvent
 }

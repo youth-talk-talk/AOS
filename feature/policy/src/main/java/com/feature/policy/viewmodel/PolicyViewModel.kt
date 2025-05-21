@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import com.core.base.BaseViewModel
 import com.core.domain.usercase.GetUserUseCase
+import com.core.domain.usercase.PostPolicyScrapUseCase
 import com.core.domain.usercase.policy.GetRecentlyViewPolicesUseCase
 import com.core.domain.usercase.specpolicy.GetPolicyCountUseCase
 import com.core.domain.usercase.specpolicy.PostSpecPoliciesUseCase
@@ -34,7 +35,8 @@ class PolicyViewModel @Inject constructor(
     private val postSpecPoliciesUseCase: PostSpecPoliciesUseCase,
     private val getPolicyCountUseCase: GetPolicyCountUseCase,
     private val getUserUseCase: GetUserUseCase,
-    private val postUserUseCase: PostUserUseCase
+    private val postUserUseCase: PostUserUseCase,
+    private val postPolicyScrapUseCase: PostPolicyScrapUseCase
 ) : BaseViewModel<PolicyUiState, PolicyUiEvent, PolicyUiEffect>(
     initialState = PolicyUiState.initState
 ) {
@@ -50,6 +52,43 @@ class PolicyViewModel @Inject constructor(
             is PolicyUiEvent.SelectedDay -> changeSelectedDay(event.selectedDay)
             is PolicyUiEvent.SelectCategory -> changeCategoryPolicies(event.category, event.sortType)
             is PolicyUiEvent.PostRegion -> postUser(event.user, event.region)
+            is PolicyUiEvent.Refresh -> refresh()
+            is PolicyUiEvent.PostScrapPolicy -> postPolicyScrap(event.policyId, event.scrap)
+        }
+    }
+
+    private fun postPolicyScrap(policyId: Long, scrap: Boolean) {
+        viewModelScope.launch {
+            postPolicyScrapUseCase(policyId, scrap)
+                .catch {
+                    Timber.e("PolicyViewModel postPolicyScrap error $it")
+                }
+                .collectLatest {
+                    Timber.e("PolicyViewModel postPolicyScrap success $it")
+                    setState {
+                        copy(
+                            recentlyPolicies = recentlyPolicies
+                                .map {
+                                        policy ->
+                                    if (policy.policyId == policyId) policy.copy(scrap = !scrap) else policy
+                                }
+                        )
+                    }
+                }
+        }
+    }
+
+    private fun refresh() {
+        viewModelScope.launch {
+            getRecentlyViewPolicesUseCase()
+                .catch {
+                    Timber.e("PolicyViewModel refresh error $it")
+                }
+                .collectLatest { policies ->
+                    setState {
+                        copy(recentlyPolicies = policies)
+                    }
+                }
         }
     }
 
@@ -57,7 +96,7 @@ class PolicyViewModel @Inject constructor(
         viewModelScope.launch {
             postUserUseCase(user.nickname, region)
                 .catch {
-                    Timber.e("HomeViewModel postUser error $it")
+                    Timber.e("PolicyViewModel postUser error $it")
                 }
                 .collectLatest {
                     setState { copy(user = it) }
