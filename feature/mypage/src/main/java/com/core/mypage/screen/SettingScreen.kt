@@ -37,6 +37,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.core.mypage.component.ProfileCard
@@ -202,6 +203,7 @@ fun SettingMain(
     onClickSettingComment: (CommentType) -> Unit,
     onClickSettingNotification: () -> Unit
 ) {
+    val context = LocalContext.current
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -266,7 +268,10 @@ fun SettingMain(
             onClick = {
                 when (it) {
                     is ManageModel.Policy -> onClickTerms()
-                    is ManageModel.Inquire -> {}
+                    is ManageModel.Inquire -> {
+                        val intent = Intent(Intent.ACTION_VIEW, "https://forms.gle/GuK3MUu6Hqzfv5mR9".toUri())
+                        context.startActivity(intent)
+                    }
                     is ManageModel.Etc -> onClickEtc()
                 }
             }
