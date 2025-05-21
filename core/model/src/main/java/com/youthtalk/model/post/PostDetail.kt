@@ -1,4 +1,4 @@
-package com.youthtalk.model
+package com.youthtalk.model.post
 
 import com.youthtalk.model.typeenum.Category
 import java.time.LocalDateTime

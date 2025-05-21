@@ -2,7 +2,7 @@ package com.youthtalk.data
 
 import com.youthtalk.dto.CommonResponse
 import com.youthtalk.dto.UserResponse
-import com.youthtalk.dto.comment.CommentResponse
+import com.youthtalk.dto.comment.SettingCommentInfoResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.Body
@@ -18,10 +18,10 @@ interface UserService {
     suspend fun getUser(): CommonResponse<UserResponse>
 
     @GET("/api/v1/members/me/comments/likes")
-    suspend fun getLikeComments(): CommonResponse<List<CommentResponse>>
+    suspend fun getLikeComments(): CommonResponse<SettingCommentInfoResponse>
 
     @GET("/api/v1/members/me/comments")
-    suspend fun getMyComments(): CommonResponse<List<CommentResponse>>
+    suspend fun getMyComments(): CommonResponse<SettingCommentInfoResponse>
 
     @PATCH("/api/v1/members/me")
     suspend fun postUser(@Body requestBody: RequestBody): CommonResponse<UserResponse>

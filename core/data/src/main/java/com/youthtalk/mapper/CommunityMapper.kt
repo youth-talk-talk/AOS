@@ -4,10 +4,10 @@ import com.youthtalk.dto.community.PostContentInfoResponse
 import com.youthtalk.dto.community.PostContentRequest
 import com.youthtalk.dto.community.PostCreatePostRequest
 import com.youthtalk.dto.community.PostDetailResponse
-import com.youthtalk.model.PostContentInfo
-import com.youthtalk.model.PostDetail
 import com.youthtalk.model.post.CreatePost
 import com.youthtalk.model.post.PostContent
+import com.youthtalk.model.post.PostContentInfo
+import com.youthtalk.model.post.PostDetail
 import java.time.LocalDateTime
 
 fun PostDetailResponse.toData() = PostDetail(

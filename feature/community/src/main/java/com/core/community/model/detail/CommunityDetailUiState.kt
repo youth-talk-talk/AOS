@@ -1,9 +1,9 @@
 package com.core.community.model.detail
 
 import com.core.base.model.UiState
-import com.youthtalk.model.CommentInfo
-import com.youthtalk.model.PostDetail
 import com.youthtalk.model.User
+import com.youthtalk.model.comment.CommentInfo
+import com.youthtalk.model.post.PostDetail
 import com.youthtalk.model.typeenum.Category
 import com.youthtalk.model.typeenum.Region
 import java.time.LocalDateTime

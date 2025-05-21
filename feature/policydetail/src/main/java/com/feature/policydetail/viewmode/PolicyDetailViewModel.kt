@@ -14,7 +14,7 @@ import com.feature.policydetail.model.PolicyDetailType
 import com.feature.policydetail.model.PolicyDetailUiEffect
 import com.feature.policydetail.model.PolicyDetailUiEvent
 import com.feature.policydetail.model.PolicyDetailUiState
-import com.youthtalk.model.Comment
+import com.youthtalk.model.comment.Comment
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.LocalDateTime
 import javax.inject.Inject

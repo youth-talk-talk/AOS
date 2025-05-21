@@ -6,10 +6,10 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -24,6 +24,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -36,7 +37,7 @@ import com.youthtalk.designsystem.gray40
 import com.youthtalk.designsystem.gray70
 import com.youthtalk.designsystem.gray80
 import com.youthtalk.designsystem.gray90
-import com.youthtalk.model.Comment
+import com.youthtalk.model.comment.Comment
 import com.youthtalk.util.getTime
 import java.time.LocalDateTime
 import kotlinx.coroutines.launch
@@ -74,11 +75,15 @@ fun UserComment(
         comment.profileImg?.let { url ->
             AsyncImage(
                 modifier = Modifier
-                    .fillMaxSize(),
+                    .size(32.dp)
+                    .clip(CircleShape),
                 model = url,
                 contentDescription = null
             )
         } ?: Image(
+            modifier = Modifier
+                .size(32.dp)
+                .clip(CircleShape),
             painter = painterResource(R.drawable.profile_thumnail),
             contentDescription = "이미지"
         )

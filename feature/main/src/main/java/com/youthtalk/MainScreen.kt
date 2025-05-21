@@ -108,7 +108,12 @@ fun NavHostScreen(
             onClickPostDetail = navController::navigateCommunityDetail,
             onBack = navController::popBackStack
         )
-        settingCommentNavigation()
+        settingCommentNavigation(
+            onBack = navController::popBackStack,
+            showSnackBar = showSnackBar,
+            onClickPostDetail = navController::navigateCommunityDetail,
+            onClickPolicyDetail = navController::navigatePolicyDetail
+        )
         settingNotificationNavigation()
 
         policySearchNavigation(

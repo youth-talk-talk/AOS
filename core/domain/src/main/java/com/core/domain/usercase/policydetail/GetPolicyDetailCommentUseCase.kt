@@ -1,7 +1,7 @@
 package com.core.domain.usercase.policydetail
 
 import com.core.dataapi.repository.CommentRepository
-import com.youthtalk.model.CommentInfo
+import com.youthtalk.model.comment.CommentInfo
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 

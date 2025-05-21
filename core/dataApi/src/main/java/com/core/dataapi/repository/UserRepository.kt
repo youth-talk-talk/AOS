@@ -1,6 +1,7 @@
 package com.core.dataapi.repository
 
 import com.youthtalk.model.User
+import com.youthtalk.model.comment.SettingCommentInfo
 import com.youthtalk.model.typeenum.Category
 import com.youthtalk.model.typeenum.Region
 import java.io.File
@@ -13,6 +14,8 @@ interface UserRepository {
     fun getCategoryList(): Flow<List<Category>>
     fun getReviewCategoryList(): Flow<List<Category>>
     fun postUserImage(file: File?): Flow<String>
+
+    fun getLikeComments(isLike: Boolean): Flow<SettingCommentInfo>
 
     suspend fun setCategoryList(categories: List<Category>)
     suspend fun setReviewCategoryList(categories: List<Category>)

@@ -5,8 +5,10 @@ import com.core.datastore.datasource.DataStoreDataSource
 import com.youthtalk.data.UserService
 import com.youthtalk.dto.UserRequest
 import com.youthtalk.dto.UserResponse
+import com.youthtalk.dto.comment.SettingCommentInfoResponse
 import com.youthtalk.mapper.toData
 import com.youthtalk.model.User
+import com.youthtalk.model.comment.SettingCommentInfo
 import com.youthtalk.model.typeenum.Category
 import com.youthtalk.model.typeenum.Region
 import com.youthtalk.utils.ErrorUtils.throwableError
@@ -17,6 +19,7 @@ import kotlinx.coroutines.flow.flow
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
+import timber.log.Timber
 
 class UserRepositoryImpl @Inject constructor(
     private val userService: UserService,
@@ -99,6 +102,25 @@ class UserRepositoryImpl @Inject constructor(
             }
             .onFailure {
                 throwableError<String>(it)
+            }
+    }
+
+    override fun getLikeComments(isLike: Boolean): Flow<SettingCommentInfo> = flow {
+        runCatching {
+            if (isLike) {
+                userService.getLikeComments()
+            } else {
+                userService.getMyComments()
+            }
+        }
+            .onSuccess { response ->
+                response.data?.let { commentInfoResponse ->
+                    emit(commentInfoResponse.toData())
+                } ?: emit(SettingCommentInfo(0, listOf()))
+            }
+            .onFailure {
+                Timber.e("getLikeComments error $it")
+                throwableError<SettingCommentInfoResponse>(it)
             }
     }
 }

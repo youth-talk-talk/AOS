@@ -2,9 +2,9 @@ package com.core.dataapi.repository
 
 import androidx.paging.PagingData
 import com.youthtalk.model.Image
-import com.youthtalk.model.PostDetail
 import com.youthtalk.model.post.CreatePost
 import com.youthtalk.model.post.Post
+import com.youthtalk.model.post.PostDetail
 import com.youthtalk.model.post.PostSubject
 import com.youthtalk.model.post.PostType
 import com.youthtalk.model.typeenum.Category

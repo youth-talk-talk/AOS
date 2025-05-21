@@ -1,4 +1,4 @@
-package com.youthtalk.model
+package com.youthtalk.model.comment
 
 import java.time.LocalDateTime
 

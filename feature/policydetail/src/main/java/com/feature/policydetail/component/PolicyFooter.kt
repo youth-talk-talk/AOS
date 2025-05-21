@@ -12,9 +12,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.youthtalk.component.comment.UserComment
 import com.youthtalk.component.empty.EmptyScreen
-import com.youthtalk.model.Comment
-import com.youthtalk.model.CommentInfo
 import com.youthtalk.model.User
+import com.youthtalk.model.comment.Comment
+import com.youthtalk.model.comment.CommentInfo
 
 fun LazyListScope.policyFooter(commentInfo: CommentInfo, user: User, onPostModifyComment: (Comment) -> Unit, onDeleteComment: (Comment) -> Unit) {
     item {

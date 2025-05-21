@@ -19,9 +19,9 @@ import com.youthtalk.dto.MemberId
 import com.youthtalk.mapper.toData
 import com.youthtalk.mapper.toDomain
 import com.youthtalk.model.Image
-import com.youthtalk.model.PostDetail
 import com.youthtalk.model.post.CreatePost
 import com.youthtalk.model.post.Post
+import com.youthtalk.model.post.PostDetail
 import com.youthtalk.model.post.PostSubject
 import com.youthtalk.model.post.PostType
 import com.youthtalk.model.typeenum.Category
