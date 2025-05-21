@@ -1,9 +1,9 @@
 package com.feature.policydetail.model
 
 import com.core.base.model.UiState
-import com.youthtalk.model.CommentInfo
-import com.youthtalk.model.PolicyDetail
 import com.youthtalk.model.User
+import com.youthtalk.model.comment.CommentInfo
+import com.youthtalk.model.policy.PolicyDetail
 import com.youthtalk.model.typeenum.Category
 import com.youthtalk.model.typeenum.Region
 

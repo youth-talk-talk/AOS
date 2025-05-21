@@ -74,8 +74,8 @@ import com.youthtalk.designsystem.gray40
 import com.youthtalk.designsystem.gray70
 import com.youthtalk.designsystem.gray80
 import com.youthtalk.designsystem.gray90
-import com.youthtalk.model.Comment
-import com.youthtalk.model.PostDetail
+import com.youthtalk.model.comment.Comment
+import com.youthtalk.model.post.PostDetail
 import com.youthtalk.model.post.PostSubject
 import com.youthtalk.util.getTime
 import kotlinx.coroutines.flow.collectLatest

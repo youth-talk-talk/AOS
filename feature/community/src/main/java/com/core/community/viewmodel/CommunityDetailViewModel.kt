@@ -15,7 +15,7 @@ import com.core.domain.usercase.post.DeletePostUseCase
 import com.core.domain.usercase.post.GetPostDetailCommentsUseCase
 import com.core.domain.usercase.post.GetPostDetailUseCase
 import com.core.domain.usercase.post.PostPostScrapUseCase
-import com.youthtalk.model.Comment
+import com.youthtalk.model.comment.Comment
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.LocalDateTime
 import javax.inject.Inject

@@ -57,7 +57,8 @@ fun CommunitySearchResultScreen(modifier: Modifier = Modifier, communityType: Po
                         PostCard(
                             modifier = Modifier.padding(horizontal = 16.dp),
                             post = post,
-                            onClick = {}
+                            onClick = {},
+                            onClickScrap = { postId, scrap -> }
                         )
 
                         HorizontalDivider(

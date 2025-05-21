@@ -38,7 +38,7 @@ import com.feature.policydetail.screen.isMeasure
 import com.youthtalk.designsystem.gray30
 import com.youthtalk.designsystem.gray40
 import com.youthtalk.designsystem.gray90
-import com.youthtalk.model.PolicyDetail
+import com.youthtalk.model.policy.PolicyDetail
 import timber.log.Timber
 
 fun LazyListScope.policyContent(

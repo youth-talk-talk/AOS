@@ -1,7 +1,7 @@
 package com.core.domain.usercase.policydetail
 
 import com.core.dataapi.repository.PolicyRepository
-import com.youthtalk.model.PolicyDetail
+import com.youthtalk.model.policy.PolicyDetail
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 

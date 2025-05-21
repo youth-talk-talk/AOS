@@ -96,15 +96,27 @@ fun NavHostScreen(
             onClickPostDetail = navController::navigateCommunityDetail,
             onClickPolicyDetail = navController::navigatePolicyDetail,
             onClickCommunityWrite = navController::navigateCommunityWrite,
-            goLogin = goLogin
+            goLogin = goLogin,
+            checkPermission = checkPermission
         )
         settingEtcNavigation(
             goLogin = goLogin
         )
         settingTermsNavigation()
-        settingScrapPolicyNavigation()
-        settingScrapPostNavigation()
-        settingCommentNavigation()
+        settingScrapPolicyNavigation(
+            onBack = navController::popBackStack,
+            onClickPolicyDetail = navController::navigatePolicyDetail
+        )
+        settingScrapPostNavigation(
+            onClickPostDetail = navController::navigateCommunityDetail,
+            onBack = navController::popBackStack
+        )
+        settingCommentNavigation(
+            onBack = navController::popBackStack,
+            showSnackBar = showSnackBar,
+            onClickPostDetail = navController::navigateCommunityDetail,
+            onClickPolicyDetail = navController::navigatePolicyDetail
+        )
         settingNotificationNavigation()
 
         policySearchNavigation(

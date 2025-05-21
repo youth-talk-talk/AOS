@@ -35,7 +35,7 @@ import com.youthtalk.designsystem.gray30
 import com.youthtalk.designsystem.gray40
 import com.youthtalk.designsystem.gray80
 import com.youthtalk.designsystem.gray90
-import com.youthtalk.model.PolicyDetail
+import com.youthtalk.model.policy.PolicyDetail
 import com.youthtalk.model.typeenum.Category
 import com.youthtalk.model.typeenum.Region
 

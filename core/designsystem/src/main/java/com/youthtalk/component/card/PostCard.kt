@@ -16,6 +16,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,10 +36,20 @@ import com.youthtalk.designsystem.gray90
 import com.youthtalk.model.post.Post
 import com.youthtalk.model.post.PostType
 import com.youthtalk.model.typeenum.Category
+import com.youthtalk.util.getTime
 import java.time.LocalDateTime
 
 @Composable
-fun PostCard(modifier: Modifier = Modifier, post: Post, isVisiblePolicyTitle: Boolean = false, onClick: () -> Unit) {
+fun PostCard(
+    modifier: Modifier = Modifier,
+    post: Post,
+    isVisiblePolicyTitle: Boolean = false,
+    onClick: () -> Unit,
+    onClickScrap: (Long, Boolean) -> Unit
+) {
+    val dateTime by remember {
+        mutableStateOf(post.createdAt.getTime())
+    }
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -133,7 +145,14 @@ fun PostCard(modifier: Modifier = Modifier, post: Post, isVisiblePolicyTitle: Bo
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
-                        modifier = Modifier.size(16.dp),
+                        modifier = Modifier
+                            .size(16.dp)
+                            .clickable(
+                                indication = null,
+                                interactionSource = remember { MutableInteractionSource() }
+                            ) {
+                                onClickScrap(post.postId, post.scrap)
+                            },
                         painter = painterResource(if (post.scrap) R.drawable.bookmark_fill else R.drawable.bookmark_line),
                         contentDescription = stringResource(R.string.bookmark),
                         tint = if (post.scrap) MaterialTheme.colorScheme.primary else gray80
@@ -149,7 +168,7 @@ fun PostCard(modifier: Modifier = Modifier, post: Post, isVisiblePolicyTitle: Bo
             }
 
             Text(
-                text = "Date",
+                text = dateTime,
                 style = MaterialTheme.typography.labelSmall.copy(
                     color = gray80
                 )
@@ -177,7 +196,8 @@ private fun PostCardPreview() {
                 createdAt = LocalDateTime.now(),
                 postType = PostType.COMMUNITY_TAB_FREE
             ),
-            onClick = {}
+            onClick = {},
+            onClickScrap = { _, _ -> }
         )
     }
 }
@@ -201,7 +221,8 @@ private fun PostCardWithTagPreview() {
                 category = Category.JOB,
                 postType = PostType.COMMUNITY_TAB_FREE
             ),
-            onClick = {}
+            onClick = {},
+            onClickScrap = { _, _ -> }
         )
     }
 }

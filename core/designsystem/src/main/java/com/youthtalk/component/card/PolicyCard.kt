@@ -42,23 +42,13 @@ import com.youthtalk.model.policy.Policy
 import com.youthtalk.model.typeenum.Category
 import timber.log.Timber
 
-// TODO: 추후 Policy 기본값 제거
 @Composable
 fun PolicyCard(
     modifier: Modifier = Modifier,
-    policy: Policy = Policy(
-        policyId = 8038,
-        category = Category.ALL,
-        title = "solet",
-        deadlineStatus = "quaeque",
-        hostDep = "sententiae",
-        scrapCount = 9348,
-        departmentImgUrl = null,
-        region = "quem",
-        scrap = false
-    ),
+    policy: Policy,
     isVisibleScrap: Boolean = false,
-    onClick: () -> Unit = {}
+    onClick: () -> Unit = {},
+    onClickScrap: (Long, Boolean) -> Unit
 ) {
     Column(
         modifier = modifier
@@ -102,6 +92,13 @@ fun PolicyCard(
                     colorFilter = if (policy.scrap) ColorFilter.tint(color = MaterialTheme.colorScheme.primary) else ColorFilter.tint(color = gray60)
                 )
                 Text(
+                    modifier = Modifier
+                        .clickable(
+                            indication = null,
+                            interactionSource = remember { MutableInteractionSource() }
+                        ) {
+                            onClickScrap(policy.policyId, policy.scrap)
+                        },
                     text = "${policy.scrapCount}",
                     style = MaterialTheme.typography.labelMedium.copy(
                         color = gray90
@@ -207,7 +204,8 @@ private fun PolicyCardPreview() {
                 departmentImgUrl = null,
                 region = "quem",
                 scrap = false
-            )
+            ),
+            onClickScrap = { _, _ -> }
         )
     }
 }
@@ -238,7 +236,8 @@ private fun PolicyCardBookmarkTruePreview() {
                 departmentImgUrl = null,
                 region = "quem",
                 scrap = false
-            )
+            ),
+            onClickScrap = { _, _ -> }
         )
     }
 }

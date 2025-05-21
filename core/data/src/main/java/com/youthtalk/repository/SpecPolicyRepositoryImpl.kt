@@ -11,6 +11,7 @@ import com.youthtalk.data.CommentService
 import com.youthtalk.data.PolicyService
 import com.youthtalk.datasource.policy.PolicyRemoteMediator
 import com.youthtalk.datasource.policy.PolicySearchPagingSource
+import com.youthtalk.datasource.policy.ScrapPolicyRemoteMediator
 import com.youthtalk.datasource.room.YouthDatabase
 import com.youthtalk.dto.PostAddCommentResponse
 import com.youthtalk.dto.specpolicy.CommentRequest
@@ -130,5 +131,24 @@ class SpecPolicyRepositoryImpl @Inject constructor(
             .onFailure {
                 throwableError<PostAddCommentResponse>(it)
             }
+    }
+
+    @OptIn(ExperimentalPagingApi::class)
+    override fun getScrapPolicies(): Flow<Flow<PagingData<Policy>>> = flow {
+        emit(
+            Pager(
+                config = PagingConfig(
+                    pageSize = 10,
+                    enablePlaceholders = true
+                ),
+                remoteMediator = ScrapPolicyRemoteMediator(
+                    policyService = policyService,
+                    policyType = PolicyType.SCRAP,
+                    youthDatabase = youthDatabase
+                )
+            ) {
+                youthDatabase.policyDao().getScrapPagingSource(policyType = PolicyType.SCRAP)
+            }.flow
+        )
     }
 }

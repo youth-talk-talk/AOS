@@ -7,8 +7,8 @@ import com.youthtalk.dto.PolicyDetailResponse
 import com.youthtalk.dto.policy.PolicyResponse
 import com.youthtalk.mapper.toData
 import com.youthtalk.mapper.toDomain
-import com.youthtalk.model.PolicyDetail
 import com.youthtalk.model.policy.Policy
+import com.youthtalk.model.policy.PolicyDetail
 import com.youthtalk.utils.ErrorUtils.throwableError
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow

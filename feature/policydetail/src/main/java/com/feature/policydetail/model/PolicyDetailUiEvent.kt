@@ -1,7 +1,7 @@
 package com.feature.policydetail.model
 
 import com.core.base.model.UiEvent
-import com.youthtalk.model.Comment
+import com.youthtalk.model.comment.Comment
 
 sealed interface PolicyDetailUiEvent : UiEvent {
     data class InitData(val policyId: Long) : PolicyDetailUiEvent

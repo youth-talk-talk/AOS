@@ -54,4 +54,10 @@ interface CommunityService {
 
     @DELETE("/api/v1/posts/{postId}")
     suspend fun deletePost(@Path("postId") postId: Long): CommonResponse<Unit>
+
+    @GET("/api/v1/posts/me")
+    suspend fun getMyPosts(@Query("page") page: Int, @Query("size") size: Int): CommonResponse<PostSearchResponse>
+
+    @GET("/api/v1/posts/scrap")
+    suspend fun getScrapPosts(@Query("page") page: Int, @Query("size") size: Int): CommonResponse<PostSearchResponse>
 }

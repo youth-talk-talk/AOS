@@ -5,6 +5,7 @@ import com.youthtalk.dto.PolicyDetailResponse
 import com.youthtalk.dto.PostAddCommentResponse
 import com.youthtalk.dto.home.HomeDataResponse
 import com.youthtalk.dto.home.NewPoliciesResponse
+import com.youthtalk.dto.policy.PolicyResponse
 import com.youthtalk.dto.specpolicy.SpecPoliciesResponse
 import com.youthtalk.model.typeenum.SortType
 import okhttp3.RequestBody
@@ -41,4 +42,7 @@ interface PolicyService {
 
     @GET("/api/v1/policies/recent-view")
     suspend fun getRecentlyViewPolicies(): CommonResponse<List<com.youthtalk.dto.policy.PolicyResponse>>
+
+    @GET("/api/v1/policies/scrap")
+    suspend fun getScrapPolicies(@Query("page") page: Int, @Query("size") size: Int): CommonResponse<List<PolicyResponse>>
 }

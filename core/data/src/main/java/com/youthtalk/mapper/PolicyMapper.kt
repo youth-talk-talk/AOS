@@ -1,7 +1,7 @@
 package com.youthtalk.mapper
 
 import com.youthtalk.dto.PolicyDetailResponse
-import com.youthtalk.model.PolicyDetail
+import com.youthtalk.model.policy.PolicyDetail
 import com.youthtalk.model.typeenum.Category
 import com.youthtalk.model.typeenum.Region
 
