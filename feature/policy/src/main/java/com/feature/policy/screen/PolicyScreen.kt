@@ -23,11 +23,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
@@ -66,6 +68,19 @@ fun PolicyScreen(
     var bottomSheet by remember {
         mutableStateOf(false)
     }
+    var isRefresh by rememberSaveable {
+        mutableStateOf(false)
+    }
+
+    LifecycleResumeEffect(Unit) {
+        if (isRefresh) {
+            viewModel.setEvent(PolicyUiEvent.Refresh)
+            isRefresh = false
+        }
+
+        onPauseOrDispose { isRefresh = true }
+    }
+
     Column(
         modifier = modifier
     ) {
@@ -83,7 +98,8 @@ fun PolicyScreen(
                 RecentViewPolicy(
                     policies = state.recentlyPolicies,
                     onClickRecentViewPolicy = onClickRecentViewPolicy,
-                    onClickPolicyDetail = onClickPolicyDetail
+                    onClickPolicyDetail = onClickPolicyDetail,
+                    onClickScrap = { id, scrap -> viewModel.setEvent(PolicyUiEvent.PostScrapPolicy(id, scrap)) }
                 )
             }
             item {
@@ -93,7 +109,8 @@ fun PolicyScreen(
                     deadlinePolicies = state.deadlinePolicies.collectAsLazyPagingItems(),
                     onClickDay = { viewModel.setEvent(PolicyUiEvent.SelectedDay(it)) },
                     onClickDeadlinePolicy = onClickDeadlinePolicy,
-                    onClickPolicyDetail = onClickPolicyDetail
+                    onClickPolicyDetail = onClickPolicyDetail,
+                    onClickScrap = { id, scrap -> viewModel.setEvent(PolicyUiEvent.PostScrapPolicy(id, scrap)) }
                 )
             }
             item {
@@ -140,7 +157,11 @@ fun PolicyScreen(
                 Spacer(modifier = Modifier.height(10.dp))
             }
 
-            listLazyColumn(policies = allPolicies, onClickPolicyDetail = onClickPolicyDetail)
+            listLazyColumn(
+                policies = allPolicies,
+                onClickPolicyDetail = onClickPolicyDetail,
+                onClickScrap = { id, scrap -> viewModel.setEvent(PolicyUiEvent.PostScrapPolicy(id, scrap)) }
+            )
         }
     }
 
@@ -154,7 +175,7 @@ fun PolicyScreen(
     }
 }
 
-fun LazyListScope.listLazyColumn(policies: LazyPagingItems<Policy>, onClickPolicyDetail: (Long) -> Unit) {
+fun LazyListScope.listLazyColumn(policies: LazyPagingItems<Policy>, onClickPolicyDetail: (Long) -> Unit, onClickScrap: (Long, Boolean) -> Unit) {
     if (policies.itemCount != 0 && policies.loadState.refresh is LoadState.NotLoading) {
         items(
             count = policies.itemCount,
@@ -177,7 +198,7 @@ fun LazyListScope.listLazyColumn(policies: LazyPagingItems<Policy>, onClickPolic
                         ),
                     policy = policy,
                     onClick = { onClickPolicyDetail(policy.policyId) },
-                    onClickScrap = { id, scrap -> }
+                    onClickScrap = { id, scrap -> onClickScrap(id, scrap) }
                 )
             }
         }

@@ -10,6 +10,7 @@ import com.youthtalk.dto.specpolicy.SpecPoliciesResponse
 import com.youthtalk.model.typeenum.SortType
 import okhttp3.RequestBody
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
@@ -45,4 +46,7 @@ interface PolicyService {
 
     @GET("/api/v1/policies/scrap")
     suspend fun getScrapPolicies(@Query("page") page: Int, @Query("size") size: Int): CommonResponse<List<PolicyResponse>>
+
+    @DELETE("/api/v1/policies/recent-view")
+    suspend fun deleteAllRecentlyViewPolicies(): CommonResponse<String>
 }

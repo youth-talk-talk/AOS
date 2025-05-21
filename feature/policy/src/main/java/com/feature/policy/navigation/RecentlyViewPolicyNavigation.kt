@@ -5,14 +5,17 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.core.navigation.navigator.RecentlyViewPolicy
-import com.feature.policy.screen.RecentlyViewPolicyScreen
+import com.feature.policy.screen.RecentlyViewPolicyScreenRoot
 
 fun NavController.navigateRecentlyViewPolicy(navOptions: NavOptions? = null) {
     navigate(RecentlyViewPolicy, navOptions)
 }
 
-fun NavGraphBuilder.recentlyViewPolicyNavigation() {
+fun NavGraphBuilder.recentlyViewPolicyNavigation(onBack: () -> Unit, onClickPolicyDetail: (Long) -> Unit) {
     composable<RecentlyViewPolicy> {
-        RecentlyViewPolicyScreen()
+        RecentlyViewPolicyScreenRoot(
+            onBack = onBack,
+            onClickPolicyDetail = onClickPolicyDetail
+        )
     }
 }
