@@ -60,7 +60,8 @@ fun RecentViewPolicy(
                             shape = RoundedCornerShape(12.dp)
                         ),
                     policy = policies[it],
-                    onClick = { onClickPolicyDetail(policies[it].policyId) }
+                    onClick = { onClickPolicyDetail(policies[it].policyId) },
+                    onClickScrap = { id, scrap -> }
                 )
             }
         }

@@ -176,7 +176,8 @@ fun LazyListScope.listLazyColumn(policies: LazyPagingItems<Policy>, onClickPolic
                             shape = RoundedCornerShape(12.dp)
                         ),
                     policy = policy,
-                    onClick = { onClickPolicyDetail(policy.policyId) }
+                    onClick = { onClickPolicyDetail(policy.policyId) },
+                    onClickScrap = { id, scrap -> }
                 )
             }
         }

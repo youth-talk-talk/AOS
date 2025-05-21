@@ -27,6 +27,9 @@ import com.youthtalk.component.topbar.MiddleTitleTopBar
 import com.youthtalk.designsystem.gray10
 import com.youthtalk.designsystem.gray40
 import com.youthtalk.designsystem.gray80
+import com.youthtalk.model.policy.Policy
+import com.youthtalk.model.policy.PolicyType
+import com.youthtalk.model.typeenum.Category
 
 @Composable
 fun RecentlyViewPolicyScreen(modifier: Modifier = Modifier) {
@@ -89,7 +92,20 @@ fun RecentlyViewPolicyScreen(modifier: Modifier = Modifier) {
                                 interactionSource = remember { MutableInteractionSource() }
                             ) {
                                 count--
-                            }
+                            },
+                        policy = Policy(
+                            policyId = 0,
+                            category = Category.ALL,
+                            title = "",
+                            deadlineStatus = "",
+                            hostDep = "",
+                            scrapCount = 0,
+                            departmentImgUrl = null,
+                            region = "",
+                            scrap = false,
+                            policyType = PolicyType.SEARCH
+                        ),
+                        onClickScrap = { id, scrap -> }
                     )
                 }
             }

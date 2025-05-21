@@ -103,7 +103,10 @@ fun NavHostScreen(
             goLogin = goLogin
         )
         settingTermsNavigation()
-        settingScrapPolicyNavigation()
+        settingScrapPolicyNavigation(
+            onBack = navController::popBackStack,
+            onClickPolicyDetail = navController::navigatePolicyDetail
+        )
         settingScrapPostNavigation(
             onClickPostDetail = navController::navigateCommunityDetail,
             onBack = navController::popBackStack

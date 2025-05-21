@@ -233,7 +233,8 @@ fun LazyListScope.popularPolicy(
                             ),
                         onClick = { onClickPolicyDetail(popularPolices[it].policyId) },
                         policy = popularPolices[it],
-                        isVisibleScrap = true
+                        isVisibleScrap = true,
+                        onClickScrap = { id, scrap -> }
                     )
                 }
             }
@@ -349,7 +350,8 @@ fun LazyListScope.newPolicy(
                                                 shape = RoundedCornerShape(10.dp)
                                             ),
                                         policy = items[it * 4 + count],
-                                        onClick = { onClickPolicyDetail(items[it * 4 + count].policyId) }
+                                        onClick = { onClickPolicyDetail(items[it * 4 + count].policyId) },
+                                        onClickScrap = { id, scrap -> }
                                     )
                                 }
                             }

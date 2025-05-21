@@ -165,7 +165,8 @@ fun NewPolicyScreen(
                                     shape = RoundedCornerShape(12.dp)
                                 ),
                             policy = items[it],
-                            onClick = { onClickPolicyDetail(items[it].policyId) }
+                            onClick = { onClickPolicyDetail(items[it].policyId) },
+                            onClickScrap = { id, scrap -> }
                         )
                     }
                 }

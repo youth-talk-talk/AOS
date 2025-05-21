@@ -35,4 +35,7 @@ interface PolicyDao {
     """
     )
     suspend fun updatePostScrap(policyId: Long, scrap: Boolean)
+
+    @Query("SELECT * FROM policy where policyType=:policyType AND scrap=1")
+    fun getScrapPagingSource(policyType: PolicyType): PagingSource<Int, Policy>
 }

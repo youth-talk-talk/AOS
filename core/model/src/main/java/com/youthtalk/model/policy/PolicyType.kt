@@ -9,5 +9,6 @@ enum class PolicyType {
     POLICY_TAB_DEADLINE,
     POLICY_TAB_CATEGORY,
     DEADLINE,
-    OVERVIEW
+    OVERVIEW,
+    SCRAP
 }
