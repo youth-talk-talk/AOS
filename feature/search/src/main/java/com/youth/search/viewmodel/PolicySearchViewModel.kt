@@ -3,6 +3,7 @@ package com.youth.search.viewmodel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import com.core.base.BaseViewModel
+import com.core.domain.usercase.PostPolicyScrapUseCase
 import com.core.domain.usercase.search.GetRecentListUseCase
 import com.core.domain.usercase.search.PostRecentListUseCase
 import com.core.domain.usercase.specpolicy.GetPolicyCountUseCase
@@ -29,7 +30,8 @@ class PolicySearchViewModel @Inject constructor(
     val getRecentListUseCase: GetRecentListUseCase,
     val postRecentListUseCase: PostRecentListUseCase,
     val getPolicyCountUseCase: GetPolicyCountUseCase,
-    val postSpecPoliciesUseCase: PostSpecPoliciesUseCase
+    val postSpecPoliciesUseCase: PostSpecPoliciesUseCase,
+    private val postPolicyScrapUseCase: PostPolicyScrapUseCase
 ) : BaseViewModel<PolicySearchUiState, PolicySearchUiEvent, PolicySearchUiEffect>(
     initialState = PolicySearchUiState.initState
 ) {
@@ -44,6 +46,19 @@ class PolicySearchViewModel @Inject constructor(
             is PolicySearchUiEvent.SetState -> setState(event.state)
             is PolicySearchUiEvent.Search -> search(event.search)
             is PolicySearchUiEvent.SetFilter -> postSpecPolicies(event.searchFilter, event.sortType)
+            is PolicySearchUiEvent.PolicyScrap -> postPolicyScrap(event.policyId, event.scrap)
+        }
+    }
+
+    private fun postPolicyScrap(policyId: Long, scrap: Boolean) {
+        viewModelScope.launch {
+            postPolicyScrapUseCase(policyId, scrap)
+                .catch {
+                    Timber.e("PolicySearchViewModel postPostScrap error $it")
+                }
+                .collectLatest {
+                    Timber.e("PolicySearchViewModel postPostScrap Success $it")
+                }
         }
     }
 

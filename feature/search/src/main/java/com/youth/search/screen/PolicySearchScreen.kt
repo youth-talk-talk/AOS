@@ -33,6 +33,7 @@ import com.youth.search.viewmodel.PolicySearchViewModel
 import com.youthtalk.component.empty.EmptyScreen
 import com.youthtalk.designsystem.gray10
 import com.youthtalk.designsystem.gray80
+import com.youthtalk.extentions.rememberLazyListState
 import timber.log.Timber
 
 @Composable
@@ -101,10 +102,12 @@ fun PolicySearchScreen(
                         searchFilter = uiState.searchFilter,
                         sortType = uiState.sortType,
                         policies = policies,
+                        lazyListState = policies.rememberLazyListState(),
                         applyFilter = { searchFilter, sortType ->
                             viewModel.setEvent(PolicySearchUiEvent.SetFilter(searchFilter, sortType))
                         },
-                        onClickPolicyDetail = onClickPolicyDetail
+                        onClickPolicyDetail = onClickPolicyDetail,
+                        onClickPostScrap = { id, scrap -> viewModel.setEvent(PolicySearchUiEvent.PolicyScrap(id, scrap)) }
                     )
                 }
             }
