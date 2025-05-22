@@ -33,6 +33,7 @@ import com.core.mypage.navigation.settingNotificationNavigation
 import com.core.mypage.navigation.settingScrapPolicyNavigation
 import com.core.mypage.navigation.settingScrapPostNavigation
 import com.core.mypage.navigation.settingTermsNavigation
+import com.core.navigation.navigator.CommunityDetail
 import com.core.navigation.navigator.Navigation
 import com.feature.policy.navigation.deadlinePolicyNavigation
 import com.feature.policy.navigation.navigateDeadlinePolicy
@@ -162,6 +163,13 @@ fun NavHostScreen(
                     }
                 }
                 navController.popBackStack()
+            },
+            onModify = { postId ->
+                navController.navigateCommunityDetail(postId) {
+                    popUpTo<CommunityDetail> {
+                        inclusive = true
+                    }
+                }
             }
         )
 

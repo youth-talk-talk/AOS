@@ -41,4 +41,7 @@ interface PostDao {
 
     @Query("SELECT * FROM post where postType=:postType AND scrap=1")
     fun getScrapPagingSource(postType: PostType): PagingSource<Int, Post>
+
+    @Query("UPDATE post SET title=:title, contentPreview=:content WHERE postId=:postId ")
+    suspend fun updateModifyPost(postId: Long, title: String, content: String)
 }

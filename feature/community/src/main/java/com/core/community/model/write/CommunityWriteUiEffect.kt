@@ -8,4 +8,5 @@ sealed interface CommunityWriteUiEffect : UiEffect {
     data object OnBack : CommunityWriteUiEffect
     data class ScrollIndex(val index: Int) : CommunityWriteUiEffect
     data object CreatePost : CommunityWriteUiEffect
+    data class Modify(val postId: Long) : CommunityWriteUiEffect
 }

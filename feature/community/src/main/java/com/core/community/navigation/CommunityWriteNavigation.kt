@@ -12,12 +12,18 @@ fun NavController.navigateCommunityWrite(communityType: PostSubject, postId: Lon
     navigate(CommunityWrite(postId, communityType), navOptions)
 }
 
-fun NavGraphBuilder.communityWriteNavigation(checkPermission: (String) -> Boolean, onBack: () -> Unit, onCreate: (PostSubject) -> Unit) {
+fun NavGraphBuilder.communityWriteNavigation(
+    checkPermission: (String) -> Boolean,
+    onBack: () -> Unit,
+    onCreate: (PostSubject) -> Unit,
+    onModify: (Long) -> Unit
+) {
     composable<CommunityWrite> {
         CommunityWriteScreen(
             checkPermission = checkPermission,
             onBack = onBack,
-            onCreate = onCreate
+            onCreate = onCreate,
+            onModify = onModify
         )
     }
 }
