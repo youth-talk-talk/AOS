@@ -8,6 +8,7 @@ import com.core.community.model.community.CommunityUiEvent
 import com.core.community.model.community.CommunityUiState
 import com.core.domain.usercase.post.GetPopularPostsUseCase
 import com.core.domain.usercase.post.GetPostsUseCase
+import com.core.domain.usercase.post.PostPostScrapUseCase
 import com.core.domain.usercase.post.SyncPopularPostUseCase
 import com.youthtalk.model.post.PostSubject
 import com.youthtalk.model.post.PostType
@@ -25,7 +26,8 @@ import timber.log.Timber
 class CommunityViewModel @Inject constructor(
     private val getPostsUseCase: GetPostsUseCase,
     private val getPopularPostsUseCase: GetPopularPostsUseCase,
-    private val syncPopularPostUseCase: SyncPopularPostUseCase
+    private val syncPopularPostUseCase: SyncPopularPostUseCase,
+    private val postPostScrapUseCase: PostPostScrapUseCase
 ) : BaseViewModel<CommunityUiState, CommunityUiEvent, CommunityUiEffect>(
     initialState = CommunityUiState.initState
 ) {
@@ -38,6 +40,42 @@ class CommunityViewModel @Inject constructor(
             is CommunityUiEvent.InitData -> initData()
             is CommunityUiEvent.ChangeCategory -> changeCategory(event.category)
             is CommunityUiEvent.SyncPostDate -> syncPopularPost()
+            is CommunityUiEvent.PostScrapPost -> postPostScrap(event.postId, event.scrap)
+        }
+    }
+
+    private fun postPostScrap(postId: Long, scrap: Boolean) {
+        viewModelScope.launch {
+            postPostScrapUseCase(postId, scrap)
+                .catch {
+                    Timber.e("CommunityViewModel postPostScrap error $it")
+                }
+                .collectLatest {
+                    setState {
+                        copy(
+                            popularFrees = popularFrees.map { post ->
+                                if (post.postId == postId) {
+                                    post.copy(
+                                        scrap = !scrap,
+                                        scrapCount = post.scrapCount + (if (scrap) -1 else 1)
+                                    )
+                                } else {
+                                    post
+                                }
+                            },
+                            popularReviews = popularReviews.map { post ->
+                                if (post.postId == postId) {
+                                    post.copy(
+                                        scrap = !scrap,
+                                        scrapCount = post.scrapCount + (if (scrap) -1 else 1)
+                                    )
+                                } else {
+                                    post
+                                }
+                            }
+                        )
+                    }
+                }
         }
     }
 

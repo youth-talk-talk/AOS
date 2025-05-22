@@ -41,7 +41,8 @@ fun ReviewPost(
     lazyListState: LazyListState,
     category: Category,
     onClickPost: (Long) -> Unit,
-    onClickCategory: (Category) -> Unit
+    onClickCategory: (Category) -> Unit,
+    onClickPostScrap: (Long, Boolean) -> Unit
 ) {
     val categories = Category.entries.toList()
     LazyColumn(
@@ -81,7 +82,8 @@ fun ReviewPost(
                                     shape = RoundedCornerShape(12.dp)
                                 ),
                             post = popularReviews[it],
-                            onClick = { onClickPost(popularReviews[it].postId) }
+                            onClick = { onClickPost(popularReviews[it].postId) },
+                            onClickPostScrap = onClickPostScrap
                         )
                     }
                 }
@@ -124,7 +126,7 @@ fun ReviewPost(
                         modifier = Modifier.padding(horizontal = 16.dp),
                         post = post,
                         onClick = { onClickPost(post.postId) },
-                        onClickScrap = { postId, scrap -> }
+                        onClickScrap = onClickPostScrap
                     )
                     HorizontalDivider(
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 20.dp),

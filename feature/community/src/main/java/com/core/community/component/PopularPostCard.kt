@@ -24,7 +24,7 @@ import com.youthtalk.designsystem.gray90
 import com.youthtalk.model.post.Post
 
 @Composable
-fun PopularPostCard(modifier: Modifier = Modifier, post: Post, onClick: () -> Unit) {
+fun PopularPostCard(modifier: Modifier = Modifier, post: Post, onClick: () -> Unit, onClickPostScrap: (Long, Boolean) -> Unit) {
     Column(
         modifier = modifier
             .clickable(
@@ -87,6 +87,12 @@ fun PopularPostCard(modifier: Modifier = Modifier, post: Post, onClick: () -> Un
             }
 
             Row(
+                modifier = Modifier.clickable(
+                    indication = null,
+                    interactionSource = remember { MutableInteractionSource() }
+                ) {
+                    onClickPostScrap(post.postId, post.scrap)
+                },
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(2.dp)
             ) {
