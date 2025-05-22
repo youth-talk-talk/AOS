@@ -84,7 +84,8 @@ fun HomeScreen(
     onClickNewPolicy: () -> Unit,
     onClickPolicyDetail: (Long) -> Unit,
     onClickPolicyOverView: (Category) -> Unit,
-    onClickPostDetail: (Long) -> Unit
+    onClickPostDetail: (Long) -> Unit,
+    onClickCommunity: () -> Unit
 ) {
     val uiState by viewModel.state.collectAsState()
     var bottomSheet by remember {
@@ -92,6 +93,9 @@ fun HomeScreen(
     }
     var isRefresh by rememberSaveable {
         mutableStateOf(false)
+    }
+    var index by remember {
+        mutableStateOf(0)
     }
 
     LifecycleResumeEffect(Unit) {
@@ -150,23 +154,28 @@ fun HomeScreen(
                 popularPolicy(
                     popularPolices = uiState.homeData.popularPolicies,
                     onClickPopularPolicy = { onClickPopularPolicy(Json.encodeToString(uiState.homeData.popularPolicies)) },
-                    onClickPolicyDetail = onClickPolicyDetail
+                    onClickPolicyDetail = onClickPolicyDetail,
+                    onClickPolicyScrap = { id, scrap -> viewModel.setEvent(HomeUiEvent.PostPolicyScrap(id, scrap)) }
                 )
                 newPolicy(
+                    index = index,
+                    onClickIndex = { index = it },
                     newPolicies = uiState.newPolicies,
                     onClickNewPolicy = onClickNewPolicy,
-                    onClickPolicyDetail = onClickPolicyDetail
+                    onClickPolicyDetail = onClickPolicyDetail,
+                    onClickPolicyScrap = { id, scrap -> viewModel.setEvent(HomeUiEvent.PostPolicyScrap(id, scrap)) }
                 )
                 realTimePolicy(
                     policiesWithReviews = uiState.homeData.policiesWithReviews,
                     onClickPolicyDetail = onClickPolicyDetail,
-                    onClickPostDetail = onClickPostDetail
+                    onClickPostDetail = onClickPostDetail,
+                    onClickPostScrap = { id, scrap -> viewModel.setEvent(HomeUiEvent.PostPostScrap(id, scrap)) }
                 )
                 item {
                     TitleItem(
                         modifier = Modifier.padding(top = 40.dp, bottom = 14.dp),
                         title = "청년톡톡 Best",
-                        onClick = {}
+                        onClick = onClickCommunity
                     )
                 }
 
@@ -179,7 +188,8 @@ fun HomeScreen(
                             .padding(horizontal = 8.dp)
                             .padding(bottom = 8.dp),
                         post = bestPost,
-                        onClickPostDetail = onClickPostDetail
+                        onClickPostDetail = onClickPostDetail,
+                        onClickPostScrap = { id, scrap -> viewModel.setEvent(HomeUiEvent.PostPostScrap(id, scrap)) }
                     )
                 }
             }
@@ -200,7 +210,8 @@ fun LazyListScope.popularPolicy(
     modifier: Modifier = Modifier,
     popularPolices: List<Policy>,
     onClickPopularPolicy: () -> Unit,
-    onClickPolicyDetail: (Long) -> Unit
+    onClickPolicyDetail: (Long) -> Unit,
+    onClickPolicyScrap: (Long, Boolean) -> Unit
 ) {
     item {
         Column(
@@ -234,7 +245,7 @@ fun LazyListScope.popularPolicy(
                         onClick = { onClickPolicyDetail(popularPolices[it].policyId) },
                         policy = popularPolices[it],
                         isVisibleScrap = true,
-                        onClickScrap = { id, scrap -> }
+                        onClickScrap = onClickPolicyScrap
                     )
                 }
             }
@@ -244,15 +255,15 @@ fun LazyListScope.popularPolicy(
 
 fun LazyListScope.newPolicy(
     modifier: Modifier = Modifier,
+    index: Int,
     newPolicies: NewPolicies,
     onClickNewPolicy: () -> Unit,
-    onClickPolicyDetail: (Long) -> Unit
+    onClickPolicyDetail: (Long) -> Unit,
+    onClickPolicyScrap: (Long, Boolean) -> Unit,
+    onClickIndex: (Int) -> Unit
 ) {
     item {
         val categories = Category.entries.toList()
-        var index by remember {
-            mutableStateOf(0)
-        }
         val items = when (categories[index]) {
             Category.ALL -> newPolicies.all
             Category.DWELLING -> newPolicies.dwelling
@@ -293,9 +304,7 @@ fun LazyListScope.newPolicy(
                     RoundChip(
                         text = categories[it].categoryName,
                         isSelected = categories[index] == categories[it],
-                        onClick = {
-                            index = it
-                        }
+                        onClick = { onClickIndex(it) }
                     )
                 }
             }
@@ -351,7 +360,7 @@ fun LazyListScope.newPolicy(
                                             ),
                                         policy = items[it * 4 + count],
                                         onClick = { onClickPolicyDetail(items[it * 4 + count].policyId) },
-                                        onClickScrap = { id, scrap -> }
+                                        onClickScrap = onClickPolicyScrap
                                     )
                                 }
                             }
@@ -384,13 +393,13 @@ fun LazyListScope.realTimePolicy(
     modifier: Modifier = Modifier,
     policiesWithReviews: List<PoliciesWithReview>,
     onClickPolicyDetail: (Long) -> Unit,
-    onClickPostDetail: (Long) -> Unit
+    onClickPostDetail: (Long) -> Unit,
+    onClickPostScrap: (Long, Boolean) -> Unit
 ) {
     item {
-        var index by remember {
+        var index by rememberSaveable(Unit) {
             mutableStateOf(0)
         }
-
         val policy = policiesWithReviews[index]
         Column(
             modifier = modifier
@@ -481,7 +490,8 @@ fun LazyListScope.realTimePolicy(
                     policy.reviews.forEachIndexed { index, review ->
                         ReviewCard(
                             review = review,
-                            onClick = { onClickPostDetail(0L) }
+                            onClick = onClickPostDetail,
+                            onClickPostScrap = onClickPostScrap
                         )
                         if (index != policy.reviews.size - 1) {
                             HorizontalDivider(

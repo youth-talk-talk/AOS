@@ -9,7 +9,7 @@ import com.core.community.screen.community.CommunityScreen
 import com.core.navigation.navigator.HomeTabNavigation
 import com.youthtalk.model.post.PostSubject
 
-fun NavController.navigateCommunity(postType: PostSubject = PostSubject.REVIEW, navOptions: NavOptionsBuilder.() -> Unit) {
+fun NavController.navigateCommunity(postType: PostSubject = PostSubject.REVIEW, navOptions: NavOptionsBuilder.() -> Unit = {}) {
     navigate(HomeTabNavigation.Community(postType), navOptions)
 }
 
