@@ -280,7 +280,8 @@ fun PolicyDetailScreen(
                 onPostModifyComment = { comment ->
                     actionEvent(PolicyDetailUiEvent.ChangeDetailType(PolicyDetailType.COMMENT, comment.commentId, comment.content))
                 },
-                onDeleteComment = { actionEvent(PolicyDetailUiEvent.PostDeleteComment(it)) }
+                onDeleteComment = { actionEvent(PolicyDetailUiEvent.PostDeleteComment(it)) },
+                onCommentLike = { id, scrap -> actionEvent(PolicyDetailUiEvent.PostCommentLike(id, scrap)) }
             )
         }
 

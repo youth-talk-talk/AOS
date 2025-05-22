@@ -12,4 +12,5 @@ sealed interface PolicyDetailUiEvent : UiEvent {
     data class PostAddPolicyComment(val policyId: Long, val message: String) : PolicyDetailUiEvent
     data class PostDeleteComment(val comment: Comment) : PolicyDetailUiEvent
     data class PolicyScrap(val policyId: Long, val scrap: Boolean) : PolicyDetailUiEvent
+    data class PostCommentLike(val commentId: Long, val isLike: Boolean) : PolicyDetailUiEvent
 }

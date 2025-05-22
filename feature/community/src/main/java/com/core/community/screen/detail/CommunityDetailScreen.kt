@@ -148,7 +148,8 @@ fun CommunityDetailScreen(
                         },
                         onPostReportPost = {},
                         onPostReportPostUser = {},
-                        onPostPostScrap = { postId, scrap -> viewModel.setEvent(CommunityDetailUiEvent.PostPostScrap(postId, scrap)) }
+                        onPostPostScrap = { postId, scrap -> viewModel.setEvent(CommunityDetailUiEvent.PostPostScrap(postId, scrap)) },
+                        onCommentLike = { commentId, scrap -> viewModel.setEvent(CommunityDetailUiEvent.PostCommentLike(commentId, scrap)) }
                     )
                 }
 
@@ -196,7 +197,8 @@ fun DetailScreen(
     onPostDeletePost: (Long) -> Unit,
     onPostReportPost: () -> Unit,
     onPostReportPostUser: () -> Unit,
-    onPostPostScrap: (Long, Boolean) -> Unit
+    onPostPostScrap: (Long, Boolean) -> Unit,
+    onCommentLike: (Long, Boolean) -> Unit
 ) {
     val focusManager = LocalFocusManager.current
     var bottomSheet by remember {
@@ -286,7 +288,8 @@ fun DetailScreen(
                         onDeleteComment = onDeleteComment,
                         onPostReportComment = {},
                         onPostModifyComment = onPostModifyComment,
-                        onPostReportUser = {}
+                        onPostReportUser = {},
+                        onCommentLike = onCommentLike
                     )
                 }
             } else {

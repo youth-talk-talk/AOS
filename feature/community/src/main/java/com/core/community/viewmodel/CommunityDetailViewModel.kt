@@ -10,6 +10,7 @@ import com.core.community.model.detail.CommunityDetailUiState
 import com.core.domain.usercase.GetUserUseCase
 import com.core.domain.usercase.comment.PatchCommentUseCase
 import com.core.domain.usercase.comment.PostAddPostCommentUseCase
+import com.core.domain.usercase.comment.PostCommentLikeUseCase
 import com.core.domain.usercase.comment.PostDeleteCommentUseCase
 import com.core.domain.usercase.post.DeletePostUseCase
 import com.core.domain.usercase.post.GetPostDetailCommentsUseCase
@@ -35,6 +36,7 @@ class CommunityDetailViewModel @Inject constructor(
     private val deletePostUseCase: DeletePostUseCase,
     private val patchCommentUseCase: PatchCommentUseCase,
     private val postPostScrapUseCase: PostPostScrapUseCase,
+    private val postCommentLikeUseCase: PostCommentLikeUseCase,
     savedStateHandle: SavedStateHandle
 ) : BaseViewModel<CommunityDetailUiState, CommunityDetailUiEvent, CommunityDetailUiEffect>(
     initialState = CommunityDetailUiState.initState
@@ -54,6 +56,33 @@ class CommunityDetailViewModel @Inject constructor(
             is CommunityDetailUiEvent.PatchModifyComment -> patchModifyComment(event.commentId, event.message)
             is CommunityDetailUiEvent.DeletePost -> deletePost(event.postId)
             is CommunityDetailUiEvent.PostPostScrap -> postPostScrap(event.postId, event.scrap)
+            is CommunityDetailUiEvent.PostCommentLike -> postCommentLike(event.commentId, event.isLike)
+        }
+    }
+
+    private fun postCommentLike(commentId: Long, isLike: Boolean) {
+        viewModelScope.launch {
+            postCommentLikeUseCase(commentId, isLike)
+                .catch {
+                    Timber.e("CommunityDetailViewModel postCommentLike error $it")
+                }
+                .collectLatest {
+                    setState {
+                        copy(
+                            comments = comments.copy(
+                                comments = comments.comments.map { info ->
+                                    if (info.commentId != commentId) {
+                                        info
+                                    } else {
+                                        info.copy(
+                                            isLikedByMember = !isLike
+                                        )
+                                    }
+                                }
+                            )
+                        )
+                    }
+                }
         }
     }
 

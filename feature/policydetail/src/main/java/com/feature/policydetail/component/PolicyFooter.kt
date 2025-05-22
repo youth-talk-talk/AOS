@@ -16,7 +16,13 @@ import com.youthtalk.model.User
 import com.youthtalk.model.comment.Comment
 import com.youthtalk.model.comment.CommentInfo
 
-fun LazyListScope.policyFooter(commentInfo: CommentInfo, user: User, onPostModifyComment: (Comment) -> Unit, onDeleteComment: (Comment) -> Unit) {
+fun LazyListScope.policyFooter(
+    commentInfo: CommentInfo,
+    user: User,
+    onPostModifyComment: (Comment) -> Unit,
+    onDeleteComment: (Comment) -> Unit,
+    onCommentLike: (Long, Boolean) -> Unit
+) {
     item {
         Text(
             modifier = Modifier.padding(
@@ -42,7 +48,8 @@ fun LazyListScope.policyFooter(commentInfo: CommentInfo, user: User, onPostModif
                 onDeleteComment = onDeleteComment,
                 onPostReportComment = {},
                 onPostModifyComment = onPostModifyComment,
-                onPostReportUser = {}
+                onPostReportUser = {},
+                onCommentLike = onCommentLike
             )
         }
     } else {
