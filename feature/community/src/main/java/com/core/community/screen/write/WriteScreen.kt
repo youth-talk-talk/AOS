@@ -70,7 +70,8 @@ fun WriteScreen(
     onChangeFocus: (Int, TextFieldValue?) -> Unit,
     checkPermission: () -> Unit,
     onBack: () -> Unit,
-    onPostCreatePost: () -> Unit
+    onPostCreatePost: () -> Unit,
+    onDeleteImage: (Int) -> Unit
 ) {
     val focusManager = LocalFocusManager.current
     var dialog by remember {
@@ -145,7 +146,8 @@ fun WriteScreen(
                         is Contents.Image -> {
                             WriteContentImage(
                                 imgUrl = content.imgUrl,
-                                onChangeFocus = { onChangeFocus(index, it) }
+                                onChangeFocus = { onChangeFocus(index, it) },
+                                onDeleteImage = { onDeleteImage(index) }
                             )
                         }
                     }
@@ -203,7 +205,7 @@ fun WriteScreen(
 }
 
 @Composable
-fun WriteContentImage(modifier: Modifier = Modifier, imgUrl: String, onChangeFocus: (TextFieldValue?) -> Unit) {
+fun WriteContentImage(modifier: Modifier = Modifier, imgUrl: String, onChangeFocus: (TextFieldValue?) -> Unit, onDeleteImage: () -> Unit) {
     val focusRequester = remember { FocusRequester() }
     var isFocus by remember { mutableStateOf(false) }
     Box(
@@ -238,7 +240,13 @@ fun WriteContentImage(modifier: Modifier = Modifier, imgUrl: String, onChangeFoc
                 modifier = Modifier
                     .align(Alignment.TopEnd)
                     .padding(8.dp)
-                    .size(24.dp),
+                    .size(24.dp)
+                    .clickable(
+                        indication = null,
+                        interactionSource = remember { MutableInteractionSource() }
+                    ) {
+                        onDeleteImage()
+                    },
                 painter = painterResource(R.drawable.close),
                 contentDescription = null
             )

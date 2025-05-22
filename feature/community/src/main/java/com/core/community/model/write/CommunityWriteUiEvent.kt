@@ -16,4 +16,5 @@ sealed interface CommunityWriteUiEvent : UiEvent {
     data object ClearSearchInfo : CommunityWriteUiEvent
     data class OnClickSearchPolicy(val search: SearchPolicy) : CommunityWriteUiEvent
     data object PostCreatePost : CommunityWriteUiEvent
+    data class ImageDelete(val index: Int) : CommunityWriteUiEvent
 }

@@ -151,7 +151,8 @@ fun CommunityWriteScreen(
                     viewModel.setEvent(CommunityWriteUiEvent.ChangeTitle(it))
                 },
                 onBack = onBack,
-                onPostCreatePost = { viewModel.setEvent(CommunityWriteUiEvent.PostCreatePost) }
+                onPostCreatePost = { viewModel.setEvent(CommunityWriteUiEvent.PostCreatePost) },
+                onDeleteImage = { viewModel.setEvent(CommunityWriteUiEvent.ImageDelete(it)) }
             )
         }
 
