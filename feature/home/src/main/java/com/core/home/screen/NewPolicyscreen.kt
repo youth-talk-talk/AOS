@@ -20,16 +20,19 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.core.home.model.newpolicy.NewPolicyUiEffect
 import com.core.home.model.newpolicy.NewPolicyUiEvent
 import com.core.home.viewmodel.NewPolicyViewModel
 import com.youthtalk.component.card.PolicyCard
@@ -42,6 +45,7 @@ import com.youthtalk.designsystem.gray10
 import com.youthtalk.designsystem.gray30
 import com.youthtalk.designsystem.gray40
 import com.youthtalk.model.typeenum.Category
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun NewPolicyScreen(
@@ -52,16 +56,35 @@ fun NewPolicyScreen(
 ) {
     val uiState by viewModel.state.collectAsStateWithLifecycle()
     val categories = Category.entries.toList()
-    var index by remember {
+    var index by rememberSaveable {
         mutableStateOf(0)
     }
     val items = when (categories[index]) {
-        Category.ALL -> uiState.newPolices.all
-        Category.DWELLING -> uiState.newPolices.dwelling
-        Category.EDUCATION -> uiState.newPolices.education
-        Category.JOB -> uiState.newPolices.job
-        Category.LIFE -> uiState.newPolices.life
-        Category.PARTICIPATION -> uiState.newPolices.participation
+        Category.ALL -> uiState.newPolicies.all
+        Category.DWELLING -> uiState.newPolicies.dwelling
+        Category.EDUCATION -> uiState.newPolicies.education
+        Category.JOB -> uiState.newPolicies.job
+        Category.LIFE -> uiState.newPolicies.life
+        Category.PARTICIPATION -> uiState.newPolicies.participation
+    }
+
+    LaunchedEffect(viewModel.effect) {
+        viewModel.effect.collectLatest {
+            when (it) {
+                is NewPolicyUiEffect.ClickPolicy -> onClickPolicyDetail(it.policyId)
+            }
+        }
+    }
+
+    var isRefresh by rememberSaveable {
+        mutableStateOf(false)
+    }
+    LifecycleResumeEffect(Unit) {
+        if (isRefresh) {
+            viewModel.setEvent(NewPolicyUiEvent.Refresh)
+            isRefresh = false
+        }
+        onPauseOrDispose { isRefresh = true }
     }
 
     Column(
@@ -165,8 +188,8 @@ fun NewPolicyScreen(
                                     shape = RoundedCornerShape(12.dp)
                                 ),
                             policy = items[it],
-                            onClick = { onClickPolicyDetail(items[it].policyId) },
-                            onClickScrap = { id, scrap -> }
+                            onClick = { viewModel.setEvent(NewPolicyUiEvent.OnClickPolicy(items[it].policyId)) },
+                            onClickScrap = { id, scrap -> viewModel.setEvent(NewPolicyUiEvent.OnClickPolicyScrap(id, scrap)) }
                         )
                     }
                 }

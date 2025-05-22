@@ -5,12 +5,14 @@ import com.youthtalk.model.policy.Policy
 
 data class PopularPolicyUiState(
     val isLoading: Boolean,
-    val policies: List<Policy>
+    val policies: List<Policy>,
+    val policyId: Long?
 ) : UiState {
     companion object {
         val initState = PopularPolicyUiState(
             isLoading = true,
-            policies = listOf()
+            policies = listOf(),
+            policyId = null
         )
     }
 }

@@ -33,7 +33,7 @@ import com.youthtalk.util.getTime
 import java.time.LocalDateTime
 
 @Composable
-fun BestCard(modifier: Modifier = Modifier, post: Post, onClickPostDetail: (Long) -> Unit) {
+fun BestCard(modifier: Modifier = Modifier, post: Post, onClickPostDetail: (Long) -> Unit, onClickPostScrap: (Long, Boolean) -> Unit) {
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -113,6 +113,13 @@ fun BestCard(modifier: Modifier = Modifier, post: Post, onClickPostDetail: (Long
                     }
 
                     Row(
+                        modifier = Modifier
+                            .clickable(
+                                indication = null,
+                                interactionSource = remember { MutableInteractionSource() }
+                            ) {
+                                onClickPostScrap(post.postId, post.scrap)
+                            },
                         horizontalArrangement = Arrangement.spacedBy(2.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -163,7 +170,8 @@ private fun BestCardPreview() {
                 category = Category.JOB,
                 createdAt = LocalDateTime.now()
             ),
-            onClickPostDetail = {}
+            onClickPostDetail = {},
+            onClickPostScrap = { _, _ -> }
         )
     }
 }

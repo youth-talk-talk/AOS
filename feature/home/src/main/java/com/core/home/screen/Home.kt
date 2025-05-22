@@ -9,6 +9,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.navigation
 import com.core.community.navigation.communityNavigation
+import com.core.community.navigation.navigateCommunity
 import com.core.home.navigation.BottomNavigation
 import com.core.home.navigation.homeTabNavigation
 import com.core.mypage.navigation.settingTabNavigation
@@ -60,7 +61,8 @@ fun Home(
                 onClickNewPolicy = onClickNewPolicy,
                 onClickPolicyDetail = onClickPolicyDetail,
                 onClickPolicyOverView = navController::navigatePolicyOverView,
-                onClickPostDetail = onClickPostDetail
+                onClickPostDetail = onClickPostDetail,
+                onClickCommunity = navController::navigateCommunity
             )
             communityNavigation(
                 onClickCommunitySearch = onClickCommunitySearch,

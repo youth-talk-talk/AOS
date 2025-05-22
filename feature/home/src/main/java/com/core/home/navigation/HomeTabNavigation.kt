@@ -18,7 +18,8 @@ fun NavGraphBuilder.homeTabNavigation(
     onClickNewPolicy: () -> Unit,
     onClickPolicyDetail: (Long) -> Unit,
     onClickPostDetail: (Long) -> Unit,
-    onClickPolicyOverView: (Category) -> Unit
+    onClickPolicyOverView: (Category) -> Unit,
+    onClickCommunity: () -> Unit
 ) {
     composable<HomeTabNavigation.Home> {
         HomeScreen(
@@ -27,7 +28,8 @@ fun NavGraphBuilder.homeTabNavigation(
             onClickNewPolicy = onClickNewPolicy,
             onClickPolicyDetail = onClickPolicyDetail,
             onClickPolicyOverView = onClickPolicyOverView,
-            onClickPostDetail = onClickPostDetail
+            onClickPostDetail = onClickPostDetail,
+            onClickCommunity = onClickCommunity
         )
     }
 }

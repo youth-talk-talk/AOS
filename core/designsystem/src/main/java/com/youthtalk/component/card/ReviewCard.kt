@@ -28,7 +28,7 @@ import com.youthtalk.model.policy.Review
 import com.youthtalk.util.getTime
 
 @Composable
-fun ReviewCard(modifier: Modifier = Modifier, review: Review, onClick: (Long) -> Unit) {
+fun ReviewCard(modifier: Modifier = Modifier, review: Review, onClick: (Long) -> Unit, onClickPostScrap: (Long, Boolean) -> Unit) {
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -92,6 +92,12 @@ fun ReviewCard(modifier: Modifier = Modifier, review: Review, onClick: (Long) ->
                 }
 
                 Row(
+                    modifier = Modifier.clickable(
+                        indication = null,
+                        interactionSource = remember { MutableInteractionSource() }
+                    ) {
+                        onClickPostScrap(review.postId, review.scrap)
+                    },
                     horizontalArrangement = Arrangement.spacedBy(2.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {

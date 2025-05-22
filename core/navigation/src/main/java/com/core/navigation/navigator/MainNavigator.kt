@@ -38,12 +38,12 @@ data class CommunitySearch(
 )
 
 @Serializable
-data object PopularPolicy
-
-@Serializable
-data class NewPolicy(
+data class PopularPolicy(
     val policies: String
 )
+
+@Serializable
+data object NewPolicy
 
 @Serializable
 data object RecentlyViewPolicy
