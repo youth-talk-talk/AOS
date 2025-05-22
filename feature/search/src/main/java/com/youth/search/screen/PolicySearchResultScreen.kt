@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -69,8 +70,10 @@ fun PolicySearchResultScreen(
     searchFilter: SearchFilter,
     sortType: SortType,
     policies: LazyPagingItems<Policy>,
+    lazyListState: LazyListState,
     applyFilter: (SearchFilter, SortType) -> Unit,
-    onClickPolicyDetail: (Long) -> Unit
+    onClickPolicyDetail: (Long) -> Unit,
+    onClickPostScrap: (Long, Boolean) -> Unit
 ) {
     var bottomSheet by remember {
         mutableStateOf(false)
@@ -79,7 +82,8 @@ fun PolicySearchResultScreen(
     var startIndex by remember { mutableStateOf(0) }
     LazyColumn(
         modifier = modifier
-            .fillMaxSize()
+            .fillMaxSize(),
+        state = lazyListState
     ) {
         item {
             LazyRow(
@@ -191,7 +195,7 @@ fun PolicySearchResultScreen(
                                     ),
                                 policy = policy,
                                 onClick = { onClickPolicyDetail(policy.policyId) },
-                                onClickScrap = { id, scrap -> }
+                                onClickScrap = onClickPostScrap
                             )
                         }
                     }

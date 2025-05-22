@@ -36,7 +36,8 @@ fun FreePost(
     popularFrees: List<Post>,
     frees: LazyPagingItems<Post>,
     lazyListState: LazyListState,
-    onClickPost: (Long) -> Unit
+    onClickPost: (Long) -> Unit,
+    onClickPostScrap: (Long, Boolean) -> Unit
 ) {
     LazyColumn(
         modifier = modifier
@@ -75,7 +76,8 @@ fun FreePost(
                                     shape = RoundedCornerShape(12.dp)
                                 ),
                             post = popularFrees[it],
-                            onClick = { onClickPost(popularFrees[it].postId) }
+                            onClick = { onClickPost(popularFrees[it].postId) },
+                            onClickPostScrap = onClickPostScrap
                         )
                     }
                 }
@@ -98,7 +100,7 @@ fun FreePost(
                         modifier = Modifier.padding(horizontal = 16.dp),
                         post = post,
                         onClick = { onClickPost(post.postId) },
-                        onClickScrap = { postId, scrap -> }
+                        onClickScrap = onClickPostScrap
                     )
                     HorizontalDivider(
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 20.dp),

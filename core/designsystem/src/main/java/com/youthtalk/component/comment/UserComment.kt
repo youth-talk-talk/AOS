@@ -51,7 +51,8 @@ fun UserComment(
     onPostModifyComment: (Comment) -> Unit,
     onDeleteComment: (Comment) -> Unit,
     onPostReportComment: () -> Unit,
-    onPostReportUser: () -> Unit
+    onPostReportUser: () -> Unit,
+    onCommentLike: (Long, Boolean) -> Unit
 ) {
     val scope = rememberCoroutineScope()
     var bottomSheet by remember {
@@ -145,6 +146,12 @@ fun UserComment(
                 horizontalArrangement = Arrangement.spacedBy(18.dp)
             ) {
                 Row(
+                    modifier = Modifier.clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null
+                    ) {
+                        onCommentLike(comment.commentId, comment.isLikedByMember)
+                    },
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(2.dp)
                 ) {
@@ -252,7 +259,8 @@ private fun UserCommentPreview() {
             onPostModifyComment = {},
             onDeleteComment = {},
             onPostReportComment = {},
-            onPostReportUser = {}
+            onPostReportUser = {},
+            onCommentLike = { _, _ -> }
         )
     }
 }

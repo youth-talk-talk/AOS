@@ -7,4 +7,5 @@ sealed interface CommunityUiEvent : UiEvent {
     data object InitData : CommunityUiEvent
     data class ChangeCategory(val category: Category) : CommunityUiEvent
     data object SyncPostDate : CommunityUiEvent
+    data class PostScrapPost(val postId: Long, val scrap: Boolean) : CommunityUiEvent
 }

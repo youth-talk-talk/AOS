@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -27,10 +28,19 @@ import com.youthtalk.model.post.PostSubject
 import java.text.DecimalFormat
 
 @Composable
-fun CommunitySearchResultScreen(modifier: Modifier = Modifier, communityType: PostSubject, posts: LazyPagingItems<Post>, totalCount: Int) {
+fun CommunitySearchResultScreen(
+    modifier: Modifier = Modifier,
+    communityType: PostSubject,
+    posts: LazyPagingItems<Post>,
+    lazyListState: LazyListState,
+    totalCount: Int,
+    onClickPost: (Long) -> Unit,
+    onClickPostScrap: (Long, Boolean) -> Unit
+) {
     LazyColumn(
         modifier = modifier
-            .fillMaxSize()
+            .fillMaxSize(),
+        state = lazyListState
     ) {
         if (totalCount != 0) {
             if (posts.loadState.refresh is LoadState.NotLoading) {
@@ -57,8 +67,8 @@ fun CommunitySearchResultScreen(modifier: Modifier = Modifier, communityType: Po
                         PostCard(
                             modifier = Modifier.padding(horizontal = 16.dp),
                             post = post,
-                            onClick = {},
-                            onClickScrap = { postId, scrap -> }
+                            onClick = { onClickPost(post.postId) },
+                            onClickScrap = onClickPostScrap
                         )
 
                         HorizontalDivider(

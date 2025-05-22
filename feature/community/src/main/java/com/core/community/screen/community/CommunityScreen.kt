@@ -156,14 +156,16 @@ fun CommunityScreen(
                         popularReviews = state.popularReviews,
                         lazyListState = reviewLazyListState,
                         onClickPost = onClickPostDetail,
-                        onClickCategory = { category -> viewModel.setEvent(CommunityUiEvent.ChangeCategory(category)) }
+                        onClickCategory = { category -> viewModel.setEvent(CommunityUiEvent.ChangeCategory(category)) },
+                        onClickPostScrap = { id, scrap -> viewModel.setEvent(CommunityUiEvent.PostScrapPost(id, scrap)) }
                     )
 
                     PostSubject.POST -> FreePost(
                         lazyListState = freesLazyListState,
                         popularFrees = state.popularFrees,
                         frees = frees,
-                        onClickPost = onClickPostDetail
+                        onClickPost = onClickPostDetail,
+                        onClickPostScrap = { id, scrap -> viewModel.setEvent(CommunityUiEvent.PostScrapPost(id, scrap)) }
                     )
                 }
             }

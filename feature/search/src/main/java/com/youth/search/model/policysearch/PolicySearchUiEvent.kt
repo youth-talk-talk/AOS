@@ -11,4 +11,5 @@ sealed interface PolicySearchUiEvent : UiEvent {
     data class SetState(val state: SearchState) : PolicySearchUiEvent
     data class Search(val search: String) : PolicySearchUiEvent
     data class SetFilter(val searchFilter: SearchFilter, val sortType: SortType) : PolicySearchUiEvent
+    data class PolicyScrap(val policyId: Long, val scrap: Boolean) : PolicySearchUiEvent
 }

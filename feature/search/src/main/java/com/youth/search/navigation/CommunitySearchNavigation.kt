@@ -12,10 +12,11 @@ fun NavController.navigateCommunitySearch(communityType: PostSubject, navOptions
     navigate(CommunitySearch(communityType), navOptions)
 }
 
-fun NavGraphBuilder.communitySearchNavigation(onBack: () -> Unit) {
+fun NavGraphBuilder.communitySearchNavigation(onBack: () -> Unit, onClickPostDetail: (Long) -> Unit) {
     composable<CommunitySearch> {
         CommunitySearchScreen(
-            onBack = onBack
+            onBack = onBack,
+            onClickPostDetail = onClickPostDetail
         )
     }
 }
