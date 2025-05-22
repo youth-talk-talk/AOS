@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import com.core.base.BaseViewModel
+import com.core.domain.usercase.post.PostPostScrapUseCase
 import com.core.domain.usercase.search.GetKeywordPostCountUseCase
 import com.core.domain.usercase.search.GetKeywordPostUseCase
 import com.core.domain.usercase.search.GetRecentListUseCase
@@ -29,6 +30,7 @@ class CommunitySearchViewModel @Inject constructor(
     val postRecentListUseCase: PostRecentListUseCase,
     val getKeywordPostCountUseCase: GetKeywordPostCountUseCase,
     val getKeywordPostUseCase: GetKeywordPostUseCase,
+    private val postPostScrapUseCase: PostPostScrapUseCase,
     savedStateHandle: SavedStateHandle
 ) : BaseViewModel<CommunityUiState, CommunityUiEvent, CommunityUiEffect>(
     initialState = CommunityUiState.initState
@@ -44,6 +46,20 @@ class CommunitySearchViewModel @Inject constructor(
             is CommunityUiEvent.SetState -> setSearchState(event.state)
             is CommunityUiEvent.Search -> search(event.keyword, event.communityType)
             is CommunityUiEvent.SetRecently -> setRecentlyListUseCase(event.list)
+            is CommunityUiEvent.PostPostScrap -> postPostScrap(event.postId, event.scrap)
+            is CommunityUiEvent.OnClickPost -> setEffect { CommunityUiEffect.ClickPost(event.postId) }
+        }
+    }
+
+    private fun postPostScrap(postId: Long, scrap: Boolean) {
+        viewModelScope.launch {
+            postPostScrapUseCase(postId, scrap)
+                .catch {
+                    Timber.e("HomeViewModel postPostScrap error $it")
+                }
+                .collectLatest {
+                    Timber.e("HomeViewModel postPostScrap success $it")
+                }
         }
     }
 

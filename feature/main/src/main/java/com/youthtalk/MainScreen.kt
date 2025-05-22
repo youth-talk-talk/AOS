@@ -124,7 +124,8 @@ fun NavHostScreen(
             onClickPolicyDetail = navController::navigatePolicyDetail
         )
         communitySearchNavigation(
-            onBack = { navController.popBackStack() }
+            onBack = { navController.popBackStack() },
+            onClickPostDetail = navController::navigateCommunityDetail
         )
         popularPolicyNavigation(
             onBack = navController::popBackStack,
