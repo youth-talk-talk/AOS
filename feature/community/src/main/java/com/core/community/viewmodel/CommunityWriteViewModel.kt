@@ -73,6 +73,28 @@ class CommunityWriteViewModel @Inject constructor(
             }
 
             is CommunityWriteUiEvent.PostCreatePost -> postCreatePost()
+            is CommunityWriteUiEvent.ImageDelete -> deleteImage(event.index)
+        }
+    }
+
+    private fun deleteImage(index: Int) {
+        val image = state.value.contentList[index]
+        if (image !is Contents.Image) return
+
+        val content = state.value.contentList[index + 1]
+        if (content !is Contents.Text) return
+        val contents = state.value.contentList.filterIndexed { i, _ -> !((i == index) || (i == index + 1)) }.toMutableList()
+        val prevText = contents[index - 1]
+        if (prevText is Contents.Text) {
+            val newText = prevText.textFieldValue.text + content.textFieldValue.text
+            contents[index - 1] = Contents.Text(
+                textFieldValue = TextFieldValue(text = newText, selection = TextRange(newText.length))
+            )
+        }
+        setState {
+            copy(
+                contentList = contents
+            )
         }
     }
 
