@@ -20,7 +20,8 @@ object DatabaseModule {
         return Room.databaseBuilder(
             context = context,
             name = "youth",
-            klass = YouthDatabase::class.java,
-        ).build()
+            klass = YouthDatabase::class.java
+        )
+            .build()
     }
 }

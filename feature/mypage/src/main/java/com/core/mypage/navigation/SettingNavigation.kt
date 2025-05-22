@@ -10,38 +10,38 @@ import com.core.mypage.navigation.SettingRoute.NICKNAME_SETTING
 import com.core.mypage.navigation.SettingRoute.SCRAP_POLICY
 
 sealed class SettingNavigation(
-    val route: String,
+    val route: String
 ) {
     data object MyPageHome : SettingNavigation(
-        route = MY_PAGE_HOME,
+        route = MY_PAGE_HOME
     )
 
     data object AccountManage : SettingNavigation(
-        route = ACCOUNT_MANAGE,
+        route = ACCOUNT_MANAGE
     )
 
     data object NicknameSetting : SettingNavigation(
-        route = NICKNAME_SETTING,
+        route = NICKNAME_SETTING
     )
 
     data object ScrapPolicy : SettingNavigation(
-        route = SCRAP_POLICY,
+        route = SCRAP_POLICY
     )
 
     data object MyPagePost : SettingNavigation(
-        route = MY_PAGE_POST,
+        route = MY_PAGE_POST
     )
 
     data object MyPageComment : SettingNavigation(
-        route = MY_PAGE_COMMENT,
+        route = MY_PAGE_COMMENT
     )
 
     data object Announce : SettingNavigation(
-        route = ANNOUNCE,
+        route = ANNOUNCE
     )
 
     data object AnnounceDetail : SettingNavigation(
-        route = ANNOUNCE_DETAIL,
+        route = ANNOUNCE_DETAIL
     )
 }
 

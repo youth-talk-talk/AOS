@@ -18,9 +18,9 @@ import com.core.navigation.navigator.MainNavigator
 import com.core.screen.LoginNavHostScreen
 import com.youthtalk.designsystem.YongProjectTheme
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class LoginActivity : ComponentActivity() {
@@ -45,7 +45,7 @@ class LoginActivity : ComponentActivity() {
                             splashScreen.setKeepOnScreenCondition { false }
                             mainNavigator.navigateFrom(
                                 activity = this@LoginActivity,
-                                withFinish = true,
+                                withFinish = true
                             )
                         }
 
@@ -60,7 +60,7 @@ class LoginActivity : ComponentActivity() {
                 Scaffold { innerPadding ->
                     LoginNavHostScreen(
                         modifier = Modifier.padding(innerPadding),
-                        viewModel = viewModel,
+                        viewModel = viewModel
                     )
                 }
             }
@@ -75,7 +75,7 @@ class LoginActivity : ComponentActivity() {
                     it?.let {
                         mainNavigator.navigateFrom(
                             activity = this@LoginActivity,
-                            withFinish = true,
+                            withFinish = true
                         )
                     }
                 }

@@ -8,11 +8,11 @@ data class AnnounceDetailResponse(
     val title: String,
     val content: String,
     val imageList: List<ImageInfoResponse>,
-    val updateAt: String,
+    val updateAt: String
 )
 
 @Serializable
 data class ImageInfoResponse(
     val id: Long,
-    val imgUrl: String,
+    val imgUrl: String
 )

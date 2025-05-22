@@ -5,7 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,57 +20,69 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
 import com.youth.app.feature.mypage.R
 import com.youthtalk.designsystem.YongProjectTheme
 import com.youthtalk.designsystem.gray10
 import com.youthtalk.designsystem.gray80
+import com.youthtalk.model.User
+import com.youthtalk.model.typeenum.Region
 
 @Composable
-fun ProfileCard(modifier: Modifier = Modifier, username: String, email: String, onClick: () -> Unit) {
+fun ProfileCard(modifier: Modifier = Modifier, user: User, onClick: () -> Unit) {
     Row(
         modifier = modifier
             .fillMaxWidth()
             .background(color = gray10)
             .clickable(
                 indication = null,
-                interactionSource = remember { MutableInteractionSource() },
+                interactionSource = remember { MutableInteractionSource() }
             ) {
                 onClick()
             },
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween,
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Row(
-            horizontalArrangement = Arrangement.spacedBy(10.dp),
+            horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            Box(
+            user.profileImgUrl?.let { img ->
+                AsyncImage(
+                    modifier = Modifier
+                        .size(60.dp)
+                        .clip(CircleShape),
+                    model = img,
+                    contentDescription = "프로필 이미지"
+                )
+            } ?: Image(
                 modifier = Modifier
                     .size(60.dp)
-                    .clip(CircleShape)
-                    .background(gray80),
+                    .clip(CircleShape),
+                painter = painterResource(com.youth.app.core.designsystem.R.drawable.profile_thumnail),
+                contentDescription = "기본 이미지"
             )
 
             Column(
-                verticalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Text(
-                    text = username,
-                    style = MaterialTheme.typography.bodyMedium,
+                    text = user.nickname,
+                    style = MaterialTheme.typography.bodyMedium
                 )
 
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                    horizontalArrangement = Arrangement.spacedBy(6.dp)
                 ) {
                     Image(
                         painter = painterResource(R.drawable.kakao),
-                        contentDescription = "카카오 이미지",
+                        contentDescription = "카카오 이미지"
                     )
 
                     Text(
-                        text = email,
+                        text = "vsvx13@naver.com",
                         style = MaterialTheme.typography.labelMedium.copy(
-                            color = gray80,
-                        ),
+                            color = gray80
+                        )
                     )
                 }
             }
@@ -79,7 +90,7 @@ fun ProfileCard(modifier: Modifier = Modifier, username: String, email: String, 
 
         Image(
             painter = painterResource(R.drawable.arrowright),
-            contentDescription = "이동이미지",
+            contentDescription = "이동이미지"
         )
     }
 }
@@ -89,9 +100,13 @@ fun ProfileCard(modifier: Modifier = Modifier, username: String, email: String, 
 private fun ProfileCardPreview() {
     YongProjectTheme {
         ProfileCard(
-            username = "놀고픈 청년",
-            email = "abcd@kakao.com",
-            onClick = {},
+            user = User(
+                memberId = 0,
+                nickname = "놀고픈 청년",
+                profileImgUrl = null,
+                region = Region.ALL
+            ),
+            onClick = {}
         )
     }
 }

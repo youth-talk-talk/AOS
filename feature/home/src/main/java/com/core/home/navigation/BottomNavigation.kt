@@ -35,8 +35,8 @@ fun BottomNavigation(modifier: Modifier = Modifier, route: HomeTabNavigation, on
         listOf(
             HomeTabNavigation.Home,
             HomeTabNavigation.Policy,
-            HomeTabNavigation.Community,
-            HomeTabNavigation.Setting,
+            HomeTabNavigation.Community(),
+            HomeTabNavigation.Setting
         )
 
     val scope = rememberCoroutineScope()
@@ -44,22 +44,22 @@ fun BottomNavigation(modifier: Modifier = Modifier, route: HomeTabNavigation, on
     Column {
         HorizontalDivider(
             thickness = 1.dp,
-            color = gray40,
+            color = gray40
         )
         Row(
             modifier = modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(4.dp),
+            horizontalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             bottomNavigation.forEach { currentRoute ->
                 val color = if (currentRoute == route) MaterialTheme.colorScheme.primary else gray80
                 val pair = when (currentRoute) {
-                    HomeTabNavigation.Community -> Pair(R.drawable.community, "커뮤니티")
-                    HomeTabNavigation.Home -> Pair(R.drawable.home, "홈")
-                    HomeTabNavigation.Policy -> Pair(R.drawable.policy, "청년정책")
-                    HomeTabNavigation.Setting -> Pair(R.drawable.person, "마이페이지")
+                    is HomeTabNavigation.Community -> Pair(R.drawable.community, "커뮤니티")
+                    is HomeTabNavigation.Home -> Pair(R.drawable.home, "홈")
+                    is HomeTabNavigation.Policy -> Pair(R.drawable.policy, "청년정책")
+                    is HomeTabNavigation.Setting -> Pair(R.drawable.person, "마이페이지")
                 }
                 BottomIcon(
                     title = pair.second,
@@ -74,7 +74,7 @@ fun BottomNavigation(modifier: Modifier = Modifier, route: HomeTabNavigation, on
                     },
                     onClickTab = {
                         onClickNavigation(currentRoute)
-                    },
+                    }
                 )
             }
         }
@@ -93,7 +93,7 @@ private fun RowScope.BottomIcon(title: String, @DrawableRes icon: Int, color: Co
                 interactionSource = remember {
                     MutableInteractionSource()
                 },
-                indication = null,
+                indication = null
             ) {
                 onClickTab()
 //                    if (navHostController.currentDestination?.route != mainNav.route) {
@@ -107,17 +107,17 @@ private fun RowScope.BottomIcon(title: String, @DrawableRes icon: Int, color: Co
 //                    } else {
 //                        scrollTop()
 //                    }
-            },
+            }
     ) {
         Column(
             modifier = Modifier.align(Alignment.Center),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(4.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             Box(
                 modifier =
                 Modifier
-                    .size(24.dp),
+                    .size(24.dp)
             ) {
                 Image(
                     modifier =
@@ -126,14 +126,14 @@ private fun RowScope.BottomIcon(title: String, @DrawableRes icon: Int, color: Co
                         .size(24.dp),
                     painter = painterResource(id = icon),
                     contentDescription = title,
-                    colorFilter = ColorFilter.tint(color = color),
+                    colorFilter = ColorFilter.tint(color = color)
                 )
             }
             Text(
                 text = title,
                 style =
                 MaterialTheme.typography.headlineMedium
-                    .copy(color = color),
+                    .copy(color = color)
             )
         }
     }

@@ -9,6 +9,16 @@ plugins {
 
 android {
     setNamespace("core.data")
+    defaultConfig {
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments += "room.schemaLocation" to "$projectDir/schemas"
+            }
+        }
+    }
+    ksp {
+        arg("room.schemaLocation", "$projectDir/schemas")
+    }
 }
 
 dependencies {

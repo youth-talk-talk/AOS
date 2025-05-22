@@ -1,17 +1,20 @@
 package com.core.dataapi.repository
 
 import androidx.paging.PagingData
-import com.youthtalk.model.Category
-import com.youthtalk.model.FilterInfo
-import com.youthtalk.model.Policy
+import com.youthtalk.model.policy.Policy
+import com.youthtalk.model.policy.PolicyType
+import com.youthtalk.model.policy.SearchPolicy
+import com.youthtalk.model.search.SearchFilter
+import com.youthtalk.model.typeenum.SortType
 import kotlinx.coroutines.flow.Flow
 
 interface SpecPolicyRepository {
-    fun getPolicies(categories: List<Category>?, keyword: String?): Flow<Flow<PagingData<Policy>>>
-    fun getCount(categories: List<Category>?, keyword: String?): Flow<Int>
-    fun getFilterInfo(): Flow<FilterInfo>
-    fun saveFilterInfo(filterInfo: FilterInfo): Flow<FilterInfo>
-    fun postScrap(id: String): Flow<String>
-    fun postAddComment(policyId: String, text: String): Flow<Long>
+    fun getPolicies(searchFilter: SearchFilter, policyType: PolicyType, sortType: SortType): Flow<Flow<PagingData<Policy>>>
+    fun getCount(searchFilter: SearchFilter, sortType: SortType): Flow<Int>
+    fun postScrap(id: Long, scrap: Boolean): Flow<String>
+    fun searchPolicyName(policyName: String): Flow<Flow<PagingData<SearchPolicy>>>
+    fun postAddComment(policyId: Long, text: String): Flow<Long>
     fun postDeleteComment(commentId: Long): Flow<String>
+    fun getScrapPolicies(): Flow<Flow<PagingData<Policy>>>
+    fun deleteAllRecentlyViewPolicies(): Flow<String>
 }

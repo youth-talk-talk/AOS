@@ -22,16 +22,16 @@ fun KeywordTag(modifier: Modifier = Modifier, text: String, backgroundColor: Col
         modifier = modifier
             .background(
                 color = backgroundColor,
-                shape = RoundedCornerShape(4.dp),
+                shape = RoundedCornerShape(4.dp)
             )
             .padding(horizontal = 6.dp, vertical = 2.dp),
-        contentAlignment = Alignment.Center,
+        contentAlignment = Alignment.Center
     ) {
         Text(
             text = text,
             style = MaterialTheme.typography.labelMedium.copy(
-                color = textColor,
-            ),
+                color = textColor
+            )
         )
     }
 }
@@ -43,7 +43,7 @@ private fun KeywordTagPreview() {
         KeywordTag(
             text = "상시",
             textColor = MaterialTheme.colorScheme.errorContainer,
-            backgroundColor = MaterialTheme.colorScheme.onError,
+            backgroundColor = MaterialTheme.colorScheme.onError
         )
     }
 }
@@ -53,7 +53,7 @@ private fun KeywordTagPreview() {
 private fun KeywordTagRegionPreview() {
     YongProjectTheme {
         KeywordTag(
-            text = "지역",
+            text = "지역"
         )
     }
 }

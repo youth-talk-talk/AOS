@@ -1,12 +1,12 @@
 package com.core.domain.usercase.policydetail
 
 import com.core.dataapi.repository.CommentRepository
-import com.youthtalk.model.Comment
-import kotlinx.coroutines.flow.Flow
+import com.youthtalk.model.comment.CommentInfo
 import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
 
 class GetPolicyDetailCommentUseCase @Inject constructor(
-    private val commentRepository: CommentRepository,
+    private val commentRepository: CommentRepository
 ) {
-    operator fun invoke(policyId: String): Flow<List<Comment>> = commentRepository.getPolicyComment(policyId)
+    operator fun invoke(policyId: Long): Flow<CommentInfo> = commentRepository.getPolicyComment(policyId)
 }

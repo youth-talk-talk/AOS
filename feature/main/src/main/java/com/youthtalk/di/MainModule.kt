@@ -16,7 +16,7 @@ internal class MainNavigatorImpl @Inject constructor() : MainNavigator {
     override fun navigateFrom(activity: Activity, intentBuilder: Intent.() -> Intent, withFinish: Boolean) {
         activity.startActivityWithAnimation<MainActivity>(
             intentBuilder = intentBuilder,
-            withFinish = withFinish,
+            withFinish = withFinish
         )
     }
 }

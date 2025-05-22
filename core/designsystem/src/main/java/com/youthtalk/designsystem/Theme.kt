@@ -22,9 +22,10 @@ private val DarkColorScheme =
         primaryContainer = Color.White,
         surface = surface,
         onSurface = onSurface,
+        surfaceContainer = Color.White,
         error = error,
         onError = onError,
-        errorContainer = accent,
+        errorContainer = accent
     )
 
 private val LightColorScheme =
@@ -33,13 +34,14 @@ private val LightColorScheme =
         onPrimary = onPrimary,
         background = backgroundColor,
         onBackground = onBackground,
+        surfaceContainer = Color.White,
         onPrimaryContainer = Color.White,
         primaryContainer = Color.White,
         surface = surface,
         onSurface = onSurface,
         error = error,
         onError = onError,
-        errorContainer = accent,
+        errorContainer = accent
     )
 
 @Composable
@@ -53,14 +55,14 @@ fun YongProjectTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Compo
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            window.navigationBarColor = Color.White.toArgb()
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
+            window.navigationBarColor = Color.Transparent.toArgb()
+            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
         }
     }
 
     MaterialTheme(
         colorScheme = colorScheme,
         typography = Typography,
-        content = content,
+        content = content
     )
 }

@@ -19,22 +19,22 @@ import com.youthtalk.designsystem.gray90
 fun TermsScreen(modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
-            .fillMaxSize(),
+            .fillMaxSize()
     ) {
         MiddleTitleTopBar(
             title = stringResource(R.string.terms_topbar_title),
-            onBack = {},
+            onBack = {}
         )
         Column(
             modifier = Modifier
                 .padding(vertical = 18.dp, horizontal = 20.dp)
-                .verticalScroll(rememberScrollState()),
+                .verticalScroll(rememberScrollState())
         ) {
             Text(
                 text = stringResource(R.string.law_info),
                 style = MaterialTheme.typography.labelMedium.copy(
-                    color = gray90,
-                ),
+                    color = gray90
+                )
             )
         }
     }

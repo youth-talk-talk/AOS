@@ -17,29 +17,6 @@
     <string name="region_sub_title">지역을 기반으로 다양한 정책을 추천해 드려요</string>
     <string name="input_nickname_hint">닉네임을 입력해 주세요</string>
     <string name="input_region_hint">지역을 선택해 주세요.</string>
-    <string name="bottom_sheet_button_text">적용하기</string>
-    <string name="bottom_sheet_title">지역을 선택해 주세요</string>
-
-    <string-array name="regions">
-        <item>전체 지역</item>
-        <item>서울</item>
-        <item>부산</item>
-        <item>대구</item>
-        <item>인천</item>
-        <item>광주</item>
-        <item>대전</item>
-        <item>울산</item>
-        <item>경기</item>
-        <item>강원</item>
-        <item>충북</item>
-        <item>충남</item>
-        <item>전북</item>
-        <item>전남</item>
-        <item>경북</item>
-        <item>경남</item>
-        <item>제주</item>
-        <item>세종</item>
-    </string-array>
 
     <string-array name="first">
         <item>빠른</item>

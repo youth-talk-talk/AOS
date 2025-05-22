@@ -27,7 +27,7 @@ fun CustomCheckBox(modifier: Modifier = Modifier, isCheck: Boolean = false, onCl
             .size(20.dp)
             .clip(CircleShape)
             .background(background),
-        contentAlignment = Alignment.Center,
+        contentAlignment = Alignment.Center
     ) {
         Icon(
             modifier = Modifier
@@ -37,7 +37,7 @@ fun CustomCheckBox(modifier: Modifier = Modifier, isCheck: Boolean = false, onCl
                 },
             painter = painterResource(R.drawable.check),
             contentDescription = "체크",
-            tint = gray10,
+            tint = gray10
         )
     }
 }
@@ -48,7 +48,7 @@ private fun CustomCheckBoxTruePreview() {
     YongProjectTheme {
         CustomCheckBox(
             isCheck = true,
-            onClick = {},
+            onClick = {}
         )
     }
 }
@@ -59,7 +59,7 @@ private fun CustomCheckBoxFalsePreview() {
     YongProjectTheme {
         CustomCheckBox(
             isCheck = false,
-            onClick = {},
+            onClick = {}
         )
     }
 }

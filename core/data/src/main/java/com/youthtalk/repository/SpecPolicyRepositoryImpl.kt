@@ -1,5 +1,6 @@
 package com.youthtalk.repository
 
+import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
@@ -8,60 +9,78 @@ import com.core.datastore.datasource.DataStoreDataSource
 import com.core.exception.NoDataException
 import com.youthtalk.data.CommentService
 import com.youthtalk.data.PolicyService
-import com.youthtalk.datasource.specpolicy.SpecPolicyPagingSource
+import com.youthtalk.datasource.policy.PolicyRemoteMediator
+import com.youthtalk.datasource.policy.PolicySearchPagingSource
+import com.youthtalk.datasource.policy.ScrapPolicyRemoteMediator
+import com.youthtalk.datasource.room.YouthDatabase
 import com.youthtalk.dto.PostAddCommentResponse
 import com.youthtalk.dto.specpolicy.CommentRequest
-import com.youthtalk.dto.specpolicy.FilterInfoRequest
 import com.youthtalk.dto.specpolicy.SpecPoliciesResponse
-import com.youthtalk.model.Category
-import com.youthtalk.model.FilterInfo
-import com.youthtalk.model.Policy
+import com.youthtalk.model.policy.Policy
+import com.youthtalk.model.policy.PolicyType
+import com.youthtalk.model.policy.SearchPolicy
+import com.youthtalk.model.search.SearchFilter
+import com.youthtalk.model.typeenum.SortType
 import com.youthtalk.utils.ErrorUtils.throwableError
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import timber.log.Timber
 
 class SpecPolicyRepositoryImpl @Inject constructor(
     private val policyService: PolicyService,
     private val commentService: CommentService,
     private val dataSource: DataStoreDataSource,
+    private val youthDatabase: YouthDatabase
 ) : SpecPolicyRepository {
-    override fun getPolicies(categories: List<Category>?, keyword: String?): Flow<Flow<PagingData<Policy>>> = flow {
+
+    @OptIn(ExperimentalPagingApi::class)
+    override fun getPolicies(searchFilter: SearchFilter, policyType: PolicyType, sortType: SortType): Flow<Flow<PagingData<Policy>>> = flow {
         emit(
             Pager(
-                pagingSourceFactory = {
-                    SpecPolicyPagingSource(
-                        policyService = policyService,
-                        dataSource = dataSource,
-                        category = categories,
-                        keyword = keyword,
-                    )
-                },
                 config = PagingConfig(
                     pageSize = 10,
-                    initialLoadSize = 10,
-                    enablePlaceholders = true,
+                    enablePlaceholders = true
                 ),
-            ).flow,
+                remoteMediator = PolicyRemoteMediator(
+                    policyService = policyService,
+                    requestBody = searchFilter.toRequestBody(),
+                    policyType = policyType,
+                    sortType = sortType,
+                    youthDatabase = youthDatabase
+                )
+            ) {
+                youthDatabase.policyDao().getPagingSource(policyType = policyType)
+            }.flow
         )
     }
 
-    override fun getCount(categories: List<Category>?, keyword: String?): Flow<Int> = flow {
-        val requestBody = FilterInfoRequest(
-            age = dataSource.getAge().first(),
-            categories = categories,
-            employmentCodeList = dataSource.getEmployCode().first(),
-            keyword = keyword,
-            isFinished = dataSource.getFinish().first(),
-        ).toRequestBody()
+    override fun searchPolicyName(policyName: String): Flow<Flow<PagingData<SearchPolicy>>> = flow {
+        val requestBody = SearchFilter(keyword = policyName).toRequestBody()
+        emit(
+            Pager(
+                config = PagingConfig(
+                    pageSize = 10,
+                    initialLoadSize = 10,
+                    enablePlaceholders = true
+                ),
+                pagingSourceFactory = {
+                    PolicySearchPagingSource(
+                        policyService = policyService,
+                        requestBody = requestBody
+                    )
+                }
+            ).flow
+        )
+    }
 
+    override fun getCount(searchFilter: SearchFilter, sortType: SortType): Flow<Int> = flow {
         runCatching {
             policyService.postSpecPolicies(
-                requestBody = requestBody,
+                requestBody = searchFilter.toRequestBody(),
+                sort = sortType,
                 page = 0,
-                size = 10,
+                size = 10
             )
         }
             .onSuccess { response ->
@@ -74,28 +93,12 @@ class SpecPolicyRepositoryImpl @Inject constructor(
             }
     }
 
-    override fun getFilterInfo(): Flow<FilterInfo> = combine(
-        dataSource.getAge(),
-        dataSource.getEmployCode(),
-        dataSource.getFinish(),
-    ) { age, employCode, isFinished ->
-        FilterInfo(age, employCode, isFinished)
-    }
-
-    override fun saveFilterInfo(filterInfo: FilterInfo): Flow<FilterInfo> = flow {
-        dataSource.setAge(filterInfo.age)
-        dataSource.setFinish(
-            if (filterInfo.isFinished == true || filterInfo.isFinished == null) null else false,
-        )
-        dataSource.setEmployCodeFilter(filterInfo.employmentCodeList)
-        emit(filterInfo)
-    }
-
-    override fun postScrap(id: String): Flow<String> = flow {
+    override fun postScrap(id: Long, scrap: Boolean): Flow<String> = flow {
         runCatching {
             policyService.postPolicyScrap(id)
         }
             .onSuccess { response ->
+                youthDatabase.policyDao().updatePostScrap(id, !scrap)
                 emit(response.message)
             }
             .onFailure {
@@ -103,10 +106,10 @@ class SpecPolicyRepositoryImpl @Inject constructor(
             }
     }
 
-    override fun postAddComment(policyId: String, text: String): Flow<Long> = flow {
+    override fun postAddComment(policyId: Long, text: String): Flow<Long> = flow {
         runCatching {
             policyService.postAddComment(
-                CommentRequest(policyId, text).toRequestBody(),
+                CommentRequest(policyId, text).toRequestBody()
             )
         }
             .onSuccess { response ->
@@ -128,6 +131,38 @@ class SpecPolicyRepositoryImpl @Inject constructor(
             }
             .onFailure {
                 throwableError<PostAddCommentResponse>(it)
+            }
+    }
+
+    @OptIn(ExperimentalPagingApi::class)
+    override fun getScrapPolicies(): Flow<Flow<PagingData<Policy>>> = flow {
+        emit(
+            Pager(
+                config = PagingConfig(
+                    pageSize = 10,
+                    enablePlaceholders = true
+                ),
+                remoteMediator = ScrapPolicyRemoteMediator(
+                    policyService = policyService,
+                    policyType = PolicyType.SCRAP,
+                    youthDatabase = youthDatabase
+                )
+            ) {
+                youthDatabase.policyDao().getScrapPagingSource(policyType = PolicyType.SCRAP)
+            }.flow
+        )
+    }
+
+    override fun deleteAllRecentlyViewPolicies(): Flow<String> = flow {
+        runCatching {
+            policyService.deleteAllRecentlyViewPolicies()
+        }
+            .onSuccess { response ->
+                emit(response.data ?: response.message)
+            }
+            .onFailure {
+                Timber.e("deleteAll error $it")
+                throwableError<String>(it)
             }
     }
 }

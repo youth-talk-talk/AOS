@@ -5,10 +5,10 @@ data class AnnounceDetail(
     val title: String,
     val content: String,
     val imageList: List<ImageInfo>,
-    val updateAt: String,
+    val updateAt: String
 )
 
 data class ImageInfo(
     val id: Long,
-    val imgUrl: String,
+    val imgUrl: String
 )

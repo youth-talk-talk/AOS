@@ -4,7 +4,7 @@ import com.core.dataapi.repository.SpecPolicyRepository
 import javax.inject.Inject
 
 class PostPolicyAddCommentUseCase @Inject constructor(
-    private val specPolicyRepository: SpecPolicyRepository,
+    private val specPolicyRepository: SpecPolicyRepository
 ) {
-    operator fun invoke(policyId: String, text: String) = specPolicyRepository.postAddComment(policyId, text)
+    operator fun invoke(policyId: Long, text: String) = specPolicyRepository.postAddComment(policyId, text)
 }

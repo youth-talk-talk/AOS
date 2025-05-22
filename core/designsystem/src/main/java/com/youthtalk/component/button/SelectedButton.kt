@@ -26,27 +26,27 @@ fun SelectedButton(modifier: Modifier = Modifier, isSelected: Boolean = false, t
         modifier = modifier
             .background(
                 color = if (isSelected) MaterialTheme.colorScheme.onPrimary else gray10,
-                shape = RoundedCornerShape(6),
+                shape = RoundedCornerShape(6)
             )
             .border(
                 width = 1.dp,
                 color = if (isSelected) MaterialTheme.colorScheme.primary else gray50,
-                shape = RoundedCornerShape(6.dp),
+                shape = RoundedCornerShape(6.dp)
             )
             .clickable(
                 indication = null,
-                interactionSource = remember { MutableInteractionSource() },
+                interactionSource = remember { MutableInteractionSource() }
             ) {
                 onClick()
             }
             .padding(vertical = 12.dp),
-        contentAlignment = Alignment.Center,
+        contentAlignment = Alignment.Center
     ) {
         Text(
             text = text,
             style = MaterialTheme.typography.titleMedium.copy(
-                color = gray100,
-            ),
+                color = gray100
+            )
         )
     }
 }
@@ -57,7 +57,7 @@ private fun SelectedButtonPreview() {
     YongProjectTheme {
         SelectedButton(
             text = "전체 지역",
-            onClick = {},
+            onClick = {}
         )
     }
 }
@@ -69,7 +69,7 @@ private fun SelectedButtonSelectedPreview() {
         SelectedButton(
             isSelected = true,
             text = "전체 지역",
-            onClick = {},
+            onClick = {}
         )
     }
 }

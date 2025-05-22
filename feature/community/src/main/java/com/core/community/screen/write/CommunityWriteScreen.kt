@@ -1,181 +1,210 @@
 package com.core.community.screen.write
 
-import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.isImeVisible
-import androidx.compose.material3.CircularProgressIndicator
+import android.Manifest
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Build
+import android.provider.Settings
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.composed
-import androidx.compose.ui.focus.onFocusEvent
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.core.community.model.CommunityWriteUiEffect
-import com.core.community.model.CommunityWriteUiEvent
-import com.core.community.model.CommunityWriteUiState
+import com.core.community.model.write.CommunityWriteUiEffect
+import com.core.community.model.write.CommunityWriteUiEvent
 import com.core.community.viewmodel.CommunityWriteViewModel
+import com.core.navigation.CommunityWriteNavigation
+import com.youthtalk.component.dialog.ModalDialog
+import com.youthtalk.component.picture.PictureScreen
 import com.youthtalk.designsystem.YongProjectTheme
+import com.youthtalk.model.post.PostSubject
+import com.youthtalk.util.FileConverter
 import kotlinx.coroutines.flow.collectLatest
+import timber.log.Timber
 
 @Composable
 fun CommunityWriteScreen(
-    type: String,
-    postId: Long,
+    modifier: Modifier = Modifier,
     viewModel: CommunityWriteViewModel = hiltViewModel(),
-    onBack: () -> Unit,
     checkPermission: (String) -> Boolean,
-    goDetail: (Long) -> Unit,
+    onBack: () -> Unit,
+    onCreate: (PostSubject) -> Unit,
+    onModify: (Long) -> Unit
 ) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    var showPictureDialog by remember { mutableStateOf(false) }
-    var deleteDialog by remember { mutableStateOf(false) }
-    val context = LocalContext.current
-    BackHandler { deleteDialog = true }
-
-    LifecycleEventEffect(event = Lifecycle.Event.ON_CREATE) {
-        viewModel.uiEvent(CommunityWriteUiEvent.GetPostInfo(postId))
-    }
-
-    LaunchedEffect(key1 = viewModel.uieffect) {
-        viewModel.uieffect.collectLatest {
+    val state by viewModel.state.collectAsStateWithLifecycle()
+    val navController = rememberNavController()
+    val scrollState = rememberLazyListState()
+    LaunchedEffect(viewModel.effect) {
+        viewModel.effect.collectLatest {
             when (it) {
-                is CommunityWriteUiEffect.GoDetail -> {
-                    goDetail(it.id)
+                is CommunityWriteUiEffect.GoPictureScreen -> navController.navigate(CommunityWriteNavigation.Picture)
+                is CommunityWriteUiEffect.OnBack -> navController.popBackStack()
+                is CommunityWriteUiEffect.ScrollIndex -> {
+                    scrollState.animateScrollToItem(it.index + 2)
                 }
-            }
-        }
-    }
 
-    when (uiState) {
-        is CommunityWriteUiState.Loading -> {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize(),
-                contentAlignment = Alignment.Center,
-            ) {
-                CircularProgressIndicator()
-            }
-        }
-        is CommunityWriteUiState.Success -> {
-            val state = uiState as CommunityWriteUiState.Success
-            CommunityWrite(
-                type,
-                title = state.title,
-                policies = state.searchPolicies.collectAsLazyPagingItems(),
-                contents = state.contents,
-                searchPolicy = state.selectPolicy,
-                requestFocus = viewModel.focusRequest,
-                onBack = { deleteDialog = true },
-                onClickPicture = { showPictureDialog = true },
-                onSearch = { viewModel.uiEvent(CommunityWriteUiEvent.SearchPolicies(it)) },
-                onPolicyDialogClick = { viewModel.uiEvent(CommunityWriteUiEvent.SelectPolicy(it)) },
-                onTitleTextChange = { viewModel.uiEvent(CommunityWriteUiEvent.ChangeTitleText(it)) },
-                onChangeTextValue = { contentInfo, text -> viewModel.uiEvent(CommunityWriteUiEvent.ChangeContents(contentInfo, text)) },
-                onDeleteText = { viewModel.uiEvent(CommunityWriteUiEvent.DeleteText) },
-                onDeleteImage = { viewModel.uiEvent(CommunityWriteUiEvent.DeleteImage(it)) },
-                createPost = { viewModel.uiEvent(CommunityWriteUiEvent.CreatePost(it, postId)) },
-            )
-
-            if (state.isLoading) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(Color.Transparent),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    CircularProgressIndicator()
+                is CommunityWriteUiEffect.CreatePost -> {
+                    onCreate(state.postType)
                 }
+                is CommunityWriteUiEffect.Modify -> onModify(it.postId)
             }
         }
     }
 
-    CommunityWriteDialog(
-        context = context,
-        showPictureDialog = showPictureDialog,
-        onDismissShowPictureDialog = { showPictureDialog = false },
-        checkPermission = checkPermission,
-        addImage = { changeUri -> viewModel.uiEvent(CommunityWriteUiEvent.AddImage(changeUri)) },
-        onBack = onBack,
-        deleteDialog = deleteDialog,
-        onDismissDeleteDialog = { deleteDialog = false },
-    )
-}
-
-@OptIn(ExperimentalLayoutApi::class)
-fun Modifier.clearFocusOnKeyboardDismiss(): Modifier = composed {
-    var isFocused by remember { mutableStateOf(false) }
-    var keyboardAppearedSinceLastFocused by remember { mutableStateOf(false) }
-    if (isFocused) {
-        val imeIsVisible = WindowInsets.isImeVisible
-        val focusManager = LocalFocusManager.current
-        LaunchedEffect(imeIsVisible) {
-            if (imeIsVisible) {
-                keyboardAppearedSinceLastFocused = true
-            } else if (keyboardAppearedSinceLastFocused) {
-                focusManager.clearFocus()
-            }
-        }
-    }
-    onFocusEvent {
-        if (isFocused != it.isFocused) {
-            isFocused = it.isFocused
-            if (isFocused) {
-                keyboardAppearedSinceLastFocused = false
-            }
-        }
-    }
-}
-
-@Composable
-fun Modifier.onClickNoIndicator(click: () -> Unit): Modifier = composed {
-    clickable(
-        interactionSource = remember {
-            MutableInteractionSource()
-        },
-        indication = null,
-        onClick = click,
-    )
-}
-
-fun Modifier.onEmptyHeight(isEmpty: Boolean): Modifier = composed {
-    if (isEmpty) {
-        height(100.dp)
+    val permissionState = viewModel.permissions
+    val permissionList = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        arrayOf(
+            Manifest.permission.CAMERA,
+            Manifest.permission.READ_MEDIA_IMAGES
+        )
     } else {
-        this
+        arrayOf(
+            Manifest.permission.CAMERA,
+            Manifest.permission.READ_EXTERNAL_STORAGE
+        )
+    }
+
+    val context = LocalContext.current
+    val launcher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        if (permissions.all { (_, isGranted) -> isGranted }) {
+            viewModel.setEvent(CommunityWriteUiEvent.GetImages)
+        } else {
+            permissions.forEach { (permission, isGranted) ->
+                Timber.e("permission $permission, isGranted $isGranted")
+                viewModel.onPermissionResult(
+                    permission,
+                    isGranted
+                )
+            }
+        }
+    }
+
+    if (permissionState.isNotEmpty()) {
+        if (permissionState.any { !checkPermission(it) }) {
+            ModalDialog(
+                title = "설정 화면으로 이동",
+                subTitle = "설정화면에서 권한을 변경해 주세요.",
+                cancelText = "나중에",
+                confirmText = "설정 화면 이동",
+                onDismissRequest = { viewModel.dismissDialog() },
+                onClickConfirm = {
+                    viewModel.dismissDialog()
+                    context.startActivity(
+                        Intent(
+                            Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                            Uri.fromParts("package", context.packageName, null)
+                        )
+                    )
+                }
+            )
+        } else {
+            ModalDialog(
+                title = "권한 허용",
+                subTitle = "모든 권한을 허용해야 기능을 이용할 수 있습니다.",
+                cancelText = "",
+                confirmText = "설정하기",
+                onDismissRequest = { viewModel.dismissDialog() },
+                onClickConfirm = {
+                    viewModel.dismissDialog()
+                    launcher.launch(permissionList)
+                }
+            )
+        }
+    }
+
+    NavHost(
+        modifier = modifier,
+        navController = navController,
+        startDestination = CommunityWriteNavigation.Write
+    ) {
+        composable<CommunityWriteNavigation.Write> {
+            WriteScreen(
+                state = state,
+                scrollState = scrollState,
+                onClickPolicySearch = { navController.navigate(CommunityWriteNavigation.PolicySearch) },
+                onTextChangeValue = { index, text ->
+                    viewModel.setEvent(CommunityWriteUiEvent.OnTextChangeValue(index, text))
+                },
+                checkPermission = {
+                    if (permissionList.all { ContextCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED }) {
+                        viewModel.setEvent(CommunityWriteUiEvent.GetImages)
+                    } else {
+                        launcher.launch(permissionList)
+                    }
+                },
+                onChangeFocus = { index, text ->
+                    viewModel.setEvent(CommunityWriteUiEvent.FocusChange(index, text))
+                },
+                onTextTitleChangeValue = {
+                    viewModel.setEvent(CommunityWriteUiEvent.ChangeTitle(it))
+                },
+                onBack = onBack,
+                onPostCreatePost = { viewModel.setEvent(CommunityWriteUiEvent.PostCreatePost) },
+                onDeleteImage = { viewModel.setEvent(CommunityWriteUiEvent.ImageDelete(it)) }
+            )
+        }
+
+        composable<CommunityWriteNavigation.PolicySearch> {
+            PolicySearchScreen(
+                searchPolicy = state.searchPolicy,
+                searchPolicies = state.searchPolicies.collectAsLazyPagingItems(),
+                onSearchPolicyChange = { viewModel.setEvent(CommunityWriteUiEvent.SearchPolicyChangeTextValue(it)) },
+                onSearchPolicy = { viewModel.setEvent(CommunityWriteUiEvent.PostSearchPolicy(it)) },
+                onBack = { viewModel.setEvent(CommunityWriteUiEvent.ClearSearchInfo) },
+                onClickSearchPolicy = { viewModel.setEvent(CommunityWriteUiEvent.OnClickSearchPolicy(it)) }
+            )
+        }
+
+        composable<CommunityWriteNavigation.Picture> {
+            PictureScreen(
+                images = state.images,
+                onBack = { navController.popBackStack() },
+                onSelectImage = { uri ->
+                    FileConverter.uriToFile(context, uri)?.let {
+                        viewModel.setEvent(CommunityWriteUiEvent.PostUploadImages(it))
+                    }
+                }
+            )
+        }
     }
 }
 
 @Preview
 @Composable
-private fun CommunityWriteScreenPreview() {
+private fun CommunityWriteFreeScreenPreview() {
     YongProjectTheme {
         CommunityWriteScreen(
-            type = "free",
-            postId = -1,
+            checkPermission = { true },
             onBack = {},
-            checkPermission = { false },
-            goDetail = {},
+            onCreate = {},
+            onModify = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun CommunityWriteReviewScreenPreview() {
+    YongProjectTheme {
+        CommunityWriteScreen(
+            checkPermission = { true },
+            onBack = {},
+            onCreate = {},
+            onModify = {}
         )
     }
 }

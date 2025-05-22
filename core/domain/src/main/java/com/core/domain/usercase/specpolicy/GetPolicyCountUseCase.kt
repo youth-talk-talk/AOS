@@ -1,11 +1,12 @@
 package com.core.domain.usercase.specpolicy
 
 import com.core.dataapi.repository.SpecPolicyRepository
-import com.youthtalk.model.Category
+import com.youthtalk.model.search.SearchFilter
+import com.youthtalk.model.typeenum.SortType
 import javax.inject.Inject
 
 class GetPolicyCountUseCase @Inject constructor(
-    private val specPolicyRepository: SpecPolicyRepository,
+    private val specPolicyRepository: SpecPolicyRepository
 ) {
-    operator fun invoke(categories: List<Category>?, keyword: String?) = specPolicyRepository.getCount(categories, keyword)
+    operator fun invoke(searchFilter: SearchFilter, sortType: SortType = SortType.RECENT) = specPolicyRepository.getCount(searchFilter, sortType)
 }

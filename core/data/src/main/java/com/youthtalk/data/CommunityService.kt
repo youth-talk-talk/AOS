@@ -1,10 +1,8 @@
 package com.youthtalk.data
 
 import com.youthtalk.dto.CommonResponse
-import com.youthtalk.dto.PostAddCommentResponse
 import com.youthtalk.dto.PostResponse
 import com.youthtalk.dto.PostSearchResponse
-import com.youthtalk.dto.ScrapPostDataResponse
 import com.youthtalk.dto.community.PostDetailResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -24,25 +22,18 @@ interface CommunityService {
     suspend fun postReviewPosts(
         @Query("page") page: Int,
         @Query("size") size: Int,
-        @Query("categories") categories: List<String>,
+        @Query("categories") categories: List<String>
     ): CommonResponse<PostResponse>
 
     @GET("/api/v1/posts/post")
     suspend fun getPosts(@Query("page") page: Int, @Query("size") size: Int): CommonResponse<PostResponse>
-
-    @GET("/api/v1/posts/{type}")
-    suspend fun getMyPagePosts(
-        @Path("type") type: String,
-        @Query("page") page: Int,
-        @Query("size") size: Int,
-    ): CommonResponse<List<ScrapPostDataResponse>>
 
     @GET("/api/v1/posts/keyword")
     suspend fun getSearchPosts(
         @Query("keyword") keyword: String,
         @Query("type") type: String,
         @Query("page") page: Int,
-        @Query("size") size: Int,
+        @Query("size") size: Int
     ): CommonResponse<PostSearchResponse>
 
     @POST("/api/v1/posts/{id}/scrap")
@@ -50,9 +41,6 @@ interface CommunityService {
 
     @GET("/api/v1/posts/{id}")
     suspend fun getPostDetail(@Path("id") id: Long): CommonResponse<PostDetailResponse>
-
-    @POST("/api/v1/posts/comments")
-    suspend fun postPostAddComment(@Body requestBody: RequestBody): CommonResponse<PostAddCommentResponse>
 
     @Multipart
     @POST("/api/v1/posts/image")
@@ -66,4 +54,10 @@ interface CommunityService {
 
     @DELETE("/api/v1/posts/{postId}")
     suspend fun deletePost(@Path("postId") postId: Long): CommonResponse<Unit>
+
+    @GET("/api/v1/posts/me")
+    suspend fun getMyPosts(@Query("page") page: Int, @Query("size") size: Int): CommonResponse<PostSearchResponse>
+
+    @GET("/api/v1/posts/scrap")
+    suspend fun getScrapPosts(@Query("page") page: Int, @Query("size") size: Int): CommonResponse<PostSearchResponse>
 }

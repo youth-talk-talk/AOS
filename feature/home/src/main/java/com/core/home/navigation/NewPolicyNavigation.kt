@@ -1,0 +1,21 @@
+package com.core.home.navigation
+
+import androidx.navigation.NavController
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavOptions
+import androidx.navigation.compose.composable
+import com.core.home.screen.NewPolicyScreen
+import com.core.navigation.navigator.NewPolicy
+
+fun NavController.navigateNewPolicy(navOptions: NavOptions? = null) {
+    navigate(NewPolicy, navOptions)
+}
+
+fun NavGraphBuilder.newPolicyNavigation(onBack: () -> Unit, onClickPolicyDetail: (Long) -> Unit) {
+    composable<NewPolicy> {
+        NewPolicyScreen(
+            onBack = onBack,
+            onClickPolicyDetail = onClickPolicyDetail
+        )
+    }
+}

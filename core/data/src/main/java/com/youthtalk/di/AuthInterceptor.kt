@@ -3,6 +3,9 @@ package com.youthtalk.di
 import com.core.datastore.datasource.DataStoreDataSource
 import com.youthtalk.dto.CommonResponse
 import com.youthtalk.dto.toResponseBody
+import java.net.HttpURLConnection.HTTP_OK
+import java.net.HttpURLConnection.HTTP_UNAUTHORIZED
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
@@ -13,12 +16,9 @@ import okhttp3.Protocol
 import okhttp3.Request
 import okhttp3.Response
 import timber.log.Timber
-import java.net.HttpURLConnection.HTTP_OK
-import java.net.HttpURLConnection.HTTP_UNAUTHORIZED
-import javax.inject.Inject
 
 class AuthInterceptor @Inject constructor(
-    private val dataStoreDataSource: DataStoreDataSource,
+    private val dataStoreDataSource: DataStoreDataSource
 ) : Interceptor {
 
     companion object {
@@ -71,7 +71,7 @@ class AuthInterceptor @Inject constructor(
             code = "M01",
             status = HTTP_UNAUTHORIZED,
             message = "",
-            data = null,
+            data = null
         )
 
         return Response.Builder()
@@ -88,7 +88,7 @@ class AuthInterceptor @Inject constructor(
             code = "M01",
             status = HTTP_UNAUTHORIZED,
             message = "",
-            data = null,
+            data = null
         )
 
         return Response.Builder()

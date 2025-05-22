@@ -31,35 +31,35 @@ fun ModalDialog(
     confirmBackground: Color = MaterialTheme.colorScheme.primary,
     onDismissRequest: () -> Unit,
     onClickCancel: () -> Unit = {},
-    onClickConfirm: () -> Unit,
+    onClickConfirm: () -> Unit = {}
 ) {
     Dialog(
-        onDismissRequest = onDismissRequest,
+        onDismissRequest = onDismissRequest
     ) {
         Column(
             modifier = modifier
                 .fillMaxWidth()
                 .background(
                     color = gray10,
-                    shape = RoundedCornerShape(10.dp),
+                    shape = RoundedCornerShape(10.dp)
                 )
                 .padding(horizontal = 16.dp, vertical = 24.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(6.dp),
+                verticalArrangement = Arrangement.spacedBy(6.dp)
             ) {
                 Text(
                     text = title,
-                    style = MaterialTheme.typography.titleLarge,
+                    style = MaterialTheme.typography.titleLarge
                 )
 
                 if (subTitle.isNotEmpty()) {
                     Text(
                         text = subTitle,
-                        style = MaterialTheme.typography.displaySmall,
+                        style = MaterialTheme.typography.displaySmall
                     )
                 }
             }
@@ -67,22 +67,24 @@ fun ModalDialog(
             Row(
                 modifier = Modifier
                     .fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                Round6Button(
-                    modifier = Modifier
-                        .weight(1f)
-                        .border(
-                            width = 1.dp,
-                            color = gray50,
-                            shape = RoundedCornerShape(6.dp),
-                        ),
-                    text = cancelText,
-                    onClick = {
-                        onClickCancel()
-                        onDismissRequest()
-                    },
-                )
+                if (cancelText.isNotEmpty()) {
+                    Round6Button(
+                        modifier = Modifier
+                            .weight(1f)
+                            .border(
+                                width = 1.dp,
+                                color = gray50,
+                                shape = RoundedCornerShape(6.dp)
+                            ),
+                        text = cancelText,
+                        onClick = {
+                            onDismissRequest()
+                            onClickCancel()
+                        }
+                    )
+                }
 
                 Round6Button(
                     modifier = Modifier
@@ -91,9 +93,9 @@ fun ModalDialog(
                     textColor = gray10,
                     backgroundColor = confirmBackground,
                     onClick = {
-                        onClickConfirm()
                         onDismissRequest()
-                    },
+                        onClickConfirm()
+                    }
                 )
             }
         }
@@ -111,7 +113,7 @@ private fun ModalDialogPreview() {
             confirmBackground = MaterialTheme.colorScheme.error,
             onDismissRequest = {},
             onClickCancel = {},
-            onClickConfirm = {},
+            onClickConfirm = {}
         )
     }
 }
@@ -127,7 +129,7 @@ private fun ModalDialogPrimaryPreview() {
             confirmText = "편집하기",
             onDismissRequest = {},
             onClickCancel = {},
-            onClickConfirm = {},
+            onClickConfirm = {}
         )
     }
 }

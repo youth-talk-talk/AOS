@@ -34,38 +34,38 @@ fun RegionDropDown(modifier: Modifier = Modifier, select: String = "", hint: Str
             .heightIn(min = 46.dp)
             .background(
                 color = gray10,
-                shape = RoundedCornerShape(6.dp),
+                shape = RoundedCornerShape(6.dp)
             )
             .border(
                 width = 1.dp,
                 color = gray50,
-                shape = RoundedCornerShape(6.dp),
+                shape = RoundedCornerShape(6.dp)
             )
             .clickable(
                 indication = null,
-                interactionSource = remember { MutableInteractionSource() },
+                interactionSource = remember { MutableInteractionSource() }
             ) {
                 onSelect()
             }
             .padding(vertical = 10.dp, horizontal = 12.dp),
-        verticalAlignment = Alignment.CenterVertically,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
             modifier = Modifier.weight(1f),
-            text = if (select.isEmpty()) hint else select,
+            text = select.ifEmpty { hint },
             style = MaterialTheme.typography.titleSmall.copy(
                 color = when (select.isEmpty()) {
                     true -> gray60
                     false -> gray100
-                },
-            ),
+                }
+            )
         )
 
         Icon(
             modifier = Modifier.padding(start = 10.dp),
             painter = painterResource(R.drawable.arrowdown),
             contentDescription = "펼치기",
-            tint = gray60,
+            tint = gray60
         )
     }
 }
@@ -77,7 +77,7 @@ private fun CustomDropDownPreview() {
         RegionDropDown(
             select = "",
             hint = "지역을 선택해 주세요",
-            onSelect = {},
+            onSelect = {}
         )
     }
 }

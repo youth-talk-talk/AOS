@@ -1,48 +1,16 @@
 package com.youthtalk.mapper
 
-import com.youthtalk.dto.PostDataResponse
-import com.youthtalk.dto.ScrapPostDataResponse
 import com.youthtalk.dto.community.PostContentInfoResponse
+import com.youthtalk.dto.community.PostContentRequest
+import com.youthtalk.dto.community.PostCreatePostRequest
 import com.youthtalk.dto.community.PostDetailResponse
-import com.youthtalk.model.Post
-import com.youthtalk.model.PostContentInfo
-import com.youthtalk.model.PostDetail
-import com.youthtalk.model.ReviewPost
-import com.youthtalk.model.ScrapPost
-
-fun PostDataResponse.toData() = Post(
-    postId = postId,
-    title = title,
-    writerId = writerId,
-    scraps = scraps,
-    scrap = scrap,
-    comments = comments,
-    policyId = policyId,
-    policyTitle = policyTitle,
-)
-
-fun PostDataResponse.toReviewData() = ReviewPost(
-    postId = postId,
-    title = title,
-    writerId = writerId,
-    scraps = scraps,
-    scrap = scrap,
-    comments = comments,
-    policyId = policyId,
-    policyTitle = policyTitle,
-)
-
-fun ScrapPostDataResponse.toData() = ScrapPost(
-    scrapId = scrapId,
-    postId = postId,
-    title = title,
-    writerId = writerId,
-    scraps = scraps,
-    scrap = scrap,
-    comments = comments,
-    policyId = policyId,
-    policyTitle = policyTitle,
-)
+import com.youthtalk.dto.community.PostModifyPostRequest
+import com.youthtalk.model.post.CreatePost
+import com.youthtalk.model.post.ModifyPost
+import com.youthtalk.model.post.PostContent
+import com.youthtalk.model.post.PostContentInfo
+import com.youthtalk.model.post.PostDetail
+import java.time.LocalDateTime
 
 fun PostDetailResponse.toData() = PostDetail(
     postId = postId,
@@ -54,12 +22,34 @@ fun PostDetailResponse.toData() = PostDetail(
     writerId = writerId,
     nickname = nickname,
     view = view,
-    images = images,
+    profileImage = profileImage,
     category = category,
-    scrap = scrap,
+    updatedAt = LocalDateTime.parse(updatedAt.replace(" ", "T")),
+    scrap = scrap
 )
 
 fun PostContentInfoResponse.toData() = PostContentInfo(
     content = this.content,
-    type = this.type,
+    type = this.type
+)
+
+fun CreatePost.toData(): PostCreatePostRequest = PostCreatePostRequest(
+    title = title,
+    postType = postType,
+    contentList = contentList.map { it.toData() },
+    policyId = policyId
+)
+
+fun ModifyPost.toData(): PostModifyPostRequest = PostModifyPostRequest(
+    title = title,
+    postType = postType,
+    policyId = policyId,
+    contentList = contentList.map { it.toData() },
+    addImgUrlList = addImgUrlList,
+    deletedImgUrlList = deletedImgUrlList
+)
+
+fun PostContent.toData(): PostContentRequest = PostContentRequest(
+    content = content,
+    type = type
 )

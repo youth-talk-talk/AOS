@@ -4,8 +4,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
-import androidx.navigation.toRoute
-import com.core.mypage.screen.CommentScreen
+import com.core.mypage.screen.CommentScreenRoot
 import com.core.navigation.model.CommentType
 import com.core.navigation.navigator.Comment
 
@@ -13,11 +12,18 @@ fun NavController.navigateSettingComment(type: CommentType, navOptions: NavOptio
     navigate(Comment(type), navOptions)
 }
 
-fun NavGraphBuilder.settingCommentNavigation() {
+fun NavGraphBuilder.settingCommentNavigation(
+    onBack: () -> Unit,
+    showSnackBar: (String) -> Unit,
+    onClickPostDetail: (Long) -> Unit,
+    onClickPolicyDetail: (Long) -> Unit
+) {
     composable<Comment> {
-        val route = it.toRoute<Comment>()
-        CommentScreen(
-            type = route.type,
+        CommentScreenRoot(
+            onBack = onBack,
+            showSnackBar = showSnackBar,
+            onClickPostDetail = onClickPostDetail,
+            onClickPolicyDetail = onClickPolicyDetail
         )
     }
 }

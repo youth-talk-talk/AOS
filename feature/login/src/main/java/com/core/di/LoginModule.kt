@@ -16,7 +16,7 @@ internal class LoginNavigatorImpl @Inject constructor() : LoginNavigator {
     override fun navigateFrom(activity: Activity, intentBuilder: Intent.() -> Intent, withFinish: Boolean) {
         activity.startActivityWithAnimation<LoginActivity>(
             intentBuilder = intentBuilder,
-            withFinish = withFinish,
+            withFinish = withFinish
         )
     }
 }

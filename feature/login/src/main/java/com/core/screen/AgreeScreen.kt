@@ -47,7 +47,7 @@ fun AgreeScreen(clickNext: () -> Unit, onBack: () -> Unit) {
         modifier = Modifier
             .fillMaxSize()
             .background(color = Color.White)
-            .padding(horizontal = 16.dp),
+            .padding(horizontal = 16.dp)
     ) {
         var isExpand by remember {
             mutableStateOf(false)
@@ -61,15 +61,15 @@ fun AgreeScreen(clickNext: () -> Unit, onBack: () -> Unit) {
         Text(
             text = stringResource(R.string.term_title),
             style = MaterialTheme.typography.bodyMedium.copy(
-                color = gray100,
-            ),
+                color = gray100
+            )
         )
 
         TermCheckBox(
             isCheck = isCheck,
             isExpand = isExpand,
             onClickCheck = { isCheck = !isCheck },
-            onClickExpand = { isExpand = !isExpand },
+            onClickExpand = { isExpand = !isExpand }
         )
 
         LawInfo(isExpand = isExpand)
@@ -80,10 +80,10 @@ fun AgreeScreen(clickNext: () -> Unit, onBack: () -> Unit) {
                 .fillMaxWidth()
                 .padding(
                     horizontal = 4.dp,
-                    vertical = 26.dp,
+                    vertical = 26.dp
                 ),
             isCheck = isCheck,
-            text = stringResource(R.string.next),
+            text = stringResource(R.string.next)
         ) { clickNext() }
     }
 }
@@ -93,17 +93,17 @@ internal fun LoginAppBar(onClickBack: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 24.dp, bottom = 20.dp),
+            .padding(top = 24.dp, bottom = 20.dp)
     ) {
         Image(
             modifier = Modifier.clickable(
                 indication = null,
-                interactionSource = remember { MutableInteractionSource() },
+                interactionSource = remember { MutableInteractionSource() }
             ) {
                 onClickBack()
             },
-            painter = painterResource(R.drawable.left_icon),
-            contentDescription = stringResource(R.string.back),
+            painter = painterResource(R.drawable.arrowleft),
+            contentDescription = stringResource(R.string.back)
         )
     }
 }
@@ -117,29 +117,29 @@ private fun TermCheckBox(isCheck: Boolean, isExpand: Boolean, onClickCheck: () -
             .fillMaxWidth()
             .clickable(
                 indication = null,
-                interactionSource = remember { MutableInteractionSource() },
+                interactionSource = remember { MutableInteractionSource() }
             ) {
                 onClickCheck()
             }
             .padding(vertical = 10.dp),
-        verticalAlignment = Alignment.CenterVertically,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         CustomCheckBox(
             isCheck = isCheck,
-            onClick = onClickCheck,
+            onClick = onClickCheck
         )
         Text(
             modifier = Modifier.padding(start = 8.dp, end = 4.dp),
             text = stringResource(R.string.checkbox_title),
             style = MaterialTheme.typography.displayMedium.copy(
-                color = gray80,
-            ),
+                color = gray80
+            )
         )
         Text(
             text = stringResource(R.string.checkbox_required),
             style = MaterialTheme.typography.displayMedium.copy(
-                color = MaterialTheme.colorScheme.primary,
-            ),
+                color = MaterialTheme.colorScheme.primary
+            )
         )
         Spacer(modifier = Modifier.weight(1f))
         Image(
@@ -147,7 +147,7 @@ private fun TermCheckBox(isCheck: Boolean, isExpand: Boolean, onClickCheck: () -
                 onClickExpand()
             },
             painter = painterResource(expandIcon),
-            contentDescription = stringResource(R.string.expand),
+            contentDescription = stringResource(R.string.expand)
         )
     }
 }
@@ -156,7 +156,7 @@ private fun TermCheckBox(isCheck: Boolean, isExpand: Boolean, onClickCheck: () -
 fun LawInfo(isExpand: Boolean) {
     AnimatedVisibility(
         modifier = Modifier.fillMaxWidth(),
-        visible = isExpand,
+        visible = isExpand
     ) {
         Column(
             modifier = Modifier
@@ -165,22 +165,22 @@ fun LawInfo(isExpand: Boolean) {
                 .padding(top = 6.dp)
                 .background(
                     color = gray20,
-                    shape = RoundedCornerShape(16.dp),
+                    shape = RoundedCornerShape(16.dp)
                 )
                 .border(
                     width = 1.dp,
                     color = gray30,
-                    shape = RoundedCornerShape(16.dp),
+                    shape = RoundedCornerShape(16.dp)
                 )
                 .padding(20.dp)
                 .verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
                 text = stringResource(R.string.law_info),
                 style = MaterialTheme.typography.labelSmall.copy(
-                    color = gray90,
-                ),
+                    color = gray90
+                )
             )
         }
     }
@@ -192,7 +192,7 @@ private fun AgreeScreenPreview() {
     YongProjectTheme {
         AgreeScreen(
             clickNext = {},
-            onBack = {},
+            onBack = {}
         )
     }
 }

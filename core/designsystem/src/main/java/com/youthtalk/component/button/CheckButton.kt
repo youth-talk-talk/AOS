@@ -28,22 +28,22 @@ fun CheckButton(modifier: Modifier = Modifier, isCheck: Boolean = false, text: S
         modifier = modifier
             .background(
                 color = backgroundColor,
-                shape = RoundedCornerShape(6.dp),
+                shape = RoundedCornerShape(6.dp)
             )
             .clickable(
                 indication = null,
-                interactionSource = remember { MutableInteractionSource() },
+                interactionSource = remember { MutableInteractionSource() }
             ) {
                 if (isCheck) onClick()
             }
             .padding(vertical = 12.dp),
-        contentAlignment = Alignment.Center,
+        contentAlignment = Alignment.Center
     ) {
         Text(
             text = text,
             style = MaterialTheme.typography.titleMedium.copy(
-                color = titleColor,
-            ),
+                color = titleColor
+            )
         )
     }
 }
@@ -55,7 +55,7 @@ private fun CheckButtonTruePreview() {
         CheckButton(
             modifier = Modifier.fillMaxWidth(),
             isCheck = true,
-            text = "다음",
+            text = "다음"
         ) { }
     }
 }
@@ -67,7 +67,7 @@ private fun CheckButtonFalsePreview() {
         CheckButton(
             modifier = Modifier.fillMaxWidth(),
             isCheck = false,
-            text = "다음",
+            text = "다음"
         ) { }
     }
 }

@@ -10,6 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.youth.app.core.designsystem.R
@@ -21,17 +22,18 @@ fun EmptyScreen(modifier: Modifier = Modifier, emptyTitle: String) {
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(10.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Image(
             painter = painterResource(R.drawable.empty),
-            contentDescription = stringResource(R.string.empty_image),
+            contentDescription = stringResource(R.string.empty_image)
         )
         Text(
             text = emptyTitle,
             style = MaterialTheme.typography.displaySmall.copy(
                 color = gray80,
-            ),
+                textAlign = TextAlign.Center
+            )
         )
     }
 }
@@ -41,7 +43,7 @@ fun EmptyScreen(modifier: Modifier = Modifier, emptyTitle: String) {
 private fun EmptyScrapPolicyScreenPreview() {
     YongProjectTheme {
         EmptyScreen(
-            emptyTitle = "아직 스크랩한 정책이 없습니다.",
+            emptyTitle = "아직 스크랩한 정책이 없습니다."
         )
     }
 }

@@ -3,11 +3,12 @@ package com.core.login
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.core.domain.usercase.GetUserUseCase
-import com.core.domain.usercase.PostLoginUseCase
-import com.core.domain.usercase.PostSignUseCase
+import com.core.domain.usercase.user.PostLoginUseCase
+import com.core.domain.usercase.user.PostSignUseCase
 import com.core.model.login.LoginUiEffect
 import com.youthtalk.model.User
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,13 +19,12 @@ import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val postLoginUseCase: PostLoginUseCase,
     private val getUserUseCase: GetUserUseCase,
-    private val postSignUseCase: PostSignUseCase,
+    private val postSignUseCase: PostSignUseCase
 ) : ViewModel() {
     private var socialId = ""
     private val _user = MutableSharedFlow<User?>()

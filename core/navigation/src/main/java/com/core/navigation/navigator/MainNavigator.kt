@@ -2,6 +2,7 @@ package com.core.navigation.navigator
 
 import com.core.navigation.model.CommentType
 import com.core.navigation.model.ScrapPostType
+import com.youthtalk.model.post.PostSubject
 import kotlinx.serialization.Serializable
 
 interface MainNavigator : Navigator
@@ -17,13 +18,51 @@ data object ScrapPolicy
 
 @Serializable
 data class ScrapPost(
-    val type: ScrapPostType,
+    val type: ScrapPostType
 )
 
 @Serializable
 data class Comment(
-    val type: CommentType,
+    val type: CommentType
 )
 
 @Serializable
 data object Notification
+
+@Serializable
+data object PolicySearch
+
+@Serializable
+data class CommunitySearch(
+    val communityType: PostSubject
+)
+
+@Serializable
+data class PopularPolicy(
+    val policies: String
+)
+
+@Serializable
+data object NewPolicy
+
+@Serializable
+data object RecentlyViewPolicy
+
+@Serializable
+data object DeadlinePolicy
+
+@Serializable
+data class CommunityDetail(
+    val postId: Long
+)
+
+@Serializable
+data class CommunityWrite(
+    val postId: Long? = null,
+    val communityType: PostSubject
+)
+
+@Serializable
+data class PolicyDetail(
+    val policyId: Long
+)

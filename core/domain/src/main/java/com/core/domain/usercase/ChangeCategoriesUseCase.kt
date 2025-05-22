@@ -1,10 +1,10 @@
 package com.core.domain.usercase
 
 import com.core.dataapi.repository.UserRepository
-import com.youthtalk.model.Category
+import com.youthtalk.model.typeenum.Category
 import javax.inject.Inject
 class ChangeCategoriesUseCase @Inject constructor(
-    private val userRepository: UserRepository,
+    private val userRepository: UserRepository
 ) {
     suspend operator fun invoke(categories: List<Category>) {
         userRepository.setCategoryList(categories)

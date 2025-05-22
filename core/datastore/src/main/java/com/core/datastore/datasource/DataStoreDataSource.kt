@@ -9,21 +9,19 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import com.core.datastore.datasource.DataStoreDataSource.PreferencesKey.ACCESS_TOKEN
 import com.core.datastore.datasource.DataStoreDataSource.PreferencesKey.AGE
 import com.core.datastore.datasource.DataStoreDataSource.PreferencesKey.CATEGORIES
-import com.core.datastore.datasource.DataStoreDataSource.PreferencesKey.EMPLOY_CODE
 import com.core.datastore.datasource.DataStoreDataSource.PreferencesKey.IS_FINISH
 import com.core.datastore.datasource.DataStoreDataSource.PreferencesKey.RECENT_LIST
 import com.core.datastore.datasource.DataStoreDataSource.PreferencesKey.REFRESH_TOKEN
 import com.core.datastore.datasource.DataStoreDataSource.PreferencesKey.REVIEW_CATEGORIES
-import com.youthtalk.model.Category
-import com.youthtalk.model.EmploymentCode
+import com.youthtalk.model.typeenum.Category
+import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.encodeToJsonElement
-import javax.inject.Inject
 
 class DataStoreDataSource @Inject constructor(
-    private val dataStore: DataStore<Preferences>,
+    private val dataStore: DataStore<Preferences>
 ) : DataSource {
     object PreferencesKey {
         val ACCESS_TOKEN = stringPreferencesKey("ACCESS_TOKEN")
@@ -94,19 +92,6 @@ class DataStoreDataSource @Inject constructor(
         }
     }
 
-    override fun getEmployCode(): Flow<List<EmploymentCode>?> = dataStore.data.map { prefs ->
-        prefs[EMPLOY_CODE]?.let { employCode ->
-            Json.decodeFromString<List<EmploymentCode>>(employCode)
-        }
-    }
-
-    override suspend fun setEmployCodeFilter(employmentCodes: List<EmploymentCode>?) {
-        val listToString = Json.encodeToJsonElement<List<EmploymentCode>>(employmentCodes ?: listOf())
-        dataStore.edit { prefs ->
-            prefs[EMPLOY_CODE] = listToString.toString()
-        }
-    }
-
     override fun getAge(): Flow<Int?> = dataStore.data.map { prefs ->
         prefs[AGE]
     }
@@ -130,8 +115,14 @@ class DataStoreDataSource @Inject constructor(
     }
 
     override suspend fun setRecentList(list: List<String>) {
-        dataStore.edit { prefs ->
-            prefs[RECENT_LIST] = list.joinToString(",")
+        if (list.isNotEmpty()) {
+            dataStore.edit { prefs ->
+                prefs[RECENT_LIST] = list.joinToString(",")
+            }
+        } else {
+            dataStore.edit {
+                it.remove(RECENT_LIST)
+            }
         }
     }
 

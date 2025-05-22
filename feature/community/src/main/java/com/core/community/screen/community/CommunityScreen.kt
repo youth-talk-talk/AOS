@@ -1,372 +1,204 @@
 package com.core.community.screen.community
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.pullrefresh.PullRefreshIndicator
-import androidx.compose.material.pullrefresh.pullRefresh
-import androidx.compose.material.pullrefresh.rememberPullRefreshState
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SecondaryTabRow
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringArrayResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.paging.LoadState
-import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.paging.compose.itemContentType
-import androidx.paging.compose.itemKey
-import com.core.community.model.CommunityUiEvent
-import com.core.community.model.CommunityUiState
+import com.core.community.component.FreePost
+import com.core.community.component.ReviewPost
+import com.core.community.component.SearchBarComponent
+import com.core.community.model.community.CommunityUiEvent
 import com.core.community.viewmodel.CommunityViewModel
-import com.youth.app.feature.community.R
-import com.youthtalk.component.PolicyCheckBox
-import com.youthtalk.component.PostCard
-import com.youthtalk.designsystem.YongProjectTheme
-import com.youthtalk.model.Category
-import com.youthtalk.model.Post
-import com.youthtalk.model.PostType
-import com.youthtalk.model.ReviewPost
-import com.youthtalk.util.clickableSingle
-import com.youthtalk.util.rememberLazyListState
-import kotlinx.collections.immutable.ImmutableList
+import com.youthtalk.designsystem.gray10
+import com.youthtalk.designsystem.gray100
+import com.youthtalk.designsystem.gray70
+import com.youthtalk.extentions.rememberLazyListState
+import com.youthtalk.model.post.PostSubject
+import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CommunityScreen(
+    modifier: Modifier = Modifier,
+    postType: PostSubject,
     viewModel: CommunityViewModel = hiltViewModel(),
-    onClickItem: (Long) -> Unit,
-    writePost: (String) -> Unit,
-    onClickSearch: (String) -> Unit,
+    onClickCommunitySearch: (PostSubject) -> Unit,
+    onClickPostDetail: (Long) -> Unit,
+    onClickCommunityWrite: (PostSubject) -> Unit
 ) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
-    if (uiState !is CommunityUiState.Success) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize(),
-            contentAlignment = Alignment.Center,
-        ) {
-            CircularProgressIndicator()
+    val state by viewModel.state.collectAsStateWithLifecycle()
+    val communityType = PostSubject.entries.toList()
+    val pagerState = rememberPagerState(
+        when (postType) {
+            PostSubject.REVIEW -> 0
+            PostSubject.POST -> 1
         }
-    } else {
-        val state = uiState as CommunityUiState.Success
-        val reviewPost = state.reviewPosts.collectAsLazyPagingItems()
-        val posts = state.posts.collectAsLazyPagingItems()
+    ) { communityType.size }
+    val scope = rememberCoroutineScope()
+    val reivews = state.reviews.collectAsLazyPagingItems()
+    val frees = state.frees.collectAsLazyPagingItems()
+    val reviewLazyListState = reivews.rememberLazyListState()
+    val freesLazyListState = frees.rememberLazyListState()
 
-        var tabIndex by rememberSaveable {
-            mutableIntStateOf(0)
-        }
-        val lazyListState =
-            if (tabIndex == 0) {
-                reviewPost.rememberLazyListState()
-            } else {
-                posts.rememberLazyListState()
-            }
-
-        LifecycleResumeEffect(Unit) {
-            viewModel.uiEvent(CommunityUiEvent.GetPopularData)
-            onPauseOrDispose {}
-        }
-
-        val isRefresh by remember { mutableStateOf(false) }
-        val refreshState = rememberPullRefreshState(
-            refreshing = isRefresh,
-            onRefresh = {
-                viewModel.uiEvent(CommunityUiEvent.GetPopularData)
-                if (tabIndex == 0) {
-                    reviewPost.refresh()
-                } else {
-                    posts.refresh()
-                }
-            },
-        )
-
-        Box(
-            modifier = Modifier
-                .pullRefresh(refreshState),
-        ) {
-            Community(
-                reviewPosts = reviewPost,
-                posts = posts,
-                lazyListState = lazyListState,
-                tabIndex = tabIndex,
-                categories = state.categories,
-                popularReviewPosts = state.popularReviewPosts,
-                popularPosts = state.popularPosts,
-                changeReviewCheckBox = viewModel::setCategories,
-                onClickItem = onClickItem,
-                onClickSearch = onClickSearch,
-                onClickTab = { tabIndex = it },
-                postPostScrap = { postId, scrap, type ->
-                    viewModel.uiEvent(CommunityUiEvent.PostScrap(postId, scrap, type))
-                },
-            )
-
-            WriteButton(
-                onClick = {
-                    val type = when (tabIndex) {
-                        0 -> "review"
-                        else -> "post"
-                    }
-                    writePost(type)
-                },
-            )
-
-            PullRefreshIndicator(isRefresh, refreshState, Modifier.align(Alignment.TopCenter))
-        }
-    }
-}
-
-fun LazyListScope.reviewPost(
-    reviewCategories: ImmutableList<Category>,
-    popularReviewPosts: ImmutableList<ReviewPost>,
-    reviewPosts: LazyPagingItems<ReviewPost>,
-    onCheck: (Category?) -> Unit,
-    onClickItem: (Long) -> Unit,
-    postPostScrap: (Long, Boolean, PostType) -> Unit,
-) {
-    item {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.background)
-                .padding(top = 12.dp, start = 23.dp, end = 24.dp, bottom = 24.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
-        ) {
-            CheckBoxScreen(reviewCategories, onCheck)
-        }
+    LifecycleResumeEffect(Unit) {
+        viewModel.setEvent(CommunityUiEvent.SyncPostDate)
+        onPauseOrDispose { }
     }
 
-    item {
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+    ) {
         Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.background)
-                .background(
-                    color = MaterialTheme.colorScheme.onSecondaryContainer,
-                    shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
-                )
-                .padding(
-                    top = 15.dp,
-                    start = 17.dp,
-                    end = 17.dp,
-                ),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+                .fillMaxSize()
         ) {
-            PopularPosts(popularReviewPosts, onClickItem, postPostScrap = postPostScrap)
-        }
-    }
-
-    item {
-        Text(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(
-                    color = MaterialTheme.colorScheme.onSecondaryContainer,
-                )
-                .padding(
-                    top = 12.dp,
-                    start = 17.dp,
-                    end = 17.dp,
-                ),
-            text = stringResource(id = R.string.recent_post),
-            style = MaterialTheme.typography.headlineSmall.copy(
-                color = MaterialTheme.colorScheme.onPrimary,
-            ),
-        )
-    }
-
-    if (reviewPosts.loadState.refresh is LoadState.NotLoading) {
-        items(
-            count = reviewPosts.itemCount,
-            key = reviewPosts.itemKey { it.postId },
-            contentType = reviewPosts.itemContentType { it.postId },
-        ) { index ->
             Box(
                 modifier = Modifier
-                    .background(
-                        color = MaterialTheme.colorScheme.onSecondaryContainer,
-                    )
-                    .padding(horizontal = 17.dp)
-                    .padding(top = 12.dp),
-
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 20.dp)
             ) {
-                reviewPosts[index]?.let { reviewPost ->
-                    PostCard(
-                        modifier = Modifier
-                            .clickableSingle { onClickItem(reviewPost.postId) },
-                        title = reviewPost.title,
-                        comments = reviewPost.comments,
-                        scrap = reviewPost.scrap,
-                        scraps = reviewPost.scraps,
-                        policyTitle = reviewPost.policyTitle,
-                        onClickScrap = { postPostScrap(reviewPost.postId, it, PostType.REVIEW) },
-                    )
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun CheckBoxScreen(reviewCategories: ImmutableList<Category>, onCheck: (Category?) -> Unit) {
-    stringArrayResource(id = R.array.policies).forEach { category ->
-        PolicyCheckBox(
-            spaceBy = Arrangement.spacedBy(7.dp),
-            isCheck = reviewCategories.any { checkCategory ->
-                checkCategory.categoryName == category
-            },
-            title = category,
-            textStyle = MaterialTheme.typography.displayLarge.copy(
-                color = MaterialTheme.colorScheme.onPrimary,
-            ),
-            onCheckChange = {
-                onCheck(Category.entries.find { it.categoryName == category })
-            },
-        )
-    }
-}
-
-fun LazyListScope.freeBoard(
-    popularPosts: List<Post>,
-    posts: LazyPagingItems<Post>,
-    onClickItem: (Long) -> Unit,
-    postPostScrap: (Long, Boolean, PostType) -> Unit,
-) {
-    item {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(color = MaterialTheme.colorScheme.background)
-                .padding(top = 24.dp)
-                .background(
-                    color = MaterialTheme.colorScheme.onSecondaryContainer,
-                    shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
+                Text(
+                    text = "커뮤니티",
+                    style = MaterialTheme.typography.bodyMedium
                 )
-                .padding(
-                    top = 15.dp,
-                    start = 17.dp,
-                    end = 17.dp,
-                ),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
-            Text(
-                text = stringResource(id = R.string.popular_post),
-                style = MaterialTheme.typography.headlineSmall.copy(
-                    color = MaterialTheme.colorScheme.onPrimary,
-                ),
+            }
+
+            SearchBarComponent(
+                modifier = Modifier
+                    .padding(start = 16.dp, end = 16.dp, bottom = 12.dp),
+                hint = "궁금한 주제가 있나요?",
+                onClick = { onClickCommunitySearch(communityType[pagerState.currentPage]) }
             )
 
-            LazyRow(
-                modifier = Modifier
-                    .aspectRatio(2.8f),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
+            SecondaryTabRow(
+                selectedTabIndex = pagerState.currentPage,
+                containerColor = gray10,
+                indicator = {
+                    TabRowDefaults.SecondaryIndicator(
+                        Modifier
+                            .tabIndicatorOffset(pagerState.currentPage, matchContentSize = false)
+                            .padding(horizontal = 16.dp),
+                        color = gray100
+                    )
+                },
+                divider = {
+                    HorizontalDivider(
+                        color = gray70
+                    )
+                }
             ) {
-                items(
-                    count = popularPosts.size,
-                ) { index ->
-                    val popularPost = popularPosts[index]
-                    PostCard(
-                        modifier = Modifier
-                            .aspectRatio(2.5f)
-                            .clickableSingle { onClickItem(popularPost.postId) },
-                        policyTitle = popularPost.policyTitle,
-                        title = popularPost.title,
-                        scraps = popularPost.scraps,
-                        comments = popularPost.comments,
-                        scrap = popularPost.scrap,
-                        isSingleLine = true,
-                        onClickScrap = { postPostScrap(popularPost.postId, it, PostType.POST) },
+                communityType.forEachIndexed { index, community ->
+                    val title = when (community) {
+                        PostSubject.REVIEW -> "후기게시판"
+                        PostSubject.POST -> "자유게시판"
+                    }
+                    Tab(
+                        selected = pagerState.currentPage == index,
+                        selectedContentColor = gray10,
+                        text = {
+                            Text(
+                                text = title,
+                                style = if (pagerState.currentPage == index) {
+                                    MaterialTheme.typography.displayLarge.copy(
+                                        color = gray100
+                                    )
+                                } else {
+                                    MaterialTheme.typography.displayMedium.copy(
+                                        color = gray70
+                                    )
+                                }
+                            )
+                        },
+                        onClick = {
+                            scope.launch {
+                                pagerState.animateScrollToPage(index)
+                            }
+                        }
+                    )
+                }
+            }
+
+            HorizontalPager(
+                modifier = Modifier.weight(1f),
+                state = pagerState
+            ) {
+                when (communityType[it]) {
+                    PostSubject.REVIEW -> ReviewPost(
+                        category = state.category,
+                        reviews = reivews,
+                        popularReviews = state.popularReviews,
+                        lazyListState = reviewLazyListState,
+                        onClickPost = onClickPostDetail,
+                        onClickCategory = { category -> viewModel.setEvent(CommunityUiEvent.ChangeCategory(category)) },
+                        onClickPostScrap = { id, scrap -> viewModel.setEvent(CommunityUiEvent.PostScrapPost(id, scrap)) }
+                    )
+
+                    PostSubject.POST -> FreePost(
+                        lazyListState = freesLazyListState,
+                        popularFrees = state.popularFrees,
+                        frees = frees,
+                        onClickPost = onClickPostDetail,
+                        onClickPostScrap = { id, scrap -> viewModel.setEvent(CommunityUiEvent.PostScrapPost(id, scrap)) }
                     )
                 }
             }
         }
-    }
 
-    item {
-        Text(
+        ExtendedFloatingActionButton(
             modifier = Modifier
-                .fillMaxWidth()
-                .background(
-                    color = MaterialTheme.colorScheme.onSecondaryContainer,
+                .align(Alignment.BottomEnd)
+                .padding(16.dp),
+            shape = RoundedCornerShape(100.dp),
+            containerColor = MaterialTheme.colorScheme.primary,
+            contentColor = gray10,
+            onClick = { onClickCommunityWrite(communityType[pagerState.currentPage]) },
+            expanded = if (pagerState.currentPage == 0) {
+                !reviewLazyListState.canScrollBackward
+            } else {
+                !freesLazyListState.canScrollBackward
+            },
+            icon = {
+                Icon(
+                    Icons.Filled.Edit,
+                    "Extended floating action button.",
+                    tint = gray10
                 )
-                .padding(
-                    top = 12.dp,
-                    start = 17.dp,
-                    end = 17.dp,
-                ),
-            text = stringResource(id = R.string.recent_post),
-            style = MaterialTheme.typography.headlineSmall.copy(
-                color = MaterialTheme.colorScheme.onPrimary,
-            ),
-        )
-    }
-
-    if (posts.loadState.refresh is LoadState.NotLoading) {
-        items(
-            count = posts.itemCount,
-            key = posts.itemKey { it.postId },
-            contentType = posts.itemContentType { it.postId },
-        ) { index ->
-            posts[index]?.let { post ->
-                Box(
-                    modifier = Modifier
-                        .background(
-                            color = MaterialTheme.colorScheme.onSecondaryContainer,
-                        )
-                        .padding(horizontal = 17.dp)
-                        .padding(top = 12.dp),
-                ) {
-                    PostCard(
-                        modifier = Modifier
-                            .clickableSingle { onClickItem(post.postId) },
-                        policyTitle = post.policyTitle,
-                        title = post.title,
-                        scraps = post.scraps,
-                        comments = post.comments,
-                        scrap = post.scrap,
-                        onClickScrap = { postPostScrap(post.postId, it, PostType.POST) },
+            },
+            text = {
+                Text(
+                    text = "글쓰기",
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        color = gray10
                     )
-                }
+                )
             }
-        }
-    }
-}
-
-@Preview
-@Composable
-private fun CommunityScreenPreview() {
-    YongProjectTheme {
-        CommunityScreen(
-            onClickItem = {},
-            writePost = {},
-            onClickSearch = {},
         )
     }
 }

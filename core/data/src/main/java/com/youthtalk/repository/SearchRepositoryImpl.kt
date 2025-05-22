@@ -1,5 +1,6 @@
 package com.youthtalk.repository
 
+import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
@@ -7,126 +8,71 @@ import com.core.dataapi.repository.SearchRepository
 import com.core.datastore.datasource.DataStoreDataSource
 import com.core.exception.NoDataException
 import com.youthtalk.data.CommunityService
-import com.youthtalk.data.PolicyService
-import com.youthtalk.datasource.PagingSize
-import com.youthtalk.datasource.search.SearchPoliciesTitlePagingSource
-import com.youthtalk.datasource.search.SearchPolicyPagingSource
-import com.youthtalk.datasource.search.SearchPostPagingSource
-import com.youthtalk.dto.PostSearchResponse
-import com.youthtalk.dto.specpolicy.FilterInfoRequest
-import com.youthtalk.dto.specpolicy.SpecPoliciesResponse
-import com.youthtalk.model.FilterInfo
-import com.youthtalk.model.Policy
-import com.youthtalk.model.Post
-import com.youthtalk.model.SearchPolicy
+import com.youthtalk.datasource.post.PostKeywordRemoteMediator
+import com.youthtalk.datasource.room.YouthDatabase
+import com.youthtalk.dto.PolicyDetailResponse
+import com.youthtalk.model.post.Post
+import com.youthtalk.model.post.PostSubject
+import com.youthtalk.model.post.PostType
 import com.youthtalk.utils.ErrorUtils.throwableError
+import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import javax.inject.Inject
+import timber.log.Timber
 
 class SearchRepositoryImpl @Inject constructor(
-    private val policyService: PolicyService,
     private val dataSource: DataStoreDataSource,
     private val communityService: CommunityService,
+    private val youthDatabase: YouthDatabase
 ) : SearchRepository {
     override fun getRecentList(): Flow<List<String>> = dataSource.getRecentSearchList()
-
-    override fun getPolicies(filterInfo: FilterInfo, keyword: String): Flow<Flow<PagingData<Policy>>> = flow {
-        emit(
-            Pager(
-                pagingSourceFactory = {
-                    SearchPolicyPagingSource(
-                        policyService = policyService,
-                        filterInfo = filterInfo,
-                        keyword = keyword,
-                    )
-                },
-                config = PagingConfig(
-                    pageSize = PagingSize.SEARCH_PAGE_SIZE,
-                    initialLoadSize = PagingSize.SEARCH_PAGE_SIZE,
-                ),
-            ).flow,
-        )
-    }
-
-    override fun getPoliciesCount(filterInfo: FilterInfo, keyword: String): Flow<Int> = flow {
-        val requestBody = FilterInfoRequest(
-            age = filterInfo.age,
-            categories = null,
-            employmentCodeList = filterInfo.employmentCodeList,
-            keyword = keyword,
-            isFinished = filterInfo.isFinished,
-        ).toRequestBody()
-
-        runCatching {
-            policyService.postSpecPolicies(
-                requestBody = requestBody,
-                page = 0,
-                size = 10,
-            )
-        }
-            .onSuccess { response ->
-                response.data?.let { specPolicyInfo ->
-                    emit(specPolicyInfo.totalCount)
-                } ?: throw NoDataException()
-            }
-            .onFailure {
-                throwableError<SpecPoliciesResponse>(it)
-            }
-    }
 
     override suspend fun postRecentList(recentList: List<String>) {
         dataSource.setRecentList(recentList)
     }
 
-    override fun getPosts(type: String, keyword: String): Flow<Flow<PagingData<Post>>> = flow {
+    @OptIn(ExperimentalPagingApi::class)
+    override fun getKeywordPost(keyword: String, communityType: PostSubject, postType: PostType): Flow<Flow<PagingData<Post>>> = flow {
         emit(
             Pager(
-                pagingSourceFactory = {
-                    SearchPostPagingSource(
-                        communityService = communityService,
-                        type = type,
-                        keyword = keyword,
-                    )
-                },
                 config = PagingConfig(
-                    pageSize = PagingSize.SEARCH_PAGE_SIZE,
-                    initialLoadSize = PagingSize.SEARCH_PAGE_SIZE,
+                    pageSize = 10,
+                    enablePlaceholders = true
                 ),
-            ).flow,
+                remoteMediator = PostKeywordRemoteMediator(
+                    communityService = communityService,
+                    keyword = keyword,
+                    postType = postType,
+                    postSubject = communityType,
+                    youthDatabase = youthDatabase
+                )
+            ) {
+                youthDatabase.postDao().getPagingSource(postType = postType)
+            }.flow
         )
     }
 
-    override fun getPostsCount(type: String, keyword: String): Flow<Int> = flow {
+    override fun getKeywordPostCount(keyword: String, communityType: PostSubject): Flow<Int> = flow {
+        val type = when (communityType) {
+            PostSubject.REVIEW -> "review"
+            PostSubject.POST -> "post"
+        }
         runCatching {
             communityService.getSearchPosts(
                 keyword = keyword,
-                type = type,
                 page = 0,
-                size = PagingSize.SEARCH_PAGE_SIZE,
+                type = type,
+                size = 1
             )
         }
             .onSuccess { response ->
-                response.data?.let {
-                    emit(it.total)
-                }
+                response.data?.let { data ->
+                    emit(data.total)
+                } ?: throw NoDataException("no Data")
             }
             .onFailure {
-                throwableError<PostSearchResponse>(it)
+                Timber.e("SearchRepositoryImpl getKeywordPostCount error $it")
+                throwableError<PolicyDetailResponse>(it)
             }
-    }
-
-    override fun getSearchPolicies(title: String): Flow<PagingData<SearchPolicy>> {
-        return Pager(
-            pagingSourceFactory = {
-                SearchPoliciesTitlePagingSource(
-                    title = title,
-                    policyService = policyService,
-                )
-            },
-            config = PagingConfig(
-                pageSize = PagingSize.SEARCH_PAGE_SIZE,
-            ),
-        ).flow
     }
 }

@@ -1,264 +1,319 @@
 package com.core.community.viewmodel
 
-import androidx.lifecycle.ViewModel
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.input.TextFieldValue
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
-import com.core.community.model.CommunityWriteUiEffect
-import com.core.community.model.CommunityWriteUiEvent
-import com.core.community.model.CommunityWriteUiState
-import com.core.community.model.ContentInfo
+import com.core.base.BaseViewModel
+import com.core.community.model.Contents
+import com.core.community.model.write.CommunityWriteUiEffect
+import com.core.community.model.write.CommunityWriteUiEvent
+import com.core.community.model.write.CommunityWriteUiState
+import com.core.domain.usercase.GetImageListUseCase
+import com.core.domain.usercase.PostUploadImageUseCase
+import com.core.domain.usercase.policy.PostSearchPolicyUseCase
 import com.core.domain.usercase.post.GetPostDetailUseCase
 import com.core.domain.usercase.post.PostCreatePostUseCase
 import com.core.domain.usercase.post.PostModifyPostUseCase
-import com.core.domain.usercase.search.GetSearchPoliciesTitleUseCase
-import com.youthtalk.model.SearchPolicy
-import com.youthtalk.model.WriteInfo
+import com.youthtalk.model.post.CreatePost
+import com.youthtalk.model.post.ModifyPost
+import com.youthtalk.model.post.PostContent
+import com.youthtalk.model.post.PostSubject
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.collections.immutable.toPersistentList
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.asStateFlow
+import java.io.File
+import javax.inject.Inject
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.emptyFlow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import javax.inject.Inject
 
 @HiltViewModel
 class CommunityWriteViewModel @Inject constructor(
-    private val getSearchPoliciesTitleUseCase: GetSearchPoliciesTitleUseCase,
+    private val getImageListUseCase: GetImageListUseCase,
+    private val getPostDetailUseCase: GetPostDetailUseCase,
+    private val postUploadImageUseCase: PostUploadImageUseCase,
     private val postCreatePostUseCase: PostCreatePostUseCase,
     private val postModifyPostUseCase: PostModifyPostUseCase,
-    private val getPostDetailUseCase: GetPostDetailUseCase,
-) : ViewModel() {
+    private val postSearchPolicyUseCase: PostSearchPolicyUseCase,
+    savedStateHandle: SavedStateHandle
+) : BaseViewModel<CommunityWriteUiState, CommunityWriteUiEvent, CommunityWriteUiEffect>(
+    initialState = CommunityWriteUiState.initState
+) {
 
-    private val _uiState =
-        MutableStateFlow<CommunityWriteUiState>(CommunityWriteUiState.Loading)
-    val uiState = _uiState.asStateFlow()
+    val permissions = mutableStateListOf<String>()
 
-    var uieffect = MutableSharedFlow<CommunityWriteUiEffect>()
-        private set
+    init {
+        val communityType = savedStateHandle.get<PostSubject>("communityType") ?: PostSubject.REVIEW
+        val postId = savedStateHandle.get<Long>("postId")
+        setEvent(CommunityWriteUiEvent.InitData(postId, communityType))
+    }
 
-    private val _focusRequest = MutableSharedFlow<Int>()
-    val focusRequest = _focusRequest.asSharedFlow()
-
-    fun uiEvent(event: CommunityWriteUiEvent) {
+    override fun handleEvents(event: CommunityWriteUiEvent) {
         when (event) {
-            is CommunityWriteUiEvent.SearchPolicies -> searchPolicies(event.search)
-            is CommunityWriteUiEvent.SelectPolicy -> selectPolicy(event.policy)
-            is CommunityWriteUiEvent.ChangeTitleText -> changeTitleText(event.text)
-            is CommunityWriteUiEvent.AddImage -> addUri(event.uri)
-            is CommunityWriteUiEvent.ChangeContents -> changeContents(event.contentInfo, event.text)
-            is CommunityWriteUiEvent.DeleteImage -> deleteImage(event.index)
-            is CommunityWriteUiEvent.DeleteText -> deleteContents()
-            is CommunityWriteUiEvent.CreatePost -> if (event.id == -1L) createPost(event.type) else modifyPost(event.id, event.type)
-            is CommunityWriteUiEvent.GetPostInfo -> getPostInfo(event.id)
+            is CommunityWriteUiEvent.InitData -> initData(event.postId, event.postSubject)
+            is CommunityWriteUiEvent.OnTextChangeValue -> textChangeValue(event.index, event.text)
+            is CommunityWriteUiEvent.GetImages -> getImages()
+            is CommunityWriteUiEvent.PostUploadImages -> uploadImage(event.file)
+            is CommunityWriteUiEvent.FocusChange -> focusChange(event.index, event.text)
+            is CommunityWriteUiEvent.ChangeTitle -> setTitle(event.title)
+            is CommunityWriteUiEvent.SearchPolicyChangeTextValue -> setState { copy(searchPolicy = event.searchPolicy) }
+            is CommunityWriteUiEvent.PostSearchPolicy -> postSearchPolicy(event.searchPolicy)
+            is CommunityWriteUiEvent.ClearSearchInfo -> {
+                setState { copy(searchPolicies = emptyFlow(), searchPolicy = "") }
+                setEffect { CommunityWriteUiEffect.OnBack }
+            }
+
+            is CommunityWriteUiEvent.OnClickSearchPolicy -> {
+                setState {
+                    copy(
+                        policyId = event.search.policyId,
+                        policyName = event.search.policyTitle,
+                        searchPolicies = emptyFlow(),
+                        searchPolicy = ""
+                    )
+                }
+                setEffect { CommunityWriteUiEffect.OnBack }
+            }
+
+            is CommunityWriteUiEvent.PostCreatePost -> state.value.postId?.let { postModify(it) } ?: postCreatePost()
+            is CommunityWriteUiEvent.ImageDelete -> deleteImage(event.index)
         }
     }
 
-    private fun modifyPost(postId: Long, type: String) {
-        val state = _uiState.value
-        if (state !is CommunityWriteUiState.Success) return
+    private fun postModify(postId: Long) {
+        val modifyPost = ModifyPost(
+            title = state.value.title,
+            postType = state.value.postType.name.lowercase(),
+            policyId = state.value.policyId?.toString(),
+            contentList = state.value.contentList.map {
+                when (it) {
+                    is Contents.Text -> {
+                        PostContent(content = it.textFieldValue.text, type = "TEXT")
+                    }
+
+                    is Contents.Image -> {
+                        PostContent(content = it.imgUrl, type = "IMAGE")
+                    }
+                }
+            },
+            addImgUrlList = state.value.addImgUrlList,
+            deletedImgUrlList = state.value.deletedImgUrlList
+        )
 
         viewModelScope.launch {
-            postModifyPostUseCase(
-                postId = postId,
-                postType = type,
-                title = state.title,
-                policyId = state.selectPolicy?.policyId,
-                contents = state.contents,
-            )
-                .onStart {
-                    _uiState.value = state.copy(isLoading = true)
-                }
+            postModifyPostUseCase(postId, modifyPost)
                 .catch {
-                    Timber.e("CommunityWriteViewModel createPost error " + it.message)
+                    Timber.e("CommunityWriteViewModel postModify error $it")
                 }
                 .collectLatest {
-                    _uiState.value = state.copy(isLoading = false)
-                    uieffect.emit(CommunityWriteUiEffect.GoDetail(it.postId))
+                    Timber.e("CommunityWriteViewModel postModify success $it")
+                    setEffect { CommunityWriteUiEffect.Modify(postId) }
                 }
         }
     }
 
-    private fun getPostInfo(id: Long) {
-        if (id == -1L) {
-            _uiState.value = CommunityWriteUiState.Success(contents = listOf(WriteInfo(content = "")).toPersistentList())
-        } else {
+    private fun initData(postId: Long?, postType: PostSubject) {
+        postId?.let { id ->
             viewModelScope.launch {
                 getPostDetailUseCase(id)
-                    .map {
-                        val contents = mutableListOf<WriteInfo>()
-                        it.contentList.forEach { contentInfo ->
-                            if (contentInfo.type == "IMAGE") {
-                                contents.add(WriteInfo(uri = contentInfo.content, content = ""))
-                            } else {
-                                if (contents.isEmpty()) {
-                                    contents.add(WriteInfo(content = contentInfo.content))
-                                } else {
-                                    contents[contents.size - 1] = contents[contents.size - 1].copy(content = contentInfo.content)
-                                }
-                            }
-                        }
-
-                        CommunityWriteUiState.Success(
-                            title = it.title,
-                            selectPolicy = if (it.policyTitle != null && it.policyId != null) {
-                                SearchPolicy(
-                                    title = it.policyTitle ?: "",
-                                    policyId = it.policyId ?: "",
-                                )
-                            } else {
-                                null
-                            },
-                            contents = contents.toPersistentList(),
-                        )
-                    }
                     .catch {
-                        Timber.e("CommunityWriteViewModel getPostInfo error " + it.message)
+                        Timber.e("CommunityWriteViewModel initData error $it")
                     }
-                    .collectLatest { uiState ->
-                        _uiState.value = uiState
+                    .collectLatest { postDetail ->
+                        setState {
+                            copy(
+                                postId = id,
+                                title = postDetail.title,
+                                postType = PostSubject.entries.find { type -> type.name.lowercase() == postDetail.postType } ?: postType,
+                                policyId = postDetail.policyId,
+                                policyName = postDetail.policyTitle,
+                                contentList = postDetail.contentList.map { contents ->
+                                    when (contents.type) {
+                                        "TEXT" -> {
+                                            Contents.Text(TextFieldValue(text = contents.content, selection = TextRange(contents.content.length)))
+                                        }
+
+                                        else -> {
+                                            Contents.Image(imgUrl = contents.content)
+                                        }
+                                    }
+                                }
+                            )
+                        }
                     }
             }
-        }
-    }
-
-    private fun createPost(type: String) {
-        val state = _uiState.value
-        if (state !is CommunityWriteUiState.Success) return
-
-        viewModelScope.launch {
-            postCreatePostUseCase(postType = type, title = state.title, policyId = state.selectPolicy?.policyId, contents = state.contents)
-                .onStart {
-                    _uiState.value = state.copy(isLoading = true)
-                }
-                .catch {
-                    Timber.e("CommunityWriteViewModel createPost error " + it.message)
-                }
-                .collectLatest {
-                    _uiState.value = state.copy(isLoading = false)
-                    uieffect.emit(CommunityWriteUiEffect.GoDetail(it.postId))
-                }
-        }
+        } ?: setState { copy(postType = postType) }
     }
 
     private fun deleteImage(index: Int) {
-        val state = _uiState.value
-        if (state !is CommunityWriteUiState.Success) return
+        val image = state.value.contentList[index]
+        if (image !is Contents.Image) return
 
-        val contents = state.contents.toMutableList()
-
-        if (!contents[index].content.isNullOrEmpty()) {
-            contents[index - 1] = contents[index - 1].copy(content = contents[index - 1].content + contents[index].content)
-        }
-        contents.removeAt(index)
-
-        viewModelScope.launch {
-            _uiState.value = state.copy(
-                contents = contents.toPersistentList(),
-                contentsInfo = ContentInfo(index - 1, contents[index - 1].content?.length ?: 0),
+        val content = state.value.contentList[index + 1]
+        if (content !is Contents.Text) return
+        val contents = state.value.contentList.filterIndexed { i, _ -> !((i == index) || (i == index + 1)) }.toMutableList()
+        val prevText = contents[index - 1]
+        if (prevText is Contents.Text) {
+            val newText = prevText.textFieldValue.text + content.textFieldValue.text
+            contents[index - 1] = Contents.Text(
+                textFieldValue = TextFieldValue(text = newText, selection = TextRange(newText.length))
             )
-            _focusRequest.emit(index - 1)
-        }
-    }
 
-    private fun deleteContents() {
-        val state = _uiState.value
-        if (state !is CommunityWriteUiState.Success) return
-
-        val contentInfo = state.contentsInfo
-        val contents = state.contents.toMutableList()
-        if (contents[contentInfo.index].content != null) {
-            if (contents[contentInfo.index].content == "") {
-                contents[contentInfo.index] = contents[contentInfo.index].copy(content = null)
-                _uiState.value = state.copy(
-                    contents = contents.toPersistentList(),
+            setState {
+                copy(
+                    contentList = contents,
+                    deletedImgUrlList = if (deletedImgUrlList.contains(image.imgUrl)) deletedImgUrlList else deletedImgUrlList + image.imgUrl,
+                    focusIndex = Pair(index - 1, TextFieldValue(text = newText, selection = TextRange(newText.length)))
                 )
             }
-        } else {
-            if (contentInfo.index >= 1) {
-                contents.removeAt(contentInfo.index)
-                viewModelScope.launch {
-                    _uiState.value = state.copy(
-                        contents = contents.toPersistentList(),
-                        contentsInfo = contentInfo.copy(index = contentInfo.index - 1, pos = contents[contentInfo.index - 1].content?.length ?: 0),
-                    )
-                    _focusRequest.emit(contentInfo.index - 1)
+        }
+    }
+
+    private fun postCreatePost() {
+        val createPost = CreatePost(
+            title = state.value.title,
+            postType = state.value.postType.name.lowercase(),
+            policyId = state.value.policyId?.toString(),
+            contentList = state.value.contentList.map {
+                when (it) {
+                    is Contents.Text -> {
+                        PostContent(content = it.textFieldValue.text, type = "TEXT")
+                    }
+
+                    is Contents.Image -> {
+                        PostContent(content = it.imgUrl, type = "IMAGE")
+                    }
                 }
             }
-        }
-    }
-
-    private fun changeContents(contentInfo: ContentInfo, text: String) {
-        val state = _uiState.value
-        if (state !is CommunityWriteUiState.Success) return
-        val contents = state.contents.toMutableList()
-
-        if (contentInfo.index in 0 until contents.size) {
-            contents[contentInfo.index] = contents[contentInfo.index].copy(content = text)
-
-            _uiState.value = state.copy(
-                contents = contents.toPersistentList(),
-                contentsInfo = contentInfo,
-            )
-        }
-    }
-
-    private fun addUri(uri: String) {
-        val state = _uiState.value
-        if (state !is CommunityWriteUiState.Success) return
-
-        viewModelScope.launch {
-            val index = state.contentsInfo.index
-            val contents = state.contents.toMutableList()
-            val addText = if (contents[index].content.isNullOrEmpty()) null else contents[index].content?.substring(state.contentsInfo.pos)
-            contents[index] = contents[index].copy(
-                content = if (contents[index].content.isNullOrEmpty()) null else contents[index].content?.substring(0 until state.contentsInfo.pos),
-            )
-            if (contents.size == index + 1) {
-                contents.add(WriteInfo(uri, addText))
-            } else {
-                contents.add(index + 1, WriteInfo(uri, addText))
-            }
-            _uiState.value = state.copy(
-                contents = contents.toPersistentList(),
-                contentsInfo = ContentInfo(index + 1, addText?.length ?: 0),
-            )
-            _focusRequest.emit(index + 1)
-        }
-    }
-
-    private fun changeTitleText(text: String) {
-        val state = _uiState.value
-        if (state !is CommunityWriteUiState.Success) return
-        _uiState.value = state.copy(
-            title = text,
         )
-    }
-
-    private fun selectPolicy(policy: SearchPolicy?) {
-        val state = _uiState.value
-        if (state !is CommunityWriteUiState.Success) return
-
-        _uiState.value = state.copy(
-            selectPolicy = policy,
-            searchPolicies = emptyFlow(),
-        )
-    }
-
-    private fun searchPolicies(search: String) {
-        val state = _uiState.value
-        if (state !is CommunityWriteUiState.Success) return
-
         viewModelScope.launch {
-            _uiState.value = state.copy(
-                searchPolicies = getSearchPoliciesTitleUseCase(title = search).cachedIn(viewModelScope),
-            )
+            postCreatePostUseCase(createPost)
+                .catch {
+                    Timber.e("CommunityWriteViewModel postCreatePost error $it")
+                }
+                .collectLatest {
+                    Timber.e("CommunityWriteViewModel postCreatePost success $it")
+                    setEffect { CommunityWriteUiEffect.CreatePost }
+                }
+        }
+    }
+
+    private fun postSearchPolicy(searchPolicy: String) {
+        viewModelScope.launch {
+            postSearchPolicyUseCase(searchPolicy)
+                .catch {
+                    Timber.e("CommunityWriteViewModel postSearchPolicy error $it")
+                }
+                .collectLatest {
+                    setState { copy(searchPolicies = it.cachedIn(viewModelScope)) }
+                }
+        }
+    }
+
+    private fun uploadImage(file: File) {
+        viewModelScope.launch {
+            postUploadImageUseCase(file)
+                .onStart {
+                    setState {
+                        copy(uploadLoading = true)
+                    }
+                    setEffect { CommunityWriteUiEffect.OnBack }
+                }
+                .catch {
+                    Timber.e("CommunityWriteViewModel uploadImage error $it")
+                }
+                .collectLatest { image ->
+                    Timber.e("CommunityWriteViewModel uploadImage success $image")
+                    val contents = state.value.contentList.toMutableList()
+                    val lastFocus = state.value.focusIndex
+                    if (lastFocus.first % 2 == 0) {
+                        // TextField
+                        lastFocus.second?.let { textField ->
+                            contents[lastFocus.first] = Contents.Text(textField.copy(text = textField.text.substring(0, textField.selection.start)))
+                            val insert = contents.subList(0, lastFocus.first + 1) + listOf(
+                                Contents.Image(image),
+                                Contents.Text(
+                                    TextFieldValue(
+                                        text = textField.text.substring(textField.selection.start),
+                                        selection = TextRange(textField.text.substring(textField.selection.start).length)
+                                    )
+                                )
+                            ) + if (lastFocus.first + 1 < contents.size) contents.subList(lastFocus.first + 1, contents.size) else listOf()
+
+                            setState {
+                                copy(
+                                    contentList = insert,
+                                    uploadLoading = false,
+                                    focusIndex = Pair(insert.lastIndex, (insert[insert.lastIndex] as? Contents.Text)?.textFieldValue),
+                                    addImgUrlList = if (addImgUrlList.contains(image)) addImgUrlList else addImgUrlList + image
+                                )
+                            }
+                        }
+                    } else {
+                        // image
+                        val insert = contents.subList(0, lastFocus.first + 1) + listOf(
+                            Contents.Text(TextFieldValue("")),
+                            Contents.Image(image)
+                        ) + if (lastFocus.first + 1 < contents.size) contents.subList(lastFocus.first + 1, contents.size) else listOf()
+
+                        setState {
+                            copy(
+                                contentList = insert,
+                                uploadLoading = false,
+                                focusIndex = Pair(insert.lastIndex, (insert[insert.lastIndex] as? Contents.Text)?.textFieldValue)
+                            )
+                        }
+                    }
+
+                    setEffect {
+                        CommunityWriteUiEffect.ScrollIndex(lastFocus.first + 1)
+                    }
+                }
+        }
+    }
+
+    private fun textChangeValue(index: Int, text: TextFieldValue) {
+        val contents = state.value.contentList.toMutableList()
+        val content = contents[index]
+        if (content !is Contents.Text) return
+
+        contents.set(index = index, content.copy(textFieldValue = text))
+        setState { copy(contentList = contents, focusIndex = Pair(index, text)) }
+    }
+
+    private fun focusChange(index: Int, text: TextFieldValue?) {
+        setState { copy(focusIndex = Pair(index, text)) }
+    }
+
+    private fun getImages() {
+        viewModelScope.launch {
+            getImageListUseCase()
+                .catch {
+                    Timber.e("CommunityWriteViewModel getImages error $it")
+                }
+                .collectLatest {
+                    Timber.e("CommunityWriteViewModel getImages success $it")
+                    setState { copy(images = it) }
+                    setEffect { CommunityWriteUiEffect.GoPictureScreen(it) }
+                }
+        }
+    }
+
+    private fun setTitle(title: String) {
+        setState { copy(title = title) }
+    }
+
+    fun dismissDialog() {
+        permissions.removeAll(permissions)
+    }
+
+    fun onPermissionResult(permission: String, isGranted: Boolean) {
+        if (!isGranted && !permissions.contains(permission)) {
+            permissions.add(permission)
         }
     }
 }

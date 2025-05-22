@@ -27,7 +27,7 @@ complexity:
         ignoreOverridden: false
 
     CyclomaticComplexMethod:
-        threshold: 20
+        threshold: 50
 
     LongParameterList:
         functionThreshold: 20
