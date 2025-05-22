@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 
 data class CommunityWriteUiState(
+    val postId: Long?,
     val title: String,
     val postType: PostSubject,
     val policyId: Long?,
@@ -20,10 +21,13 @@ data class CommunityWriteUiState(
     val images: List<Image>,
     val uploadLoading: Boolean,
     val focusIndex: Pair<Int, TextFieldValue?>,
-    val searchPolicies: Flow<PagingData<SearchPolicy>>
+    val searchPolicies: Flow<PagingData<SearchPolicy>>,
+    val addImgUrlList: List<String>,
+    val deletedImgUrlList: List<String>
 ) : UiState {
     companion object {
         val initState = CommunityWriteUiState(
+            postId = null,
             title = "",
             postType = PostSubject.REVIEW,
             policyId = null,
@@ -33,7 +37,9 @@ data class CommunityWriteUiState(
             uploadLoading = false,
             focusIndex = Pair(0, TextFieldValue("")),
             searchPolicy = "",
-            searchPolicies = emptyFlow()
+            searchPolicies = emptyFlow(),
+            addImgUrlList = listOf(),
+            deletedImgUrlList = listOf()
         )
     }
 

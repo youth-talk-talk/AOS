@@ -20,6 +20,7 @@ import com.youthtalk.mapper.toData
 import com.youthtalk.mapper.toDomain
 import com.youthtalk.model.Image
 import com.youthtalk.model.post.CreatePost
+import com.youthtalk.model.post.ModifyPost
 import com.youthtalk.model.post.Post
 import com.youthtalk.model.post.PostDetail
 import com.youthtalk.model.post.PostSubject
@@ -265,6 +266,23 @@ class CommunityRepositoryImpl @Inject constructor(
             }
             .onFailure {
                 Timber.e("CommunityRepositoryImpl getSettingPostCount $it")
+                throwableError<Int>(it)
+            }
+    }
+
+    override fun postModifyPost(postId: Long, modifyPost: ModifyPost): Flow<Long> = flow {
+        val requestBody = modifyPost.toData().toRequestBody()
+        runCatching {
+            communityService.postModifyPost(postId, requestBody)
+        }
+            .onSuccess { response ->
+                response.data?.let { postDetail ->
+                    youthDatabase.postDao().updateModifyPost(postId, postDetail.title, postDetail.contentList[0].content.split("\n").first())
+                    emit(postDetail.postId)
+                }
+            }
+            .onFailure {
+                Timber.e("CommunityRepositoryImpl postModifyPost error $it")
                 throwableError<Int>(it)
             }
     }

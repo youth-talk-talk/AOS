@@ -2,13 +2,13 @@ package com.core.community.navigation
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavOptions
+import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.compose.composable
 import com.core.community.screen.detail.CommunityDetailScreen
 import com.core.navigation.navigator.CommunityDetail
 import com.youthtalk.model.post.PostSubject
 
-fun NavController.navigateCommunityDetail(postId: Long, navOptions: NavOptions? = null) {
+fun NavController.navigateCommunityDetail(postId: Long, navOptions: NavOptionsBuilder.() -> Unit = {}) {
     navigate(CommunityDetail(postId), navOptions)
 }
 

@@ -40,7 +40,8 @@ fun CommunityWriteScreen(
     viewModel: CommunityWriteViewModel = hiltViewModel(),
     checkPermission: (String) -> Boolean,
     onBack: () -> Unit,
-    onCreate: (PostSubject) -> Unit
+    onCreate: (PostSubject) -> Unit,
+    onModify: (Long) -> Unit
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val navController = rememberNavController()
@@ -57,6 +58,7 @@ fun CommunityWriteScreen(
                 is CommunityWriteUiEffect.CreatePost -> {
                     onCreate(state.postType)
                 }
+                is CommunityWriteUiEffect.Modify -> onModify(it.postId)
             }
         }
     }
@@ -188,7 +190,8 @@ private fun CommunityWriteFreeScreenPreview() {
         CommunityWriteScreen(
             checkPermission = { true },
             onBack = {},
-            onCreate = {}
+            onCreate = {},
+            onModify = {}
         )
     }
 }
@@ -200,7 +203,8 @@ private fun CommunityWriteReviewScreenPreview() {
         CommunityWriteScreen(
             checkPermission = { true },
             onBack = {},
-            onCreate = {}
+            onCreate = {},
+            onModify = {}
         )
     }
 }

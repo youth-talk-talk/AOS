@@ -3,6 +3,7 @@ package com.core.dataapi.repository
 import androidx.paging.PagingData
 import com.youthtalk.model.Image
 import com.youthtalk.model.post.CreatePost
+import com.youthtalk.model.post.ModifyPost
 import com.youthtalk.model.post.Post
 import com.youthtalk.model.post.PostDetail
 import com.youthtalk.model.post.PostSubject
@@ -23,4 +24,5 @@ interface CommunityRepository {
     fun syncPostScrap(reviews: List<Post>, frees: List<Post>): Flow<Pair<List<Post>, List<Post>>>
     fun getSettingPosts(isScrapType: Boolean): Flow<Flow<PagingData<Post>>>
     fun getSettingPostCount(isScrapType: Boolean): Flow<Int>
+    fun postModifyPost(postId: Long, modifyPost: ModifyPost): Flow<Long>
 }

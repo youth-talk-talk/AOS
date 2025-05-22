@@ -4,7 +4,9 @@ import com.youthtalk.dto.community.PostContentInfoResponse
 import com.youthtalk.dto.community.PostContentRequest
 import com.youthtalk.dto.community.PostCreatePostRequest
 import com.youthtalk.dto.community.PostDetailResponse
+import com.youthtalk.dto.community.PostModifyPostRequest
 import com.youthtalk.model.post.CreatePost
+import com.youthtalk.model.post.ModifyPost
 import com.youthtalk.model.post.PostContent
 import com.youthtalk.model.post.PostContentInfo
 import com.youthtalk.model.post.PostDetail
@@ -36,6 +38,15 @@ fun CreatePost.toData(): PostCreatePostRequest = PostCreatePostRequest(
     postType = postType,
     contentList = contentList.map { it.toData() },
     policyId = policyId
+)
+
+fun ModifyPost.toData(): PostModifyPostRequest = PostModifyPostRequest(
+    title = title,
+    postType = postType,
+    policyId = policyId,
+    contentList = contentList.map { it.toData() },
+    addImgUrlList = addImgUrlList,
+    deletedImgUrlList = deletedImgUrlList
 )
 
 fun PostContent.toData(): PostContentRequest = PostContentRequest(

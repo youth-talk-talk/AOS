@@ -14,8 +14,11 @@ import com.core.community.model.write.CommunityWriteUiState
 import com.core.domain.usercase.GetImageListUseCase
 import com.core.domain.usercase.PostUploadImageUseCase
 import com.core.domain.usercase.policy.PostSearchPolicyUseCase
+import com.core.domain.usercase.post.GetPostDetailUseCase
 import com.core.domain.usercase.post.PostCreatePostUseCase
+import com.core.domain.usercase.post.PostModifyPostUseCase
 import com.youthtalk.model.post.CreatePost
+import com.youthtalk.model.post.ModifyPost
 import com.youthtalk.model.post.PostContent
 import com.youthtalk.model.post.PostSubject
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -31,8 +34,10 @@ import timber.log.Timber
 @HiltViewModel
 class CommunityWriteViewModel @Inject constructor(
     private val getImageListUseCase: GetImageListUseCase,
+    private val getPostDetailUseCase: GetPostDetailUseCase,
     private val postUploadImageUseCase: PostUploadImageUseCase,
     private val postCreatePostUseCase: PostCreatePostUseCase,
+    private val postModifyPostUseCase: PostModifyPostUseCase,
     private val postSearchPolicyUseCase: PostSearchPolicyUseCase,
     savedStateHandle: SavedStateHandle
 ) : BaseViewModel<CommunityWriteUiState, CommunityWriteUiEvent, CommunityWriteUiEffect>(
@@ -43,11 +48,13 @@ class CommunityWriteViewModel @Inject constructor(
 
     init {
         val communityType = savedStateHandle.get<PostSubject>("communityType") ?: PostSubject.REVIEW
-        setState { copy(postType = communityType) }
+        val postId = savedStateHandle.get<Long>("postId")
+        setEvent(CommunityWriteUiEvent.InitData(postId, communityType))
     }
 
     override fun handleEvents(event: CommunityWriteUiEvent) {
         when (event) {
+            is CommunityWriteUiEvent.InitData -> initData(event.postId, event.postSubject)
             is CommunityWriteUiEvent.OnTextChangeValue -> textChangeValue(event.index, event.text)
             is CommunityWriteUiEvent.GetImages -> getImages()
             is CommunityWriteUiEvent.PostUploadImages -> uploadImage(event.file)
@@ -72,9 +79,74 @@ class CommunityWriteViewModel @Inject constructor(
                 setEffect { CommunityWriteUiEffect.OnBack }
             }
 
-            is CommunityWriteUiEvent.PostCreatePost -> postCreatePost()
+            is CommunityWriteUiEvent.PostCreatePost -> state.value.postId?.let { postModify(it) } ?: postCreatePost()
             is CommunityWriteUiEvent.ImageDelete -> deleteImage(event.index)
         }
+    }
+
+    private fun postModify(postId: Long) {
+        val modifyPost = ModifyPost(
+            title = state.value.title,
+            postType = state.value.postType.name.lowercase(),
+            policyId = state.value.policyId?.toString(),
+            contentList = state.value.contentList.map {
+                when (it) {
+                    is Contents.Text -> {
+                        PostContent(content = it.textFieldValue.text, type = "TEXT")
+                    }
+
+                    is Contents.Image -> {
+                        PostContent(content = it.imgUrl, type = "IMAGE")
+                    }
+                }
+            },
+            addImgUrlList = state.value.addImgUrlList,
+            deletedImgUrlList = state.value.deletedImgUrlList
+        )
+
+        viewModelScope.launch {
+            postModifyPostUseCase(postId, modifyPost)
+                .catch {
+                    Timber.e("CommunityWriteViewModel postModify error $it")
+                }
+                .collectLatest {
+                    Timber.e("CommunityWriteViewModel postModify success $it")
+                    setEffect { CommunityWriteUiEffect.Modify(postId) }
+                }
+        }
+    }
+
+    private fun initData(postId: Long?, postType: PostSubject) {
+        postId?.let { id ->
+            viewModelScope.launch {
+                getPostDetailUseCase(id)
+                    .catch {
+                        Timber.e("CommunityWriteViewModel initData error $it")
+                    }
+                    .collectLatest { postDetail ->
+                        setState {
+                            copy(
+                                postId = id,
+                                title = postDetail.title,
+                                postType = PostSubject.entries.find { type -> type.name.lowercase() == postDetail.postType } ?: postType,
+                                policyId = postDetail.policyId,
+                                policyName = postDetail.policyTitle,
+                                contentList = postDetail.contentList.map { contents ->
+                                    when (contents.type) {
+                                        "TEXT" -> {
+                                            Contents.Text(TextFieldValue(text = contents.content, selection = TextRange(contents.content.length)))
+                                        }
+
+                                        else -> {
+                                            Contents.Image(imgUrl = contents.content)
+                                        }
+                                    }
+                                }
+                            )
+                        }
+                    }
+            }
+        } ?: setState { copy(postType = postType) }
     }
 
     private fun deleteImage(index: Int) {
@@ -90,11 +162,14 @@ class CommunityWriteViewModel @Inject constructor(
             contents[index - 1] = Contents.Text(
                 textFieldValue = TextFieldValue(text = newText, selection = TextRange(newText.length))
             )
-        }
-        setState {
-            copy(
-                contentList = contents
-            )
+
+            setState {
+                copy(
+                    contentList = contents,
+                    deletedImgUrlList = if (deletedImgUrlList.contains(image.imgUrl)) deletedImgUrlList else deletedImgUrlList + image.imgUrl,
+                    focusIndex = Pair(index - 1, TextFieldValue(text = newText, selection = TextRange(newText.length)))
+                )
+            }
         }
     }
 
@@ -173,7 +248,8 @@ class CommunityWriteViewModel @Inject constructor(
                                 copy(
                                     contentList = insert,
                                     uploadLoading = false,
-                                    focusIndex = Pair(insert.lastIndex, (insert[insert.lastIndex] as? Contents.Text)?.textFieldValue)
+                                    focusIndex = Pair(insert.lastIndex, (insert[insert.lastIndex] as? Contents.Text)?.textFieldValue),
+                                    addImgUrlList = if (addImgUrlList.contains(image)) addImgUrlList else addImgUrlList + image
                                 )
                             }
                         }
