@@ -13,6 +13,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import java.util.concurrent.TimeUnit
 import javax.inject.Qualifier
 import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineScope
@@ -40,12 +41,23 @@ object ApiModule {
     @Retention(AnnotationRetention.RUNTIME)
     annotation class Main
 
+    @Qualifier
+    @Retention(AnnotationRetention.RUNTIME)
+    annotation class Sse
+
     @Provides
     @Singleton
     fun provideJson(): Json = Json {
         ignoreUnknownKeys = true
         coerceInputValues = true
     }
+
+    @Provides
+    @Singleton
+    @Sse
+    fun provideOkHttpClient(): OkHttpClient = OkHttpClient.Builder()
+        .readTimeout(0, TimeUnit.MILLISECONDS)
+        .build()
 
     @Provides
     @Singleton

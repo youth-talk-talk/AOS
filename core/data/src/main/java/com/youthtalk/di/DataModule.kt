@@ -10,6 +10,7 @@ import com.core.dataapi.repository.PolicyRepository
 import com.core.dataapi.repository.ReportRepository
 import com.core.dataapi.repository.SearchRepository
 import com.core.dataapi.repository.SpecPolicyRepository
+import com.core.dataapi.repository.SseRepository
 import com.core.dataapi.repository.UserRepository
 import com.core.datastore.datasource.DataSource
 import com.core.datastore.datasource.DataStoreDataSource
@@ -23,6 +24,7 @@ import com.youthtalk.repository.PolicyRepositoryImpl
 import com.youthtalk.repository.ReportRepositoryImpl
 import com.youthtalk.repository.SearchRepositoryImpl
 import com.youthtalk.repository.SpecPolicyRepositoryImpl
+import com.youthtalk.repository.SseRepositoryImpl
 import com.youthtalk.repository.UserRepositoryImpl
 import dagger.Binds
 import dagger.Module
@@ -68,4 +70,7 @@ abstract class DataModule {
 
     @Binds
     abstract fun bindsReportRepository(repository: ReportRepositoryImpl): ReportRepository
+
+    @Binds
+    abstract fun bindsSseRepository(repository: SseRepositoryImpl): SseRepository
 }

@@ -26,6 +26,8 @@ class DataStoreDataSource @Inject constructor(
     object PreferencesKey {
         val ACCESS_TOKEN = stringPreferencesKey("ACCESS_TOKEN")
         val REFRESH_TOKEN = stringPreferencesKey("REFRESH_TOKEN")
+
+        // TODO:아래는 확인후 제거
         val CATEGORIES = stringPreferencesKey("CATEGORIES")
         val REVIEW_CATEGORIES = stringPreferencesKey("REVIEW_CATEGORIES")
         val AGE = intPreferencesKey("AGE")

@@ -37,6 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
+import com.core.domain.usercase.sse.SseServiceUseCase
 import com.core.navigation.navigator.LoginNavigator
 import com.youthtalk.designsystem.YongProjectTheme
 import com.youthtalk.designsystem.gray10
@@ -53,8 +54,13 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var loginNavigator: LoginNavigator
 
+    @Inject
+    lateinit var sseServiceUseCase: SseServiceUseCase
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Timber.e("MainActivity onCreate")
+        sseServiceUseCase()
         enableEdgeToEdge()
         setContent {
             YongProjectTheme {
