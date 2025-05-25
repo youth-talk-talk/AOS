@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 3,
-    "identityHash": "dab8308f66b4e5aeeaae2ee3d6a54566",
+    "identityHash": "7431e6e7094fdffcd96a5922f20516ed",
     "entities": [
       {
         "tableName": "Post",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`postId` INTEGER NOT NULL, `title` TEXT NOT NULL, `writerId` INTEGER NOT NULL, `policyId` INTEGER, `policyTitle` TEXT, `comments` INTEGER NOT NULL, `contentPreview` TEXT NOT NULL, `scrapCount` INTEGER NOT NULL, `scrap` INTEGER NOT NULL, `createdAt` TEXT NOT NULL, `category` TEXT, `postType` TEXT NOT NULL, PRIMARY KEY(`postId`, `postType`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`postId` INTEGER NOT NULL, `title` TEXT NOT NULL, `writerId` INTEGER, `policyId` INTEGER, `policyTitle` TEXT, `comments` INTEGER NOT NULL, `contentPreview` TEXT NOT NULL, `scrapCount` INTEGER NOT NULL, `scrap` INTEGER NOT NULL, `createdAt` TEXT NOT NULL, `category` TEXT, `postType` TEXT NOT NULL, PRIMARY KEY(`postId`, `postType`))",
         "fields": [
           {
             "fieldPath": "postId",
@@ -24,7 +24,7 @@
             "fieldPath": "writerId",
             "columnName": "writerId",
             "affinity": "INTEGER",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "policyId",
@@ -224,7 +224,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'dab8308f66b4e5aeeaae2ee3d6a54566')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '7431e6e7094fdffcd96a5922f20516ed')"
     ]
   }
 }

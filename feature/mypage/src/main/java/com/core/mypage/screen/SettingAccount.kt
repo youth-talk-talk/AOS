@@ -8,7 +8,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
@@ -212,7 +211,6 @@ private fun UserInfo(
             val infoTitle = stringResource(
                 when (it) {
                     InfoType.NICKNAME -> R.string.nickname
-                    InfoType.ACCOUNT -> R.string.account
                     InfoType.REGION -> R.string.favorite_region
                 }
             )
@@ -233,25 +231,6 @@ private fun UserInfo(
                                 ) {
                                     innerTextField()
                                 }
-                            }
-                        }
-
-                        InfoType.ACCOUNT -> {
-                            Row(
-                                modifier = modifier
-                                    .informationShape(),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Image(
-                                    modifier = Modifier.padding(end = 8.dp),
-                                    painter = painterResource(R.drawable.kakao),
-                                    contentDescription = stringResource(R.string.kakao)
-                                )
-
-                                Text(
-                                    text = "abcd@kakao.com",
-                                    style = MaterialTheme.typography.titleSmall
-                                )
                             }
                         }
 

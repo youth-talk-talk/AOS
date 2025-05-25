@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 data class PostResponse(
     val postId: Long,
     val title: String,
-    val writerId: Long,
+    val writerId: Long?,
     val policyId: Long?,
     val policyTitle: String?,
     val comments: Int,

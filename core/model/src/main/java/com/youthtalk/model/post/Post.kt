@@ -8,7 +8,7 @@ import java.time.LocalDateTime
 data class Post(
     val postId: Long,
     val title: String,
-    val writerId: Long,
+    val writerId: Long?,
     val policyId: Long?,
     val policyTitle: String?,
     val comments: Int,
