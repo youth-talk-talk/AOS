@@ -48,17 +48,19 @@ class UserRepositoryImpl @Inject constructor(
     }
 
     override fun deleteUser(deleteUser: Boolean): Flow<Long> = flow {
-        dataSource.clearData()
         if (deleteUser) {
             runCatching { userService.postDeleteUser() }
                 .onSuccess {
                     emit(0L)
+                    dataSource.clearData()
                 }
                 .onFailure {
+                    Timber.e("logout error $it")
                     throwableError<UserResponse>(it)
                 }
         } else {
             emit(0L)
+            dataSource.clearData()
         }
     }
 

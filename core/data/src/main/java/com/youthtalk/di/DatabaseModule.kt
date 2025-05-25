@@ -22,6 +22,7 @@ object DatabaseModule {
             name = "youth",
             klass = YouthDatabase::class.java
         )
+            .addMigrations(YouthDatabase.MIGRATION_3_4)
             .build()
     }
 }
