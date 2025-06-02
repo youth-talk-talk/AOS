@@ -7,14 +7,6 @@ on:
     workflow_dispatch:
 
 jobs:
-    check-alias:
-        name: check alias
-        runs-on: ubuntu-latest
-        steps:
-             -   name: build release
-                 run: |
-                    echo ${{ secrets.ALIAS }}
-
     ktlint:
         permissions: write-all
         name: Check Code Quality(ktlint)
