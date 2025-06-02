@@ -9,6 +9,7 @@ import com.youthtalk.data.LoginService
 import com.youthtalk.data.PolicyService
 import com.youthtalk.data.ReportService
 import com.youthtalk.data.UserService
+import com.youthtalk.sse.SseClient
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -55,14 +56,41 @@ object ApiModule {
     @Provides
     @Singleton
     @Sse
-    fun provideOkHttpClient(): OkHttpClient = OkHttpClient.Builder()
-        .readTimeout(0, TimeUnit.MILLISECONDS)
-        .build()
+    fun provideOkHttpClient(dataStoreDataSource: DataStoreDataSource): OkHttpClient {
+        val interceptor =
+            Interceptor { chain ->
+                val request = chain.request().newBuilder()
+                    .addHeader("Content-Type", "application/json")
+                    .build()
+
+                val response = chain.proceed(request)
+                val token = response.headers["Authorization"]
+                val refreshToken = response.headers["Authorization-refresh"]
+                if (token != null && refreshToken != null) {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        dataStoreDataSource.saveAccessToken(token)
+                        dataStoreDataSource.saveRefreshToken(refreshToken)
+                    }
+                }
+                response
+            }
+
+        return OkHttpClient.Builder()
+            .addInterceptor(interceptor)
+            .readTimeout(0, TimeUnit.MILLISECONDS)
+            .build()
+    }
 
     @Provides
     @Singleton
     fun provideConverterFactory(json: Json): Factory {
         return json.asConverterFactory("application/json".toMediaType())
+    }
+
+    @Provides
+    @Singleton
+    fun provideSseClient(@Sse okHttpClient: OkHttpClient): SseClient {
+        return SseClient(okHttpClient)
     }
 
     @Singleton

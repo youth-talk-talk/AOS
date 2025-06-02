@@ -36,7 +36,7 @@ class LoginViewModel @Inject constructor(
     var uiEffect = MutableSharedFlow<LoginUiEffect>()
         private set
 
-    var loading = MutableStateFlow<Boolean>(false)
+    var loading = MutableStateFlow(false)
 
     init {
         checkToken()
@@ -59,7 +59,7 @@ class LoginViewModel @Inject constructor(
     fun postLogin(userId: Long) {
         socialId = "$userId"
         viewModelScope.launch {
-            postLoginUseCase(socialId)
+            postLoginUseCase("950331")
                 .catch {
                     Timber.e("viewModel postLogin error $it")
                     _error.emit(it)

@@ -1,22 +1,30 @@
 package com.youthtalk.sse
 
-import com.youthtalk.di.ApiModule
 import javax.inject.Inject
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.Response
 import okhttp3.sse.EventSource
 import okhttp3.sse.EventSourceListener
 import okhttp3.sse.EventSources
 import timber.log.Timber
 
 class SseClient @Inject constructor(
-    @ApiModule.Sse private val okHttpClient: OkHttpClient
+    private val okHttpClient: OkHttpClient
 ) {
-    private var eventSource: EventSource? = null
+    private var es: EventSource? = null
 
-    fun start(url: String, onMessage: (String) -> Unit) {
+    fun start(token: String, url: String, onMessage: (String) -> Unit) {
+        runBlocking {
+            es?.cancel()
+            es = null
+            delay(500L)
+        }
+
         Timber.e("SseClient start")
-        val request = Request.Builder().url(url).build()
+        val request = Request.Builder().url(url).addHeader("Authorization", token).build()
         EventSources.createFactory(okHttpClient)
             .newEventSource(
                 request,
@@ -25,14 +33,32 @@ class SseClient @Inject constructor(
                         Timber.e("알림 시작 메세지 $data")
                         onMessage(data)
                     }
+
+                    override fun onClosed(eventSource: EventSource) {
+                        Timber.e("newEventSource onClosed")
+                        super.onClosed(eventSource)
+                    }
+
+                    override fun onFailure(eventSource: EventSource, t: Throwable?, response: Response?) {
+                        Timber.e("newEventSource onFailure error $t")
+                        super.onFailure(eventSource, t, response)
+                    }
+
+                    override fun onOpen(eventSource: EventSource, response: Response) {
+                        Timber.e("newEventSource onOpen ${response.body}")
+                        super.onOpen(eventSource, response)
+                    }
                 }
-            ).also {
-                eventSource = it
+            )
+            .also {
+                es = it
             }
+        Timber.e("eventSource start last lane $es")
     }
 
     fun stop() {
-        Timber.e("SseClient stop")
-        eventSource?.cancel()
+        Timber.e("SseClient stop eventSource is null? $es")
+        es?.cancel()
+        es = null
     }
 }

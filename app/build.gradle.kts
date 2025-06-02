@@ -48,6 +48,7 @@ dependencies {
     implementation(projects.feature.login)
     implementation(projects.core.designsystem)
     implementation(projects.core.data)
+    implementation(projects.core.domain)
     implementation(platform(libs.firebase.bom))
     //noinspection UseTomlInstead
     implementation("com.google.firebase:firebase-analytics")
