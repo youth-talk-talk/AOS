@@ -5,7 +5,7 @@ import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
 import androidx.work.WorkManager
 import com.kakao.sdk.common.KakaoSdk
-import com.youth.app.yongproject.BuildConfig
+import com.youthtalk.app.yongproject.BuildConfig
 import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
 import timber.log.Timber
