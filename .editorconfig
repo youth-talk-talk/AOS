@@ -21,6 +21,5 @@ ij_any_class_annotation_wrap = off
 ktlint_standard_annotation = disabled
 ij_c_class_constructor_init_list_align_multiline = false
 ktlint_function_naming_ignore_when_annotated_with=Composable
+no-wildcard-imports = false
 
-ij_kotlin_imports_layout = unset
-ij_kotlin_packages_to_use_import_on_demand = unset

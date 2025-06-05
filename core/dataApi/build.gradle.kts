@@ -20,3 +20,10 @@ dependencies {
     implementation(libs.androidx.paging.runtime)
     testImplementation(libs.androidx.paging.common)
 }
+
+ktlint {
+    filter {
+        exclude("**/src/test/**")
+        exclude("**/src/androidTest/**")
+    }
+}
