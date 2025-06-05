@@ -27,10 +27,6 @@ dependencies {
     implementation(projects.core.exception)
     implementation(projects.core.datastore)
 
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-
     implementation(libs.retrofit)
     implementation(libs.okhttp)
     implementation(platform(libs.okhttp.bom))
