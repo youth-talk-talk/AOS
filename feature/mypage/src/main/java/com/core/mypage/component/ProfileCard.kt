@@ -5,7 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
@@ -24,7 +23,6 @@ import coil3.compose.AsyncImage
 import com.youth.app.feature.mypage.R
 import com.youthtalk.designsystem.YongProjectTheme
 import com.youthtalk.designsystem.gray10
-import com.youthtalk.designsystem.gray80
 import com.youthtalk.model.User
 import com.youthtalk.model.typeenum.Region
 
@@ -44,7 +42,8 @@ fun ProfileCard(modifier: Modifier = Modifier, user: User, onClick: () -> Unit) 
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Row(
-            horizontalArrangement = Arrangement.spacedBy(10.dp)
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
             user.profileImgUrl?.let { img ->
                 AsyncImage(
@@ -62,30 +61,10 @@ fun ProfileCard(modifier: Modifier = Modifier, user: User, onClick: () -> Unit) 
                 contentDescription = "기본 이미지"
             )
 
-            Column(
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                Text(
-                    text = user.nickname,
-                    style = MaterialTheme.typography.bodyMedium
-                )
-
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(6.dp)
-                ) {
-                    Image(
-                        painter = painterResource(R.drawable.kakao),
-                        contentDescription = "카카오 이미지"
-                    )
-
-                    Text(
-                        text = "vsvx13@naver.com",
-                        style = MaterialTheme.typography.labelMedium.copy(
-                            color = gray80
-                        )
-                    )
-                }
-            }
+            Text(
+                text = user.nickname,
+                style = MaterialTheme.typography.bodyMedium
+            )
         }
 
         Image(
