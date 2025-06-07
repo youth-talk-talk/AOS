@@ -5,7 +5,6 @@ import org.gradle.api.JavaVersion
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.provideDelegate
-import org.gradle.kotlin.dsl.support.kotlinCompilerOptions
 import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
@@ -27,6 +26,8 @@ internal fun Project.configureKotlinAndroid() {
 
         defaultConfig {
             minSdk = 26
+
+            testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
             buildConfigField("String", "KAKAO_API_KEY", getApiKey("kakao.api.key"))
             addManifestPlaceholders(mapOf("KAKAO_API_KEY" to getApiKey("kakao.api.xml.key")))
@@ -81,6 +82,11 @@ internal fun Project.configureKotlinAndroid() {
         add("implementation", libs.findLibrary("gson").get())
         add("implementation", libs.findLibrary("kakao.v2.user").get())
         add("implementation", libs.findLibrary("timber").get())
+
+
+        add("testImplementation",libs.findLibrary("junit").get())
+        add("androidTestImplementation",libs.findLibrary("androidx-junit").get())
+        add("androidTestImplementation",libs.findLibrary("androidx-espresso-core").get())
     }
 
 }

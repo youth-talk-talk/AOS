@@ -29,7 +29,6 @@ detekt ="1.23.6"
 androidGradlePlugin = "8.4.2"
 
 # # https://developer.android.com/jetpack/androidx/releases/test
-androidxEspresso = "3.5.1"
 junit = "4.13.2"
 junitVersion = "1.2.0"
 
