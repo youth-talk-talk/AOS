@@ -21,5 +21,11 @@ ij_any_class_annotation_wrap = off
 ktlint_standard_annotation = disabled
 ij_c_class_constructor_init_list_align_multiline = false
 ktlint_function_naming_ignore_when_annotated_with=Composable
-no-wildcard-imports = false
 
+[*/**/test/**/*.{kt,kts}]
+ktlint_standard_no-wildcard-imports = disabled
+ktlint_standard_import-ordering = disabled
+
+[*/**/androidTest/**/*.{kt,kts}]
+ktlint_standard_no-wildcard-imports = disabled
+ktlint_standard_import-ordering = disabled
