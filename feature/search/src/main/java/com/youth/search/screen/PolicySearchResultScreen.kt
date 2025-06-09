@@ -28,24 +28,29 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
+import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import com.youth.search.component.FilterChip
 import com.youthtalk.component.card.PolicyCard
 import com.youthtalk.component.dropdown.SortTypeDropDown
 import com.youthtalk.component.empty.EmptyScreen
 import com.youthtalk.component.sheet.FilterBottomSheet
+import com.youthtalk.designsystem.YongProjectTheme
 import com.youthtalk.designsystem.gray10
 import com.youthtalk.designsystem.gray30
 import com.youthtalk.designsystem.gray40
 import com.youthtalk.model.FilterType
+import com.youthtalk.model.getCountFrom
 import com.youthtalk.model.policy.Policy
 import com.youthtalk.model.search.SearchFilter
 import com.youthtalk.model.typeenum.SortType
-import com.youthtalk.util.SpecializedUtils
 import java.text.DecimalFormat
+import kotlinx.coroutines.flow.MutableStateFlow
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -81,23 +86,7 @@ fun PolicySearchResultScreen(
                 items(
                     count = filters.size
                 ) {
-                    val filterCount = when (filters[it]) {
-                        FilterType.POLICY_TYPE -> searchFilter.category?.size ?: 0
-                        FilterType.REGION -> searchFilter.region?.size ?: 0
-                        FilterType.RECRUIT -> searchFilter.employment?.size ?: 0
-                        FilterType.EDUCATION -> searchFilter.education?.size ?: 0
-                        FilterType.SPECIALIZED -> {
-                            val specialCount = (SpecializedUtils.getFilterList(searchFilter.specialization)?.size ?: 0)
-                            val marriedCount = if (searchFilter.marriage != null) 1 else 0
-                            specialCount + marriedCount
-                        }
-
-                        FilterType.AGE_EARN -> {
-                            val earnCount = if (searchFilter.minEarn != null || searchFilter.maxEarn != null) 1 else 0
-                            val ageCount = if (searchFilter.age != null) 1 else 0
-                            earnCount + ageCount
-                        }
-                    }
+                    val filterCount = filters[it].getCountFrom(searchFilter)
 
                     FilterChip(
                         text = filters[it].title,
@@ -203,6 +192,26 @@ fun PolicySearchResultScreen(
             startIndex = startIndex,
             onDismiss = { bottomSheet = false },
             onClick = { applyFilter(it, sortType) }
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun PolicySearchResultScreenPreview() {
+    val fakePolicies = remember { MutableStateFlow(PagingData.empty<Policy>()) }.collectAsLazyPagingItems()
+
+    YongProjectTheme {
+        PolicySearchResultScreen(
+            isLoading = false,
+            count = 0,
+            searchFilter = SearchFilter(),
+            sortType = SortType.RECENT,
+            policies = fakePolicies,
+            lazyListState = LazyListState(),
+            applyFilter = { _, _ -> },
+            onClickPolicyDetail = { },
+            onClickPostScrap = { _, _ -> }
         )
     }
 }
