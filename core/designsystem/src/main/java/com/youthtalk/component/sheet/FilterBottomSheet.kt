@@ -373,14 +373,7 @@ fun TabRowComponent(
         items(
             count = types.size
         ) {
-            val title = when (types[it]) {
-                FilterType.POLICY_TYPE -> "정책분야"
-                FilterType.REGION -> "지역"
-                FilterType.RECRUIT -> "취업상태"
-                FilterType.EDUCATION -> "학력"
-                FilterType.SPECIALIZED -> "특화 분야"
-                FilterType.AGE_EARN -> "연령 및 소득"
-            }
+            val title = types[it].title
 
             Text(
                 modifier = Modifier

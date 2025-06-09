@@ -66,6 +66,7 @@ fun PolicySearchResultScreen(
     }
     val state = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var startIndex by remember { mutableStateOf(0) }
+    val filters = FilterType.entries.toList()
     LazyColumn(
         modifier = modifier
             .fillMaxSize(),
@@ -78,19 +79,8 @@ fun PolicySearchResultScreen(
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 items(
-                    count = FilterType.entries.toList().size
+                    count = filters.size
                 ) {
-                    val filters = FilterType.entries.toList()
-
-                    val title = when (filters[it]) {
-                        FilterType.POLICY_TYPE -> "정책분야"
-                        FilterType.REGION -> "지역"
-                        FilterType.RECRUIT -> "취업상태"
-                        FilterType.EDUCATION -> "학력"
-                        FilterType.SPECIALIZED -> "특화 분야"
-                        FilterType.AGE_EARN -> "연령 및 소득"
-                    }
-
                     val filterCount = when (filters[it]) {
                         FilterType.POLICY_TYPE -> searchFilter.category?.size ?: 0
                         FilterType.REGION -> searchFilter.region?.size ?: 0
@@ -110,7 +100,7 @@ fun PolicySearchResultScreen(
                     }
 
                     FilterChip(
-                        text = title,
+                        text = filters[it].title,
                         count = filterCount,
                         onClick = {
                             startIndex = it
