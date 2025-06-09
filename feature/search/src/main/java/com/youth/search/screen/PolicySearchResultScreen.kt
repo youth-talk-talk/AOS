@@ -1,34 +1,25 @@
 package com.youth.search.screen
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.VerticalDivider
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -37,15 +28,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.itemKey
-import com.youth.app.feature.search.R
 import com.youth.search.component.FilterChip
-import com.youthtalk.component.button.FilterButton
 import com.youthtalk.component.card.PolicyCard
 import com.youthtalk.component.dropdown.SortTypeDropDown
 import com.youthtalk.component.empty.EmptyScreen
@@ -53,7 +40,6 @@ import com.youthtalk.component.sheet.FilterBottomSheet
 import com.youthtalk.designsystem.gray10
 import com.youthtalk.designsystem.gray30
 import com.youthtalk.designsystem.gray40
-import com.youthtalk.designsystem.gray80
 import com.youthtalk.model.FilterType
 import com.youthtalk.model.policy.Policy
 import com.youthtalk.model.search.SearchFilter
@@ -132,13 +118,6 @@ fun PolicySearchResultScreen(
                         }
                     )
                 }
-            }
-            if (!searchFilter.isAllNull()) {
-                Spacer(modifier.height(12.dp))
-                PolicyFilterInfo(
-                    searchFilter = searchFilter,
-                    onDeleteSearchFilter = { applyFilter(it, sortType) }
-                )
             }
         }
 
@@ -234,99 +213,6 @@ fun PolicySearchResultScreen(
             startIndex = startIndex,
             onDismiss = { bottomSheet = false },
             onClick = { applyFilter(it, sortType) }
-        )
-    }
-}
-
-@Composable
-fun PolicyFilterInfo(modifier: Modifier = Modifier, searchFilter: SearchFilter, onDeleteSearchFilter: (SearchFilter) -> Unit) {
-    Row(
-        modifier = modifier
-            .height(20.dp)
-            .fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Row(
-            modifier = Modifier
-                .weight(1f)
-                .horizontalScroll(rememberScrollState()),
-            horizontalArrangement = Arrangement.spacedBy(10.dp)
-        ) {
-            Spacer(modifier = Modifier.width(6.dp))
-            searchFilter.category?.forEach { category ->
-                FilterButton(text = category.categoryName) {
-                    val filter = (searchFilter.category ?: listOf()) - category
-                    onDeleteSearchFilter(searchFilter.copy(category = filter.ifEmpty { null }))
-                }
-            }
-
-            searchFilter.region?.forEach { region ->
-                FilterButton(text = region) {
-                    val filter = (searchFilter.region ?: listOf()) - region
-                    onDeleteSearchFilter(searchFilter.copy(region = filter.ifEmpty { null }))
-                }
-            }
-
-            searchFilter.employment?.forEach { employment ->
-                FilterButton(text = employment.employmentName) {
-                    val filter = (searchFilter.employment ?: listOf()) - employment
-                    onDeleteSearchFilter(searchFilter.copy(employment = filter.ifEmpty { null }))
-                }
-            }
-
-            searchFilter.education?.forEach { education ->
-                FilterButton(text = education.educationName) {
-                    val filter = (searchFilter.education ?: listOf()) - education
-                    onDeleteSearchFilter(searchFilter.copy(education = filter.ifEmpty { null }))
-                }
-            }
-
-            SpecializedUtils.getFilterList(searchFilter.specialization)?.forEach { special ->
-                FilterButton(text = special.specialName) {
-                    val filter = (searchFilter.specialization ?: listOf()) - special
-                    onDeleteSearchFilter(searchFilter.copy(specialization = filter.ifEmpty { null }))
-                }
-            }
-
-            searchFilter.marriage?.let { marry ->
-                FilterButton(text = marry.marriageName) {
-                    onDeleteSearchFilter(searchFilter.copy(marriage = null))
-                }
-            }
-
-            if (searchFilter.minEarn != null && searchFilter.maxEarn != null) {
-                searchFilter.earnToString()?.let { value ->
-                    FilterButton(text = value) {
-                        onDeleteSearchFilter(searchFilter.copy(minEarn = null, maxEarn = null))
-                    }
-                }
-            }
-
-            searchFilter.age?.let { age ->
-                FilterButton(text = "${age}세") {
-                    onDeleteSearchFilter(searchFilter.copy(age = null))
-                }
-            }
-            Spacer(modifier = Modifier.width(6.dp))
-        }
-        VerticalDivider(
-            modifier = Modifier
-                .fillMaxHeight()
-                .padding(end = 10.dp),
-            color = gray40
-        )
-        Image(
-            modifier = Modifier
-                .padding(end = 16.dp)
-                .clickable(
-                    indication = null,
-                    interactionSource = remember { MutableInteractionSource() }
-                ) {
-                    onDeleteSearchFilter(SearchFilter(keyword = searchFilter.keyword))
-                },
-            painter = painterResource(R.drawable.refresh),
-            contentDescription = "새로고침",
-            colorFilter = ColorFilter.tint(color = gray80)
         )
     }
 }
