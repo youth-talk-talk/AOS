@@ -50,7 +50,6 @@ import java.text.DecimalFormat
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PolicySearchResultScreen(
-    modifier: Modifier = Modifier,
     isLoading: Boolean,
     count: Int,
     searchFilter: SearchFilter,
@@ -59,7 +58,8 @@ fun PolicySearchResultScreen(
     lazyListState: LazyListState,
     applyFilter: (SearchFilter, SortType) -> Unit,
     onClickPolicyDetail: (Long) -> Unit,
-    onClickPostScrap: (Long, Boolean) -> Unit
+    onClickPostScrap: (Long, Boolean) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     var bottomSheet by remember {
         mutableStateOf(false)
