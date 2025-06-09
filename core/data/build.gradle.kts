@@ -45,4 +45,6 @@ dependencies {
     ksp(libs.androidx.room.room.compiler)
     implementation(libs.androidx.room.paging)
     implementation(libs.androidx.room.ktx)
+
+    testImplementation(libs.okhttp3.mockwebserver)
 }
