@@ -11,7 +11,7 @@ data class PostDetailResponse(
     val contentList: List<PostContentInfoResponse>,
     val policyId: Long?,
     val policyTitle: String?,
-    val writerId: Long,
+    val writerId: Long?,
     val nickname: String?,
     val view: Long,
     val profileImage: String?,

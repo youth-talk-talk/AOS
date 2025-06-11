@@ -394,10 +394,14 @@ private fun PostDetailContent(modifier: Modifier = Modifier, postDetail: PostDet
             painter = painterResource(R.drawable.profile_thumnail),
             contentDescription = "기본 이미지"
         )
+        val nickname = when (postDetail.nickname) {
+            "null" -> "탈퇴한 회원"
+            else -> postDetail.nickname
+        } ?: "탈퇴한 회원"
 
         Column {
             Text(
-                text = postDetail.nickname ?: "탈퇴한 회원",
+                text = nickname,
                 style = MaterialTheme.typography.displayLarge
             )
             Text(
