@@ -9,7 +9,7 @@ data class PolicyResponse(
     val category: Category,
     val title: String,
     val deadlineStatus: String,
-    val hostDep: String,
+    val hostDep: String = "",
     val scrapCount: Int,
     val departmentImgUrl: String?,
     val region: String,
