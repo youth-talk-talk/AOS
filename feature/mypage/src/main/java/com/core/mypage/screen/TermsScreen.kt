@@ -16,14 +16,14 @@ import com.youthtalk.component.topbar.MiddleTitleTopBar
 import com.youthtalk.designsystem.gray90
 
 @Composable
-fun TermsScreen(modifier: Modifier = Modifier) {
+fun TermsScreen(onBack: () -> Unit, modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
             .fillMaxSize()
     ) {
         MiddleTitleTopBar(
             title = stringResource(R.string.terms_topbar_title),
-            onBack = {}
+            onBack = onBack
         )
         Column(
             modifier = Modifier

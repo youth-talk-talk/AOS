@@ -101,9 +101,12 @@ fun NavHostScreen(
             checkPermission = checkPermission
         )
         settingEtcNavigation(
+            onBack = navController::popBackStack,
             goLogin = goLogin
         )
-        settingTermsNavigation()
+        settingTermsNavigation(
+            onBack = navController::popBackStack
+        )
         settingScrapPolicyNavigation(
             onBack = navController::popBackStack,
             onClickPolicyDetail = navController::navigatePolicyDetail
