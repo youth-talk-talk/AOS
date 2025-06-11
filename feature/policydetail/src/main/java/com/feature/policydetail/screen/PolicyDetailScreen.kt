@@ -86,10 +86,10 @@ import timber.log.Timber
 
 @Composable
 fun PolicyDetailScreenRoot(
-    modifier: Modifier = Modifier,
     viewModel: PolicyDetailViewModel = hiltViewModel(),
     onBack: () -> Unit,
-    showSnackBar: (String) -> Unit
+    showSnackBar: (String) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val context = LocalContext.current
@@ -143,6 +143,7 @@ fun PolicyDetailScreenRoot(
                     PolicyDetailScreen(
                         state = state,
                         lazyListState = lazyListState,
+                        onBack = onBack,
                         actionEvent = viewModel::setEvent
                     )
                 }
@@ -168,11 +169,12 @@ fun PolicyDetailScreenRoot(
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun PolicyDetailScreen(
-    modifier: Modifier = Modifier,
+internal fun PolicyDetailScreen(
     lazyListState: LazyListState,
     state: PolicyDetailUiState,
-    actionEvent: (PolicyDetailUiEvent) -> Unit
+    onBack: () -> Unit,
+    actionEvent: (PolicyDetailUiEvent) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     var textValue by remember {
         mutableStateOf("")
@@ -204,7 +206,7 @@ fun PolicyDetailScreen(
             }
     ) {
         MiddleTitleTopBar(
-            onBack = {},
+            onBack = onBack,
             tails = {
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(10.dp)
@@ -395,6 +397,7 @@ private fun PolicyDetailScreenPreview() {
         PolicyDetailScreen(
             state = PolicyDetailUiState.initState,
             lazyListState = lazyListState,
+            onBack = {},
             actionEvent = {}
         )
     }
