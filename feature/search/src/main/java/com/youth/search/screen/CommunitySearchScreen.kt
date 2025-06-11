@@ -26,10 +26,10 @@ import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun CommunitySearchScreen(
-    modifier: Modifier = Modifier,
     viewModel: CommunitySearchViewModel = hiltViewModel(),
     onBack: () -> Unit,
-    onClickPostDetail: (Long) -> Unit
+    onClickPostDetail: (Long) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     var search by rememberSaveable {
@@ -59,7 +59,7 @@ fun CommunitySearchScreen(
     ) {
         SearchBar(
             text = search,
-            onClickBack = {},
+            onClickBack = onBack,
             onTextChange = { search = it },
             onSearch = { keyword ->
                 viewModel.setEvent(CommunityUiEvent.Search(keyword, state.communityType))

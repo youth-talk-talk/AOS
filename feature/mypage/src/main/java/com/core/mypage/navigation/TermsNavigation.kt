@@ -11,8 +11,8 @@ fun NavController.navigateSettingTerms(navOptions: NavOptions? = null) {
     navigate(Terms, navOptions)
 }
 
-fun NavGraphBuilder.settingTermsNavigation() {
+fun NavGraphBuilder.settingTermsNavigation(onBack: () -> Unit) {
     composable<Terms> {
-        TermsScreen()
+        TermsScreen(onBack)
     }
 }

@@ -11,8 +11,10 @@ fun NavController.navigateSettingNotification(navOptions: NavOptions? = null) {
     navigate(Notification, navOptions)
 }
 
-fun NavGraphBuilder.settingNotificationNavigation() {
+fun NavGraphBuilder.settingNotificationNavigation(onBack: () -> Unit) {
     composable<Notification> {
-        NotificationScreen()
+        NotificationScreen(
+            onBack = onBack
+        )
     }
 }

@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
@@ -31,7 +32,7 @@ import com.youthtalk.model.NotificationType
 import kotlinx.coroutines.launch
 
 @Composable
-fun NotificationScreen(modifier: Modifier = Modifier) {
+fun NotificationScreen(onBack: () -> Unit, modifier: Modifier = Modifier) {
     val list = listOf("청년 정책", "커뮤니티")
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState { list.size }
@@ -43,10 +44,14 @@ fun NotificationScreen(modifier: Modifier = Modifier) {
         NoBackMiddleTitleTopBar(
             title = "알림",
             tails = {
-                Image(
-                    painter = painterResource(R.drawable.close),
-                    contentDescription = stringResource(R.string.close)
-                )
+                IconButton(
+                    onBack
+                ) {
+                    Image(
+                        painter = painterResource(R.drawable.close),
+                        contentDescription = stringResource(R.string.close)
+                    )
+                }
             }
         )
 

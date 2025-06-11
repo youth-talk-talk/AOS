@@ -32,7 +32,7 @@ import com.youthtalk.designsystem.gray90
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
-fun EtcScreen(modifier: Modifier = Modifier, viewModel: EtcViewModel = hiltViewModel(), goLogin: () -> Unit) {
+fun EtcScreen(viewModel: EtcViewModel = hiltViewModel(), onBack: () -> Unit, goLogin: () -> Unit, modifier: Modifier = Modifier) {
     var dialog by remember {
         mutableStateOf(false)
     }
@@ -51,7 +51,7 @@ fun EtcScreen(modifier: Modifier = Modifier, viewModel: EtcViewModel = hiltViewM
     ) {
         MiddleTitleTopBar(
             title = stringResource(R.string.etc_topbar_title),
-            onBack = {}
+            onBack = onBack
         )
 
         Column(
@@ -115,6 +115,7 @@ fun EtcScreen(modifier: Modifier = Modifier, viewModel: EtcViewModel = hiltViewM
 private fun EtcScreenPreview() {
     YongProjectTheme {
         EtcScreen(
+            onBack = {},
             goLogin = {}
         )
     }

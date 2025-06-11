@@ -101,9 +101,12 @@ fun NavHostScreen(
             checkPermission = checkPermission
         )
         settingEtcNavigation(
+            onBack = navController::popBackStack,
             goLogin = goLogin
         )
-        settingTermsNavigation()
+        settingTermsNavigation(
+            onBack = navController::popBackStack
+        )
         settingScrapPolicyNavigation(
             onBack = navController::popBackStack,
             onClickPolicyDetail = navController::navigatePolicyDetail
@@ -118,7 +121,9 @@ fun NavHostScreen(
             onClickPostDetail = navController::navigateCommunityDetail,
             onClickPolicyDetail = navController::navigatePolicyDetail
         )
-        settingNotificationNavigation()
+        settingNotificationNavigation(
+            onBack = navController::popBackStack
+        )
 
         policySearchNavigation(
             onBack = { navController.popBackStack() },

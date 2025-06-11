@@ -38,10 +38,10 @@ import timber.log.Timber
 
 @Composable
 fun PolicySearchScreen(
-    modifier: Modifier = Modifier,
     viewModel: PolicySearchViewModel = hiltViewModel(),
     onBack: () -> Unit,
-    onClickPolicyDetail: (Long) -> Unit
+    onClickPolicyDetail: (Long) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val uiState by viewModel.state.collectAsStateWithLifecycle()
     val policies = uiState.policies.collectAsLazyPagingItems()
@@ -116,7 +116,7 @@ fun PolicySearchScreen(
 }
 
 @Composable
-fun SearchScreen(
+internal fun SearchScreen(
     modifier: Modifier = Modifier,
     recents: List<String>,
     onDeleteAll: () -> Unit,
