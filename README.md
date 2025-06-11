@@ -1,4 +1,4 @@
-# 온통청년 API 변경으로 2차 디자인 및 기능 연결 작업중...
+# 청년톡톡
 
 ![app_background](https://github.com/user-attachments/assets/e2d4d36b-63a9-45fb-831f-105272823d8b)
 
@@ -22,13 +22,37 @@
 
 ## 🛠 기술 스택 및 도구
 
-## <img src="https://img.shields.io/badge/android-34A853?style=for-the-badge&logo=android&logoColor=white"><img src="https://img.shields.io/badge/androidstudio-3DDC84?style=for-the-badge&logo=androidstudio&logoColor=white"><img src="https://img.shields.io/badge/kotlin-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white"><img src="https://img.shields.io/badge/spring-6DB33F?style=for-the-badge&logo=spring&logoColor=white"><img src="https://img.shields.io/badge/githubactions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white"><img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white"><img src="https://img.shields.io/badge/jetpackcompose-4285F4?style=for-the-badge&logo=jetpackcompose&logoColor=white">
+## <img src="https://img.shields.io/badge/android-34A853?style=for-the-badge&logo=android&logoColor=white"><img src="https://img.shields.io/badge/androidstudio-3DDC84?style=for-the-badge&logo=androidstudio&logoColor=white"><img src="https://img.shields.io/badge/kotlin-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white"><img src="https://img.shields.io/badge/jetpackcompose-4285F4?style=for-the-badge&logo=jetpackcompose&logoColor=white"><img src="https://img.shields.io/badge/firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=white"><img src="https://img.shields.io/badge/githubactions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white"><img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white">
 
 | 기술 스택             |                                                              |
 | --------------------- | ------------------------------------------------------------ |
-| 안드로이드 라이브러리 | Compose UI<br />Hilt (version 2.48)<br />Retrofit2(version 2.9.0)<br />Okhttp3<br />ksp<br />coil<br />datastore<br />Paging3 |
-| 아키텍처              | MVI 아키텍처, 멀티모듈(core, feature, build-logic, app) |
-| CI/CD                 | Github Actions, firebase Distribution                                               |
-| Lint | Ktlint, Detekt |
+| 안드로이드 라이브러리 | Compose UI<br />Hilt<br />Retrofit2<br />Okhttp3<br />KSP<br />Coil<br />DataStore<br />Paging3<br />Firebase Analytics |
+| 아키텍처              | Clean Architecture<br />MVVM<br />멀티모듈(core, feature, build-logic, app) |
+| UI/UX                 | Material3<br />Compose Navigation<br />Compose UI |
+| 비동기 처리           | Kotlin Coroutines<br />Kotlin Flow |
+| CI/CD                 | Github Actions<br />Firebase Distribution |
+| 코드 품질            | Ktlint<br />Detekt |
 
+## 🛠 프로젝트 구조
 
+📦build-logic  
+📦app  
+📦feature  
+┣ 📂mypage  
+┣ 📂policy  
+┣ 📂search  
+┣ 📂login  
+┣ 📂main  
+┣ 📂home  
+┣ 📂community  
+┗ 📂policydetail  
+📦core  
+┣ 📂dataApi  
+┣ 📂data  
+┣ 📂navigation  
+┣ 📂base  
+┣ 📂model  
+┣ 📂designsystem  
+┣ 📂datastore  
+┣ 📂exception  
+┗ 📂domain  
