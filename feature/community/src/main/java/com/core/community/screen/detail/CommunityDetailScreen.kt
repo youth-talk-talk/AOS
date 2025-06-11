@@ -83,11 +83,11 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun CommunityDetailScreen(
-    modifier: Modifier = Modifier,
     viewModel: CommunityDetailViewModel = hiltViewModel(),
     showSnackBar: (String) -> Unit,
     onBack: () -> Unit,
-    onModifyWriteCommunity: (PostSubject, Long) -> Unit
+    onModifyWriteCommunity: (PostSubject, Long) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     var comments by rememberSaveable {
@@ -131,6 +131,7 @@ fun CommunityDetailScreen(
                 CommunityDetailType.MAIN -> {
                     DetailScreen(
                         state = state,
+                        onBack = onBack,
                         onPostModifyComment = { comment ->
                             comments = Pair(comment.commentId, comment.content)
                             viewModel.setEvent(CommunityDetailUiEvent.ChangeDetailType(CommunityDetailType.COMMENT))
@@ -187,9 +188,9 @@ fun CommunityDetailScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DetailScreen(
-    modifier: Modifier = Modifier,
+internal fun DetailScreen(
     state: CommunityDetailUiState,
+    onBack: () -> Unit,
     onPostAddComment: (String) -> Unit,
     onPostModifyComment: (Comment) -> Unit,
     onDeleteComment: (Comment) -> Unit,
@@ -198,7 +199,8 @@ fun DetailScreen(
     onPostReportPost: () -> Unit,
     onPostReportPostUser: () -> Unit,
     onPostPostScrap: (Long, Boolean) -> Unit,
-    onCommentLike: (Long, Boolean) -> Unit
+    onCommentLike: (Long, Boolean) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val focusManager = LocalFocusManager.current
     var bottomSheet by remember {
@@ -219,7 +221,7 @@ fun DetailScreen(
             }
     ) {
         MiddleTitleTopBar(
-            onBack = {},
+            onBack = onBack,
             tails = {
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(10.dp)
