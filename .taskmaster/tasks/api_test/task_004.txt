@@ -1,0 +1,11 @@
+# Task ID: 4
+# Title: LoginService 테스트 - 성공 케이스
+# Status: pending
+# Dependencies: 2, 3
+# Priority: high
+# Description: LoginService의 정상적인 로그인 시나리오에 대한 테스트를 작성합니다.
+# Details:
+올바른 credentials로 로그인 요청 시 성공 응답을 받는 테스트, 토큰이 정상적으로 반환되는지 검증합니다.
+
+# Test Strategy:
+MockWebServer에서 200 응답과 유효한 토큰을 반환하고, LoginService가 이를 올바르게 처리하는지 확인합니다.

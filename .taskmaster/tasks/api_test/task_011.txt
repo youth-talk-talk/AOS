@@ -1,0 +1,11 @@
+# Task ID: 11
+# Title: CommunityService 테스트 - 게시글 작성/수정
+# Status: pending
+# Dependencies: 10
+# Priority: medium
+# Description: CommunityService의 게시글 작성, 수정, 삭제 API 테스트를 작성합니다.
+# Details:
+게시글 작성, 수정, 삭제 API에 대한 테스트와 권한 검증 테스트를 작성합니다.
+
+# Test Strategy:
+게시글 CRUD 작업이 정상 동작하고, 권한이 올바르게 검증되는지 확인합니다.

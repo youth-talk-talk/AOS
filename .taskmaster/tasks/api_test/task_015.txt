@@ -1,0 +1,11 @@
+# Task ID: 15
+# Title: AnnounceService 테스트 - 읽음 상태 관리
+# Status: pending
+# Dependencies: 14
+# Priority: low
+# Description: AnnounceService의 공지사항 읽음 상태 관리 API 테스트를 작성합니다.
+# Details:
+공지사항 읽음 처리, 읽음 상태 조회, 읽지 않은 공지 개수 조회 등의 API 테스트를 작성합니다.
+
+# Test Strategy:
+읽음 상태가 정확히 업데이트되고, 통계가 올바르게 계산되는지 검증합니다.

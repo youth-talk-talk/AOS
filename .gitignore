@@ -34,3 +34,86 @@ app/google-services.json
 
 *.DS_Store
 /app/release/
+
+# TaskMaster AI - Exclude everything except .txt files
+.taskmaster/config.json         # AI model configuration (contains API preferences)
+.taskmaster/reports/            # Analysis reports
+.taskmaster/cache/              # Cache files
+.taskmaster/.temp/              # Temporary files
+.taskmaster/logs/               # Log files
+.taskmaster/tasks/*/tasks.json  # Project-specific task JSON files
+.taskmaster/tasks/*/*.md        # Individual task files (markdown)
+
+# Keep only these TaskMaster files in git:
+# .taskmaster/docs/*_prd.txt     # PRD files (e.g., api_test_prd.txt)
+# .taskmaster/tasks/*/task_*.txt # Project-specific task text files
+# .taskmaster/templates/*.txt    # Text template files
+
+# Environment files
+.env                            # API keys and secrets
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Editor and IDE files
+.vscode/settings.json           # Keep workspace settings in git, ignore user settings
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/shelf/
+
+# Temporary files
+*.tmp
+*.temp
+.temp/
+temp/
+
+# Logs
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log* 
+.cursor/rules/cursor_rules.mdc
+
+.cursor/rules/dev_workflow.mdc
+
+.cursor/rules/self_improve.mdc
+
+.cursor/rules/taskmaster.mdc
+
+.env.example
+
+.roo/rules-architect/architect-rules
+
+.roo/rules-ask/ask-rules
+
+.roo/rules-boomerang/boomerang-rules
+
+.roo/rules-code/code-rules
+
+.roo/rules-debug/debug-rules
+
+.roo/rules-test/test-rules
+
+.roo/rules/dev_workflow.md
+
+.roo/rules/roo_rules.md
+
+.roo/rules/self_improve.md
+
+.roo/rules/taskmaster.md
+
+.roomodes
+
+.taskmaster/config.json
+
+.taskmaster/tasks/tasks.json
+
+.taskmaster/templates/example_prd.txt
+
+.windsurfrules
+
+.cursor/mcp.json
+
+.taskmaster/tasks/api_test/tasks.json
