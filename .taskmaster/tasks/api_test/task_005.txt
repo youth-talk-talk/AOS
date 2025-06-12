@@ -1,0 +1,11 @@
+# Task ID: 5
+# Title: LoginService 테스트 - 실패 케이스
+# Status: pending
+# Dependencies: 4
+# Priority: high
+# Description: LoginService의 로그인 실패 시나리오에 대한 테스트를 작성합니다.
+# Details:
+잘못된 credentials, 네트워크 오류, 서버 오류 등 다양한 실패 시나리오를 테스트합니다.
+
+# Test Strategy:
+401, 500 등의 HTTP 오류 코드에 대해 적절한 예외가 발생하는지 검증합니다.

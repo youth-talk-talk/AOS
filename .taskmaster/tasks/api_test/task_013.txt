@@ -1,0 +1,11 @@
+# Task ID: 13
+# Title: CommentService 테스트 - 상호작용
+# Status: pending
+# Dependencies: 12
+# Priority: low
+# Description: CommentService의 댓글 좋아요, 신고 등 상호작용 API 테스트를 작성합니다.
+# Details:
+댓글 좋아요/좋아요 취소, 댓글 신고, 댓글 통계 조회 등의 API 테스트를 작성합니다.
+
+# Test Strategy:
+상호작용 기능이 올바르게 동작하고, 통계가 정확히 계산되는지 검증합니다.

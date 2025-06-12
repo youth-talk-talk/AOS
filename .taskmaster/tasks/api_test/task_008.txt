@@ -1,0 +1,11 @@
+# Task ID: 8
+# Title: UserService 테스트 - 프로필 관리
+# Status: pending
+# Dependencies: 7
+# Priority: medium
+# Description: UserService의 사용자 프로필 관련 API 테스트를 작성합니다.
+# Details:
+사용자 프로필 조회, 프로필 업데이트, 사용자 설정 관리 API 테스트를 작성합니다.
+
+# Test Strategy:
+프로필 데이터가 정확히 조회되고, 업데이트가 올바르게 적용되는지 검증합니다.

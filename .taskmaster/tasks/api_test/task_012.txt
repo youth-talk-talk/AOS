@@ -1,0 +1,11 @@
+# Task ID: 12
+# Title: CommentService 테스트 - 댓글 관리
+# Status: pending
+# Dependencies: 11
+# Priority: medium
+# Description: CommentService의 댓글 관련 기본 기능 API 테스트를 작성합니다.
+# Details:
+댓글 목록 조회, 댓글 작성/수정/삭제, 대댓글 처리에 대한 테스트를 작성합니다.
+
+# Test Strategy:
+댓글 계층 구조가 올바르게 처리되고, CRUD 작업이 정상 동작하는지 검증합니다.

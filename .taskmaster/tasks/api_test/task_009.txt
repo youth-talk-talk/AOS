@@ -1,0 +1,11 @@
+# Task ID: 9
+# Title: UserService 테스트 - 소셜 기능
+# Status: pending
+# Dependencies: 8
+# Priority: low
+# Description: UserService의 친구/팔로우 관련 API 테스트를 작성합니다.
+# Details:
+친구 추가/삭제, 팔로우/언팔로우, 친구 목록 조회 등의 API 테스트를 작성합니다.
+
+# Test Strategy:
+소셜 관계가 정확히 생성/삭제되고, 목록이 올바르게 조회되는지 검증합니다.

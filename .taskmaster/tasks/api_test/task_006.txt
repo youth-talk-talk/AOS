@@ -1,0 +1,11 @@
+# Task ID: 6
+# Title: LoginService 테스트 - 토큰 관리
+# Status: pending
+# Dependencies: 5
+# Priority: medium
+# Description: LoginService의 토큰 갱신 및 로그아웃 기능에 대한 테스트를 작성합니다.
+# Details:
+토큰 갱신 API, 로그아웃 API, 토큰 만료 처리 등의 테스트를 작성합니다.
+
+# Test Strategy:
+토큰 갱신이 정상 동작하고, 로그아웃 후 토큰이 무효화되는지 확인합니다.
