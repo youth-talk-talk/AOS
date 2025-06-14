@@ -73,7 +73,7 @@ temp/
 logs/
 npm-debug.log*
 yarn-debug.log*
-yarn-error.log* 
+yarn-error.log*
 .cursor/rules/cursor_rules.mdc
 
 .cursor/rules/dev_workflow.mdc
@@ -117,3 +117,5 @@ yarn-error.log*
 .cursor/mcp.json
 
 .taskmaster/tasks/api_test/tasks.json
+
+.taskmaster/tasks/api_test/*
