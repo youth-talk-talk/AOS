@@ -1,6 +1,7 @@
 package com.youthtalk.api.loginService
 
 import com.youthtalk.api.ApiTestUtils
+import com.youthtalk.api.ApiTestUtils.createRetrofit
 import com.youthtalk.data.LoginService
 import com.youthtalk.dto.CommonResponse
 import com.youthtalk.dto.MemberId
@@ -8,7 +9,6 @@ import okhttp3.OkHttpClient
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
 import org.junit.Before
-import retrofit2.Retrofit
 import com.youthtalk.dto.login.LoginRequest
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
@@ -37,11 +37,10 @@ class LoginTest {
             .addInterceptor(ApiTestUtils.httpLoggingInterceptor)
             .build()
 
-        val retrofit = Retrofit.Builder()
-            .baseUrl(mockWebServer.url("/"))
-            .client(okHttpClient)
-            .addConverterFactory(ApiTestUtils.converterFactory)
-            .build()
+        val retrofit = createRetrofit(
+            baseUrl = mockWebServer.url("/"),
+            client = okHttpClient
+        )
 
         sut = retrofit.create(LoginService::class.java)
     }
