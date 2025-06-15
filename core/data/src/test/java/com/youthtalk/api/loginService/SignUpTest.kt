@@ -1,6 +1,7 @@
 package com.youthtalk.api.loginService
 
 import com.youthtalk.api.ApiTestUtils
+import com.youthtalk.api.ApiTestUtils.createRetrofit
 import com.youthtalk.data.LoginService
 import com.youthtalk.dto.CommonResponse
 import com.youthtalk.dto.login.SignRequest
@@ -16,28 +17,25 @@ import org.junit.Assert.assertThrows
 import org.junit.Before
 import org.junit.Test
 import retrofit2.HttpException
-import retrofit2.Retrofit
 
 class SignUpTest {
 
     private lateinit var mockWebServer: MockWebServer
     private lateinit var sut: LoginService
-    private lateinit var okHttpClient: OkHttpClient
 
     @Before
     fun setUp() {
         mockWebServer = MockWebServer()
         mockWebServer.start()
 
-        okHttpClient = OkHttpClient.Builder()
+        val okHttpClient = OkHttpClient.Builder()
             .addInterceptor(ApiTestUtils.httpLoggingInterceptor)
             .build()
 
-        val retrofit = Retrofit.Builder()
-            .baseUrl(mockWebServer.url("/"))
-            .client(okHttpClient)
-            .addConverterFactory(ApiTestUtils.converterFactory)
-            .build()
+        val retrofit = createRetrofit(
+            baseUrl = mockWebServer.url("/"),
+            client = okHttpClient
+        )
 
         sut = retrofit.create(LoginService::class.java)
     }
