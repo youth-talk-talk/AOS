@@ -36,3 +36,21 @@ val policyJson = """
       }
     }
 """.trimIndent()
+
+val searchPolicyRequestJson = """
+    {
+        "keyword": "청년",
+        "institutionType": "local",
+        "category": ["job", "LIFE"],
+        "marriage": "unrestricted",
+        "age": "25",
+        "minEarn": 1000,
+        "maxEarn": 6000,
+        "education": ["university_student", "university_graduated_expected"],
+        "employment": ["unemployed", "unrestricted"],
+        "major": ["unrestricted", "other"],
+        "specialization": ["unrestricted"],
+        "region": ["서울", "서귀포시"],
+        "isFinished": true
+    }
+""".trimIndent()

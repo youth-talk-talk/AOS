@@ -100,3 +100,17 @@ val recentlyViewPoliciesJson = """
       ]
     }
 """.trimIndent()
+
+val optionsPoliciesJson = """
+    {
+      "status": 200,
+      "message": "정책 조회에 성공하였습니다.",
+      "code": "S04",
+      "data": {
+        "totalCount": 0,
+        "policyList": [
+
+        ]
+      }
+    }
+""".trimIndent()
