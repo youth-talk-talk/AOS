@@ -21,11 +21,9 @@ object ApiTestUtils {
         level = HttpLoggingInterceptor.Level.BODY
     }
 
-    fun createRetrofit(baseUrl: HttpUrl, client: OkHttpClient): Retrofit {
-        return Retrofit.Builder()
-            .baseUrl(baseUrl)
-            .client(client)
-            .addConverterFactory(converterFactory)
-            .build()
-    }
+    fun createRetrofit(baseUrl: HttpUrl, client: OkHttpClient): Retrofit = Retrofit.Builder()
+        .baseUrl(baseUrl)
+        .client(client)
+        .addConverterFactory(converterFactory)
+        .build()
 }
