@@ -33,6 +33,7 @@ interface UserService {
     @POST("/api/v1/members/profile")
     suspend fun postUserImage(@Part image: MultipartBody.Part): CommonResponse<String>
 
+    // URL 지정 필요 2.1 배포 이후에 수정
     @DELETE
     suspend fun deleteUserImage(): CommonResponse<Unit>
 }
