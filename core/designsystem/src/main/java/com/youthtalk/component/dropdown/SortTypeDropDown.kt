@@ -48,7 +48,7 @@ fun SortTypeDropDown(modifier: Modifier = Modifier, sortType: SortType, onClickS
     ) {
         Row(
             modifier = Modifier
-                .padding(horizontal = 6.dp, vertical = 2.dp),
+                .padding(vertical = 2.dp),
             horizontalArrangement = Arrangement.spacedBy(2.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
