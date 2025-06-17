@@ -74,9 +74,8 @@ fun SortTypeDropDown(modifier: Modifier = Modifier, sortType: SortType, onClickS
                     text = {
                         Row(
                             modifier = Modifier
+                                .padding(3.dp)
                                 .width(100.dp)
-                                .padding(10.dp),
-                            horizontalArrangement = Arrangement.spacedBy(10.dp)
                         ) {
                             Text(
                                 modifier = Modifier.weight(1f),
