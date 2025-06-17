@@ -2,9 +2,10 @@ package com.youthtalk.api.commentService
 
 import com.youthtalk.api.ApiTestUtils
 import com.youthtalk.api.ApiTestUtils.createRetrofit
-import com.youthtalk.api.commentService.json.postCommunityCommentSuccessJson
-import com.youthtalk.api.commentService.json.postEmptyContentIdJson
-import com.youthtalk.api.commentService.json.postEmptyPostsJson
+import com.youthtalk.api.commentService.json.postLikeNoCommentIdErrorJson
+import com.youthtalk.api.commentService.json.postLikeSuccessJson
+import com.youthtalk.api.commentService.json.postNotFoundCommentIdErrorJson
+import com.youthtalk.api.commentService.json.postUnLikeSuccessJson
 import com.youthtalk.api.interceptor.TestAuthInterceptor
 import com.youthtalk.data.CommentService
 import com.youthtalk.dto.CommonResponse
@@ -24,7 +25,7 @@ import org.junit.Before
 import org.junit.Test
 import retrofit2.HttpException
 
-class PostCommunityCommentTest {
+class PostCommentLikeTest {
 
     private lateinit var mockWebServer: MockWebServer
     private lateinit var sut: CommentService
@@ -53,13 +54,13 @@ class PostCommunityCommentTest {
     }
 
     @Test
-    fun givenCommunityComment_whenPost_thenWorksFine() = runBlocking {
+    fun givenLikeTrue_whenPostLike_thenWorksFine() = runBlocking {
         // given
-        val responseJson = postCommunityCommentSuccessJson
+        val responseJson = postLikeSuccessJson
         val requestBody = """
             {
-                "postId" : 102,
-                "content" : "게시글댓글내용"
+                "commentId" : 144,
+                "isSetLiked" : true
             }
         """.trimIndent().toRequestBody("application/json".toMediaType())
 
@@ -70,95 +71,57 @@ class PostCommunityCommentTest {
         )
 
         // when
-        val response = sut.postPostAddComment(requestBody)
+        val response = sut.postLikes(requestBody)
         val recordedRequest = mockWebServer.takeRequest()
 
         // then
-        assertEquals("/api/v1/posts/comments", recordedRequest.path)
+        assertEquals("/api/v1/comments/likes", recordedRequest.path)
 
         // 응답 body 검증
         assertEquals(200, response.status)
-        assertEquals("댓글을 성공적으로 등록했습니다.", response.message)
-        assertEquals("S06", response.code)
-        assertEquals(382L, response.data?.commentId)
+        assertEquals("좋아요 등록이 완료되었습니다.", response.message)
+        assertEquals("S10", response.code)
+        assertNull(response.data)
     }
 
     @Test
-    fun givenEmptyPostsId_whenPost_thenThrows400Exception() = runBlocking {
+    fun givenLikeFalse_whenPostLike_thenWorksFine() = runBlocking {
         // given
-        val responseJson = postEmptyContentIdJson
-        val requestBody = """
-        {
-            "content" : "게시글댓글내용"
-        }
-        """.trimIndent().toRequestBody("application/json".toMediaType())
-
-        mockWebServer.enqueue(
-            MockResponse()
-                .setResponseCode(400)
-                .setBody(responseJson)
-        )
-
-        // when
-        val exception = assertThrows(HttpException::class.java) {
-            runBlocking {
-                sut.postPostAddComment(requestBody)
-            }
-        }
-
-        // then
-        val errorBody = exception.response()?.errorBody()?.string()
-        assertNotNull(errorBody)
-
-        val errorResponse = Json.decodeFromString<CommonResponse<Map<String, List<String>>>>(errorBody!!)
-        assertEquals(400, errorResponse.status)
-        assertEquals("유효하지 않은 값을 입력하였습니다.", errorResponse.message)
-        assertEquals("F01", errorResponse.code)
-        assertEquals("content는 필수값입니다.", errorResponse.data?.get("messages")?.get(0))
-    }
-
-    @Test
-    fun givenEmptyContent_whenPost_thenThrows400Exception() = runBlocking {
-        // given
-        val responseJson = postEmptyContentIdJson
-        val requestBody = """
-        {
-            "postId" : 102
-        }
-        """.trimIndent().toRequestBody("application/json".toMediaType())
-
-        mockWebServer.enqueue(
-            MockResponse()
-                .setResponseCode(400)
-                .setBody(responseJson)
-        )
-
-        // when
-        val exception = assertThrows(HttpException::class.java) {
-            runBlocking {
-                sut.postPostAddComment(requestBody)
-            }
-        }
-
-        // then
-        val errorBody = exception.response()?.errorBody()?.string()
-        assertNotNull(errorBody)
-
-        val errorResponse = Json.decodeFromString<CommonResponse<Map<String, List<String>>>>(errorBody!!)
-        assertEquals(400, errorResponse.status)
-        assertEquals("유효하지 않은 값을 입력하였습니다.", errorResponse.message)
-        assertEquals("F01", errorResponse.code)
-        assertEquals("content는 필수값입니다.", errorResponse.data?.get("messages")?.get(0))
-    }
-
-    @Test
-    fun givenNotFoundPosts_whenPost_thenThrows400Exception() = runBlocking {
-        // given
-        val responseJson = postEmptyPostsJson
+        val responseJson = postUnLikeSuccessJson
         val requestBody = """
             {
-                "postId" : 102,
-                "content" : "게시글댓글내용"
+                "commentId" : 144,
+                "isSetLiked" : false
+            }
+        """.trimIndent().toRequestBody("application/json".toMediaType())
+
+        mockWebServer.enqueue(
+            MockResponse()
+                .setResponseCode(200)
+                .setBody(responseJson)
+        )
+
+        // when
+        val response = sut.postLikes(requestBody)
+        val recordedRequest = mockWebServer.takeRequest()
+
+        // then
+        assertEquals("/api/v1/comments/likes", recordedRequest.path)
+
+        // 응답 body 검증
+        assertEquals(200, response.status)
+        assertEquals("좋아요 해제가 완료되었습니다.", response.message)
+        assertEquals("S11", response.code)
+        assertNull(response.data)
+    }
+
+    @Test
+    fun givenEmptyCommentId_whenPostLike_thenThrows400Exception() = runBlocking {
+        // given
+        val responseJson = postLikeNoCommentIdErrorJson
+        val requestBody = """
+            {
+                "isSetLiked" : false
             }
         """.trimIndent().toRequestBody("application/json".toMediaType())
 
@@ -171,7 +134,7 @@ class PostCommunityCommentTest {
         // when
         val exception = assertThrows(HttpException::class.java) {
             runBlocking {
-                sut.postPostAddComment(requestBody)
+                sut.postLikes(requestBody)
             }
         }
 
@@ -179,10 +142,45 @@ class PostCommunityCommentTest {
         val errorBody = exception.response()?.errorBody()?.string()
         assertNotNull(errorBody)
 
-        val errorResponse = Json.decodeFromString<CommonResponse<String>>(errorBody!!)
+        val errorResponse = Json.decodeFromString<CommonResponse<Map<String, List<String>>>>(errorBody!!)
         assertEquals(400, errorResponse.status)
-        assertEquals("해당 게시글을 찾을 수 없습니다.", errorResponse.message)
-        assertEquals("PS01", errorResponse.code)
+        assertEquals("유효하지 않은 값을 입력하였습니다.", errorResponse.message)
+        assertEquals("F01", errorResponse.code)
+        assertEquals("must not be null", errorResponse.data?.get("messages")?.get(0))
+    }
+
+    @Test
+    fun givenNotFoundCommentId_whenPostLike_thenThrows400Exception() = runBlocking {
+        // given
+        val responseJson = postNotFoundCommentIdErrorJson
+        val requestBody = """
+            {
+                "commentId" : 7777
+                "isSetLiked" : false
+            }
+        """.trimIndent().toRequestBody("application/json".toMediaType())
+
+        mockWebServer.enqueue(
+            MockResponse()
+                .setResponseCode(400)
+                .setBody(responseJson)
+        )
+
+        // when
+        val exception = assertThrows(HttpException::class.java) {
+            runBlocking {
+                sut.postLikes(requestBody)
+            }
+        }
+
+        // then
+        val errorBody = exception.response()?.errorBody()?.string()
+        assertNotNull(errorBody)
+
+        val errorResponse = Json.decodeFromString<CommonResponse<Unit>>(errorBody!!)
+        assertEquals(400, errorResponse.status)
+        assertEquals("해당 댓글을 찾을 수 없습니다.", errorResponse.message)
+        assertEquals("C01", errorResponse.code)
         assertNull(errorResponse.data)
     }
 }
