@@ -18,6 +18,7 @@ import retrofit2.http.Query
 
 interface CommunityService {
 
+    // 이름 변경 필요 (컨플릭때문에 추후 작업)
     @GET("/api/v1/posts/review")
     suspend fun postReviewPosts(
         @Query("page") page: Int,
