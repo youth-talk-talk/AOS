@@ -43,12 +43,3 @@ val deleteSuccessJson = """
       "data": null
     }
 """.trimIndent()
-
-val deleteNoCommentIdErrorJson = """
-    {
-      "status": 400,
-      "message": "유효하지 않은 값을 입력하였습니다.",
-      "code": "F01",
-      "data": null
-    }
-""".trimIndent()

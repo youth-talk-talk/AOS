@@ -2,11 +2,11 @@ package com.youthtalk.api.commentService
 
 import com.youthtalk.api.ApiTestUtils
 import com.youthtalk.api.ApiTestUtils.createRetrofit
-import com.youthtalk.api.commentService.json.getIncorrectPolicyIdCommentJson
 import com.youthtalk.api.commentService.json.getPolicyCommentJson
 import com.youthtalk.api.commentService.json.getPolicyEmptyCommentJson
 import com.youthtalk.api.commentService.json.getPolicyLeaveUserCommentJson
 import com.youthtalk.api.interceptor.TestAuthInterceptor
+import com.youthtalk.api.response.invalidParameterJson
 import com.youthtalk.api.response.notFoundPolicyJson
 import com.youthtalk.data.CommentService
 import com.youthtalk.dto.CommonResponse
@@ -168,12 +168,11 @@ class GetPostsCommentTest {
     fun givenIncorrectPostId_whenGetComment_thenThrows400Exception() {
         // given
         val postId = 1231321L
-        val responseJson = getIncorrectPolicyIdCommentJson
 
         mockWebServer.enqueue(
             MockResponse()
                 .setResponseCode(400)
-                .setBody(responseJson)
+                .setBody(invalidParameterJson)
         )
 
         // when

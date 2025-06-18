@@ -2,12 +2,12 @@ package com.youthtalk.api.commentService
 
 import com.youthtalk.api.ApiTestUtils
 import com.youthtalk.api.ApiTestUtils.createRetrofit
-import com.youthtalk.api.commentService.json.deleteNoCommentIdErrorJson
 import com.youthtalk.api.commentService.json.deleteSuccessJson
 import com.youthtalk.api.commentService.json.patchCommentIdEmptyErrorJson
 import com.youthtalk.api.commentService.json.patchContentEmptyErrorJson
 import com.youthtalk.api.commentService.json.patchSuccessJson
 import com.youthtalk.api.interceptor.TestAuthInterceptor
+import com.youthtalk.api.response.invalidParameterJson
 import com.youthtalk.api.response.notFoundCommentJson
 import com.youthtalk.data.CommentService
 import com.youthtalk.dto.CommonResponse
@@ -218,12 +218,11 @@ class PatchCommentTest {
     fun givenIncorrectCommentId_whenDeleting_thenThrows400Exception() = runBlocking {
         // given
         val commentId = 123121232L
-        val responseJson = deleteNoCommentIdErrorJson
 
         mockWebServer.enqueue(
             MockResponse()
                 .setResponseCode(400)
-                .setBody(responseJson)
+                .setBody(invalidParameterJson)
         )
         // when
         val exception = assertThrows(HttpException::class.java) {
