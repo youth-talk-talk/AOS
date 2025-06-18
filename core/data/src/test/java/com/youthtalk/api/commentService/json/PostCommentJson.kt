@@ -12,12 +12,3 @@ val postEmptyContentIdJson = """
       }
     }
 """.trimIndent()
-
-val postEmptyPostsJson = """
-    {
-      "status": 400,
-      "message": "해당 게시글을 찾을 수 없습니다.",
-      "code": "PS01",
-      "data": null
-    }
-""".trimIndent()

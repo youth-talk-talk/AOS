@@ -3,8 +3,8 @@ package com.youthtalk.api.commentService
 import com.youthtalk.api.ApiTestUtils
 import com.youthtalk.api.ApiTestUtils.createRetrofit
 import com.youthtalk.api.commentService.json.postEmptyContentIdJson
-import com.youthtalk.api.commentService.json.postEmptyPostsJson
 import com.youthtalk.api.interceptor.TestAuthInterceptor
+import com.youthtalk.api.response.notFoundPostsJson
 import com.youthtalk.api.response.postCommentSuccessJson
 import com.youthtalk.data.CommentService
 import com.youthtalk.dto.CommonResponse
@@ -153,7 +153,6 @@ class PostCommunityCommentTest {
     @Test
     fun givenNotFoundPosts_whenPost_thenThrows400Exception() = runBlocking {
         // given
-        val responseJson = postEmptyPostsJson
         val requestBody = """
             {
                 "postId" : 102,
@@ -164,7 +163,7 @@ class PostCommunityCommentTest {
         mockWebServer.enqueue(
             MockResponse()
                 .setResponseCode(400)
-                .setBody(responseJson)
+                .setBody(notFoundPostsJson)
         )
 
         // when
