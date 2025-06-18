@@ -4,9 +4,9 @@ import com.youthtalk.api.ApiTestUtils
 import com.youthtalk.api.ApiTestUtils.createRetrofit
 import com.youthtalk.api.commentService.json.postLikeNoCommentIdErrorJson
 import com.youthtalk.api.commentService.json.postLikeSuccessJson
-import com.youthtalk.api.commentService.json.postNotFoundCommentIdErrorJson
 import com.youthtalk.api.commentService.json.postUnLikeSuccessJson
 import com.youthtalk.api.interceptor.TestAuthInterceptor
+import com.youthtalk.api.response.notFoundCommentJson
 import com.youthtalk.data.CommentService
 import com.youthtalk.dto.CommonResponse
 import kotlinx.coroutines.runBlocking
@@ -152,7 +152,6 @@ class PostCommentLikeTest {
     @Test
     fun givenNotFoundCommentId_whenPostLike_thenThrows400Exception() = runBlocking {
         // given
-        val responseJson = postNotFoundCommentIdErrorJson
         val requestBody = """
             {
                 "commentId" : 7777
@@ -163,7 +162,7 @@ class PostCommentLikeTest {
         mockWebServer.enqueue(
             MockResponse()
                 .setResponseCode(400)
-                .setBody(responseJson)
+                .setBody(notFoundCommentJson)
         )
 
         // when

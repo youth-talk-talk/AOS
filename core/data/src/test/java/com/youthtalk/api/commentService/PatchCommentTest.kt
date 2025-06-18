@@ -3,13 +3,12 @@ package com.youthtalk.api.commentService
 import com.youthtalk.api.ApiTestUtils
 import com.youthtalk.api.ApiTestUtils.createRetrofit
 import com.youthtalk.api.commentService.json.deleteNoCommentIdErrorJson
-import com.youthtalk.api.commentService.json.deleteNotFoundErrorJson
 import com.youthtalk.api.commentService.json.deleteSuccessJson
 import com.youthtalk.api.commentService.json.patchCommentIdEmptyErrorJson
 import com.youthtalk.api.commentService.json.patchContentEmptyErrorJson
-import com.youthtalk.api.commentService.json.patchEmptyCommentJson
 import com.youthtalk.api.commentService.json.patchSuccessJson
 import com.youthtalk.api.interceptor.TestAuthInterceptor
+import com.youthtalk.api.response.notFoundCommentJson
 import com.youthtalk.data.CommentService
 import com.youthtalk.dto.CommonResponse
 import kotlinx.coroutines.runBlocking
@@ -158,7 +157,6 @@ class PatchCommentTest {
     @Test
     fun givenNoExistComment_whenPatch_thenThrows400Exception() = runBlocking {
         // given
-        val responseJson = patchEmptyCommentJson
         val requestBody = """
             {
                 "commentId" : 7777,
@@ -169,7 +167,7 @@ class PatchCommentTest {
         mockWebServer.enqueue(
             MockResponse()
                 .setResponseCode(400)
-                .setBody(responseJson)
+                .setBody(notFoundCommentJson)
         )
 
         // when
@@ -249,12 +247,11 @@ class PatchCommentTest {
     fun givenNotFoundCommentId_whenDeleting_thenThrows400Exception() = runBlocking {
         // given
         val commentId = 123121232L
-        val responseJson = deleteNotFoundErrorJson
 
         mockWebServer.enqueue(
             MockResponse()
                 .setResponseCode(400)
-                .setBody(responseJson)
+                .setBody(notFoundCommentJson)
         )
         // when
         val exception = assertThrows(HttpException::class.java) {

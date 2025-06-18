@@ -44,3 +44,12 @@ val reportedUserJson = """
       "data": null
     }
 """.trimIndent()
+
+val notFoundCommentJson = """
+    {
+      "status": 400,
+      "message": "해당 댓글을 찾을 수 없습니다.",
+      "code": "C01",
+      "data": null
+    }
+""".trimIndent()
