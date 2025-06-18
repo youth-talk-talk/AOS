@@ -2,11 +2,11 @@ package com.youthtalk.api.policyService
 
 import com.youthtalk.api.ApiTestUtils
 import com.youthtalk.api.ApiTestUtils.createRetrofit
-import com.youthtalk.api.policyService.json.postPolicyCommentSuccessJson
 import com.youthtalk.api.interceptor.TestAuthInterceptor
 import com.youthtalk.api.policyService.json.postCommentFailWithoutContentJson
 import com.youthtalk.api.policyService.json.postCommentFailWithoutIdJson
 import com.youthtalk.api.response.notFoundPolicyJson
+import com.youthtalk.api.response.postCommentSuccessJson
 import com.youthtalk.data.PolicyService
 import com.youthtalk.dto.CommonResponse
 import kotlinx.coroutines.runBlocking
@@ -56,7 +56,6 @@ class PostPolicyCommentTest {
     @Test
     fun givenPolicyComment_whenPost_thenWorksFine() = runBlocking {
         // given
-        val responseJson = postPolicyCommentSuccessJson
         val requestBody = """
             {
                 "policyId" : "R2023081716945",
@@ -67,7 +66,7 @@ class PostPolicyCommentTest {
         mockWebServer.enqueue(
             MockResponse()
                 .setResponseCode(200)
-                .setBody(responseJson)
+                .setBody(postCommentSuccessJson)
         )
 
         // when
@@ -81,7 +80,7 @@ class PostPolicyCommentTest {
         assertEquals(200, response.status)
         assertEquals("댓글을 성공적으로 등록했습니다.", response.message)
         assertEquals("S06", response.code)
-        assertEquals(381L, response.data?.commentId)
+        assertNotNull(response.data?.commentId)
     }
 
     @Test

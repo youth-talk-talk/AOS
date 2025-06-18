@@ -1,16 +1,5 @@
 package com.youthtalk.api.commentService.json
 
-val postCommunityCommentSuccessJson = """
-{
-  "status": 200,
-  "message": "댓글을 성공적으로 등록했습니다.",
-  "code": "S06",
-  "data": {
-    "commentId": 382
-  }
-}
-""".trimIndent()
-
 val postEmptyContentIdJson = """
     {
       "status": 400,

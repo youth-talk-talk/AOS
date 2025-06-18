@@ -26,3 +26,14 @@ val commentEmptySuccessJson = """
       "data": null
     }
 """.trimIndent()
+
+val postCommentSuccessJson = """
+    {
+      "status": 200,
+      "message": "댓글을 성공적으로 등록했습니다.",
+      "code": "S06",
+      "data": {
+        "commentId": 380
+      }
+    }
+""".trimIndent()

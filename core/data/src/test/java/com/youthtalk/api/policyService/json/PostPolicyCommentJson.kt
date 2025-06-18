@@ -1,16 +1,5 @@
 package com.youthtalk.api.policyService.json
 
-val postPolicyCommentSuccessJson = """
-    {
-      "status": 200,
-      "message": "댓글을 성공적으로 등록했습니다.",
-      "code": "S06",
-      "data": {
-        "commentId": 381
-      }
-    }
-""".trimIndent()
-
 val postCommentFailWithoutIdJson = """
     {
       "status": 400,
