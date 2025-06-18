@@ -28,3 +28,23 @@ val getNoExistAnnounceErrorJson = """
       "data": null
     }
 """.trimIndent()
+
+val getAllAnnounceSuccessJson = """
+    {
+      "status": 200,
+      "message": "요청에 성공하였습니다.",
+      "code": "S01",
+      "data": {
+        "pageNum": 0,
+        "pageSize": 1,
+        "totalPage": 3,
+        "announcementList": [
+          {
+            "id": 4,
+            "title": "test",
+            "updateAt": "2024-09-08T19:22:15.681713"
+          }
+        ]
+      }
+    }
+""".trimIndent()
