@@ -33,6 +33,15 @@ internal fun Project.configureKotlinAndroid() {
             addManifestPlaceholders(mapOf("KAKAO_API_KEY" to getApiKey("kakao.api.xml.key")))
         }
 
+        signingConfigs {
+            create("release") {
+                storeFile = file(getApiKey("KEYSTORE_FILE"))
+                storePassword = getApiKey("KEYSTORE_PASSWORD")
+                keyAlias = getApiKey("KEY_ALIAS")
+                keyPassword = getApiKey("KEY_PASSWORD")
+            }
+        }
+
         buildTypes {
             getByName("release") {
                 isMinifyEnabled = false
@@ -49,10 +58,10 @@ internal fun Project.configureKotlinAndroid() {
         flavorDimensions.add("versions")
         productFlavors {
             create("dev") {
-                buildConfigField("String", "BASE_URL", getApiKey("server_key"))
+                buildConfigField("String", "BASE_URL", getApiKey("dev_server_key"))
             }
             create("prod") {
-                buildConfigField("String", "BASE_URL", getApiKey("dev_server_key"))
+                buildConfigField("String", "BASE_URL", getApiKey("server_key"))
             }
         }
 
