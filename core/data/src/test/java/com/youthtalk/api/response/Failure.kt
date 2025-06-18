@@ -26,3 +26,21 @@ val notFoundPolicyJson = """
       "data": null
     }
 """.trimIndent()
+
+val reportedPostsJson = """
+    {
+      "status": 400,
+      "message": "신고한 게시글은 조회할 수 없습니다.",
+      "code": "PS03",
+      "data": null
+    }
+""".trimIndent()
+
+val reportedUserJson = """
+    {
+      "status": 400,
+      "message": "차단한 유저의 게시글은 조회할 수 없습니다.",
+      "code": "PS04",
+      "data": null
+    }
+""".trimIndent()
