@@ -3,8 +3,8 @@ package com.youthtalk.api.userService
 import com.youthtalk.api.ApiTestUtils
 import com.youthtalk.api.ApiTestUtils.createRetrofit
 import com.youthtalk.api.interceptor.TestAuthInterceptor
+import com.youthtalk.api.response.commentEmptySuccessJson
 import com.youthtalk.api.userService.json.myCommentInfo
-import com.youthtalk.api.userService.json.myCommentInfoNull
 import com.youthtalk.api.userService.json.userInfoJson
 import com.youthtalk.data.UserService
 import kotlinx.coroutines.runBlocking
@@ -121,12 +121,10 @@ class GetAboutUserTest {
     @Test
     fun given_whenGetMyComments_thenReturnsDataNull() = runBlocking {
         // given
-        val responseJson = myCommentInfoNull
-
         mockWebServer.enqueue(
             MockResponse()
                 .setResponseCode(200)
-                .setBody(responseJson)
+                .setBody(commentEmptySuccessJson)
         )
 
         // when
@@ -171,12 +169,10 @@ class GetAboutUserTest {
     @Test
     fun given_whenGetLikeComments_thenReturnsDataNull() = runBlocking {
         // given
-        val responseJson = myCommentInfoNull
-
         mockWebServer.enqueue(
             MockResponse()
                 .setResponseCode(200)
-                .setBody(responseJson)
+                .setBody(commentEmptySuccessJson)
         )
 
         // when

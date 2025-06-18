@@ -3,9 +3,9 @@ package com.youthtalk.api.commentService
 import com.youthtalk.api.ApiTestUtils
 import com.youthtalk.api.ApiTestUtils.createRetrofit
 import com.youthtalk.api.commentService.json.getPolicyCommentJson
-import com.youthtalk.api.commentService.json.getPolicyEmptyCommentJson
 import com.youthtalk.api.commentService.json.getPolicyLeaveUserCommentJson
 import com.youthtalk.api.interceptor.TestAuthInterceptor
+import com.youthtalk.api.response.commentEmptySuccessJson
 import com.youthtalk.api.response.invalidParameterJson
 import com.youthtalk.api.response.notFoundPolicyJson
 import com.youthtalk.data.CommentService
@@ -84,12 +84,11 @@ class GetPolicyCommentTest {
     fun givenPolicyId_whenGetComment_thenReturnsEmptyPolicyComment() = runBlocking {
         // given
         val policyId = 1L
-        val responseJson = getPolicyEmptyCommentJson
 
         mockWebServer.enqueue(
             MockResponse()
                 .setResponseCode(200)
-                .setBody(responseJson)
+                .setBody(commentEmptySuccessJson)
         )
 
         // when
