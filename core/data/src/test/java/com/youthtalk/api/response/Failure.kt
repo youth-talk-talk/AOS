@@ -1,0 +1,28 @@
+package com.youthtalk.api.response
+
+val notFoundPostsJson = """
+    {
+      "status": 400,
+      "message": "해당 게시글을 찾을 수 없습니다.",
+      "code": "PS01",
+      "data": null
+    }
+""".trimIndent()
+
+val forbiddenJson = """
+    {
+      "status": 403,
+      "message": "해당 게시글에 대한 권한이 없습니다.",
+      "code": "PS02",
+      "data": null
+    }
+""".trimIndent()
+
+val notFoundPolicyJson = """
+    {
+      "status": 400,
+      "message": "해당 정책을 찾을 수 없습니다.",
+      "code": "PC01",
+      "data": null
+    }
+""".trimIndent()
