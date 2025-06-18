@@ -71,15 +71,6 @@ val getPolicyLeaveUserCommentJson = """
     }
 """.trimIndent()
 
-val getNonExistPolicyCommentJson = """
-    {
-      "status": 400,
-      "message": "해당 정책을 찾을 수 없습니다.",
-      "code": "PC01",
-      "data": null
-    }
-""".trimIndent()
-
 val getIncorrectPolicyIdCommentJson = """
     {
       "status": 400,

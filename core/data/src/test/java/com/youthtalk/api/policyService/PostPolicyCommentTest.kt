@@ -6,7 +6,7 @@ import com.youthtalk.api.policyService.json.postPolicyCommentSuccessJson
 import com.youthtalk.api.interceptor.TestAuthInterceptor
 import com.youthtalk.api.policyService.json.postCommentFailWithoutContentJson
 import com.youthtalk.api.policyService.json.postCommentFailWithoutIdJson
-import com.youthtalk.api.policyService.json.postCommentFailWithoutPolicyJson
+import com.youthtalk.api.response.notFoundPolicyJson
 import com.youthtalk.data.PolicyService
 import com.youthtalk.dto.CommonResponse
 import kotlinx.coroutines.runBlocking
@@ -155,7 +155,6 @@ class PostPolicyCommentTest {
     @Test
     fun givenNonExistPolicyIdComment_whenPost_thenThrows400Exception() = runBlocking {
         // given
-        val responseJson = postCommentFailWithoutPolicyJson
         val requestBody = """
             {
                 "policyId" : "notPolicyId", // 존재하지 않는 policy
@@ -166,7 +165,7 @@ class PostPolicyCommentTest {
         mockWebServer.enqueue(
             MockResponse()
                 .setResponseCode(400)
-                .setBody(responseJson)
+                .setBody(notFoundPolicyJson)
         )
 
         // when

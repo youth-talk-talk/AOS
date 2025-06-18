@@ -3,11 +3,11 @@ package com.youthtalk.api.commentService
 import com.youthtalk.api.ApiTestUtils
 import com.youthtalk.api.ApiTestUtils.createRetrofit
 import com.youthtalk.api.commentService.json.getIncorrectPolicyIdCommentJson
-import com.youthtalk.api.commentService.json.getNonExistPolicyCommentJson
 import com.youthtalk.api.commentService.json.getPolicyCommentJson
 import com.youthtalk.api.commentService.json.getPolicyEmptyCommentJson
 import com.youthtalk.api.commentService.json.getPolicyLeaveUserCommentJson
 import com.youthtalk.api.interceptor.TestAuthInterceptor
+import com.youthtalk.api.response.notFoundPolicyJson
 import com.youthtalk.data.CommentService
 import com.youthtalk.dto.CommonResponse
 import kotlinx.coroutines.runBlocking
@@ -139,12 +139,11 @@ class GetPolicyCommentTest {
     fun givenNonExistPolicyId_whenGetComment_thenThrows400Exception() = runBlocking {
         // given
         val policyId = -1L
-        val responseJson = getNonExistPolicyCommentJson
 
         mockWebServer.enqueue(
             MockResponse()
                 .setResponseCode(400)
-                .setBody(responseJson)
+                .setBody(notFoundPolicyJson)
         )
 
         // when
