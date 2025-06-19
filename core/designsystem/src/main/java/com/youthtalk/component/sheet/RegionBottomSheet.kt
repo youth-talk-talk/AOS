@@ -19,12 +19,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.youth.app.core.designsystem.R
 import com.youthtalk.component.button.CheckButton
 import com.youthtalk.component.button.SelectedButton
-import com.youthtalk.designsystem.gray10
 import com.youthtalk.designsystem.gray100
 import com.youthtalk.model.typeenum.Region
 import kotlinx.coroutines.launch
@@ -44,7 +44,8 @@ fun RegionBottomSheet(modifier: Modifier = Modifier, region: Region?, onDismiss:
         modifier = modifier,
         sheetState = sheetState,
         onDismissRequest = onDismiss,
-        containerColor = gray10
+        containerColor = Color(0xFDFFFFFF),
+        contentColor = Color(0xFDFFFFFF)
     ) {
         Column(
             modifier = Modifier
