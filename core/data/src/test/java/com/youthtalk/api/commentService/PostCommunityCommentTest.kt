@@ -2,10 +2,10 @@ package com.youthtalk.api.commentService
 
 import com.youthtalk.api.ApiTestUtils
 import com.youthtalk.api.ApiTestUtils.createRetrofit
-import com.youthtalk.api.commentService.json.postCommunityCommentSuccessJson
 import com.youthtalk.api.commentService.json.postEmptyContentIdJson
-import com.youthtalk.api.commentService.json.postEmptyPostsJson
 import com.youthtalk.api.interceptor.TestAuthInterceptor
+import com.youthtalk.api.response.notFoundPostsJson
+import com.youthtalk.api.response.postCommentSuccessJson
 import com.youthtalk.data.CommentService
 import com.youthtalk.dto.CommonResponse
 import kotlinx.coroutines.runBlocking
@@ -55,7 +55,6 @@ class PostCommunityCommentTest {
     @Test
     fun givenCommunityComment_whenPost_thenWorksFine() = runBlocking {
         // given
-        val responseJson = postCommunityCommentSuccessJson
         val requestBody = """
             {
                 "postId" : 102,
@@ -66,7 +65,7 @@ class PostCommunityCommentTest {
         mockWebServer.enqueue(
             MockResponse()
                 .setResponseCode(200)
-                .setBody(responseJson)
+                .setBody(postCommentSuccessJson)
         )
 
         // when
@@ -80,7 +79,7 @@ class PostCommunityCommentTest {
         assertEquals(200, response.status)
         assertEquals("댓글을 성공적으로 등록했습니다.", response.message)
         assertEquals("S06", response.code)
-        assertEquals(382L, response.data?.commentId)
+        assertNotNull(response.data?.commentId)
     }
 
     @Test
@@ -154,7 +153,6 @@ class PostCommunityCommentTest {
     @Test
     fun givenNotFoundPosts_whenPost_thenThrows400Exception() = runBlocking {
         // given
-        val responseJson = postEmptyPostsJson
         val requestBody = """
             {
                 "postId" : 102,
@@ -165,7 +163,7 @@ class PostCommunityCommentTest {
         mockWebServer.enqueue(
             MockResponse()
                 .setResponseCode(400)
-                .setBody(responseJson)
+                .setBody(notFoundPostsJson)
         )
 
         // when

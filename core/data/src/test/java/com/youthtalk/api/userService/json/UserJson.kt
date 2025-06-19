@@ -44,12 +44,3 @@ val myCommentInfo = """
       }
     }
 """.trimIndent()
-
-val myCommentInfoNull = """
-    {
-      "status": 200,
-      "message": "해당하는 댓글이 없습니다.",
-      "code": "S09",
-      "data": null
-    }
-""".trimIndent()

@@ -3,6 +3,7 @@ package com.youthtalk.api.policyService
 import com.youthtalk.api.ApiTestUtils
 import com.youthtalk.api.ApiTestUtils.createRetrofit
 import com.youthtalk.api.interceptor.TestAuthInterceptor
+import com.youthtalk.api.response.notFoundPolicyJson
 import com.youthtalk.data.PolicyService
 import com.youthtalk.dto.CommonResponse
 import kotlinx.coroutines.runBlocking
@@ -122,16 +123,7 @@ class ScrapPolicyTest {
         mockWebServer.enqueue(
             MockResponse()
                 .setResponseCode(400)
-                .setBody(
-                    """
-                        {
-                          "status": 400,
-                          "message": "해당 정책을 찾을 수 없습니다.",
-                          "code": "PC01",
-                          "data": null
-                        }
-                    """.trimIndent()
-                )
+                .setBody(notFoundPolicyJson)
         )
 
         // when

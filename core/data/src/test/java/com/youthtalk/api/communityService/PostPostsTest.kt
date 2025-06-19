@@ -9,6 +9,7 @@ import com.youthtalk.api.communityService.json.postReviewSuccessJson
 import com.youthtalk.api.communityService.json.postSuccessJson
 import com.youthtalk.api.communityService.json.postWithoutParameterJson
 import com.youthtalk.api.interceptor.TestAuthInterceptor
+import com.youthtalk.api.response.notFoundPolicyJson
 import com.youthtalk.data.CommunityService
 import com.youthtalk.dto.CommonResponse
 import kotlinx.coroutines.runBlocking
@@ -116,16 +117,7 @@ class PostPostsTest {
         mockWebServer.enqueue(
             MockResponse()
                 .setResponseCode(400)
-                .setBody(
-                    """
-                        {
-                          "status": 400,
-                          "message": "해당 정책을 찾을 수 없습니다.",
-                          "code": "PC01",
-                          "data": null
-                        }
-                    """.trimIndent()
-                )
+                .setBody(notFoundPolicyJson)
         )
 
         // when

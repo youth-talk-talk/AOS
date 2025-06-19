@@ -17,3 +17,23 @@ val postImageSuccessJson = """
       "data": "https://youthtalktalk.s3.ap-northeast-2.amazonaws.com/1588076a-c11d-4078-92fd-7721106616e5-test_img.jpeg"
     }
 """.trimIndent()
+
+val commentEmptySuccessJson = """
+    {
+      "status": 200,
+      "message": "해당하는 댓글이 없습니다.",
+      "code": "S09",
+      "data": null
+    }
+""".trimIndent()
+
+val postCommentSuccessJson = """
+    {
+      "status": 200,
+      "message": "댓글을 성공적으로 등록했습니다.",
+      "code": "S06",
+      "data": {
+        "commentId": 380
+      }
+    }
+""".trimIndent()
