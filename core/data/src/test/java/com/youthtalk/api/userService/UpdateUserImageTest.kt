@@ -3,6 +3,7 @@ package com.youthtalk.api.userService
 import com.youthtalk.api.ApiTestUtils
 import com.youthtalk.api.ApiTestUtils.createRetrofit
 import com.youthtalk.api.interceptor.TestAuthInterceptor
+import com.youthtalk.api.response.commonSuccessJson
 import com.youthtalk.api.userService.json.imageJson
 import com.youthtalk.api.userService.json.sizeOverImageJson
 import com.youthtalk.data.UserService
@@ -121,19 +122,10 @@ class UpdateUserImageTest {
 //    @Test
     fun given_whenDelete_thenWorksFine() = runBlocking {
         // given
-        val responseJson = """
-            {
-              "status": 200,
-              "message": "요청에 성공하였습니다.",
-              "code": "S01",
-              "data": null
-            }
-        """.trimIndent()
-
         mockWebServer.enqueue(
             MockResponse()
                 .setResponseCode(200)
-                .setBody(responseJson)
+                .setBody(commonSuccessJson)
         )
 
         // when
