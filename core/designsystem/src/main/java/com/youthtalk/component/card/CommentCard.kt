@@ -24,6 +24,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -168,7 +169,9 @@ fun CommentCard(
 
     if (bottomSheet) {
         ModalBottomSheet(
-            onDismissRequest = { bottomSheet = false }
+            onDismissRequest = { bottomSheet = false },
+            containerColor = Color(0xFDFFFFFF),
+            contentColor = Color(0xFDFFFFFF)
         ) {
             Column(
                 modifier = Modifier

@@ -34,6 +34,7 @@ jobs:
                     echo '${{ secrets.LOCAL_PROPERTIES }}' >> local.properties
                     chmod +x gradlew
                     ./gradlew assembleProdRelease
+
             -   uses: r0adkll/sign-android-release@v1
                 name: Sign app APK
                 # ID used to access action output

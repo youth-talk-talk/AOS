@@ -47,6 +47,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
@@ -320,7 +321,9 @@ internal fun DetailScreen(
     if (bottomSheet) {
         ModalBottomSheet(
             sheetState = bottomSheetState,
-            onDismissRequest = { bottomSheet = false }
+            onDismissRequest = { bottomSheet = false },
+            containerColor = Color(0xFDFFFFFF),
+            contentColor = Color(0xFDFFFFFF)
         ) {
             val isMine = state.postDetail.writerId == state.user.memberId
             val list = if (isMine) listOf("수정하기", "삭제하기") else listOf("게시글 신고하기", "사용자 차단하기")

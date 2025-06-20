@@ -50,6 +50,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.boundsInParent
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -111,7 +112,8 @@ fun FilterBottomSheet(
             .fillMaxWidth()
             .fillMaxHeight(0.8f),
         sheetState = sheetState,
-        containerColor = gray10,
+        containerColor = Color(0xFDFFFFFF),
+        contentColor = Color(0xFDFFFFFF),
         onDismissRequest = onDismiss
     ) {
         Header(

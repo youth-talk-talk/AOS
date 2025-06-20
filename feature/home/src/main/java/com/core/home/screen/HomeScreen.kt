@@ -39,6 +39,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -132,6 +133,8 @@ fun HomeScreen(
                 onClickSearch = onClickPolicySearch
             )
 
+            val cardWidth = LocalConfiguration.current.screenWidthDp.dp * 0.9f
+
             LazyColumn(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -152,6 +155,7 @@ fun HomeScreen(
                     }
                 }
                 popularPolicy(
+                    modifier = Modifier.width(cardWidth),
                     popularPolices = uiState.homeData.popularPolicies,
                     onClickPopularPolicy = { onClickPopularPolicy(Json.encodeToString(uiState.homeData.popularPolicies)) },
                     onClickPolicyDetail = onClickPolicyDetail,
@@ -215,7 +219,7 @@ fun LazyListScope.popularPolicy(
 ) {
     item {
         Column(
-            modifier = modifier,
+            modifier = Modifier,
             verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
             TitleItem(
@@ -231,7 +235,7 @@ fun LazyListScope.popularPolicy(
                     count = if (popularPolices.size > 10) 10 else popularPolices.size
                 ) {
                     PolicyCard(
-                        modifier = Modifier
+                        modifier = modifier
                             .width(340.dp)
                             .shadow(
                                 offsetX = 4.dp,

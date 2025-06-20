@@ -25,6 +25,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -174,7 +175,9 @@ fun UserComment(
         if (bottomSheet) {
             ModalBottomSheet(
                 sheetState = state,
-                onDismissRequest = { bottomSheet = false }
+                onDismissRequest = { bottomSheet = false },
+                containerColor = Color(0xFDFFFFFF),
+                contentColor = Color(0xFDFFFFFF)
             ) {
                 val list = if (isMine) listOf("수정하기", "삭제하기") else listOf("댓글 신고하기", "사용자 차단하기")
                 Column(
