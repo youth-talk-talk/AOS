@@ -121,7 +121,7 @@ fun CommentScreenRoot(
 }
 
 @Composable
-fun CommentScreen(
+internal fun CommentScreen(
     state: CommentUiState,
     lazyListState: LazyListState,
     actionEvent: (CommentUiEvent) -> Unit,
