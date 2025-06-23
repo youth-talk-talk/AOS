@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
@@ -50,12 +51,12 @@ import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun CommentScreenRoot(
-    modifier: Modifier = Modifier,
     viewModel: CommentViewModel = hiltViewModel(),
     onBack: () -> Unit,
     showSnackBar: (String) -> Unit,
     onClickPostDetail: (Long) -> Unit,
-    onClickPolicyDetail: (Long) -> Unit
+    onClickPolicyDetail: (Long) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     var comments by rememberSaveable {
@@ -86,7 +87,6 @@ fun CommentScreenRoot(
             }
         }
     }
-
     if (!state.isLoading) {
         Crossfade(
             modifier = modifier,
@@ -121,12 +121,12 @@ fun CommentScreenRoot(
 }
 
 @Composable
-fun CommentScreen(
-    modifier: Modifier = Modifier,
+internal fun CommentScreen(
     state: CommentUiState,
     lazyListState: LazyListState,
     actionEvent: (CommentUiEvent) -> Unit,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Column(
         modifier = modifier
@@ -163,10 +163,9 @@ fun CommentScreen(
                 }
 
                 items(
-                    count = state.commentInfo.commentCount,
-                    key = { state.commentInfo.comments[it].commentId }
-                ) {
-                    val comment = state.commentInfo.comments[it]
+                    items = state.commentInfo.comments,
+                    key = { it.commentId }
+                ) { comment ->
                     CommentCard(
                         isMyType = state.commentType == CommentType.MY,
                         isMine = state.commentType == CommentType.MY || (comment.writerId == state.user.memberId),
