@@ -51,12 +51,12 @@ import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun CommentScreenRoot(
-    modifier: Modifier = Modifier,
     viewModel: CommentViewModel = hiltViewModel(),
     onBack: () -> Unit,
     showSnackBar: (String) -> Unit,
     onClickPostDetail: (Long) -> Unit,
-    onClickPolicyDetail: (Long) -> Unit
+    onClickPolicyDetail: (Long) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     var comments by rememberSaveable {
@@ -87,7 +87,6 @@ fun CommentScreenRoot(
             }
         }
     }
-
     if (!state.isLoading) {
         Crossfade(
             modifier = modifier,
@@ -123,11 +122,11 @@ fun CommentScreenRoot(
 
 @Composable
 fun CommentScreen(
-    modifier: Modifier = Modifier,
     state: CommentUiState,
     lazyListState: LazyListState,
     actionEvent: (CommentUiEvent) -> Unit,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Column(
         modifier = modifier
