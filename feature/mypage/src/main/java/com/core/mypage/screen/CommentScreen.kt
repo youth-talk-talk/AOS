@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
@@ -163,10 +164,9 @@ fun CommentScreen(
                 }
 
                 items(
-                    count = state.commentInfo.commentCount,
-                    key = { state.commentInfo.comments[it].commentId }
-                ) {
-                    val comment = state.commentInfo.comments[it]
+                    items = state.commentInfo.comments,
+                    key = { it.commentId }
+                ) { comment ->
                     CommentCard(
                         isMyType = state.commentType == CommentType.MY,
                         isMine = state.commentType == CommentType.MY || (comment.writerId == state.user.memberId),
