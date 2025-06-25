@@ -1,7 +1,6 @@
 package com.youthtalk.model
 
 import com.youthtalk.model.search.SearchFilter
-import com.youthtalk.util.SpecializedUtils
 
 enum class FilterType(val title: String) {
     POLICY_TYPE("정책분야"),
@@ -18,9 +17,13 @@ fun FilterType.getCountFrom(filter: SearchFilter): Int = when (this) {
     FilterType.RECRUIT -> filter.employment?.size ?: 0
     FilterType.EDUCATION -> filter.education?.size ?: 0
     FilterType.SPECIALIZED -> {
-        val specialCount = SpecializedUtils.getFilterList(filter.specialization)?.size ?: 0
-        val marriedCount = if (filter.marriage != null) 1 else 0
-        specialCount + marriedCount
+        if (filter.specialization.isNullOrEmpty()) {
+            0
+        } else {
+            val specialCount = filter.specialization?.size ?: 0
+            val marriedCount = if (filter.marriage != null) 1 else 0
+            specialCount + marriedCount
+        }
     }
 
     FilterType.AGE_EARN -> {
