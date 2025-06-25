@@ -47,17 +47,18 @@ fun SortTypeDropDown(modifier: Modifier = Modifier, sortType: SortType, onClickS
             }
     ) {
         Row(
-            modifier = Modifier
-                .padding(vertical = 2.dp),
+            modifier = modifier,
             horizontalArrangement = Arrangement.spacedBy(2.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
+                modifier = modifier,
                 text = title,
                 style = MaterialTheme.typography.displayMedium
             )
 
             Icon(
+                modifier = modifier,
                 painter = painterResource(R.drawable.arrowdown),
                 contentDescription = "아래 화살표",
                 tint = gray100
