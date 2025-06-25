@@ -24,20 +24,22 @@ object SpecializedUtils {
     fun getAllList(types: List<SpecializedType>): List<SpecializedType> = listOf(SpecializedType.UNRESTRICTED) + types
 
     fun isChecked(value: List<SpecializedType>, item: SpecializedType, specials: List<SpecializedType>?): Boolean {
-        return when (item) {
-            SpecializedType.UNRESTRICTED ->
-                value.all { filter -> specials?.contains(filter) == false } ||
-                    specials == null
-
-            else -> !value.all { filter -> specials?.contains(filter) == true } &&
-                specials?.contains(item) == true
-        }
+        if (specials.isNullOrEmpty()) return false
+        if (specials.containsAll(value)) return item == SpecializedType.UNRESTRICTED
+        return specials.contains(item)
     }
 
     fun changeSpecialized(value: List<SpecializedType>, item: SpecializedType, specials: List<SpecializedType>?): List<SpecializedType>? {
         val newFilter = when (item) {
-            SpecializedType.UNRESTRICTED ->
-                specials?.filter { filter -> !value.contains(filter) }
+            SpecializedType.UNRESTRICTED -> {
+                if (specials.isNullOrEmpty()) {
+                    return value
+                } else if (specials.containsAll(value)) {
+                    specials - value.toSet()
+                } else {
+                    specials + value
+                }
+            }
 
             else -> {
                 val currentFilter = specials ?: listOf()
@@ -46,22 +48,11 @@ object SpecializedUtils {
                 } else {
                     currentFilter + item
                 }
-                if (value.all { changes.contains((it)) }) {
-                    currentFilter.filter { !value.contains(it) }
-                } else {
-                    changes
-                }
+                changes
             }
         }
 
-        return if (
-            newFilter.isNullOrEmpty() ||
-            newFilter.size == SpecializedType.entries.size - 1
-        ) {
-            null
-        } else {
-            newFilter
-        }
+        return newFilter
     }
 
     fun getFilterList(values: List<SpecializedType>?): List<SpecializedType>? {

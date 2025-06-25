@@ -407,7 +407,7 @@ fun PolicyType(modifier: Modifier = Modifier, category: List<Category>?, onClick
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         RoundChip(
-            text = "전체지역",
+            text = "전체 선택",
             isSelected = category == null,
             onClick = { onClick(null) }
         )
