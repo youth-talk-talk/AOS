@@ -120,13 +120,13 @@ fun NewPolicyScreen(
         )
 
         LazyColumn(
-            modifier = Modifier
+            modifier = modifier
                 .padding(horizontal = 16.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             item {
                 Row(
-                    modifier = Modifier
+                    modifier = modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp, vertical = 10.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -140,7 +140,8 @@ fun NewPolicyScreen(
                         sortType = uiState.sortType,
                         onClickSort = {
                             viewModel.setEvent(NewPolicyUiEvent.GetNewPolices(it))
-                        }
+                        },
+                        modifier = modifier
                     )
                 }
             }
