@@ -13,13 +13,13 @@ import okhttp3.RequestBody.Companion.toRequestBody
 @Serializable
 data class SearchFilter(
     val keyword: String? = null,
-    val category: List<Category>? = null,
+    val category: List<Category>? = emptyList(),
     val marriage: MarriageType? = null,
     val age: String? = null,
-    val education: List<EducationType>? = null,
-    val employment: List<EmploymentType>? = null,
-    val specialization: List<SpecializedType>? = null,
-    val region: List<String>? = null,
+    val education: List<EducationType>? = emptyList(),
+    val employment: List<EmploymentType>? = emptyList(),
+    val specialization: List<SpecializedType>? = emptyList(),
+    val region: List<String>? = emptyList(),
     val minEarn: Int? = null,
     val maxEarn: Int? = null,
     val applyDue: String? = null
