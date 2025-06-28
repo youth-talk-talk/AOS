@@ -8,4 +8,7 @@ interface ReportService {
 
     @POST("api/v1/report/post/{id}")
     suspend fun reportPosts(@Path("id") postId: Long): CommonResponse<Unit>
+
+    @POST("api/v1/report/comments/{id}")
+    suspend fun reportComments(@Path("id") commentId: Long): CommonResponse<Unit>
 }
