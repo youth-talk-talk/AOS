@@ -49,6 +49,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
@@ -57,6 +58,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
+import com.core.community.component.ReportDialog
+import com.core.community.model.ReportType
+import com.core.community.model.ReportType.Post
 import com.core.community.model.detail.CommunityDetailType
 import com.core.community.model.detail.CommunityDetailUiEffect
 import com.core.community.model.detail.CommunityDetailUiEvent
@@ -90,6 +94,7 @@ fun CommunityDetailScreen(
     onModifyWriteCommunity: (PostSubject, Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
     val state by viewModel.state.collectAsStateWithLifecycle()
     var comments by rememberSaveable {
         mutableStateOf(Pair(0L, ""))
@@ -97,6 +102,11 @@ fun CommunityDetailScreen(
     var deletePostDialog by remember {
         mutableStateOf(Pair<Boolean, Long?>(false, null))
     }
+
+    var reportDialog by remember {
+        mutableStateOf(Pair<Boolean, ReportType>(false, Post))
+    }
+
     BackHandler {
         when (state.detailType) {
             CommunityDetailType.MAIN -> onBack()
@@ -118,6 +128,19 @@ fun CommunityDetailScreen(
                 is CommunityDetailUiEffect.ShowSnackBarDeletePost -> {
                     onBack()
                     showSnackBar("게시글이 성공적으로 삭제됐습니다.")
+                }
+
+                is CommunityDetailUiEffect.ShowSnackBarReportPost -> {
+                    onBack()
+                    showSnackBar(context.getString(R.string.report_post_success))
+                }
+
+                is CommunityDetailUiEffect.ShowSnackBarReportComment -> {
+                    showSnackBar(context.getString(R.string.report_comment_success))
+                }
+
+                is CommunityDetailUiEffect.ShowSnackBarReportFail -> {
+                    showSnackBar(it.message.toString())
                 }
             }
         }
@@ -148,8 +171,13 @@ fun CommunityDetailScreen(
                             val postType = if (state.postDetail.postType == "post") PostSubject.POST else PostSubject.REVIEW
                             onModifyWriteCommunity(postType, postId)
                         },
-                        onPostReportPost = {},
+                        onPostReportPost = {
+                            reportDialog = Pair(true, Post)
+                        },
                         onPostReportPostUser = {},
+                        onReportComment = { commentId ->
+                            reportDialog = Pair(true, ReportType.Comment(commentId))
+                        },
                         onPostPostScrap = { postId, scrap -> viewModel.setEvent(CommunityDetailUiEvent.PostPostScrap(postId, scrap)) },
                         onCommentLike = { commentId, scrap -> viewModel.setEvent(CommunityDetailUiEvent.PostCommentLike(commentId, scrap)) }
                     )
@@ -185,6 +213,27 @@ fun CommunityDetailScreen(
             )
         }
     }
+
+    if (reportDialog.first) {
+        val reportType = reportDialog.second
+        val onClickConfirm: () -> Unit = {
+            when (reportType) {
+                Post -> {
+                    viewModel.setEvent(CommunityDetailUiEvent.ReportPost(viewModel.state.value.postDetail.postId))
+                }
+                is ReportType.Comment -> {
+                    viewModel.setEvent(CommunityDetailUiEvent.ReportComment(reportType.commentId))
+                }
+            }
+        }
+        ReportDialog(
+            reportType = reportType,
+            onClickConfirm = onClickConfirm,
+            onCloseDialog = {
+                reportDialog = Pair(false, Post)
+            }
+        )
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -199,6 +248,7 @@ internal fun DetailScreen(
     onPostDeletePost: (Long) -> Unit,
     onPostReportPost: () -> Unit,
     onPostReportPostUser: () -> Unit,
+    onReportComment: (commentId: Long) -> Unit,
     onPostPostScrap: (Long, Boolean) -> Unit,
     onCommentLike: (Long, Boolean) -> Unit,
     modifier: Modifier = Modifier
@@ -289,7 +339,7 @@ internal fun DetailScreen(
                         modifier = Modifier
                             .padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
                         onDeleteComment = onDeleteComment,
-                        onPostReportComment = {},
+                        onPostReportComment = onReportComment,
                         onPostModifyComment = onPostModifyComment,
                         onPostReportUser = {},
                         onCommentLike = onCommentLike
@@ -390,12 +440,16 @@ private fun PostDetailContent(modifier: Modifier = Modifier, postDetail: PostDet
     ) {
         postDetail.profileImage?.let { image ->
             AsyncImage(
-                modifier = Modifier.size(32.dp).clip(CircleShape),
+                modifier = Modifier
+                    .size(32.dp)
+                    .clip(CircleShape),
                 model = image,
                 contentDescription = "기본 이미지"
             )
         } ?: Image(
-            modifier = Modifier.size(32.dp).clip(CircleShape),
+            modifier = Modifier
+                .size(32.dp)
+                .clip(CircleShape),
             painter = painterResource(R.drawable.profile_thumnail),
             contentDescription = "기본 이미지"
         )
