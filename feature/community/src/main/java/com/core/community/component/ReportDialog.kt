@@ -16,7 +16,7 @@ import com.youthtalk.designsystem.YongProjectTheme
 internal fun ReportDialog(reportType: ReportType, onClickConfirm: () -> Unit, onCloseDialog: () -> Unit, modifier: Modifier = Modifier) {
     val title = when (reportType) {
         Post -> stringResource(R.string.report_post_title)
-        Comment -> stringResource(R.string.report_comment_title)
+        is Comment -> stringResource(R.string.report_comment_title)
     }
 
     ModalDialog(
