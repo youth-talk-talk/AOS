@@ -60,6 +60,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.core.community.component.ReportDialog
 import com.core.community.model.ReportType
+import com.core.community.model.ReportType.Post
 import com.core.community.model.detail.CommunityDetailType
 import com.core.community.model.detail.CommunityDetailUiEffect
 import com.core.community.model.detail.CommunityDetailUiEvent
@@ -103,7 +104,7 @@ fun CommunityDetailScreen(
     }
 
     var reportDialog by remember {
-        mutableStateOf(Pair<Boolean, ReportType>(false, ReportType.Post))
+        mutableStateOf(Pair<Boolean, ReportType>(false, Post))
     }
 
     BackHandler {
@@ -132,6 +133,10 @@ fun CommunityDetailScreen(
                 is CommunityDetailUiEffect.ShowSnackBarReportPost -> {
                     onBack()
                     showSnackBar(context.getString(R.string.report_post_success))
+                }
+
+                is CommunityDetailUiEffect.ShowSnackBarReportComment -> {
+                    showSnackBar(context.getString(R.string.report_comment_success))
                 }
 
                 is CommunityDetailUiEffect.ShowSnackBarReportFail -> {
@@ -167,9 +172,12 @@ fun CommunityDetailScreen(
                             onModifyWriteCommunity(postType, postId)
                         },
                         onPostReportPost = {
-                            reportDialog = Pair(true, ReportType.Post)
+                            reportDialog = Pair(true, Post)
                         },
                         onPostReportPostUser = {},
+                        onReportComment = { commentId ->
+                            reportDialog = Pair(true, ReportType.Comment(commentId))
+                        },
                         onPostPostScrap = { postId, scrap -> viewModel.setEvent(CommunityDetailUiEvent.PostPostScrap(postId, scrap)) },
                         onCommentLike = { commentId, scrap -> viewModel.setEvent(CommunityDetailUiEvent.PostCommentLike(commentId, scrap)) }
                     )
@@ -207,13 +215,22 @@ fun CommunityDetailScreen(
     }
 
     if (reportDialog.first) {
+        val reportType = reportDialog.second
+        val onClickConfirm: () -> Unit = {
+            when (reportType) {
+                Post -> {
+                    viewModel.setEvent(CommunityDetailUiEvent.ReportPost(viewModel.state.value.postDetail.postId))
+                }
+                is ReportType.Comment -> {
+                    viewModel.setEvent(CommunityDetailUiEvent.ReportComment(reportType.commentId))
+                }
+            }
+        }
         ReportDialog(
-            reportType = reportDialog.second,
-            onClickConfirm = {
-                viewModel.setEvent(CommunityDetailUiEvent.ReportPost(viewModel.state.value.postDetail.postId))
-            },
+            reportType = reportType,
+            onClickConfirm = onClickConfirm,
             onCloseDialog = {
-                reportDialog = Pair(false, ReportType.Post)
+                reportDialog = Pair(false, Post)
             }
         )
     }
@@ -231,6 +248,7 @@ internal fun DetailScreen(
     onPostDeletePost: (Long) -> Unit,
     onPostReportPost: () -> Unit,
     onPostReportPostUser: () -> Unit,
+    onReportComment: (commentId: Long) -> Unit,
     onPostPostScrap: (Long, Boolean) -> Unit,
     onCommentLike: (Long, Boolean) -> Unit,
     modifier: Modifier = Modifier
@@ -321,7 +339,7 @@ internal fun DetailScreen(
                         modifier = Modifier
                             .padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
                         onDeleteComment = onDeleteComment,
-                        onPostReportComment = {},
+                        onPostReportComment = onReportComment,
                         onPostModifyComment = onPostModifyComment,
                         onPostReportUser = {},
                         onCommentLike = onCommentLike

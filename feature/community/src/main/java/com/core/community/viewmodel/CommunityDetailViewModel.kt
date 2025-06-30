@@ -16,6 +16,7 @@ import com.core.domain.usercase.post.DeletePostUseCase
 import com.core.domain.usercase.post.GetPostDetailCommentsUseCase
 import com.core.domain.usercase.post.GetPostDetailUseCase
 import com.core.domain.usercase.post.PostPostScrapUseCase
+import com.core.domain.usercase.report.ReportCommentUseCase
 import com.core.domain.usercase.report.ReportPostUseCase
 import com.youthtalk.model.comment.Comment
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -39,6 +40,7 @@ class CommunityDetailViewModel @Inject constructor(
     private val postPostScrapUseCase: PostPostScrapUseCase,
     private val postCommentLikeUseCase: PostCommentLikeUseCase,
     private val reportPostUseCase: ReportPostUseCase,
+    private val reportCommentUseCase: ReportCommentUseCase,
     savedStateHandle: SavedStateHandle
 ) : BaseViewModel<CommunityDetailUiState, CommunityDetailUiEvent, CommunityDetailUiEffect>(
     initialState = CommunityDetailUiState.initState
@@ -60,6 +62,7 @@ class CommunityDetailViewModel @Inject constructor(
             is CommunityDetailUiEvent.PostPostScrap -> postPostScrap(event.postId, event.scrap)
             is CommunityDetailUiEvent.PostCommentLike -> postCommentLike(event.commentId, event.isLike)
             is CommunityDetailUiEvent.ReportPost -> reportPost(event.postId)
+            is CommunityDetailUiEvent.ReportComment -> reportComment(event.commentId)
         }
     }
 
@@ -196,7 +199,18 @@ class CommunityDetailViewModel @Inject constructor(
                 .onSuccess {
                     setEffect { CommunityDetailUiEffect.ShowSnackBarReportPost }
                 }.onFailure {
-                    setEffect { CommunityDetailUiEffect.ShowSnackBarReportPostFail(it.message) }
+                    setEffect { CommunityDetailUiEffect.ShowSnackBarReportFail(it.message) }
+                }
+        }
+    }
+
+    private fun reportComment(commentId: Long) {
+        viewModelScope.launch {
+            reportCommentUseCase(commentId)
+                .onSuccess {
+                    setEffect { CommunityDetailUiEffect.ShowSnackBarReportComment }
+                }.onFailure {
+                    setEffect { CommunityDetailUiEffect.ShowSnackBarReportFail(it.message) }
                 }
         }
     }
