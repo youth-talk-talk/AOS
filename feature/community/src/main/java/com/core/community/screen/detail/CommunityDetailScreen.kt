@@ -134,7 +134,7 @@ fun CommunityDetailScreen(
                     showSnackBar(context.getString(R.string.report_post_success))
                 }
 
-                is CommunityDetailUiEffect.ShowSnackBarReportPostFail -> {
+                is CommunityDetailUiEffect.ShowSnackBarReportFail -> {
                     showSnackBar(it.message.toString())
                 }
             }

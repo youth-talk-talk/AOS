@@ -7,5 +7,6 @@ sealed interface CommunityDetailUiEffect : UiEffect {
     data object ShowSnackBarModifyComment : CommunityDetailUiEffect
     data object ShowSnackBarDeletePost : CommunityDetailUiEffect
     data object ShowSnackBarReportPost : CommunityDetailUiEffect
-    data class ShowSnackBarReportPostFail(val message: String?) : CommunityDetailUiEffect
+    data object ShowSnackBarReportComment : CommunityDetailUiEffect
+    data class ShowSnackBarReportFail(val message: String?) : CommunityDetailUiEffect
 }
