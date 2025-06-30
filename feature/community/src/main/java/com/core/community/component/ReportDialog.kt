@@ -2,6 +2,7 @@ package com.core.community.component
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.core.community.model.ReportType
@@ -12,7 +13,7 @@ import com.youthtalk.component.dialog.ModalDialog
 import com.youthtalk.designsystem.YongProjectTheme
 
 @Composable
-internal fun ReportDialog(reportType: ReportType, onClickConfirm: () -> Unit, onCloseDialog: () -> Unit) {
+internal fun ReportDialog(reportType: ReportType, onClickConfirm: () -> Unit, onCloseDialog: () -> Unit, modifier: Modifier = Modifier) {
     val title = when (reportType) {
         Post -> stringResource(R.string.report_post_title)
         Comment -> stringResource(R.string.report_comment_title)
