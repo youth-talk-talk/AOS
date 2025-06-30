@@ -7,6 +7,7 @@ import com.youthtalk.data.CommentService
 import com.youthtalk.data.CommunityService
 import com.youthtalk.data.LoginService
 import com.youthtalk.data.PolicyService
+import com.youthtalk.data.ReportService
 import com.youthtalk.data.UserService
 import dagger.Module
 import dagger.Provides
@@ -153,4 +154,8 @@ object ApiModule {
     @Provides
     @Singleton
     fun provideAnnounceService(@Main retrofit: Retrofit): AnnounceService = retrofit.create(AnnounceService::class.java)
+
+    @Provides
+    @Singleton
+    fun provideReportService(@Main retrofit: Retrofit): ReportService = retrofit.create(ReportService::class.java)
 }
