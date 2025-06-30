@@ -12,4 +12,5 @@ sealed interface CommunityDetailUiEvent : UiEvent {
     data class PostPostScrap(val postId: Long, val scrap: Boolean) : CommunityDetailUiEvent
     data class PostDeleteComment(val comment: Comment) : CommunityDetailUiEvent
     data class PostCommentLike(val commentId: Long, val isLike: Boolean) : CommunityDetailUiEvent
+    data class ReportPost(val postId: Long) : CommunityDetailUiEvent
 }
