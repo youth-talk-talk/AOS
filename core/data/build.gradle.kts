@@ -47,4 +47,5 @@ dependencies {
     implementation(libs.androidx.room.ktx)
 
     testImplementation(libs.okhttp3.mockwebserver)
+    testImplementation(libs.mockito.kotlin)
 }
