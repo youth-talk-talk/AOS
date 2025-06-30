@@ -18,9 +18,6 @@ interface CommentService {
     @DELETE("/api/v1/comments/{commentId}")
     suspend fun postDeleteComment(@Path("commentId") commentId: Long): CommonResponse<PostAddCommentResponse>
 
-    @GET("/api/v1/members/me/comments")
-    suspend fun getMyComments()
-
     @POST("/api/v1/posts/comments")
     suspend fun postPostAddComment(@Body requestBody: RequestBody): CommonResponse<PostAddCommentResponse>
 

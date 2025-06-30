@@ -51,7 +51,7 @@ fun UserComment(
     isMine: Boolean = false,
     onPostModifyComment: (Comment) -> Unit,
     onDeleteComment: (Comment) -> Unit,
-    onPostReportComment: () -> Unit,
+    onPostReportComment: (commentId: Long) -> Unit,
     onPostReportUser: () -> Unit,
     onCommentLike: (Long, Boolean) -> Unit
 ) {
@@ -197,7 +197,7 @@ fun UserComment(
                                         bottomSheet = false
                                     }
                                     if (index == 0) {
-                                        if (isMine) onPostModifyComment(comment) else onPostReportComment()
+                                        if (isMine) onPostModifyComment(comment) else onPostReportComment(comment.commentId)
                                     } else {
                                         if (isMine) {
                                             deleteCommentDialog = true

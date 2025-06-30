@@ -63,7 +63,7 @@ fun PolicySearchScreen(
     ) {
         SearchBar(
             text = search,
-            onClickBack = {},
+            onClickBack = onBack,
             onTextChange = { search = it },
             onSearch = {
                 viewModel.setEvent(PolicySearchUiEvent.Search(it))

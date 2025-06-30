@@ -7,6 +7,7 @@ import com.core.dataapi.repository.HomeRepository
 import com.core.dataapi.repository.LoginRepository
 import com.core.dataapi.repository.MyPageRepository
 import com.core.dataapi.repository.PolicyRepository
+import com.core.dataapi.repository.ReportRepository
 import com.core.dataapi.repository.SearchRepository
 import com.core.dataapi.repository.SpecPolicyRepository
 import com.core.dataapi.repository.UserRepository
@@ -19,6 +20,7 @@ import com.youthtalk.repository.HomeRepositoryImpl
 import com.youthtalk.repository.LoginRepositoryImpl
 import com.youthtalk.repository.MyPageRepositoryImpl
 import com.youthtalk.repository.PolicyRepositoryImpl
+import com.youthtalk.repository.ReportRepositoryImpl
 import com.youthtalk.repository.SearchRepositoryImpl
 import com.youthtalk.repository.SpecPolicyRepositoryImpl
 import com.youthtalk.repository.UserRepositoryImpl
@@ -63,4 +65,7 @@ abstract class DataModule {
 
     @Binds
     abstract fun bindsAnnounceRepository(repository: AnnounceRepositoryImpl): AnnounceRepository
+
+    @Binds
+    abstract fun bindsReportRepository(repository: ReportRepositoryImpl): ReportRepository
 }

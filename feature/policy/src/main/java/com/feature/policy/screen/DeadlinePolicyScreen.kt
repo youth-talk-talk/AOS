@@ -42,10 +42,10 @@ import com.youthtalk.designsystem.gray40
 
 @Composable
 fun DeadlinePolicyScreen(
-    modifier: Modifier = Modifier,
     viewModel: DeadlineViewmodel = hiltViewModel(),
     onBack: () -> Unit,
-    onClickPolicyDetail: (Long) -> Unit
+    onClickPolicyDetail: (Long) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val policies = state.policies.collectAsLazyPagingItems()
@@ -80,7 +80,8 @@ fun DeadlinePolicyScreen(
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize(),
-                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 10.dp)
+                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 10.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 item {
                     Row(
