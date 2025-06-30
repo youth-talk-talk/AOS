@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="report_post_title">게시글을 신고할까요?</string>
+    <string name="report_comment_title">댓글을 신고할까요?</string>
+    <string name="report_confirm">차단하기</string>
+</resources>
