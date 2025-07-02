@@ -28,14 +28,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.net.toUri
 import coil3.compose.AsyncImage
 import com.core.mypage.model.InfoType
 import com.core.mypage.model.setting.SettingType
@@ -56,17 +54,9 @@ import com.youthtalk.designsystem.gray90
 import com.youthtalk.model.User
 import com.youthtalk.model.typeenum.Region
 import com.youthtalk.model.typeenum.toRegionName
-import com.youthtalk.util.FileConverter
 
 @Composable
-fun SettingAccount(
-    modifier: Modifier = Modifier,
-    user: User,
-    uploadLoading: Boolean,
-    actionEvent: (SettingUiEvent) -> Unit,
-    checkPermission: () -> Unit
-) {
-    val context = LocalContext.current
+fun SettingAccount(modifier: Modifier = Modifier, user: User, uploadLoading: Boolean, actionEvent: (SettingUiEvent) -> Unit) {
     val focusManager = LocalFocusManager.current
     var logoutDialog by remember {
         mutableStateOf(false)
@@ -112,11 +102,7 @@ fun SettingAccount(
         )
 
         UserImage(
-            profileImgUrl = user.profileImgUrl,
-            onClickCamera = {
-                focusManager.clearFocus()
-                checkPermission()
-            }
+            profileImgUrl = user.profileImgUrl
         )
 
         UserInfo(
@@ -173,9 +159,7 @@ fun SettingAccount(
             confirmText = "저장하기",
             onDismissRequest = { onSaveDialog = false },
             onClickConfirm = {
-                user.profileImgUrl?.toUri()?.let { uri ->
-                    actionEvent(SettingUiEvent.OnSaveUser(FileConverter.uriToFile(context, uri)))
-                } ?: actionEvent(SettingUiEvent.OnSaveUser())
+                actionEvent(SettingUiEvent.OnSaveUser)
             }
         )
     }
@@ -271,7 +255,7 @@ private fun UserInfo(
 }
 
 @Composable
-private fun UserImage(modifier: Modifier = Modifier, profileImgUrl: String?, onClickCamera: () -> Unit) {
+private fun UserImage(modifier: Modifier = Modifier, profileImgUrl: String?) {
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -295,19 +279,6 @@ private fun UserImage(modifier: Modifier = Modifier, profileImgUrl: String?, onC
                     .clip(CircleShape),
                 painter = painterResource(com.youth.app.core.designsystem.R.drawable.profile_thumnail),
                 contentDescription = "기본 이미지"
-            )
-
-            Image(
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .clickable(
-                        indication = null,
-                        interactionSource = remember { MutableInteractionSource() }
-                    ) {
-                        onClickCamera()
-                    },
-                painter = painterResource(R.drawable.camera),
-                contentDescription = stringResource(R.string.camera)
             )
         }
     }
@@ -348,7 +319,6 @@ private fun SettingAccountPreview() {
                 region = Region.ALL
             ),
             actionEvent = {},
-            checkPermission = {},
             uploadLoading = false
         )
     }
