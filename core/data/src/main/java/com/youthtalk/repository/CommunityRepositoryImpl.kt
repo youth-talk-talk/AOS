@@ -49,7 +49,7 @@ class CommunityRepositoryImpl @Inject constructor(
         }
         runCatching {
             when (postSubject) {
-                PostSubject.REVIEW -> communityService.postReviewPosts(categories = categories, page = 0, size = 10)
+                PostSubject.REVIEW -> communityService.getReviewPosts(categories = categories, page = 0, size = 10)
                 PostSubject.POST -> communityService.getPosts(page = 0, size = 10)
             }
         }

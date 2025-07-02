@@ -88,7 +88,7 @@ class GetPostsTest {
         )
 
         // when
-        val response = sut.postReviewPosts(page, size, categories)
+        val response = sut.getReviewPosts(page, size, categories)
         val recordedRequest = mockWebServer.takeRequest()
 
         // then
@@ -115,7 +115,7 @@ class GetPostsTest {
         )
 
         // when
-        val response = sut.postReviewPosts(page, size, listOf())
+        val response = sut.getReviewPosts(page, size, listOf())
         val recordedRequest = mockWebServer.takeRequest()
 
         // then
