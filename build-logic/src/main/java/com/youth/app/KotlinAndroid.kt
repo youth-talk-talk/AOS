@@ -53,7 +53,7 @@ internal fun Project.configureKotlinAndroid() {
             }
 
             getByName("debug") {
-                buildConfigField("String", "SERVER_KEY", getApiKey("dev_server_key"))
+                buildConfigField("String", "SERVER_KEY", getApiKey("server_key"))
                 proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
             }
         }
@@ -61,7 +61,7 @@ internal fun Project.configureKotlinAndroid() {
         flavorDimensions.add("versions")
         productFlavors {
             create("dev") {
-                buildConfigField("String", "BASE_URL", getApiKey("dev_server_key"))
+                buildConfigField("String", "BASE_URL", getApiKey("server_key"))
             }
             create("prod") {
                 buildConfigField("String", "BASE_URL", getApiKey("server_key"))
