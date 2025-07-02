@@ -5,7 +5,6 @@ import com.youthtalk.dto.UserResponse
 import com.youthtalk.dto.comment.SettingCommentInfoResponse
 import okhttp3.RequestBody
 import retrofit2.http.Body
-import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.PATCH
 import retrofit2.http.POST
@@ -25,8 +24,4 @@ interface UserService {
 
     @POST("/api/v1/members/me")
     suspend fun postDeleteUser(): CommonResponse<Unit>
-
-    // URL 지정 필요 2.1 배포 이후에 수정
-    @DELETE
-    suspend fun deleteUserImage(): CommonResponse<Unit>
 }
