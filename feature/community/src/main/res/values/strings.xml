@@ -2,7 +2,7 @@
 <resources>
     <string name="report_post_title">게시글을 신고할까요?</string>
     <string name="report_comment_title">댓글을 신고할까요?</string>
-    <string name="report_confirm">차단하기</string>
+    <string name="report_confirm">신고하기</string>
     <string name="report_post_success">게시글이 성공적으로 신고됐습니다.</string>
     <string name="report_comment_success">댓글이 성공적으로 신고됐습니다.</string>
 </resources>
