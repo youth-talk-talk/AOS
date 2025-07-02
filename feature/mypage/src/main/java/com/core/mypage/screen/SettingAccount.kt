@@ -145,10 +145,11 @@ fun SettingAccount(modifier: Modifier = Modifier, user: User, uploadLoading: Boo
             subTitle = "화면을 나가면 변경사항이 저장되지 않습니다.\n나가시겠습니까?",
             confirmText = "편집하기",
             cancelText = "나가기",
-            onDismissRequest = { logoutDialog = false },
+            onDismissRequest = { onBackDialog = false },
             onClickCancel = {
                 actionEvent(SettingUiEvent.ChangeSettingType(SettingType.MAIN))
-            }
+            },
+            onClickConfirm = { onBackDialog = false }
         )
     }
 
