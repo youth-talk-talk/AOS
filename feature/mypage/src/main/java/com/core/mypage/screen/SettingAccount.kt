@@ -59,13 +59,7 @@ import com.youthtalk.model.typeenum.toRegionName
 import com.youthtalk.util.FileConverter
 
 @Composable
-fun SettingAccount(
-    modifier: Modifier = Modifier,
-    user: User,
-    uploadLoading: Boolean,
-    actionEvent: (SettingUiEvent) -> Unit,
-    checkPermission: () -> Unit
-) {
+fun SettingAccount(modifier: Modifier = Modifier, user: User, uploadLoading: Boolean, actionEvent: (SettingUiEvent) -> Unit) {
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
     var logoutDialog by remember {
@@ -112,11 +106,7 @@ fun SettingAccount(
         )
 
         UserImage(
-            profileImgUrl = user.profileImgUrl,
-            onClickCamera = {
-                focusManager.clearFocus()
-                checkPermission()
-            }
+            profileImgUrl = user.profileImgUrl
         )
 
         UserInfo(
@@ -271,7 +261,7 @@ private fun UserInfo(
 }
 
 @Composable
-private fun UserImage(modifier: Modifier = Modifier, profileImgUrl: String?, onClickCamera: () -> Unit) {
+private fun UserImage(modifier: Modifier = Modifier, profileImgUrl: String?) {
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -295,19 +285,6 @@ private fun UserImage(modifier: Modifier = Modifier, profileImgUrl: String?, onC
                     .clip(CircleShape),
                 painter = painterResource(com.youth.app.core.designsystem.R.drawable.profile_thumnail),
                 contentDescription = "기본 이미지"
-            )
-
-            Image(
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .clickable(
-                        indication = null,
-                        interactionSource = remember { MutableInteractionSource() }
-                    ) {
-                        onClickCamera()
-                    },
-                painter = painterResource(R.drawable.camera),
-                contentDescription = stringResource(R.string.camera)
             )
         }
     }
@@ -348,7 +325,6 @@ private fun SettingAccountPreview() {
                 region = Region.ALL
             ),
             actionEvent = {},
-            checkPermission = {},
             uploadLoading = false
         )
     }
