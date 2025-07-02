@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -40,7 +39,6 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onKeyEvent
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
@@ -68,12 +66,10 @@ fun WriteScreen(
     onTextChangeValue: (Int, TextFieldValue) -> Unit,
     onTextTitleChangeValue: (String) -> Unit,
     onChangeFocus: (Int, TextFieldValue?) -> Unit,
-    checkPermission: () -> Unit,
     onBack: () -> Unit,
     onPostCreatePost: () -> Unit,
     onDeleteImage: (Int) -> Unit
 ) {
-    val focusManager = LocalFocusManager.current
     var dialog by remember {
         mutableStateOf(false)
     }
@@ -153,30 +149,6 @@ fun WriteScreen(
                     }
                 }
             }
-        }
-
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .imePadding()
-        ) {
-            HorizontalDivider(
-                color = gray40
-            )
-
-            Image(
-                modifier = Modifier
-                    .padding(horizontal = 16.dp, vertical = 14.dp)
-                    .clickable(
-                        indication = null,
-                        interactionSource = remember { MutableInteractionSource() }
-                    ) {
-                        focusManager.clearFocus()
-                        checkPermission()
-                    },
-                painter = painterResource(R.drawable.add_picture),
-                contentDescription = "사진 추가"
-            )
         }
     }
 

@@ -27,15 +27,11 @@ import com.youthtalk.model.post.PostSubject
 import com.youthtalk.model.post.PostType
 import com.youthtalk.model.typeenum.Category
 import com.youthtalk.utils.ErrorUtils.throwableError
-import java.io.File
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.MultipartBody
-import okhttp3.RequestBody.Companion.asRequestBody
 import timber.log.Timber
 
 class CommunityRepositoryImpl @Inject constructor(
@@ -53,7 +49,7 @@ class CommunityRepositoryImpl @Inject constructor(
         }
         runCatching {
             when (postSubject) {
-                PostSubject.REVIEW -> communityService.postReviewPosts(categories = categories, page = 0, size = 10)
+                PostSubject.REVIEW -> communityService.getReviewPosts(categories = categories, page = 0, size = 10)
                 PostSubject.POST -> communityService.getPosts(page = 0, size = 10)
             }
         }
@@ -139,22 +135,6 @@ class CommunityRepositoryImpl @Inject constructor(
 
         emit(images)
     }.flowOn(Dispatchers.IO)
-
-    override fun postUploadImage(file: File): Flow<String> = flow {
-        val requestBody = file.asRequestBody("image/*".toMediaTypeOrNull())
-        val imagePart = MultipartBody.Part.createFormData("image", file.name, requestBody)
-        runCatching {
-            communityService.postUploadImage(imagePart)
-        }
-            .onSuccess { response ->
-                response.data?.let { uri ->
-                    emit(uri)
-                }
-            }
-            .onFailure {
-                throwableError<String>(it)
-            }
-    }
 
     override fun postCreatePost(createPost: CreatePost): Flow<Long> = flow {
         runCatching {

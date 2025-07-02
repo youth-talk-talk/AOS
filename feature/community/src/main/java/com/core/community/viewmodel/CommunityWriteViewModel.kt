@@ -12,7 +12,6 @@ import com.core.community.model.write.CommunityWriteUiEffect
 import com.core.community.model.write.CommunityWriteUiEvent
 import com.core.community.model.write.CommunityWriteUiState
 import com.core.domain.usercase.GetImageListUseCase
-import com.core.domain.usercase.PostUploadImageUseCase
 import com.core.domain.usercase.policy.PostSearchPolicyUseCase
 import com.core.domain.usercase.post.GetPostDetailUseCase
 import com.core.domain.usercase.post.PostCreatePostUseCase
@@ -22,12 +21,10 @@ import com.youthtalk.model.post.ModifyPost
 import com.youthtalk.model.post.PostContent
 import com.youthtalk.model.post.PostSubject
 import dagger.hilt.android.lifecycle.HiltViewModel
-import java.io.File
 import javax.inject.Inject
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.emptyFlow
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -35,7 +32,6 @@ import timber.log.Timber
 class CommunityWriteViewModel @Inject constructor(
     private val getImageListUseCase: GetImageListUseCase,
     private val getPostDetailUseCase: GetPostDetailUseCase,
-    private val postUploadImageUseCase: PostUploadImageUseCase,
     private val postCreatePostUseCase: PostCreatePostUseCase,
     private val postModifyPostUseCase: PostModifyPostUseCase,
     private val postSearchPolicyUseCase: PostSearchPolicyUseCase,
@@ -57,7 +53,6 @@ class CommunityWriteViewModel @Inject constructor(
             is CommunityWriteUiEvent.InitData -> initData(event.postId, event.postSubject)
             is CommunityWriteUiEvent.OnTextChangeValue -> textChangeValue(event.index, event.text)
             is CommunityWriteUiEvent.GetImages -> getImages()
-            is CommunityWriteUiEvent.PostUploadImages -> uploadImage(event.file)
             is CommunityWriteUiEvent.FocusChange -> focusChange(event.index, event.text)
             is CommunityWriteUiEvent.ChangeTitle -> setTitle(event.title)
             is CommunityWriteUiEvent.SearchPolicyChangeTextValue -> setState { copy(searchPolicy = event.searchPolicy) }
@@ -210,68 +205,6 @@ class CommunityWriteViewModel @Inject constructor(
                 }
                 .collectLatest {
                     setState { copy(searchPolicies = it.cachedIn(viewModelScope)) }
-                }
-        }
-    }
-
-    private fun uploadImage(file: File) {
-        viewModelScope.launch {
-            postUploadImageUseCase(file)
-                .onStart {
-                    setState {
-                        copy(uploadLoading = true)
-                    }
-                    setEffect { CommunityWriteUiEffect.OnBack }
-                }
-                .catch {
-                    Timber.e("CommunityWriteViewModel uploadImage error $it")
-                }
-                .collectLatest { image ->
-                    Timber.e("CommunityWriteViewModel uploadImage success $image")
-                    val contents = state.value.contentList.toMutableList()
-                    val lastFocus = state.value.focusIndex
-                    if (lastFocus.first % 2 == 0) {
-                        // TextField
-                        lastFocus.second?.let { textField ->
-                            contents[lastFocus.first] = Contents.Text(textField.copy(text = textField.text.substring(0, textField.selection.start)))
-                            val insert = contents.subList(0, lastFocus.first + 1) + listOf(
-                                Contents.Image(image),
-                                Contents.Text(
-                                    TextFieldValue(
-                                        text = textField.text.substring(textField.selection.start),
-                                        selection = TextRange(textField.text.substring(textField.selection.start).length)
-                                    )
-                                )
-                            ) + if (lastFocus.first + 1 < contents.size) contents.subList(lastFocus.first + 1, contents.size) else listOf()
-
-                            setState {
-                                copy(
-                                    contentList = insert,
-                                    uploadLoading = false,
-                                    focusIndex = Pair(insert.lastIndex, (insert[insert.lastIndex] as? Contents.Text)?.textFieldValue),
-                                    addImgUrlList = if (addImgUrlList.contains(image)) addImgUrlList else addImgUrlList + image
-                                )
-                            }
-                        }
-                    } else {
-                        // image
-                        val insert = contents.subList(0, lastFocus.first + 1) + listOf(
-                            Contents.Text(TextFieldValue("")),
-                            Contents.Image(image)
-                        ) + if (lastFocus.first + 1 < contents.size) contents.subList(lastFocus.first + 1, contents.size) else listOf()
-
-                        setState {
-                            copy(
-                                contentList = insert,
-                                uploadLoading = false,
-                                focusIndex = Pair(insert.lastIndex, (insert[insert.lastIndex] as? Contents.Text)?.textFieldValue)
-                            )
-                        }
-                    }
-
-                    setEffect {
-                        CommunityWriteUiEffect.ScrollIndex(lastFocus.first + 1)
-                    }
                 }
         }
     }
