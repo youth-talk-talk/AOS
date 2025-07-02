@@ -2,7 +2,6 @@ package com.core.community.screen.write
 
 import android.Manifest
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
@@ -15,7 +14,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
@@ -27,10 +25,8 @@ import com.core.community.model.write.CommunityWriteUiEvent
 import com.core.community.viewmodel.CommunityWriteViewModel
 import com.core.navigation.CommunityWriteNavigation
 import com.youthtalk.component.dialog.ModalDialog
-import com.youthtalk.component.picture.PictureScreen
 import com.youthtalk.designsystem.YongProjectTheme
 import com.youthtalk.model.post.PostSubject
-import com.youthtalk.util.FileConverter
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 
@@ -139,13 +135,6 @@ fun CommunityWriteScreen(
                 onTextChangeValue = { index, text ->
                     viewModel.setEvent(CommunityWriteUiEvent.OnTextChangeValue(index, text))
                 },
-                checkPermission = {
-                    if (permissionList.all { ContextCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED }) {
-                        viewModel.setEvent(CommunityWriteUiEvent.GetImages)
-                    } else {
-                        launcher.launch(permissionList)
-                    }
-                },
                 onChangeFocus = { index, text ->
                     viewModel.setEvent(CommunityWriteUiEvent.FocusChange(index, text))
                 },
@@ -166,18 +155,6 @@ fun CommunityWriteScreen(
                 onSearchPolicy = { viewModel.setEvent(CommunityWriteUiEvent.PostSearchPolicy(it)) },
                 onBack = { viewModel.setEvent(CommunityWriteUiEvent.ClearSearchInfo) },
                 onClickSearchPolicy = { viewModel.setEvent(CommunityWriteUiEvent.OnClickSearchPolicy(it)) }
-            )
-        }
-
-        composable<CommunityWriteNavigation.Picture> {
-            PictureScreen(
-                images = state.images,
-                onBack = { navController.popBackStack() },
-                onSelectImage = { uri ->
-                    FileConverter.uriToFile(context, uri)?.let {
-                        viewModel.setEvent(CommunityWriteUiEvent.PostUploadImages(it))
-                    }
-                }
             )
         }
     }
