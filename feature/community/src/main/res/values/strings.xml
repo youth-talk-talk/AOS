@@ -5,4 +5,5 @@
     <string name="report_confirm">신고하기</string>
     <string name="report_post_success">게시글이 성공적으로 신고됐습니다.</string>
     <string name="report_comment_success">댓글이 성공적으로 신고됐습니다.</string>
+    <string name="block_user_snackbar_message">앞으로 %1$s님 게시글과 댓글이 모두 보이지 않습니다.</string>
 </resources>
