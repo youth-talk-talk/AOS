@@ -232,6 +232,7 @@ class CommunityDetailViewModel @Inject constructor(
             }
                 .catch {
                     Timber.e("CommunityDetailViewModel initData error $it")
+                    setEffect { CommunityDetailUiEffect.InitError("신고한 게시글은 조회할 수 없습니다.") }
                 }
                 .collectLatest { uiState ->
                     setState { uiState }
