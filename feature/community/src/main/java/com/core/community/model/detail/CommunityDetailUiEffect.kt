@@ -9,4 +9,5 @@ sealed interface CommunityDetailUiEffect : UiEffect {
     data object ShowSnackBarReportPost : CommunityDetailUiEffect
     data object ShowSnackBarReportComment : CommunityDetailUiEffect
     data class ShowSnackBarReportFail(val message: String?) : CommunityDetailUiEffect
+    data class InitError(val message: String) : CommunityDetailUiEffect
 }
