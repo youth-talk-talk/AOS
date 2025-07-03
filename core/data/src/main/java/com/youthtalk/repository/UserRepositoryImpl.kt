@@ -11,6 +11,7 @@ import com.youthtalk.model.User
 import com.youthtalk.model.comment.SettingCommentInfo
 import com.youthtalk.model.typeenum.Category
 import com.youthtalk.model.typeenum.Region
+import com.youthtalk.utils.ErrorUtils.createResult
 import com.youthtalk.utils.ErrorUtils.throwableError
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
@@ -58,6 +59,12 @@ class UserRepositoryImpl @Inject constructor(
                 }
         } else {
             emit(0L)
+        }
+    }
+
+    override suspend fun blockUser(userId: Long): Result<Unit> {
+        return createResult {
+            userService.blockUser(userId)
         }
     }
 
