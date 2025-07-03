@@ -69,6 +69,7 @@ import com.core.community.viewmodel.CommunityDetailViewModel
 import com.youth.app.feature.community.R
 import com.youthtalk.component.comment.UserComment
 import com.youthtalk.component.dialog.ModalDialog
+import com.youthtalk.component.dialog.UserBlockDialog
 import com.youthtalk.component.empty.EmptyScreen
 import com.youthtalk.component.screen.CommentModifyScreen
 import com.youthtalk.component.topbar.MiddleTitleTopBar
@@ -106,6 +107,8 @@ fun CommunityDetailScreen(
     var reportDialog by remember {
         mutableStateOf(Pair<Boolean, ReportType>(false, Post))
     }
+
+    var blockUserDialog by remember { mutableStateOf(Triple<Boolean, Long, String>(false, 0L, "")) }
 
     BackHandler {
         when (state.detailType) {
@@ -146,6 +149,10 @@ fun CommunityDetailScreen(
                     showSnackBar(it.message)
                     onBack()
                 }
+                is CommunityDetailUiEffect.ShowSnackBarBlockUser -> {
+                    showSnackBar(context.getString(R.string.block_user_snackbar_message, it.userName))
+                    onBack()
+                }
             }
         }
     }
@@ -178,7 +185,9 @@ fun CommunityDetailScreen(
                         onPostReportPost = {
                             reportDialog = Pair(true, Post)
                         },
-                        onPostReportPostUser = {},
+                        onPostReportPostUser = { userId, userName ->
+                            blockUserDialog = Triple(true, userId, userName)
+                        },
                         onReportComment = { commentId ->
                             reportDialog = Pair(true, ReportType.Comment(commentId))
                         },
@@ -238,6 +247,16 @@ fun CommunityDetailScreen(
             }
         )
     }
+
+    if (blockUserDialog.first) {
+        UserBlockDialog(
+            userName = blockUserDialog.third,
+            onDismissRequest = { blockUserDialog = blockUserDialog.copy(first = false) },
+            onClickConfirm = {
+                viewModel.setEvent(CommunityDetailUiEvent.BlockUser(userId = blockUserDialog.second, userName = blockUserDialog.third))
+            }
+        )
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -251,7 +270,7 @@ internal fun DetailScreen(
     onPostModifyPost: (Long) -> Unit,
     onPostDeletePost: (Long) -> Unit,
     onPostReportPost: () -> Unit,
-    onPostReportPostUser: () -> Unit,
+    onPostReportPostUser: (userId: Long, userName: String) -> Unit,
     onReportComment: (commentId: Long) -> Unit,
     onPostPostScrap: (Long, Boolean) -> Unit,
     onCommentLike: (Long, Boolean) -> Unit,
@@ -345,7 +364,7 @@ internal fun DetailScreen(
                         onDeleteComment = onDeleteComment,
                         onPostReportComment = onReportComment,
                         onPostModifyComment = onPostModifyComment,
-                        onPostReportUser = {},
+                        onPostReportUser = onPostReportPostUser,
                         onCommentLike = onCommentLike
                     )
                 }
@@ -400,7 +419,13 @@ internal fun DetailScreen(
                                 if (index == 0) {
                                     if (isMine) onPostModifyPost(state.postDetail.postId) else onPostReportPost()
                                 } else {
-                                    if (isMine) onPostDeletePost(state.postDetail.postId) else onPostReportPostUser()
+                                    if (isMine) {
+                                        onPostDeletePost(
+                                            state.postDetail.postId
+                                        )
+                                    } else {
+                                        onPostReportPostUser(state.user.memberId, state.user.nickname)
+                                    }
                                 }
                             }
                             .padding(vertical = 14.dp),

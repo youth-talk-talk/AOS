@@ -8,6 +8,7 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.PATCH
 import retrofit2.http.POST
+import retrofit2.http.Path
 
 interface UserService {
     @GET("/api/v1/members/me")
@@ -24,4 +25,7 @@ interface UserService {
 
     @POST("/api/v1/members/me")
     suspend fun postDeleteUser(): CommonResponse<Unit>
+
+    @POST("/api/v1/members/block/{id}")
+    suspend fun blockUser(@Path("id") userId: Long): CommonResponse<Unit>
 }

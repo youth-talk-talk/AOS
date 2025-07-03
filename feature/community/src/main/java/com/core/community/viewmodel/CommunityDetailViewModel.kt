@@ -18,6 +18,7 @@ import com.core.domain.usercase.post.GetPostDetailUseCase
 import com.core.domain.usercase.post.PostPostScrapUseCase
 import com.core.domain.usercase.report.ReportCommentUseCase
 import com.core.domain.usercase.report.ReportPostUseCase
+import com.core.domain.usercase.user.BlockUserUseCase
 import com.youthtalk.model.comment.Comment
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.LocalDateTime
@@ -41,6 +42,7 @@ class CommunityDetailViewModel @Inject constructor(
     private val postCommentLikeUseCase: PostCommentLikeUseCase,
     private val reportPostUseCase: ReportPostUseCase,
     private val reportCommentUseCase: ReportCommentUseCase,
+    private val blockUserUseCase: BlockUserUseCase,
     savedStateHandle: SavedStateHandle
 ) : BaseViewModel<CommunityDetailUiState, CommunityDetailUiEvent, CommunityDetailUiEffect>(
     initialState = CommunityDetailUiState.initState
@@ -63,6 +65,7 @@ class CommunityDetailViewModel @Inject constructor(
             is CommunityDetailUiEvent.PostCommentLike -> postCommentLike(event.commentId, event.isLike)
             is CommunityDetailUiEvent.ReportPost -> reportPost(event.postId)
             is CommunityDetailUiEvent.ReportComment -> reportComment(event.commentId)
+            is CommunityDetailUiEvent.BlockUser -> blockUser(event.userId, event.userName)
         }
     }
 
@@ -211,6 +214,16 @@ class CommunityDetailViewModel @Inject constructor(
                     setEffect { CommunityDetailUiEffect.ShowSnackBarReportComment }
                 }.onFailure {
                     setEffect { CommunityDetailUiEffect.ShowSnackBarReportFail(it.message) }
+                }
+        }
+    }
+
+    private fun blockUser(userId: Long, userName: String) {
+        viewModelScope.launch {
+            blockUserUseCase(userId)
+                .onSuccess {
+                    setEffect { CommunityDetailUiEffect.ShowSnackBarBlockUser(userName) }
+                }.onFailure {
                 }
         }
     }
