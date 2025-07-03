@@ -364,7 +364,7 @@ internal fun DetailScreen(
                         onDeleteComment = onDeleteComment,
                         onPostReportComment = onReportComment,
                         onPostModifyComment = onPostModifyComment,
-                        onPostReportUser = { _, _ -> },
+                        onPostReportUser = onPostReportPostUser,
                         onCommentLike = onCommentLike
                     )
                 }
