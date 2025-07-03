@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="block_user_title">사용자를 차단할까요?</string>
+    <string name="block_user_subtitle">"차단하면 %1$s님의 게시글과 댓글이 모두 보이지 않습니다. "</string>
+    <string name="block">차단하기</string>
+</resources>
