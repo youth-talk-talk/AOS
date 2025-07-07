@@ -32,6 +32,7 @@ dependencies {
     implementation(platform(libs.okhttp.bom))
     implementation(libs.okhttp3.okhttp)
     implementation(libs.logging.interceptor)
+    implementation("com.squareup.okhttp3:okhttp-sse:4.12.0")
     implementation(libs.retrofit.kotlin.serialization)
     implementation(libs.kotlinx.serialization.json)
 

@@ -18,6 +18,7 @@ dependencies {
     implementation(projects.feature.policydetail)
     implementation(projects.feature.search)
     implementation(projects.feature.policy)
+    implementation(projects.core.dataApi)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

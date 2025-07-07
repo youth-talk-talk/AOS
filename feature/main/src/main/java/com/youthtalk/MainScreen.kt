@@ -3,8 +3,6 @@ package com.youthtalk
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -48,16 +46,19 @@ import com.youth.search.navigation.policySearchNavigation
 import com.youthtalk.designsystem.YongProjectTheme
 
 @Composable
-fun MainScreen(modifier: Modifier = Modifier, goLogin: () -> Unit, checkPermission: (String) -> Boolean, showSnackBar: (String) -> Unit) {
-    val navHostController = rememberNavController()
+fun MainScreen(
+    modifier: Modifier = Modifier,
+    navController: NavHostController,
+    goLogin: () -> Unit,
+    checkPermission: (String) -> Boolean,
+    showSnackBar: (String) -> Unit
+) {
     val homeNavHostController = rememberNavController()
-    val homeLazyListScrollState = rememberLazyListState()
 
     Column(modifier = modifier) {
         NavHostScreen(
-            navController = navHostController,
+            navController = navController,
             homeNavController = homeNavHostController,
-            homeLazyListScrollState = homeLazyListScrollState,
             goLogin = goLogin,
             checkPermission = checkPermission,
             showSnackBar = showSnackBar
@@ -69,7 +70,6 @@ fun MainScreen(modifier: Modifier = Modifier, goLogin: () -> Unit, checkPermissi
 fun NavHostScreen(
     navController: NavHostController,
     homeNavController: NavHostController,
-    homeLazyListScrollState: LazyListState,
     goLogin: () -> Unit,
     checkPermission: (String) -> Boolean,
     showSnackBar: (String) -> Unit
@@ -190,6 +190,7 @@ fun NavHostScreen(
 private fun MainScreenPreview() {
     YongProjectTheme {
         MainScreen(
+            navController = rememberNavController(),
             goLogin = {},
             checkPermission = { false },
             showSnackBar = {}
