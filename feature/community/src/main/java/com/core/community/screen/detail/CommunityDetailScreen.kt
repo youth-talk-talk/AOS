@@ -145,6 +145,7 @@ fun CommunityDetailScreen(
                 is CommunityDetailUiEffect.ShowSnackBarReportFail -> {
                     showSnackBar(it.message.toString())
                 }
+                
                 is CommunityDetailUiEffect.InitError -> {
                     showSnackBar(it.message)
                     onBack()
@@ -153,6 +154,7 @@ fun CommunityDetailScreen(
                     showSnackBar(context.getString(R.string.block_user_snackbar_message, it.userName))
                     onBack()
                 }
+
             }
         }
     }
@@ -257,6 +259,7 @@ fun CommunityDetailScreen(
             }
         )
     }
+
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

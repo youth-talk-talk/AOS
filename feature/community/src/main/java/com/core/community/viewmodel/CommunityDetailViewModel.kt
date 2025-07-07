@@ -227,7 +227,7 @@ class CommunityDetailViewModel @Inject constructor(
                 }
         }
     }
-
+    
     private fun initData(postId: Long) {
         viewModelScope.launch {
             combine(
