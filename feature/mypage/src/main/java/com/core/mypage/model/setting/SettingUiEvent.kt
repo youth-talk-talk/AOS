@@ -2,7 +2,6 @@ package com.core.mypage.model.setting
 
 import com.core.base.model.UiEvent
 import com.youthtalk.model.typeenum.Region
-import java.io.File
 
 sealed interface SettingUiEvent : UiEvent {
     data object InitData : SettingUiEvent
@@ -11,5 +10,5 @@ sealed interface SettingUiEvent : UiEvent {
     data class SelectImageUrl(val imageUrl: String) : SettingUiEvent
     data class OnChangeValue(val nickname: String) : SettingUiEvent
     data class OnChangeRegion(val region: Region) : SettingUiEvent
-    data class OnSaveUser(val file: File? = null) : SettingUiEvent
+    data object OnSaveUser : SettingUiEvent
 }

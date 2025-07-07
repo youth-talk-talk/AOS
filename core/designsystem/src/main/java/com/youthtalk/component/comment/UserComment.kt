@@ -52,7 +52,7 @@ fun UserComment(
     onPostModifyComment: (Comment) -> Unit,
     onDeleteComment: (Comment) -> Unit,
     onPostReportComment: (commentId: Long) -> Unit,
-    onPostReportUser: () -> Unit,
+    onPostReportUser: (userId: Long, userName: String) -> Unit,
     onCommentLike: (Long, Boolean) -> Unit
 ) {
     val scope = rememberCoroutineScope()
@@ -202,7 +202,7 @@ fun UserComment(
                                         if (isMine) {
                                             deleteCommentDialog = true
                                         } else {
-                                            onPostReportUser()
+                                            onPostReportUser(comment.writerId, comment.nickname)
                                         }
                                     }
                                 }
@@ -262,7 +262,7 @@ private fun UserCommentPreview() {
             onPostModifyComment = {},
             onDeleteComment = {},
             onPostReportComment = {},
-            onPostReportUser = {},
+            onPostReportUser = { _, _ -> },
             onCommentLike = { _, _ -> }
         )
     }

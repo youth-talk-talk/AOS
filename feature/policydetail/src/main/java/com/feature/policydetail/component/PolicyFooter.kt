@@ -48,7 +48,7 @@ fun LazyListScope.policyFooter(
                 onDeleteComment = onDeleteComment,
                 onPostReportComment = {},
                 onPostModifyComment = onPostModifyComment,
-                onPostReportUser = {},
+                onPostReportUser = { _, _ -> },
                 onCommentLike = onCommentLike
             )
         }

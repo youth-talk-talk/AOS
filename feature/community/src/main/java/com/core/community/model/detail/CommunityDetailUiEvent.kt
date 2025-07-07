@@ -14,4 +14,5 @@ sealed interface CommunityDetailUiEvent : UiEvent {
     data class PostCommentLike(val commentId: Long, val isLike: Boolean) : CommunityDetailUiEvent
     data class ReportPost(val postId: Long) : CommunityDetailUiEvent
     data class ReportComment(val commentId: Long) : CommunityDetailUiEvent
+    data class BlockUser(val userId: Long, val userName: String) : CommunityDetailUiEvent
 }

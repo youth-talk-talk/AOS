@@ -56,7 +56,7 @@ class PostRemoteMediator @Inject constructor(
 
             val page = remoteKey?.nextPage ?: 0
             val response = when (postSubject) {
-                PostSubject.REVIEW -> communityService.postReviewPosts(
+                PostSubject.REVIEW -> communityService.getReviewPosts(
                     categories = categories,
                     page = page,
                     size = state.config.pageSize

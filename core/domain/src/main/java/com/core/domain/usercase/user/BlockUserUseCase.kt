@@ -1,11 +1,13 @@
 package com.core.domain.usercase.user
 
 import com.core.dataapi.repository.UserRepository
-import java.io.File
 import javax.inject.Inject
 
-class PostUserImageUseCase @Inject constructor(
+class BlockUserUseCase @Inject constructor(
     private val userRepository: UserRepository
 ) {
-    operator fun invoke(file: File?) = userRepository.postUserImage(file)
+
+    suspend operator fun invoke(userId: Long): Result<Unit> {
+        return userRepository.blockUser(userId)
+    }
 }

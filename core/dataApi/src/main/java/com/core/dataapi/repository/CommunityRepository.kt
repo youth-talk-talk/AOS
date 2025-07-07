@@ -9,14 +9,12 @@ import com.youthtalk.model.post.PostDetail
 import com.youthtalk.model.post.PostSubject
 import com.youthtalk.model.post.PostType
 import com.youthtalk.model.typeenum.Category
-import java.io.File
 import kotlinx.coroutines.flow.Flow
 
 interface CommunityRepository {
     fun getPopularPosts(category: Category, postSubject: PostSubject): Flow<List<Post>>
     fun getPosts(category: Category, postType: PostType, postSubject: PostSubject): Flow<Flow<PagingData<Post>>>
     fun getListImage(): Flow<List<Image>>
-    fun postUploadImage(file: File): Flow<String>
     fun postCreatePost(createPost: CreatePost): Flow<Long>
     fun getPostDetail(postId: Long): Flow<PostDetail>
     fun deletePost(postId: Long): Flow<Long>
