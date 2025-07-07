@@ -145,7 +145,7 @@ fun CommunityDetailScreen(
                 is CommunityDetailUiEffect.ShowSnackBarReportFail -> {
                     showSnackBar(it.message.toString())
                 }
-
+                
                 is CommunityDetailUiEffect.InitError -> {
                     showSnackBar(it.message)
                     onBack()
