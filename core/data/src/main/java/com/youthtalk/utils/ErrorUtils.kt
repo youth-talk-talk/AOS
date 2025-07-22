@@ -8,6 +8,7 @@ import com.core.exception.NotPermissionMethod
 import com.core.exception.UnAuthorizedException
 import com.youthtalk.dto.CommonResponse
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonElement
 import retrofit2.HttpException
 import timber.log.Timber
 
@@ -48,7 +49,7 @@ object ErrorUtils {
 
     inline fun <reified T> mapToCustomException(it: HttpException): Exception {
         val error = it.response()?.errorBody()?.string() ?: throw InvalidValueException(it.message)
-        val response = Json.decodeFromString<CommonResponse<T>>(error)
+        val response = Json.decodeFromString<CommonResponse<JsonElement?>>(error)
         return when (it.code()) {
             401 -> UnAuthorizedException(response.message)
             404 -> NotFoundResource(response.message)
