@@ -59,7 +59,7 @@ class LoginViewModel @Inject constructor(
     fun postLogin(userId: Long) {
         socialId = "$userId"
         viewModelScope.launch {
-            postLoginUseCase("950331")
+            postLoginUseCase(socialId)
                 .catch {
                     Timber.e("viewModel postLogin error $it")
                     _error.emit(it)
