@@ -2,7 +2,7 @@ package com.core.exception
 
 class NoDataException(
     private val m: String? = "NoDataException"
-): Exception() {
+): RuntimeException()  {
     override val message: String?
         get() = m
 }

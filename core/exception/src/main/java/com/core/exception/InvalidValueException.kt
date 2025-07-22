@@ -2,7 +2,7 @@ package com.core.exception
 
 class InvalidValueException(
     private val m: String? = "InvalidValueException"
-): Exception() {
+): RuntimeException()  {
     override val message: String?
         get() = m
 }
