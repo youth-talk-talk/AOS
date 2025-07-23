@@ -2,7 +2,8 @@ package com.youthtalk.repository
 
 import com.youthtalk.data.ReportService
 import com.youthtalk.dto.CommonResponse
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
+import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.InjectMocks
@@ -22,7 +23,7 @@ class ReportRepositoryTest {
 
     @Test
     fun givenPostId_whenReportPost_thenWorksFine() {
-        runBlocking {
+        runTest {
             // given
             val postId = 23L
 
@@ -32,13 +33,14 @@ class ReportRepositoryTest {
             val result = sut.reportPost(postId).getOrThrow()
 
             // then
+            assertEquals(Unit, result)
             verify(reportService).reportPosts(postId)
         }
     }
 
     @Test
     fun givenCommentId_whenReportComment_thenWorksFine() {
-        runBlocking {
+        runTest {
             // given
             val commentId = 23L
 
@@ -48,6 +50,7 @@ class ReportRepositoryTest {
             val result = sut.reportComment(commentId).getOrThrow()
 
             // then
+            assertEquals(Unit, result)
             verify(reportService).reportComments(commentId)
         }
     }
