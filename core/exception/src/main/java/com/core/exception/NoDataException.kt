@@ -1,8 +1,3 @@
 package com.core.exception
 
-class NoDataException(
-    private val m: String? = "NoDataException"
-): RuntimeException()  {
-    override val message: String?
-        get() = m
-}
+class NoDataException(override val message: String? = "NoDataException") : RuntimeException()

@@ -1,8 +1,3 @@
 package com.core.exception
 
-class InvalidValueException(
-    private val m: String? = "InvalidValueException"
-): RuntimeException()  {
-    override val message: String?
-        get() = m
-}
+class InvalidValueException(override val message: String? = "InvalidValueException") : RuntimeException()

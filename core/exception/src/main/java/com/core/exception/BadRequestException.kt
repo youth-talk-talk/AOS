@@ -1,5 +1,3 @@
 package com.core.exception
 
-class BadRequestException(
-    override val message: String?
-): RuntimeException()
+class BadRequestException(override val message: String?) : RuntimeException()
