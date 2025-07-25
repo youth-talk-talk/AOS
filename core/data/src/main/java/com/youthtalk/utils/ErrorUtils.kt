@@ -1,6 +1,7 @@
 package com.youthtalk.utils
 
 import com.core.exception.BadRequestException
+import com.core.exception.ConflictException
 import com.core.exception.InvalidValueException
 import com.core.exception.NetworkErrorException
 import com.core.exception.NotFoundResource
@@ -54,6 +55,7 @@ object ErrorUtils {
             401 -> UnAuthorizedException(response.message)
             404 -> NotFoundResource(response.message)
             405 -> NotPermissionMethod(response.message)
+            409 -> ConflictException(response.message)
             400 -> BadRequestException(response.message)
             500 -> InvalidValueException(response.message)
             else -> IllegalStateException(response.message)
