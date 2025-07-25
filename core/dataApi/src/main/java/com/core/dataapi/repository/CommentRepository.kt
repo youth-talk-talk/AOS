@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface CommentRepository {
     suspend fun getPolicyComment(policyId: Long): Result<CommentInfo>
-    fun getPostDetailComments(postId: Long): Flow<CommentInfo>
+    suspend fun getPostDetailComments(postId: Long): Result<CommentInfo>
     fun postPostAddComment(postId: Long, message: String): Flow<Long>
     fun patchComment(commentId: Long, message: String): Flow<Long>
     fun postLikes(commentId: Long, isLike: Boolean): Flow<String>

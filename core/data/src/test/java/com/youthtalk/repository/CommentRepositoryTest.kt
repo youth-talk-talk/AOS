@@ -123,4 +123,22 @@ class CommentRepositoryTest {
             verify(commentService).getPolicyComment(policyId)
         }
     }
+
+    @Test
+    fun givenPostId_whenGetPostComment_thenReturnsComments() {
+        runTest {
+            // given
+            val postId = 1L
+            val commentResponse = CommentInfoResponse(1, listOf(CommentResponse(1L, 1L, "asd", "asd", true, null, "2025-05-03 20:31:23")))
+            val comments = commentResponse.toData()
+            whenever(commentService.getPostDetailComments(postId)).thenReturn(CommonResponse(200, "요청에 성공하였습니다", "S01", commentResponse))
+
+            // when
+            val result = sut.getPostDetailComments(postId).getOrThrow()
+
+            // then
+            assertEquals(comments, result)
+            verify(commentService).getPostDetailComments(postId)
+        }
+    }
 }

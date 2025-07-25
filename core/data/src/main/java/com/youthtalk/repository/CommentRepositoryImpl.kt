@@ -22,16 +22,8 @@ class CommentRepositoryImpl @Inject constructor(
         commentService.getPolicyComment(policyId).data?.toData() ?: CommentInfo(0, listOf())
     }
 
-    override fun getPostDetailComments(postId: Long): Flow<CommentInfo> = flow {
-        runCatching {
-            commentService.getPostDetailComments(postId)
-        }
-            .onSuccess { response ->
-                emit(response.data?.toData() ?: CommentInfo(0, listOf()))
-            }
-            .onFailure {
-                throwableError<List<CommentResponse>>(it)
-            }
+    override suspend fun getPostDetailComments(postId: Long): Result<CommentInfo> = createResult {
+        commentService.getPostDetailComments(postId).data?.toData() ?: CommentInfo(0, listOf())
     }
 
     override fun postPostAddComment(postId: Long, message: String): Flow<Long> = flow {
