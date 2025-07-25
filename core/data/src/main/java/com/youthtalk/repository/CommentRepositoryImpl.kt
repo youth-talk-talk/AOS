@@ -9,10 +9,7 @@ import com.youthtalk.dto.comment.ModifyCommentRequest
 import com.youthtalk.mapper.toData
 import com.youthtalk.model.comment.CommentInfo
 import com.youthtalk.utils.ErrorUtils.createResult
-import com.youthtalk.utils.ErrorUtils.throwableError
 import javax.inject.Inject
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 
 class CommentRepositoryImpl @Inject constructor(
     private val commentService: CommentService
@@ -36,16 +33,8 @@ class CommentRepositoryImpl @Inject constructor(
         commentId
     }
 
-    override fun postLikes(commentId: Long, isLike: Boolean): Flow<String> = flow {
+    override suspend fun postLikes(commentId: Long, isLike: Boolean): Result<String> = createResult {
         val requestBody = CommentLikeRequest(commentId, !isLike).toRequestBody()
-        runCatching {
-            commentService.postLikes(requestBody)
-        }
-            .onSuccess { response ->
-                emit(response.message)
-            }
-            .onFailure {
-                throwableError<Unit>(it)
-            }
+        commentService.postLikes(requestBody).message
     }
 }

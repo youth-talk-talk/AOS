@@ -214,4 +214,53 @@ class CommentRepositoryTest {
             verify(commentService).patchComment(any())
         }
     }
+
+    @Test
+    fun givenPostLike_whenPostLike_thenWorksFine() {
+        runTest {
+            // given
+            val commentId = 133L
+            val isSetLiked = true
+
+            whenever(commentService.postLikes(any())).thenReturn(CommonResponse(200, "좋아요 등록이 완료되었습니다.", "S10", null))
+
+            // when
+            val result = sut.postLikes(commentId, isSetLiked).getOrThrow()
+
+            // then
+            assertEquals("좋아요 등록이 완료되었습니다.", result)
+            verify(commentService).postLikes(any())
+        }
+    }
+
+    @Test
+    fun givenNotFoundPostId_whenPostLike_thenThrowsBadRequestException() {
+        runTest {
+            // given
+            val commentId = 12312312L
+            val isSetLiked = true
+
+            whenever(commentService.postLikes(any())).thenThrow(
+                HttpException(
+                    Response.error<Any>(
+                        400,
+                        toResponseBody(CommonResponse<Unit?>(400, "해당 댓글을 찾을 수 없습니다.", "C01", null))
+                    )
+                )
+            )
+
+            // when
+            assertThrows(BadRequestException::class.java) {
+                runBlocking {
+                    sut.postLikes(commentId, isSetLiked)
+                        .onFailure {
+                            assertEquals("해당 댓글을 찾을 수 없습니다.", it.message)
+                        }.getOrThrow()
+                }
+            }
+
+            // then
+            verify(commentService).postLikes(any())
+        }
+    }
 }
