@@ -21,7 +21,6 @@ import java.time.LocalDateTime
 import javax.inject.Inject
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -197,29 +196,19 @@ class PolicyDetailViewModel @Inject constructor(
     private fun initData(policyId: Long) {
         viewModelScope.launch {
             val commentInfo = getPolicyDetailCommentUseCase(policyId)
+            val policyDetail = getPolicyDetailUseCase(policyId)
 
-            if (commentInfo.isFailure) {
-                Timber.e("commentInfoError ${commentInfo.exceptionOrNull()?.message}")
-                return@launch
-            }
-
-            combine(
-                getPolicyDetailUseCase(policyId),
-                getUserUseCase()
-            ) { policyDetail, user ->
-                PolicyDetailUiState(
-                    isLoading = false,
-                    user = user,
-                    policyDetail = policyDetail,
-                    commentInfo = commentInfo.getOrThrow(),
-                    policyId = policyId
-                )
-            }
+            getUserUseCase()
                 .catch {
-                    Timber.e("PolicyDetailViewModel initData error $it")
-                }
-                .collectLatest {
-                    setState { it }
+                    Timber.e("error $it")
+                }.collectLatest { user ->
+                    PolicyDetailUiState(
+                        isLoading = false,
+                        user = user,
+                        policyDetail = policyDetail.getOrThrow(),
+                        commentInfo = commentInfo.getOrThrow(),
+                        policyId = policyId
+                    )
                 }
         }
     }

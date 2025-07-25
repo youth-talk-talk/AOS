@@ -62,10 +62,7 @@ class NewPolicyViewModel @Inject constructor(
         viewModelScope.launch {
             state.value.policyId?.let { policyId ->
                 getPolicyDetailUseCase(policyId)
-                    .catch {
-                        Timber.e("NewPolicyViewModel refresh error $it")
-                    }
-                    .collectLatest { policyDetail ->
+                    .onSuccess { policyDetail ->
                         setState {
                             copy(
                                 newPolicies = newPolicies.copy(
