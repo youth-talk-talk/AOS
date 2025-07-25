@@ -17,7 +17,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -179,26 +178,23 @@ class HomeViewModel @Inject constructor(
 
     private fun getHomeData(isLoading: Boolean = true) {
         viewModelScope.launch {
-            combine(
-                getUserUseCase(),
-                getHomeDataUseCase(),
-                getNewPolicesUseCase()
-            ) { user, homeData, newPolices ->
-                HomeUiState(
-                    isLoading = false,
-                    user = user,
-                    homeData = homeData,
-                    newPolicies = newPolices
-                )
-            }
+            val homeData = getHomeDataUseCase()
+            val newPolicies = getNewPolicesUseCase()
+
+            getUserUseCase()
                 .onStart {
                     setState { copy(isLoading = isLoading) }
-                }
-                .catch {
-                    Timber.e("HomeViewModel getHomeData error $it")
-                }
-                .collectLatest { uiState ->
-                    setState { uiState }
+                }.catch {
+                    Timber.e("error : $it")
+                }.collectLatest { user ->
+                    setState {
+                        HomeUiState(
+                            isLoading = false,
+                            user = user,
+                            homeData = homeData.getOrThrow(),
+                            newPolicies = newPolicies.getOrThrow()
+                        )
+                    }
                 }
         }
     }

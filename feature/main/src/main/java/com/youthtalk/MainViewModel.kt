@@ -14,8 +14,4 @@ sealed interface MainUiEffect {
 class MainViewModel @Inject constructor() : ViewModel() {
     private val _effect = MutableSharedFlow<MainUiEffect>()
     val effect = _effect.asSharedFlow()
-
-    fun setNotificationDialog() {
-        _effect.tryEmit(MainUiEffect.Notification)
-    }
 }
