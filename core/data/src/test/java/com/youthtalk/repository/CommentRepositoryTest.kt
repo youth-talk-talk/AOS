@@ -3,6 +3,7 @@ package com.youthtalk.repository
 import com.core.exception.BadRequestException
 import com.youthtalk.data.CommentService
 import com.youthtalk.dto.CommonResponse
+import com.youthtalk.dto.PostAddCommentResponse
 import com.youthtalk.dto.comment.CommentInfoResponse
 import com.youthtalk.dto.comment.CommentResponse
 import com.youthtalk.dto.toResponseBody
@@ -17,6 +18,7 @@ import org.junit.runner.RunWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
+import org.mockito.kotlin.any
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import retrofit2.HttpException
@@ -139,6 +141,26 @@ class CommentRepositoryTest {
             // then
             assertEquals(comments, result)
             verify(commentService).getPostDetailComments(postId)
+        }
+    }
+
+    @Test
+    fun givenPostId_whenPostComment_thenReturnsCommentId() {
+        runTest {
+            // given
+            val postId = 3L
+            val commentId = 123L
+
+            whenever(
+                commentService.postPostAddComment(any())
+            ).thenReturn(CommonResponse(200, "댓글을 성공적으로 등록했습니다.", "S06", PostAddCommentResponse(commentId)))
+
+            // when
+            val result = sut.postPostAddComment(postId, "댓글 내용").getOrThrow()
+
+            // when
+            assertEquals(commentId, result)
+            verify(commentService).postPostAddComment(any())
         }
     }
 }

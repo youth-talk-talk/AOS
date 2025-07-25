@@ -26,19 +26,9 @@ class CommentRepositoryImpl @Inject constructor(
         commentService.getPostDetailComments(postId).data?.toData() ?: CommentInfo(0, listOf())
     }
 
-    override fun postPostAddComment(postId: Long, message: String): Flow<Long> = flow {
+    override suspend fun postPostAddComment(postId: Long, message: String): Result<Long> = createResult {
         val requestBody = AddCommentRequest(postId, message).toRequestBody()
-        runCatching {
-            commentService.postPostAddComment(requestBody)
-        }
-            .onSuccess { response ->
-                response.data?.let { data ->
-                    emit(data.commentId)
-                } ?: throw NoDataException()
-            }
-            .onFailure {
-                throwableError<List<CommentResponse>>(it)
-            }
+        commentService.postPostAddComment(requestBody).data?.commentId ?: throw NoDataException()
     }
 
     override fun patchComment(commentId: Long, message: String): Flow<Long> = flow {
