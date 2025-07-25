@@ -230,15 +230,21 @@ class CommunityDetailViewModel @Inject constructor(
 
     private fun initData(postId: Long) {
         viewModelScope.launch {
+            val commentInfo = getPostDetailCommentsUseCase(postId)
+
+            if (commentInfo.isFailure) {
+                Timber.e("commentInfoError ${commentInfo.exceptionOrNull()?.message}")
+                return@launch
+            }
+
             combine(
                 getUserUseCase(),
-                getPostDetailUseCase(postId),
-                getPostDetailCommentsUseCase(postId)
-            ) { user, postDetail, comments ->
+                getPostDetailUseCase(postId)
+            ) { user, postDetail ->
                 CommunityDetailUiState(
                     user = user,
                     postDetail = postDetail,
-                    comments = comments,
+                    comments = commentInfo.getOrThrow(),
                     detailType = CommunityDetailType.MAIN,
                     initLoading = false
                 )
