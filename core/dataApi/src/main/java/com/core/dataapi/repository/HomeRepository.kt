@@ -6,6 +6,6 @@ import com.youthtalk.model.typeenum.SortType
 import kotlinx.coroutines.flow.Flow
 
 interface HomeRepository {
-    fun getHome(): Flow<HomeData>
+    suspend fun getHome(): Result<HomeData>
     fun getNewPolicies(sortType: SortType): Flow<NewPolicies>
 }
