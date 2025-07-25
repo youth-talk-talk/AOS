@@ -5,6 +5,7 @@ import com.youthtalk.data.PolicyService
 import com.youthtalk.dto.CommonResponse
 import com.youthtalk.dto.PolicyDetailResponse
 import com.youthtalk.mapper.toData
+import com.youthtalk.model.policy.Policy
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -43,6 +44,21 @@ class PolicyRepositoryTest {
             // then
             assertEquals(policyDetailResponse.toData(), result)
             verify(policyService).getPolicyDetail(policyId)
+        }
+    }
+
+    @Test
+    fun given_whenGetRecentViewPolicy_thenReturnsPolicy() {
+        runTest {
+            // given
+            whenever(policyService.getRecentlyViewPolicies()).thenReturn(CommonResponse(200, "요청에 성공하였습니다.", "S01", listOf()))
+
+            // when
+            val result = sut.getRecentlyViewPolicies().getOrThrow()
+
+            // then
+            assertEquals(listOf<Policy>(), result)
+            verify(policyService).getRecentlyViewPolicies()
         }
     }
 
