@@ -179,15 +179,16 @@ class HomeViewModel @Inject constructor(
 
     private fun getHomeData(isLoading: Boolean = true) {
         viewModelScope.launch {
+            val homeData = getHomeDataUseCase()
+
             combine(
                 getUserUseCase(),
-                getHomeDataUseCase(),
                 getNewPolicesUseCase()
-            ) { user, homeData, newPolices ->
+            ) { user, newPolices ->
                 HomeUiState(
                     isLoading = false,
                     user = user,
-                    homeData = homeData,
+                    homeData = homeData.getOrThrow(),
                     newPolicies = newPolices
                 )
             }
