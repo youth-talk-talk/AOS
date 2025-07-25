@@ -50,10 +50,7 @@ class PopularPolicyViewModel @Inject constructor(
         viewModelScope.launch {
             state.value.policyId?.let { policyId ->
                 getPolicyDetailUseCase(policyId)
-                    .catch {
-                        Timber.e("PopularPolicyViewModel refresh error $it")
-                    }
-                    .collectLatest { policyDetail ->
+                    .onSuccess { policyDetail ->
                         setState {
                             copy(
                                 policies = policies.map { policy ->

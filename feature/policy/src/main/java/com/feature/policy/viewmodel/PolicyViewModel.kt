@@ -68,8 +68,7 @@ class PolicyViewModel @Inject constructor(
                     setState {
                         copy(
                             recentlyPolicies = recentlyPolicies
-                                .map {
-                                        policy ->
+                                .map { policy ->
                                     if (policy.policyId == policyId) policy.copy(scrap = !scrap) else policy
                                 }
                         )
@@ -81,13 +80,12 @@ class PolicyViewModel @Inject constructor(
     private fun refresh() {
         viewModelScope.launch {
             getRecentlyViewPolicesUseCase()
-                .catch {
-                    Timber.e("PolicyViewModel refresh error $it")
-                }
-                .collectLatest { policies ->
+                .onSuccess { policies ->
                     setState {
                         copy(recentlyPolicies = policies)
                     }
+                }.onFailure {
+                    Timber.e("error $it")
                 }
         }
     }
@@ -164,8 +162,8 @@ class PolicyViewModel @Inject constructor(
     private fun initData() {
         val today = DateTimeFormatter.ofPattern("yyyy-MM-dd").format(state.value.selectedDay)
         viewModelScope.launch {
+            val recentViewPolicies = getRecentlyViewPolicesUseCase()
             combine(
-                getRecentlyViewPolicesUseCase(),
                 getUserUseCase(),
                 combine(
                     postSpecPoliciesUseCase(SearchFilter(applyDue = today), PolicyType.POLICY_TAB_DEADLINE),
@@ -179,10 +177,10 @@ class PolicyViewModel @Inject constructor(
                 ) { categoryPolicies, allCount ->
                     Pair(categoryPolicies, allCount)
                 }
-            ) { recentlyViewPolicies, user, deadlineInfo, categoryInfo ->
+            ) { user, deadlineInfo, categoryInfo ->
                 PolicyUiState.initState.copy(
                     user = user,
-                    recentlyPolicies = recentlyViewPolicies,
+                    recentlyPolicies = recentViewPolicies.getOrThrow(),
                     deadlinePolicies = deadlineInfo.first.cachedIn(viewModelScope),
                     deadlineCount = deadlineInfo.second,
                     allCount = categoryInfo.second,

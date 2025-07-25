@@ -59,8 +59,7 @@ class RecentlyViewPolicyViewModel @Inject constructor(
                     setState {
                         copy(
                             policies = policies
-                                .map {
-                                        policy ->
+                                .map { policy ->
                                     if (policy.policyId == policyId) policy.copy(scrap = !scrap) else policy
                                 }
                         )
@@ -72,11 +71,10 @@ class RecentlyViewPolicyViewModel @Inject constructor(
     private fun initData() {
         viewModelScope.launch {
             getRecentlyViewPolicesUseCase()
-                .catch {
-                    Timber.e("RecentlyViewPolicyViewModel initData error $it")
-                }
-                .collectLatest {
+                .onSuccess {
                     setState { copy(isLoading = false, policies = it) }
+                }.onFailure {
+                    Timber.e("error : $it")
                 }
         }
     }
