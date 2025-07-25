@@ -13,7 +13,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -45,15 +44,12 @@ class NewPolicyViewModel @Inject constructor(
 
     private fun getPolices(sortType: SortType) {
         viewModelScope.launch {
+            setState { copy(isLoading = true, sortType = sortType) }
             getNewPolicesUseCase(sortType)
-                .onStart {
-                    setState { copy(isLoading = true, sortType = sortType) }
-                }
-                .catch {
-                    Timber.e("NewPolicyViewModel getPolices error $it")
-                }
-                .collectLatest { newPolies ->
+                .onSuccess { newPolies ->
                     setState { copy(isLoading = false, newPolicies = newPolies, sortType = sortType) }
+                }.onFailure {
+                    Timber.e("error : $it")
                 }
         }
     }
