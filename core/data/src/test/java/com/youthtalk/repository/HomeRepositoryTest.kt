@@ -4,7 +4,9 @@ import com.core.dataapi.repository.HomeRepository
 import com.youthtalk.data.PolicyService
 import com.youthtalk.dto.CommonResponse
 import com.youthtalk.dto.home.HomeDataResponse
+import com.youthtalk.dto.home.NewPoliciesResponse
 import com.youthtalk.mapper.toDomain
+import com.youthtalk.model.typeenum.SortType
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -41,6 +43,22 @@ class HomeRepositoryTest {
             // then
             assertEquals(homeDataResponse.toDomain(), result)
             verify(policyService).getHome()
+        }
+    }
+
+    @Test
+    fun givenSortType_whenGetNewPolicies_whenReturnsPolicies() {
+        runTest {
+            // given
+            val newPoliciesResponse = NewPoliciesResponse(listOf(), listOf(), listOf(), listOf(), listOf(), listOf())
+            whenever(policyService.getNewPolicies()).thenReturn(CommonResponse(200, "요창에 성공하였습니다.", "S01", newPoliciesResponse))
+
+            // when
+            val result = sut.getNewPolicies(SortType.RECENT).getOrThrow()
+
+            // then
+            assertEquals(newPoliciesResponse.toDomain(), result)
+            verify(policyService).getNewPolicies()
         }
     }
 }
