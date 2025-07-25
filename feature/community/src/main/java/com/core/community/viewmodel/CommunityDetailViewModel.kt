@@ -170,10 +170,7 @@ class CommunityDetailViewModel @Inject constructor(
     private fun postAddPostComment(postId: Long, message: String) {
         viewModelScope.launch {
             postAddPostCommentUseCase(postId, message)
-                .catch {
-                    Timber.e("CommunityDetailViewModel postAddPostComment error $it")
-                }
-                .collectLatest {
+                .onSuccess {
                     val newComment = Comment(
                         commentId = it,
                         writerId = state.value.user.memberId,
@@ -192,6 +189,8 @@ class CommunityDetailViewModel @Inject constructor(
                             )
                         )
                     }
+                }.onFailure {
+                    Timber.e("error : $it")
                 }
         }
     }
