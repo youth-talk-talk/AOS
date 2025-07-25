@@ -59,10 +59,12 @@ class PolicyDetailViewModel @Inject constructor(
                     }
                 )
             }
+
             is PolicyDetailUiEvent.ChangeDetailType -> {
                 setEffect { PolicyDetailUiEffect.ChangeComment(event.commentId, event.message) }
                 setState { copy(detailType = event.type) }
             }
+
             is PolicyDetailUiEvent.PatchModifyComment -> patchModifyComment(event.commentId, event.message)
             is PolicyDetailUiEvent.PostAddPolicyComment -> postAddPolicyComment(event.policyId, event.message)
             is PolicyDetailUiEvent.PostDeleteComment -> postDeleteComment(event.comment)
@@ -196,16 +198,22 @@ class PolicyDetailViewModel @Inject constructor(
 
     private fun initData(policyId: Long) {
         viewModelScope.launch {
+            val commentInfo = getPolicyDetailCommentUseCase(policyId)
+
+            if (commentInfo.isFailure) {
+                Timber.e("commentInfoError ${commentInfo.exceptionOrNull()?.message}")
+                return@launch
+            }
+
             combine(
                 getPolicyDetailUseCase(policyId),
-                getPolicyDetailCommentUseCase(policyId),
                 getUserUseCase()
-            ) { policyDetail, commentInfo, user ->
+            ) { policyDetail, user ->
                 PolicyDetailUiState(
                     isLoading = false,
                     user = user,
                     policyDetail = policyDetail,
-                    commentInfo = commentInfo,
+                    commentInfo = commentInfo.getOrThrow(),
                     policyId = policyId
                 )
             }
