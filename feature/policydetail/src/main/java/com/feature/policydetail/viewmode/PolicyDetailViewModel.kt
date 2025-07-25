@@ -59,10 +59,12 @@ class PolicyDetailViewModel @Inject constructor(
                     }
                 )
             }
+
             is PolicyDetailUiEvent.ChangeDetailType -> {
                 setEffect { PolicyDetailUiEffect.ChangeComment(event.commentId, event.message) }
                 setState { copy(detailType = event.type) }
             }
+
             is PolicyDetailUiEvent.PatchModifyComment -> patchModifyComment(event.commentId, event.message)
             is PolicyDetailUiEvent.PostAddPolicyComment -> postAddPolicyComment(event.policyId, event.message)
             is PolicyDetailUiEvent.PostDeleteComment -> postDeleteComment(event.comment)
@@ -74,10 +76,7 @@ class PolicyDetailViewModel @Inject constructor(
     private fun postCommentLike(commentId: Long, isLike: Boolean) {
         viewModelScope.launch {
             postCommentLikeUseCase(commentId, isLike)
-                .catch {
-                    Timber.e("PolicyDetailViewModel postCommentLike error $it")
-                }
-                .collectLatest {
+                .onSuccess {
                     setState {
                         copy(
                             commentInfo = commentInfo.copy(
@@ -93,6 +92,8 @@ class PolicyDetailViewModel @Inject constructor(
                             )
                         )
                     }
+                }.onFailure {
+                    Timber.e("error $it")
                 }
         }
     }
@@ -112,10 +113,7 @@ class PolicyDetailViewModel @Inject constructor(
     private fun patchModifyComment(commentId: Long, message: String) {
         viewModelScope.launch {
             patchCommentUseCase(commentId, message)
-                .catch {
-                    Timber.e("PolicyDetailViewModel patchModifyComment error $it")
-                }
-                .collectLatest {
+                .onSuccess {
                     val newComments = state.value.commentInfo.comments
                         .map { comment -> if (comment.commentId == commentId) comment.copy(content = message) else comment }
                     setState {
@@ -127,6 +125,8 @@ class PolicyDetailViewModel @Inject constructor(
                     }
                     setEvent(PolicyDetailUiEvent.ChangeDetailType(PolicyDetailType.MAIN))
                     setEffect { PolicyDetailUiEffect.ShowSnackBarModifyComment }
+                }.onFailure {
+                    Timber.e("error : $it")
                 }
         }
     }
@@ -196,16 +196,22 @@ class PolicyDetailViewModel @Inject constructor(
 
     private fun initData(policyId: Long) {
         viewModelScope.launch {
+            val commentInfo = getPolicyDetailCommentUseCase(policyId)
+
+            if (commentInfo.isFailure) {
+                Timber.e("commentInfoError ${commentInfo.exceptionOrNull()?.message}")
+                return@launch
+            }
+
             combine(
                 getPolicyDetailUseCase(policyId),
-                getPolicyDetailCommentUseCase(policyId),
                 getUserUseCase()
-            ) { policyDetail, commentInfo, user ->
+            ) { policyDetail, user ->
                 PolicyDetailUiState(
                     isLoading = false,
                     user = user,
                     policyDetail = policyDetail,
-                    commentInfo = commentInfo,
+                    commentInfo = commentInfo.getOrThrow(),
                     policyId = policyId
                 )
             }

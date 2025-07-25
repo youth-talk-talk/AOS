@@ -72,10 +72,7 @@ class CommunityDetailViewModel @Inject constructor(
     private fun postCommentLike(commentId: Long, isLike: Boolean) {
         viewModelScope.launch {
             postCommentLikeUseCase(commentId, isLike)
-                .catch {
-                    Timber.e("CommunityDetailViewModel postCommentLike error $it")
-                }
-                .collectLatest {
+                .onSuccess {
                     setState {
                         copy(
                             comments = comments.copy(
@@ -91,6 +88,8 @@ class CommunityDetailViewModel @Inject constructor(
                             )
                         )
                     }
+                }.onFailure {
+                    Timber.e("error $it")
                 }
         }
     }
@@ -126,10 +125,7 @@ class CommunityDetailViewModel @Inject constructor(
     private fun patchModifyComment(commentId: Long, message: String) {
         viewModelScope.launch {
             patchCommentUseCase(commentId, message)
-                .catch {
-                    Timber.e("CommunityDetailViewModel patchModifyComment error $it")
-                }
-                .collectLatest {
+                .onSuccess {
                     val newComments = state.value.comments.comments
                         .map { comment -> if (comment.commentId == commentId) comment.copy(content = message) else comment }
                     setState {
@@ -141,6 +137,8 @@ class CommunityDetailViewModel @Inject constructor(
                         )
                     }
                     setEffect { CommunityDetailUiEffect.ShowSnackBarModifyComment }
+                }.onFailure {
+                    Timber.e("error : $it")
                 }
         }
     }
@@ -170,10 +168,7 @@ class CommunityDetailViewModel @Inject constructor(
     private fun postAddPostComment(postId: Long, message: String) {
         viewModelScope.launch {
             postAddPostCommentUseCase(postId, message)
-                .catch {
-                    Timber.e("CommunityDetailViewModel postAddPostComment error $it")
-                }
-                .collectLatest {
+                .onSuccess {
                     val newComment = Comment(
                         commentId = it,
                         writerId = state.value.user.memberId,
@@ -192,6 +187,8 @@ class CommunityDetailViewModel @Inject constructor(
                             )
                         )
                     }
+                }.onFailure {
+                    Timber.e("error : $it")
                 }
         }
     }
@@ -230,15 +227,21 @@ class CommunityDetailViewModel @Inject constructor(
 
     private fun initData(postId: Long) {
         viewModelScope.launch {
+            val commentInfo = getPostDetailCommentsUseCase(postId)
+
+            if (commentInfo.isFailure) {
+                Timber.e("commentInfoError ${commentInfo.exceptionOrNull()?.message}")
+                return@launch
+            }
+
             combine(
                 getUserUseCase(),
-                getPostDetailUseCase(postId),
-                getPostDetailCommentsUseCase(postId)
-            ) { user, postDetail, comments ->
+                getPostDetailUseCase(postId)
+            ) { user, postDetail ->
                 CommunityDetailUiState(
                     user = user,
                     postDetail = postDetail,
-                    comments = comments,
+                    comments = commentInfo.getOrThrow(),
                     detailType = CommunityDetailType.MAIN,
                     initLoading = false
                 )

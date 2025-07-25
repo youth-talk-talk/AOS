@@ -78,10 +78,7 @@ class CommentViewModel @Inject constructor(
     private fun postCommentLike(commentId: Long, isLike: Boolean) {
         viewModelScope.launch {
             postCommentLikeUseCase(commentId, isLike)
-                .catch {
-                    Timber.e("CommentViewModel postCommentLike error $it")
-                }
-                .collectLatest {
+                .onSuccess {
                     setState {
                         copy(
                             commentInfo = commentInfo.copy(
@@ -98,6 +95,8 @@ class CommentViewModel @Inject constructor(
                             )
                         )
                     }
+                }.onFailure {
+                    Timber.e("error $it")
                 }
         }
     }
@@ -105,10 +104,7 @@ class CommentViewModel @Inject constructor(
     private fun onPatchComment(commentId: Long, content: String) {
         viewModelScope.launch {
             patchCommentUseCase(commentId, content)
-                .catch {
-                    Timber.e("CommentViewModel onPatchComment error $it")
-                }
-                .collectLatest {
+                .onSuccess {
                     setState {
                         copy(
                             commentScreenType = SettingCommentScreenType.MAIN,
@@ -124,6 +120,8 @@ class CommentViewModel @Inject constructor(
                         )
                     }
                     setEffect { CommentUiEffect.ModifyInfo(0, "") }
+                }.onFailure {
+                    Timber.e("error $it")
                 }
         }
     }
