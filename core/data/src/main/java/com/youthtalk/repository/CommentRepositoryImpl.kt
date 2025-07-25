@@ -5,7 +5,6 @@ import com.core.exception.NoDataException
 import com.youthtalk.data.CommentService
 import com.youthtalk.dto.comment.AddCommentRequest
 import com.youthtalk.dto.comment.CommentLikeRequest
-import com.youthtalk.dto.comment.CommentResponse
 import com.youthtalk.dto.comment.ModifyCommentRequest
 import com.youthtalk.mapper.toData
 import com.youthtalk.model.comment.CommentInfo
@@ -31,17 +30,10 @@ class CommentRepositoryImpl @Inject constructor(
         commentService.postPostAddComment(requestBody).data?.commentId ?: throw NoDataException()
     }
 
-    override fun patchComment(commentId: Long, message: String): Flow<Long> = flow {
+    override suspend fun patchComment(commentId: Long, message: String): Result<Long> = createResult {
         val requestBody = ModifyCommentRequest(commentId, message).toRequestBody()
-        runCatching {
-            commentService.patchComment(requestBody)
-        }
-            .onSuccess { _ ->
-                emit(commentId)
-            }
-            .onFailure {
-                throwableError<List<CommentResponse>>(it)
-            }
+        commentService.patchComment(requestBody)
+        commentId
     }
 
     override fun postLikes(commentId: Long, isLike: Boolean): Flow<String> = flow {

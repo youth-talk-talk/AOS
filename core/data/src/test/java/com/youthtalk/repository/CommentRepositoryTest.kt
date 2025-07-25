@@ -9,9 +9,11 @@ import com.youthtalk.dto.comment.CommentResponse
 import com.youthtalk.dto.toResponseBody
 import com.youthtalk.mapper.toData
 import com.youthtalk.model.comment.CommentInfo
+import com.youthtalk.repository.model.MessageResponse
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertThrows
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -161,6 +163,55 @@ class CommentRepositoryTest {
             // when
             assertEquals(commentId, result)
             verify(commentService).postPostAddComment(any())
+        }
+    }
+
+    @Test
+    fun givenCommentInfo_whenPatchComment_thenReturnsCommentId() {
+        runTest {
+            // given
+            val commentId = 123L
+            val message = "hello"
+
+            whenever(commentService.patchComment(any())).thenReturn(CommonResponse(200, "댓글을 성공적으로 수정했습니다.", "S07", null))
+
+            // when
+            val result = sut.patchComment(commentId, message).getOrThrow()
+
+            // then
+            assertNotNull(result)
+            verify(commentService).patchComment(any())
+        }
+    }
+
+    @Test
+    fun givenNotValidCommentId_whenPatchComment_thenThrowBadRequestException() {
+        runTest {
+            // given
+            val commentId = 123123L
+            val message = "asjdalsjd"
+
+            whenever(commentService.patchComment(any())).thenThrow(
+                HttpException(
+                    Response.error<Any>(
+                        400,
+                        toResponseBody(CommonResponse(400, "유효하지 않은 값을 입력하였습니다.", "F01", MessageResponse(listOf("must not be null"))))
+                    )
+                )
+            )
+
+            // when
+            assertThrows(BadRequestException::class.java) {
+                runBlocking {
+                    sut.patchComment(commentId, message)
+                        .onFailure {
+                            assertEquals("유효하지 않은 값을 입력하였습니다.", it.message)
+                        }.getOrThrow()
+                }
+            }
+
+            // then
+            verify(commentService).patchComment(any())
         }
     }
 }
