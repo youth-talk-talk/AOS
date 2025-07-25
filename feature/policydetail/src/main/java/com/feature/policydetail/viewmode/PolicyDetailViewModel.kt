@@ -114,10 +114,7 @@ class PolicyDetailViewModel @Inject constructor(
     private fun patchModifyComment(commentId: Long, message: String) {
         viewModelScope.launch {
             patchCommentUseCase(commentId, message)
-                .catch {
-                    Timber.e("PolicyDetailViewModel patchModifyComment error $it")
-                }
-                .collectLatest {
+                .onSuccess {
                     val newComments = state.value.commentInfo.comments
                         .map { comment -> if (comment.commentId == commentId) comment.copy(content = message) else comment }
                     setState {
@@ -129,6 +126,8 @@ class PolicyDetailViewModel @Inject constructor(
                     }
                     setEvent(PolicyDetailUiEvent.ChangeDetailType(PolicyDetailType.MAIN))
                     setEffect { PolicyDetailUiEffect.ShowSnackBarModifyComment }
+                }.onFailure {
+                    Timber.e("error : $it")
                 }
         }
     }

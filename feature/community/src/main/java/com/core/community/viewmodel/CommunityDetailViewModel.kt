@@ -126,10 +126,7 @@ class CommunityDetailViewModel @Inject constructor(
     private fun patchModifyComment(commentId: Long, message: String) {
         viewModelScope.launch {
             patchCommentUseCase(commentId, message)
-                .catch {
-                    Timber.e("CommunityDetailViewModel patchModifyComment error $it")
-                }
-                .collectLatest {
+                .onSuccess {
                     val newComments = state.value.comments.comments
                         .map { comment -> if (comment.commentId == commentId) comment.copy(content = message) else comment }
                     setState {
@@ -141,6 +138,8 @@ class CommunityDetailViewModel @Inject constructor(
                         )
                     }
                     setEffect { CommunityDetailUiEffect.ShowSnackBarModifyComment }
+                }.onFailure {
+                    Timber.e("error : $it")
                 }
         }
     }

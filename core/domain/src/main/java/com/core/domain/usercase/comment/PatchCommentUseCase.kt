@@ -6,5 +6,5 @@ import javax.inject.Inject
 class PatchCommentUseCase @Inject constructor(
     private val commentRepository: CommentRepository
 ) {
-    operator fun invoke(commentId: Long, message: String) = commentRepository.patchComment(commentId, message)
+    suspend operator fun invoke(commentId: Long, message: String) = commentRepository.patchComment(commentId, message)
 }
