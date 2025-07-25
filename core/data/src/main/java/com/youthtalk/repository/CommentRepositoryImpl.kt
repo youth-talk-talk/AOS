@@ -9,6 +9,7 @@ import com.youthtalk.dto.comment.CommentResponse
 import com.youthtalk.dto.comment.ModifyCommentRequest
 import com.youthtalk.mapper.toData
 import com.youthtalk.model.comment.CommentInfo
+import com.youthtalk.utils.ErrorUtils.createResult
 import com.youthtalk.utils.ErrorUtils.throwableError
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
@@ -17,16 +18,8 @@ import kotlinx.coroutines.flow.flow
 class CommentRepositoryImpl @Inject constructor(
     private val commentService: CommentService
 ) : CommentRepository {
-    override fun getPolicyComment(policyId: Long): Flow<CommentInfo> = flow {
-        runCatching {
-            commentService.getPolicyComment(policyId)
-        }
-            .onSuccess { response ->
-                emit(response.data?.toData() ?: CommentInfo(0, listOf()))
-            }
-            .onFailure {
-                throwableError<List<CommentResponse>>(it)
-            }
+    override suspend fun getPolicyComment(policyId: Long): Result<CommentInfo> = createResult {
+        commentService.getPolicyComment(policyId).data?.toData() ?: CommentInfo(0, listOf())
     }
 
     override fun getPostDetailComments(postId: Long): Flow<CommentInfo> = flow {
