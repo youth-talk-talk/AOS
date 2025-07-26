@@ -14,7 +14,7 @@ interface UserRepository {
     fun getCategoryList(): Flow<List<Category>>
     fun getReviewCategoryList(): Flow<List<Category>>
 
-    fun getLikeComments(isLike: Boolean): Flow<SettingCommentInfo>
+    suspend fun getLikeComments(isLike: Boolean): Result<SettingCommentInfo>
 
     suspend fun setCategoryList(categories: List<Category>)
     suspend fun setReviewCategoryList(categories: List<Category>)
