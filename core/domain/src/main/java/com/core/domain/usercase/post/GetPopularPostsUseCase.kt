@@ -8,5 +8,5 @@ import javax.inject.Inject
 class GetPopularPostsUseCase @Inject constructor(
     private val communityRepository: CommunityRepository
 ) {
-    operator fun invoke(category: Category, postSubject: PostSubject) = communityRepository.getPopularPosts(category, postSubject)
+    suspend operator fun invoke(category: Category, postSubject: PostSubject) = communityRepository.getPopularPosts(category, postSubject)
 }

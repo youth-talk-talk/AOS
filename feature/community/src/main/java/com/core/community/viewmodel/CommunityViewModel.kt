@@ -113,33 +113,22 @@ class CommunityViewModel @Inject constructor(
     private fun initData() {
         val currentCategory = state.value.category
         viewModelScope.launch {
+            val popularReviewPost = getPopularPostsUseCase(category = currentCategory, PostSubject.REVIEW)
+            val popularPost = getPopularPostsUseCase(currentCategory, PostSubject.POST)
+
             combine(
-                combine(
-                    getPostsUseCase(currentCategory, PostType.COMMUNITY_TAB_REVIEW, PostSubject.REVIEW),
-                    getPopularPostsUseCase(category = currentCategory, PostSubject.REVIEW)
-                ) { reviewPosts, popularReviewPost ->
-                    Pair(reviewPosts, popularReviewPost)
-                },
-                combine(
-                    getPostsUseCase(currentCategory, PostType.COMMUNITY_TAB_FREE, PostSubject.POST),
-                    getPopularPostsUseCase(category = currentCategory, PostSubject.POST)
-                ) { reviewPosts, popularReviewPost ->
-                    Pair(reviewPosts, popularReviewPost)
-                }
-            ) { reviewInfo, freeInfo ->
+                getPostsUseCase(currentCategory, PostType.COMMUNITY_TAB_REVIEW, PostSubject.REVIEW),
+                getPostsUseCase(currentCategory, PostType.COMMUNITY_TAB_FREE, PostSubject.POST)
+            ) { reviewPost, freePost ->
                 CommunityUiState.initState.copy(
-                    reviews = reviewInfo.first.cachedIn(viewModelScope),
-                    popularReviews = reviewInfo.second,
-                    frees = freeInfo.first.cachedIn(viewModelScope),
-                    popularFrees = freeInfo.second
+                    reviews = reviewPost.cachedIn(viewModelScope),
+                    popularReviews = popularReviewPost.getOrThrow(),
+                    frees = freePost.cachedIn(viewModelScope),
+                    popularFrees = popularPost.getOrThrow()
                 )
+            }.collectLatest {
+                setState { it }
             }
-                .catch {
-                    Timber.e("CommunityViewModel initData error $it")
-                }
-                .collectLatest {
-                    setState { it }
-                }
         }
     }
 }
