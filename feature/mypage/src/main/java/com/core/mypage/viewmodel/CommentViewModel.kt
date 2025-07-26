@@ -17,9 +17,6 @@ import com.youthtalk.model.comment.ArticleType
 import com.youthtalk.model.comment.SettingComment
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -66,10 +63,7 @@ class CommentViewModel @Inject constructor(
     private fun refreshData() {
         viewModelScope.launch {
             getSettingCommentUseCase(state.value.commentType == CommentType.LIKE)
-                .catch {
-                    Timber.e("CommentViewModel refreshData error $it")
-                }
-                .collectLatest { commentInfo ->
+                .onSuccess { commentInfo ->
                     setState { copy(commentInfo = commentInfo) }
                 }
         }
@@ -150,16 +144,8 @@ class CommentViewModel @Inject constructor(
 
     private fun initData(type: CommentType) {
         viewModelScope.launch {
-            combine(
-                getSettingCommentUseCase(type == CommentType.LIKE),
-                getUserUseCase()
-            ) { commentInfo, user ->
-                Pair(commentInfo, user)
-            }
-                .catch {
-                    Timber.e("CommentViewModel initData error $it")
-                }
-                .collectLatest { (commentInfo, user) ->
+            getUserUseCase()
+                .onSuccess { user ->
                     setState { copy(isLoading = false, commentInfo = commentInfo, commentType = type, user = user) }
                 }
         }

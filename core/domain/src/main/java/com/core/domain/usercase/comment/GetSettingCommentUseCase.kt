@@ -6,5 +6,5 @@ import javax.inject.Inject
 class GetSettingCommentUseCase @Inject constructor(
     private val userRepository: UserRepository
 ) {
-    operator fun invoke(isLike: Boolean) = userRepository.getLikeComments(isLike)
+    suspend operator fun invoke(isLike: Boolean) = userRepository.getLikeComments(isLike)
 }

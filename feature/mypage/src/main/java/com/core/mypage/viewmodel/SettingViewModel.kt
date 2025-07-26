@@ -13,8 +13,6 @@ import com.core.mypage.model.setting.SettingUiEvent
 import com.core.mypage.model.setting.SettingUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -67,10 +65,7 @@ class SettingViewModel @Inject constructor(
         } else {
             viewModelScope.launch {
                 postUserUseCase(state.value.accountUser.nickname, state.value.accountUser.region)
-                    .catch {
-                        Timber.e("SettingViewModel saveUser error $it")
-                    }
-                    .collectLatest { user ->
+                    .onSuccess { user ->
                         Timber.i("SettingViewModel saveUser success $user")
                         setState {
                             copy(
@@ -96,10 +91,7 @@ class SettingViewModel @Inject constructor(
     private fun initData() {
         viewModelScope.launch {
             getUserUseCase()
-                .catch {
-                    Timber.e("SettingViewModel initData error $it")
-                }
-                .collectLatest {
+                .onSuccess {
                     setState { copy(user = it) }
                 }
         }
@@ -108,10 +100,7 @@ class SettingViewModel @Inject constructor(
     private fun postLogout(deleteUser: Boolean) {
         viewModelScope.launch {
             postUserLogoutUseCase(deleteUser)
-                .catch {
-                    Timber.e("SettingViewModel postLogout error " + it.message)
-                }
-                .collectLatest {
+                .onSuccess {
                     setEffect { SettingUiEffect.Logout }
                 }
         }

@@ -13,8 +13,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -43,13 +41,12 @@ class LoginViewModel @Inject constructor(
     private fun checkToken() {
         viewModelScope.launch {
             getUserUseCase()
-                .catch {
+                .onSuccess {
+                    uiEffect.emit(LoginUiEffect.GoMainActivity)
+                }.onFailure {
                     Timber.e("checkToken not User")
                     delay(500L)
                     uiEffect.emit(LoginUiEffect.GoLoginActivity)
-                }
-                .collectLatest {
-                    uiEffect.emit(LoginUiEffect.GoMainActivity)
                 }
         }
     }
