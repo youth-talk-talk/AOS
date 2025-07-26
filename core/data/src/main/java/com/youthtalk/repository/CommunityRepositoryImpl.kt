@@ -144,7 +144,7 @@ class CommunityRepositoryImpl @Inject constructor(
         postId
     }
 
-    override fun syncPostScrap(reviews: List<Post>, frees: List<Post>): Flow<Pair<List<Post>, List<Post>>> = flow {
+    override suspend fun syncPostScrap(reviews: List<Post>, frees: List<Post>): Result<Pair<List<Post>, List<Post>>> = createResult {
         val syncReviews = reviews
             .map { post ->
                 val syncPost = youthDatabase.postDao().getPost(post.postId)?.copy(postType = post.postType)
@@ -154,7 +154,7 @@ class CommunityRepositoryImpl @Inject constructor(
         val syncFrees = frees
             .map { post -> youthDatabase.postDao().getPost(post.postId)?.copy(postType = post.postType) ?: post }
 
-        emit(Pair(syncReviews, syncFrees))
+        Pair(syncReviews, syncFrees)
     }
 
     @OptIn(ExperimentalPagingApi::class)

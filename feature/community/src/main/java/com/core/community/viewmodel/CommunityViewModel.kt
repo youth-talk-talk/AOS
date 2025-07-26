@@ -79,15 +79,11 @@ class CommunityViewModel @Inject constructor(
     private fun syncPopularPost() {
         viewModelScope.launch {
             syncPopularPostUseCase(state.value.popularReviews, state.value.popularFrees)
-                .catch {
-                    Timber.e("CommunityViewModel syncPopularPost error $it")
-                }
-                .collectLatest { (reviews, frees) ->
-                    Timber.e("CommunityViewModel syncPopularPost success $reviews $frees")
+                .onSuccess {
                     setState {
                         copy(
-                            popularReviews = reviews,
-                            popularFrees = frees
+                            popularReviews = it.first,
+                            popularFrees = it.second
                         )
                     }
                 }

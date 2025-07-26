@@ -19,7 +19,7 @@ interface CommunityRepository {
     suspend fun getPostDetail(postId: Long): Result<PostDetail>
     suspend fun deletePost(postId: Long): Result<Long>
     suspend fun postPostScrap(postId: Long, scrap: Boolean): Result<Long>
-    fun syncPostScrap(reviews: List<Post>, frees: List<Post>): Flow<Pair<List<Post>, List<Post>>>
+    suspend fun syncPostScrap(reviews: List<Post>, frees: List<Post>): Result<Pair<List<Post>, List<Post>>>
     fun getSettingPosts(isScrapType: Boolean): Flow<Flow<PagingData<Post>>>
     fun getSettingPostCount(isScrapType: Boolean): Flow<Int>
     fun postModifyPost(postId: Long, modifyPost: ModifyPost): Flow<Long>
