@@ -187,11 +187,7 @@ class CommunityWriteViewModel @Inject constructor(
         )
         viewModelScope.launch {
             postCreatePostUseCase(createPost)
-                .catch {
-                    Timber.e("CommunityWriteViewModel postCreatePost error $it")
-                }
-                .collectLatest {
-                    Timber.e("CommunityWriteViewModel postCreatePost success $it")
+                .onSuccess {
                     setEffect { CommunityWriteUiEffect.CreatePost }
                 }
         }

@@ -125,19 +125,8 @@ class CommunityRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun postCreatePost(createPost: CreatePost): Flow<Long> = flow {
-        runCatching {
-            communityService.postCreate(createPost.toData().toRequestBody())
-        }
-            .onSuccess { response ->
-                response.data?.let { post ->
-                    emit(post.postId)
-                }
-            }
-            .onFailure {
-                Timber.e("postCreatePost error $it")
-                throwableError<Long>(it)
-            }
+    override suspend fun postCreatePost(createPost: CreatePost): Result<Long> = createResult {
+        communityService.postCreate(createPost.toData().toRequestBody()).data?.postId ?: throw NoDataException()
     }
 
     override fun getPostDetail(postId: Long) = flow {

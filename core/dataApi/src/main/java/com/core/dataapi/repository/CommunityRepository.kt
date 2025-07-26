@@ -15,7 +15,7 @@ interface CommunityRepository {
     suspend fun getPopularPosts(category: Category, postSubject: PostSubject): Result<List<Post>>
     fun getPosts(category: Category, postType: PostType, postSubject: PostSubject): Flow<Flow<PagingData<Post>>>
     suspend fun getListImage(): Result<List<Image>>
-    fun postCreatePost(createPost: CreatePost): Flow<Long>
+    suspend fun postCreatePost(createPost: CreatePost): Result<Long>
     fun getPostDetail(postId: Long): Flow<PostDetail>
     fun deletePost(postId: Long): Flow<Long>
     fun postPostScrap(postId: Long, scrap: Boolean): Flow<Long>
