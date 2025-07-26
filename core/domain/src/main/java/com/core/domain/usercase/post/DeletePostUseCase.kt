@@ -6,5 +6,5 @@ import javax.inject.Inject
 class DeletePostUseCase @Inject constructor(
     private val communityRepository: CommunityRepository
 ) {
-    operator fun invoke(postId: Long) = communityRepository.deletePost(postId)
+    suspend operator fun invoke(postId: Long) = communityRepository.deletePost(postId)
 }

@@ -86,11 +86,8 @@ class SettingViewModel @Inject constructor(
     private fun getImages() {
         viewModelScope.launch {
             getImageListUseCase()
-                .catch {
-                    Timber.e("SettingViewModel getImages error $it")
-                }
-                .collectLatest {
-                    Timber.i("SettingViewModel getImages success $it")
+                .onSuccess {
+                    Timber.i("success $it")
                     setState { copy(images = it) }
                 }
         }

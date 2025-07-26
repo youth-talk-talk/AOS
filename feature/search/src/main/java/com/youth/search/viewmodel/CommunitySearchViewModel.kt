@@ -54,11 +54,8 @@ class CommunitySearchViewModel @Inject constructor(
     private fun postPostScrap(postId: Long, scrap: Boolean) {
         viewModelScope.launch {
             postPostScrapUseCase(postId, scrap)
-                .catch {
-                    Timber.e("HomeViewModel postPostScrap error $it")
-                }
-                .collectLatest {
-                    Timber.e("HomeViewModel postPostScrap success $it")
+                .onSuccess {
+                    Timber.e("success $it")
                 }
         }
     }

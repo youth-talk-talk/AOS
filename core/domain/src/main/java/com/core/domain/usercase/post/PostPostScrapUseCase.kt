@@ -6,5 +6,5 @@ import javax.inject.Inject
 class PostPostScrapUseCase @Inject constructor(
     private val communityRepository: CommunityRepository
 ) {
-    operator fun invoke(postId: Long, scrap: Boolean) = communityRepository.postPostScrap(postId, scrap)
+    suspend operator fun invoke(postId: Long, scrap: Boolean) = communityRepository.postPostScrap(postId, scrap)
 }

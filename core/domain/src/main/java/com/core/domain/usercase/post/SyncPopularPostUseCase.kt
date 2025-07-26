@@ -7,5 +7,5 @@ import javax.inject.Inject
 class SyncPopularPostUseCase @Inject constructor(
     private val communityRepository: CommunityRepository
 ) {
-    operator fun invoke(reviews: List<Post>, frees: List<Post>) = communityRepository.syncPostScrap(reviews, frees)
+    suspend operator fun invoke(reviews: List<Post>, frees: List<Post>) = communityRepository.syncPostScrap(reviews, frees)
 }

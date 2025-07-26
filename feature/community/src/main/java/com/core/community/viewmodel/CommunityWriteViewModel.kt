@@ -101,11 +101,7 @@ class CommunityWriteViewModel @Inject constructor(
 
         viewModelScope.launch {
             postModifyPostUseCase(postId, modifyPost)
-                .catch {
-                    Timber.e("CommunityWriteViewModel postModify error $it")
-                }
-                .collectLatest {
-                    Timber.e("CommunityWriteViewModel postModify success $it")
+                .onSuccess { postId ->
                     setEffect { CommunityWriteUiEffect.Modify(postId) }
                 }
         }
@@ -115,10 +111,7 @@ class CommunityWriteViewModel @Inject constructor(
         postId?.let { id ->
             viewModelScope.launch {
                 getPostDetailUseCase(id)
-                    .catch {
-                        Timber.e("CommunityWriteViewModel initData error $it")
-                    }
-                    .collectLatest { postDetail ->
+                    .onSuccess { postDetail ->
                         setState {
                             copy(
                                 postId = id,
@@ -187,11 +180,7 @@ class CommunityWriteViewModel @Inject constructor(
         )
         viewModelScope.launch {
             postCreatePostUseCase(createPost)
-                .catch {
-                    Timber.e("CommunityWriteViewModel postCreatePost error $it")
-                }
-                .collectLatest {
-                    Timber.e("CommunityWriteViewModel postCreatePost success $it")
+                .onSuccess {
                     setEffect { CommunityWriteUiEffect.CreatePost }
                 }
         }
@@ -225,11 +214,7 @@ class CommunityWriteViewModel @Inject constructor(
     private fun getImages() {
         viewModelScope.launch {
             getImageListUseCase()
-                .catch {
-                    Timber.e("CommunityWriteViewModel getImages error $it")
-                }
-                .collectLatest {
-                    Timber.e("CommunityWriteViewModel getImages success $it")
+                .onSuccess {
                     setState { copy(images = it) }
                     setEffect { CommunityWriteUiEffect.GoPictureScreen(it) }
                 }
