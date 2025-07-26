@@ -25,7 +25,6 @@ import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -91,10 +90,7 @@ class PolicyViewModel @Inject constructor(
     private fun postUser(user: User, region: Region) {
         viewModelScope.launch {
             postUserUseCase(user.nickname, region)
-                .catch {
-                    Timber.e("PolicyViewModel postUser error $it")
-                }
-                .collectLatest {
+                .onSuccess {
                     setState { copy(user = it) }
                 }
         }

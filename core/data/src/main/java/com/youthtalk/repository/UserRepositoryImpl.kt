@@ -28,16 +28,8 @@ class UserRepositoryImpl @Inject constructor(
         userService.getUser().data?.toData() ?: throw NoDataException()
     }
 
-    override fun postUser(nickname: String, region: Region): Flow<User> = flow {
-        runCatching { userService.postUser(UserRequest(nickname, region.region).toRequestBody()) }
-            .onSuccess { response ->
-                response.data?.let { userResponse ->
-                    emit(userResponse.toData())
-                }
-            }
-            .onFailure {
-                throwableError<UserResponse>(it)
-            }
+    override suspend fun postUser(nickname: String, region: Region): Result<User> = createResult {
+        userService.postUser(UserRequest(nickname, region.region).toRequestBody()).data?.toData() ?: throw NoDataException()
     }
 
     override fun deleteUser(deleteUser: Boolean): Flow<Long> = flow {

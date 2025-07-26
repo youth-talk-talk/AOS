@@ -67,10 +67,7 @@ class SettingViewModel @Inject constructor(
         } else {
             viewModelScope.launch {
                 postUserUseCase(state.value.accountUser.nickname, state.value.accountUser.region)
-                    .catch {
-                        Timber.e("SettingViewModel saveUser error $it")
-                    }
-                    .collectLatest { user ->
+                    .onSuccess { user ->
                         Timber.i("SettingViewModel saveUser success $user")
                         setState {
                             copy(

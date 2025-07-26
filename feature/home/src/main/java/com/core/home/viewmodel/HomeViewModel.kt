@@ -17,8 +17,6 @@ import com.youthtalk.model.typeenum.Region
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.async
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -161,10 +159,7 @@ class HomeViewModel @Inject constructor(
     private fun postUser(user: User, region: Region) {
         viewModelScope.launch {
             postUserUseCase(user.nickname, region)
-                .catch {
-                    Timber.e("HomeViewModel postUser error $it")
-                }
-                .collectLatest {
+                .onSuccess {
                     setEvent(HomeUiEvent.GetHomeData())
                 }
         }
