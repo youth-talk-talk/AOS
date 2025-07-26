@@ -19,7 +19,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -71,20 +70,19 @@ class CommunitySearchViewModel @Inject constructor(
             list.add(0, search)
             setRecentlyListUseCase(list)
 
-            val keywordPost = getKeywordPostUseCase(search, postSubject = communityType, postType = PostType.SEARCH)
+            setState { copy(searchState = SearchState.SEARCH) }
 
-            getKeywordPostCountUseCase(keyword = search, communityType = communityType)
-                .onStart {
-                    setState { copy(searchState = SearchState.SEARCH) }
+            val keywordPost = getKeywordPostUseCase(search, postSubject = communityType, postType = PostType.SEARCH)
+            getKeywordPostCountUseCase(keyword = search, communityType = communityType).onSuccess { keywordCount ->
+                setState {
+                    copy(
+                        searchPost = keywordPost.cachedIn(viewModelScope),
+                        totalCount = keywordCount
+                    )
                 }
-                .collect { count ->
-                    setState {
-                        copy(
-                            searchPost = keywordPost.cachedIn(viewModelScope),
-                            totalCount = count
-                        )
-                    }
-                }
+            }.onFailure {
+                Timber.e("error : $it")
+            }
         }
     }
 
