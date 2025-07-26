@@ -11,7 +11,6 @@ import com.core.mypage.model.scrappolicy.ScrapPolicyUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -46,18 +45,17 @@ class ScrapPolicyViewModel @Inject constructor(
 
     private fun initData() {
         viewModelScope.launch {
-            getScrapPolicyUseCase()
+            val scrapPolicy = getScrapPolicyUseCase()
                 .catch {
                     Timber.e("ScrapPolicyViewModel initData error $it")
                 }
-                .collectLatest {
-                    setState {
-                        copy(
-                            isLoading = false,
-                            policies = it.cachedIn(viewModelScope)
-                        )
-                    }
-                }
+
+            setState {
+                copy(
+                    isLoading = false,
+                    policies = scrapPolicy.cachedIn(viewModelScope)
+                )
+            }
         }
     }
 }

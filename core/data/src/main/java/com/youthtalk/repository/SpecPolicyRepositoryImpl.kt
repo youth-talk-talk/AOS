@@ -95,22 +95,20 @@ class SpecPolicyRepositoryImpl @Inject constructor(
     }
 
     @OptIn(ExperimentalPagingApi::class)
-    override fun getScrapPolicies(): Flow<Flow<PagingData<Policy>>> = flow {
-        emit(
-            Pager(
-                config = PagingConfig(
-                    pageSize = 10,
-                    enablePlaceholders = true
-                ),
-                remoteMediator = ScrapPolicyRemoteMediator(
-                    policyService = policyService,
-                    policyType = PolicyType.SCRAP,
-                    youthDatabase = youthDatabase
-                )
-            ) {
-                youthDatabase.policyDao().getScrapPagingSource(policyType = PolicyType.SCRAP)
-            }.flow
-        )
+    override fun getScrapPolicies(): Flow<PagingData<Policy>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 10,
+                enablePlaceholders = true
+            ),
+            remoteMediator = ScrapPolicyRemoteMediator(
+                policyService = policyService,
+                policyType = PolicyType.SCRAP,
+                youthDatabase = youthDatabase
+            )
+        ) {
+            youthDatabase.policyDao().getScrapPagingSource(policyType = PolicyType.SCRAP)
+        }.flow
     }
 
     override fun deleteAllRecentlyViewPolicies(): Flow<String> = flow {

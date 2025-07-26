@@ -15,6 +15,6 @@ interface SpecPolicyRepository {
     fun searchPolicyName(policyName: String): Flow<PagingData<SearchPolicy>>
     suspend fun postAddComment(policyId: Long, text: String): Result<Long>
     suspend fun postDeleteComment(commentId: Long): Result<String>
-    fun getScrapPolicies(): Flow<Flow<PagingData<Policy>>>
+    fun getScrapPolicies(): Flow<PagingData<Policy>>
     fun deleteAllRecentlyViewPolicies(): Flow<String>
 }
