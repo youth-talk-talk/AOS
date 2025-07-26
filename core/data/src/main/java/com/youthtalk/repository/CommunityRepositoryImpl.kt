@@ -53,7 +53,7 @@ class CommunityRepositoryImpl @Inject constructor(
     }
 
     @OptIn(ExperimentalPagingApi::class)
-    override fun getPosts(category: Category, postType: PostType, postSubject: PostSubject): Flow<Flow<PagingData<Post>>> = flow {
+    override fun getPosts(category: Category, postType: PostType, postSubject: PostSubject): Flow<PagingData<Post>> {
         val categories = if (category == Category.ALL) {
             Category.entries.filter { it != Category.ALL }.map { it.name }.toList()
         } else {
@@ -61,23 +61,21 @@ class CommunityRepositoryImpl @Inject constructor(
                 category.name
             )
         }
-        emit(
-            Pager(
-                config = PagingConfig(
-                    pageSize = 10,
-                    enablePlaceholders = true
-                ),
-                remoteMediator = PostRemoteMediator(
-                    communityService = communityService,
-                    categories = categories,
-                    postType = postType,
-                    postSubject = postSubject,
-                    youthDatabase = youthDatabase
-                )
-            ) {
-                youthDatabase.postDao().getPagingSource(postType = postType)
-            }.flow
-        )
+        return Pager(
+            config = PagingConfig(
+                pageSize = 10,
+                enablePlaceholders = true
+            ),
+            remoteMediator = PostRemoteMediator(
+                communityService = communityService,
+                categories = categories,
+                postType = postType,
+                postSubject = postSubject,
+                youthDatabase = youthDatabase
+            )
+        ) {
+            youthDatabase.postDao().getPagingSource(postType = postType)
+        }.flow
     }
 
     override suspend fun getListImage(): Result<List<Image>> = runCatching {
@@ -158,27 +156,25 @@ class CommunityRepositoryImpl @Inject constructor(
     }
 
     @OptIn(ExperimentalPagingApi::class)
-    override fun getSettingPosts(isScrapType: Boolean): Flow<Flow<PagingData<Post>>> = flow {
-        emit(
-            Pager(
-                config = PagingConfig(
-                    pageSize = 10,
-                    enablePlaceholders = true
-                ),
-                remoteMediator = MyPageRemoteMediator(
-                    communityService = communityService,
-                    postType = PostType.MY_PAGE,
-                    youthDatabase = youthDatabase,
-                    isScrap = isScrapType
-                )
-            ) {
-                if (isScrapType) {
-                    youthDatabase.postDao().getScrapPagingSource(postType = PostType.MY_PAGE)
-                } else {
-                    youthDatabase.postDao().getPagingSource(postType = PostType.MY_PAGE)
-                }
-            }.flow
-        )
+    override fun getSettingPosts(isScrapType: Boolean): Flow<PagingData<Post>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 10,
+                enablePlaceholders = true
+            ),
+            remoteMediator = MyPageRemoteMediator(
+                communityService = communityService,
+                postType = PostType.MY_PAGE,
+                youthDatabase = youthDatabase,
+                isScrap = isScrapType
+            )
+        ) {
+            if (isScrapType) {
+                youthDatabase.postDao().getScrapPagingSource(postType = PostType.MY_PAGE)
+            } else {
+                youthDatabase.postDao().getPagingSource(postType = PostType.MY_PAGE)
+            }
+        }.flow
     }
 
     override fun getSettingPostCount(isScrapType: Boolean): Flow<Int> = flow {

@@ -15,7 +15,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -75,20 +74,14 @@ class ScrapPostViewModel @Inject constructor(
 
     private fun initData(isScrap: Boolean, type: ScrapPostType) {
         viewModelScope.launch {
-            combine(
-                getSettingPostUseCase(isScrap),
-                getSettingPostCountUseCase(isScrap)
-            ) { posts, count ->
-                Pair(posts, count)
-            }
-                .catch {
-                    Timber.e("ScrapPostViewModel initData error $it")
-                }
-                .collectLatest { (posts, count) ->
+            val settingPost = getSettingPostUseCase(isScrap)
+
+            getSettingPostCountUseCase(isScrap)
+                .collect {
                     setState {
                         copy(
                             isLoading = false,
-                            posts = posts.cachedIn(viewModelScope),
+                            posts = settingPost.cachedIn(viewModelScope),
                             type = type,
                             count = count
                         )

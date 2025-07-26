@@ -13,14 +13,14 @@ import kotlinx.coroutines.flow.Flow
 
 interface CommunityRepository {
     suspend fun getPopularPosts(category: Category, postSubject: PostSubject): Result<List<Post>>
-    fun getPosts(category: Category, postType: PostType, postSubject: PostSubject): Flow<Flow<PagingData<Post>>>
+    fun getPosts(category: Category, postType: PostType, postSubject: PostSubject): Flow<PagingData<Post>>
     suspend fun getListImage(): Result<List<Image>>
     suspend fun postCreatePost(createPost: CreatePost): Result<Long>
     suspend fun getPostDetail(postId: Long): Result<PostDetail>
     suspend fun deletePost(postId: Long): Result<Long>
     suspend fun postPostScrap(postId: Long, scrap: Boolean): Result<Long>
     suspend fun syncPostScrap(reviews: List<Post>, frees: List<Post>): Result<Pair<List<Post>, List<Post>>>
-    fun getSettingPosts(isScrapType: Boolean): Flow<Flow<PagingData<Post>>>
+    fun getSettingPosts(isScrapType: Boolean): Flow<PagingData<Post>>
     fun getSettingPostCount(isScrapType: Boolean): Flow<Int>
     fun postModifyPost(postId: Long, modifyPost: ModifyPost): Flow<Long>
 }
