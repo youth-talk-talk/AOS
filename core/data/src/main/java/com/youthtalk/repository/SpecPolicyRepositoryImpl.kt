@@ -53,23 +53,21 @@ class SpecPolicyRepositoryImpl @Inject constructor(
         }.flow
     }
 
-    override fun searchPolicyName(policyName: String): Flow<Flow<PagingData<SearchPolicy>>> = flow {
+    override fun searchPolicyName(policyName: String): Flow<PagingData<SearchPolicy>> {
         val requestBody = SearchFilter(keyword = policyName).toRequestBody()
-        emit(
-            Pager(
-                config = PagingConfig(
-                    pageSize = 10,
-                    initialLoadSize = 10,
-                    enablePlaceholders = true
-                ),
-                pagingSourceFactory = {
-                    PolicySearchPagingSource(
-                        policyService = policyService,
-                        requestBody = requestBody
-                    )
-                }
-            ).flow
-        )
+        return Pager(
+            config = PagingConfig(
+                pageSize = 10,
+                initialLoadSize = 10,
+                enablePlaceholders = true
+            ),
+            pagingSourceFactory = {
+                PolicySearchPagingSource(
+                    policyService = policyService,
+                    requestBody = requestBody
+                )
+            }
+        ).flow
     }
 
     override fun getCount(searchFilter: SearchFilter, sortType: SortType): Flow<Int> = flow {

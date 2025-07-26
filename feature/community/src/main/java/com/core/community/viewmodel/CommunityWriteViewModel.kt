@@ -23,7 +23,6 @@ import com.youthtalk.model.post.PostSubject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -188,13 +187,12 @@ class CommunityWriteViewModel @Inject constructor(
 
     private fun postSearchPolicy(searchPolicy: String) {
         viewModelScope.launch {
-            postSearchPolicyUseCase(searchPolicy)
+            val searchPolicies = postSearchPolicyUseCase(searchPolicy)
                 .catch {
                     Timber.e("CommunityWriteViewModel postSearchPolicy error $it")
                 }
-                .collectLatest {
-                    setState { copy(searchPolicies = it.cachedIn(viewModelScope)) }
-                }
+
+            setState { copy(searchPolicies = searchPolicies.cachedIn(viewModelScope)) }
         }
     }
 
