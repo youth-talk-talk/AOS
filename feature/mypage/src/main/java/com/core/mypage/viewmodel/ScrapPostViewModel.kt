@@ -46,10 +46,7 @@ class ScrapPostViewModel @Inject constructor(
     private fun postScrapPost(postId: Long, scrap: Boolean) {
         viewModelScope.launch {
             postPostScrapUseCase(postId, scrap)
-                .catch {
-                    Timber.e("ScrapPostViewModel postScrapPost error $it")
-                }
-                .collectLatest {
+                .onSuccess {
                     val newCount = if (state.value.type == ScrapPostType.SCRAP) {
                         state.value.count - 1
                     } else {

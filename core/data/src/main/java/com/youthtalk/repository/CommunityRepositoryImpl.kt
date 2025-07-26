@@ -138,18 +138,10 @@ class CommunityRepositoryImpl @Inject constructor(
         postId
     }
 
-    override fun postPostScrap(postId: Long, scrap: Boolean): Flow<Long> = flow {
-        runCatching {
-            communityService.postPostScrap(postId)
-        }
-            .onSuccess {
-                youthDatabase.postDao().updatePostScrap(postId, !scrap)
-                emit(postId)
-            }
-            .onFailure {
-                Timber.e("postCreatePost postPostScrap $it")
-                throwableError<Long>(it)
-            }
+    override suspend fun postPostScrap(postId: Long, scrap: Boolean): Result<Long> = createResult {
+        communityService.postPostScrap(postId)
+        youthDatabase.postDao().updatePostScrap(postId, !scrap)
+        postId
     }
 
     override fun syncPostScrap(reviews: List<Post>, frees: List<Post>): Flow<Pair<List<Post>, List<Post>>> = flow {

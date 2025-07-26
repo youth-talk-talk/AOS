@@ -47,10 +47,7 @@ class CommunityViewModel @Inject constructor(
     private fun postPostScrap(postId: Long, scrap: Boolean) {
         viewModelScope.launch {
             postPostScrapUseCase(postId, scrap)
-                .catch {
-                    Timber.e("CommunityViewModel postPostScrap error $it")
-                }
-                .collectLatest {
+                .onSuccess {
                     setState {
                         copy(
                             popularFrees = popularFrees.map { post ->
