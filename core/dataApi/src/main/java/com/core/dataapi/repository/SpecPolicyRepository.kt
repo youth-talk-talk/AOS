@@ -9,12 +9,12 @@ import com.youthtalk.model.typeenum.SortType
 import kotlinx.coroutines.flow.Flow
 
 interface SpecPolicyRepository {
-    fun getPolicies(searchFilter: SearchFilter, policyType: PolicyType, sortType: SortType): Flow<Flow<PagingData<Policy>>>
-    fun getCount(searchFilter: SearchFilter, sortType: SortType): Flow<Int>
-    fun postScrap(id: Long, scrap: Boolean): Flow<String>
-    fun searchPolicyName(policyName: String): Flow<Flow<PagingData<SearchPolicy>>>
-    fun postAddComment(policyId: Long, text: String): Flow<Long>
-    fun postDeleteComment(commentId: Long): Flow<String>
-    fun getScrapPolicies(): Flow<Flow<PagingData<Policy>>>
-    fun deleteAllRecentlyViewPolicies(): Flow<String>
+    fun getPolicies(searchFilter: SearchFilter, policyType: PolicyType, sortType: SortType): Flow<PagingData<Policy>>
+    suspend fun getCount(searchFilter: SearchFilter, sortType: SortType): Result<Int>
+    suspend fun postScrap(id: Long, scrap: Boolean): Result<String>
+    fun searchPolicyName(policyName: String): Flow<PagingData<SearchPolicy>>
+    suspend fun postAddComment(policyId: Long, text: String): Result<Long>
+    suspend fun postDeleteComment(commentId: Long): Result<String>
+    fun getScrapPolicies(): Flow<PagingData<Policy>>
+    suspend fun deleteAllRecentlyViewPolicies(): Result<String>
 }

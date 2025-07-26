@@ -100,10 +100,7 @@ class PolicyDetailViewModel @Inject constructor(
     private fun postPolicyScrap(policyId: Long, scrap: Boolean) {
         viewModelScope.launch {
             postPolicyScrapUseCase(policyId, scrap)
-                .catch {
-                    Timber.e("PolicyDetailViewModel postPolicyScrap error $it")
-                }
-                .collectLatest {
+                .onSuccess {
                     setState { copy(policyDetail = state.value.policyDetail.copy(isScrap = !scrap)) }
                 }
         }
@@ -133,10 +130,7 @@ class PolicyDetailViewModel @Inject constructor(
     private fun postDeleteComment(comment: Comment) {
         viewModelScope.launch {
             postDeleteCommentUseCase(comment.commentId)
-                .catch {
-                    Timber.e("PolicyDetailViewModel postDeleteComment error $it")
-                }
-                .collectLatest {
+                .onSuccess {
                     val newComments = state.value.commentInfo.comments.toMutableList()
                     newComments.remove(comment)
                     setState {
@@ -155,10 +149,7 @@ class PolicyDetailViewModel @Inject constructor(
     private fun postAddPolicyComment(policyId: Long, message: String) {
         viewModelScope.launch {
             postPolicyAddCommentUseCase(policyId, message)
-                .catch {
-                    Timber.e("PolicyDetailViewModel postAddPolicyComment error $it")
-                }
-                .collectLatest {
+                .onSuccess {
                     val newComment = Comment(
                         commentId = it,
                         writerId = state.value.user.memberId,

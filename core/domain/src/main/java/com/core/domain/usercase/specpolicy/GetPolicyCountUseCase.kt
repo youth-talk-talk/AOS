@@ -8,5 +8,6 @@ import javax.inject.Inject
 class GetPolicyCountUseCase @Inject constructor(
     private val specPolicyRepository: SpecPolicyRepository
 ) {
-    operator fun invoke(searchFilter: SearchFilter, sortType: SortType = SortType.RECENT) = specPolicyRepository.getCount(searchFilter, sortType)
+    suspend operator fun invoke(searchFilter: SearchFilter, sortType: SortType = SortType.RECENT) =
+        specPolicyRepository.getCount(searchFilter, sortType)
 }

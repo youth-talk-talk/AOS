@@ -87,11 +87,7 @@ class HomeViewModel @Inject constructor(
     private fun postPolicyScrap(policyId: Long, scrap: Boolean) {
         viewModelScope.launch {
             postPolicyScrapUseCase(policyId, scrap)
-                .catch {
-                    Timber.e("HomeViewModel postPolicyScrap error $it")
-                }
-                .collectLatest {
-                    Timber.e("HomeViewModel postPolicyScrap success $it")
+                .onSuccess {
                     setState {
                         copy(
                             homeData = homeData.copy(

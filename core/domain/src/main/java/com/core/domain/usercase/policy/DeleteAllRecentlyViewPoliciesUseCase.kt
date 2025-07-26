@@ -6,5 +6,5 @@ import javax.inject.Inject
 class DeleteAllRecentlyViewPoliciesUseCase @Inject constructor(
     private val specPolicyRepository: SpecPolicyRepository
 ) {
-    operator fun invoke() = specPolicyRepository.deleteAllRecentlyViewPolicies()
+    suspend operator fun invoke() = specPolicyRepository.deleteAllRecentlyViewPolicies()
 }

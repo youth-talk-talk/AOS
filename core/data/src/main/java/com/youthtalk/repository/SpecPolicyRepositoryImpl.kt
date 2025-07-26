@@ -13,19 +13,15 @@ import com.youthtalk.datasource.policy.PolicyRemoteMediator
 import com.youthtalk.datasource.policy.PolicySearchPagingSource
 import com.youthtalk.datasource.policy.ScrapPolicyRemoteMediator
 import com.youthtalk.datasource.room.YouthDatabase
-import com.youthtalk.dto.PostAddCommentResponse
 import com.youthtalk.dto.specpolicy.CommentRequest
-import com.youthtalk.dto.specpolicy.SpecPoliciesResponse
 import com.youthtalk.model.policy.Policy
 import com.youthtalk.model.policy.PolicyType
 import com.youthtalk.model.policy.SearchPolicy
 import com.youthtalk.model.search.SearchFilter
 import com.youthtalk.model.typeenum.SortType
-import com.youthtalk.utils.ErrorUtils.throwableError
+import com.youthtalk.utils.ErrorUtils.createResult
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
-import timber.log.Timber
 
 class SpecPolicyRepositoryImpl @Inject constructor(
     private val policyService: PolicyService,
@@ -35,134 +31,85 @@ class SpecPolicyRepositoryImpl @Inject constructor(
 ) : SpecPolicyRepository {
 
     @OptIn(ExperimentalPagingApi::class)
-    override fun getPolicies(searchFilter: SearchFilter, policyType: PolicyType, sortType: SortType): Flow<Flow<PagingData<Policy>>> = flow {
-        emit(
-            Pager(
-                config = PagingConfig(
-                    pageSize = 10,
-                    enablePlaceholders = true
-                ),
-                remoteMediator = PolicyRemoteMediator(
-                    policyService = policyService,
-                    requestBody = searchFilter.toRequestBody(),
-                    policyType = policyType,
-                    sortType = sortType,
-                    youthDatabase = youthDatabase
-                )
-            ) {
-                youthDatabase.policyDao().getPagingSource(policyType = policyType)
-            }.flow
-        )
-    }
-
-    override fun searchPolicyName(policyName: String): Flow<Flow<PagingData<SearchPolicy>>> = flow {
-        val requestBody = SearchFilter(keyword = policyName).toRequestBody()
-        emit(
-            Pager(
-                config = PagingConfig(
-                    pageSize = 10,
-                    initialLoadSize = 10,
-                    enablePlaceholders = true
-                ),
-                pagingSourceFactory = {
-                    PolicySearchPagingSource(
-                        policyService = policyService,
-                        requestBody = requestBody
-                    )
-                }
-            ).flow
-        )
-    }
-
-    override fun getCount(searchFilter: SearchFilter, sortType: SortType): Flow<Int> = flow {
-        runCatching {
-            policyService.postSpecPolicies(
+    override fun getPolicies(searchFilter: SearchFilter, policyType: PolicyType, sortType: SortType): Flow<PagingData<Policy>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 10,
+                enablePlaceholders = true
+            ),
+            remoteMediator = PolicyRemoteMediator(
+                policyService = policyService,
                 requestBody = searchFilter.toRequestBody(),
-                sort = sortType,
-                page = 0,
-                size = 10
+                policyType = policyType,
+                sortType = sortType,
+                youthDatabase = youthDatabase
             )
-        }
-            .onSuccess { response ->
-                response.data?.let { specPolicyInfo ->
-                    emit(specPolicyInfo.totalCount)
-                } ?: throw NoDataException()
-            }
-            .onFailure {
-                throwableError<SpecPoliciesResponse>(it)
-            }
+        ) {
+            youthDatabase.policyDao().getPagingSource(policyType = policyType)
+        }.flow
     }
 
-    override fun postScrap(id: Long, scrap: Boolean): Flow<String> = flow {
-        runCatching {
-            policyService.postPolicyScrap(id)
-        }
-            .onSuccess { response ->
-                youthDatabase.policyDao().updatePostScrap(id, !scrap)
-                emit(response.message)
+    override fun searchPolicyName(policyName: String): Flow<PagingData<SearchPolicy>> {
+        val requestBody = SearchFilter(keyword = policyName).toRequestBody()
+        return Pager(
+            config = PagingConfig(
+                pageSize = 10,
+                initialLoadSize = 10,
+                enablePlaceholders = true
+            ),
+            pagingSourceFactory = {
+                PolicySearchPagingSource(
+                    policyService = policyService,
+                    requestBody = requestBody
+                )
             }
-            .onFailure {
-                throwableError<Unit>(it)
-            }
+        ).flow
     }
 
-    override fun postAddComment(policyId: Long, text: String): Flow<Long> = flow {
-        runCatching {
-            policyService.postAddComment(
-                CommentRequest(policyId, text).toRequestBody()
-            )
-        }
-            .onSuccess { response ->
-                response.data?.let {
-                    emit(it.commentId)
-                } ?: throw NoDataException("no Data")
-            }
-            .onFailure {
-                throwableError<PostAddCommentResponse>(it)
-            }
+    override suspend fun getCount(searchFilter: SearchFilter, sortType: SortType): Result<Int> = createResult {
+        policyService.postSpecPolicies(
+            requestBody = searchFilter.toRequestBody(),
+            sort = sortType,
+            page = 0,
+            size = 10
+        ).data?.totalCount ?: throw NoDataException()
     }
 
-    override fun postDeleteComment(commentId: Long): Flow<String> = flow {
-        runCatching {
-            commentService.postDeleteComment(commentId)
-        }
-            .onSuccess { response ->
-                emit(response.message)
-            }
-            .onFailure {
-                throwableError<PostAddCommentResponse>(it)
-            }
+    override suspend fun postScrap(id: Long, scrap: Boolean): Result<String> = createResult {
+        val response = policyService.postPolicyScrap(id)
+        youthDatabase.policyDao().updatePostScrap(id, !scrap)
+        response.message
+    }
+
+    override suspend fun postAddComment(policyId: Long, text: String): Result<Long> = createResult {
+        policyService.postAddComment(
+            CommentRequest(policyId, text).toRequestBody()
+        ).data?.commentId ?: throw NoDataException()
+    }
+
+    override suspend fun postDeleteComment(commentId: Long): Result<String> = createResult {
+        commentService.postDeleteComment(commentId).message
     }
 
     @OptIn(ExperimentalPagingApi::class)
-    override fun getScrapPolicies(): Flow<Flow<PagingData<Policy>>> = flow {
-        emit(
-            Pager(
-                config = PagingConfig(
-                    pageSize = 10,
-                    enablePlaceholders = true
-                ),
-                remoteMediator = ScrapPolicyRemoteMediator(
-                    policyService = policyService,
-                    policyType = PolicyType.SCRAP,
-                    youthDatabase = youthDatabase
-                )
-            ) {
-                youthDatabase.policyDao().getScrapPagingSource(policyType = PolicyType.SCRAP)
-            }.flow
-        )
+    override fun getScrapPolicies(): Flow<PagingData<Policy>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 10,
+                enablePlaceholders = true
+            ),
+            remoteMediator = ScrapPolicyRemoteMediator(
+                policyService = policyService,
+                policyType = PolicyType.SCRAP,
+                youthDatabase = youthDatabase
+            )
+        ) {
+            youthDatabase.policyDao().getScrapPagingSource(policyType = PolicyType.SCRAP)
+        }.flow
     }
 
-    override fun deleteAllRecentlyViewPolicies(): Flow<String> = flow {
-        runCatching {
-            policyService.deleteAllRecentlyViewPolicies()
-        }
-            .onSuccess { response ->
-                emit(response.data ?: response.message)
-            }
-            .onFailure {
-                Timber.e("deleteAll error $it")
-                throwableError<String>(it)
-            }
+    override suspend fun deleteAllRecentlyViewPolicies(): Result<String> = createResult {
+        val response = policyService.deleteAllRecentlyViewPolicies()
+        response.data ?: response.message
     }
 }

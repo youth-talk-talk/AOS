@@ -24,7 +24,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.LocalDateTime
 import javax.inject.Inject
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -139,10 +138,7 @@ class CommunityDetailViewModel @Inject constructor(
     private fun postDeleteComment(comment: Comment) {
         viewModelScope.launch {
             postDeleteCommentUseCase(comment.commentId)
-                .catch {
-                    Timber.e("CommunityDetailViewModel postDeleteComment error $it")
-                }
-                .collectLatest {
+                .onSuccess {
                     val newComments = state.value.comments.comments.toMutableList()
                     newComments.remove(comment)
                     setState {
