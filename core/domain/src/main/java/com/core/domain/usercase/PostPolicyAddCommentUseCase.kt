@@ -6,5 +6,5 @@ import javax.inject.Inject
 class PostPolicyAddCommentUseCase @Inject constructor(
     private val specPolicyRepository: SpecPolicyRepository
 ) {
-    operator fun invoke(policyId: Long, text: String) = specPolicyRepository.postAddComment(policyId, text)
+    suspend operator fun invoke(policyId: Long, text: String) = specPolicyRepository.postAddComment(policyId, text)
 }

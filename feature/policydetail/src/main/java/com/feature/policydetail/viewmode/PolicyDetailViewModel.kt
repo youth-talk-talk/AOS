@@ -152,10 +152,7 @@ class PolicyDetailViewModel @Inject constructor(
     private fun postAddPolicyComment(policyId: Long, message: String) {
         viewModelScope.launch {
             postPolicyAddCommentUseCase(policyId, message)
-                .catch {
-                    Timber.e("PolicyDetailViewModel postAddPolicyComment error $it")
-                }
-                .collectLatest {
+                .onSuccess {
                     val newComment = Comment(
                         commentId = it,
                         writerId = state.value.user.memberId,

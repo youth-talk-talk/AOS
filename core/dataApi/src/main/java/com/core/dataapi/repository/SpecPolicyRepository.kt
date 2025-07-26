@@ -13,7 +13,7 @@ interface SpecPolicyRepository {
     suspend fun getCount(searchFilter: SearchFilter, sortType: SortType): Result<Int>
     suspend fun postScrap(id: Long, scrap: Boolean): Result<String>
     fun searchPolicyName(policyName: String): Flow<PagingData<SearchPolicy>>
-    fun postAddComment(policyId: Long, text: String): Flow<Long>
+    suspend fun postAddComment(policyId: Long, text: String): Result<Long>
     fun postDeleteComment(commentId: Long): Flow<String>
     fun getScrapPolicies(): Flow<Flow<PagingData<Policy>>>
     fun deleteAllRecentlyViewPolicies(): Flow<String>

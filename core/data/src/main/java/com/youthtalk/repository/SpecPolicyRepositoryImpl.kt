@@ -85,20 +85,10 @@ class SpecPolicyRepositoryImpl @Inject constructor(
         response.message
     }
 
-    override fun postAddComment(policyId: Long, text: String): Flow<Long> = flow {
-        runCatching {
-            policyService.postAddComment(
-                CommentRequest(policyId, text).toRequestBody()
-            )
-        }
-            .onSuccess { response ->
-                response.data?.let {
-                    emit(it.commentId)
-                } ?: throw NoDataException("no Data")
-            }
-            .onFailure {
-                throwableError<PostAddCommentResponse>(it)
-            }
+    override suspend fun postAddComment(policyId: Long, text: String): Result<Long> = createResult {
+        policyService.postAddComment(
+            CommentRequest(policyId, text).toRequestBody()
+        ).data?.commentId ?: throw NoDataException()
     }
 
     override fun postDeleteComment(commentId: Long): Flow<String> = flow {
