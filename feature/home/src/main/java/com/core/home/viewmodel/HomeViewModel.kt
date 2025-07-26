@@ -173,12 +173,15 @@ class HomeViewModel @Inject constructor(
                 val newPolicies = async { getNewPolicesUseCase() }
                 val userInfo = async { getUserUseCase() }
 
-                HomeUiState(
+                val homeState = HomeUiState(
                     isLoading = false,
                     user = userInfo.await().getOrThrow(),
                     homeData = homeData.await().getOrThrow(),
                     newPolicies = newPolicies.await().getOrThrow()
                 )
+                setState {
+                    homeState
+                }
             } catch (badRequestE: BadRequestException) {
                 Timber.e("error : $badRequestE")
             }
