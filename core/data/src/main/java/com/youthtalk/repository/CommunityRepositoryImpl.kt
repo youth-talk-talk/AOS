@@ -177,23 +177,12 @@ class CommunityRepositoryImpl @Inject constructor(
         }.flow
     }
 
-    override fun getSettingPostCount(isScrapType: Boolean): Flow<Int> = flow {
-        runCatching {
-            if (isScrapType) {
-                communityService.getScrapPosts(0, 1)
-            } else {
-                communityService.getMyPosts(0, 1)
-            }
-        }
-            .onSuccess { response ->
-                response.data?.let {
-                    emit(it.total)
-                }
-            }
-            .onFailure {
-                Timber.e("CommunityRepositoryImpl getSettingPostCount $it")
-                throwableError<Int>(it)
-            }
+    override suspend fun getSettingPostCount(isScrapType: Boolean): Result<Int> = createResult {
+        if (isScrapType) {
+            communityService.getScrapPosts(0, 1)
+        } else {
+            communityService.getMyPosts(0, 1)
+        }.data?.total ?: throw NoDataException()
     }
 
     override fun postModifyPost(postId: Long, modifyPost: ModifyPost): Flow<Long> = flow {

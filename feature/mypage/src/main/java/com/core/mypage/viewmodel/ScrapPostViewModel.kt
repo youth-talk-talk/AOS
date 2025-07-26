@@ -13,10 +13,7 @@ import com.core.mypage.model.scrappost.ScrapPostUiState
 import com.core.navigation.model.ScrapPostType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 @HiltViewModel
 class ScrapPostViewModel @Inject constructor(
@@ -61,10 +58,7 @@ class ScrapPostViewModel @Inject constructor(
     private fun refreshCount() {
         viewModelScope.launch {
             getSettingPostCountUseCase(state.value.type == ScrapPostType.SCRAP)
-                .catch {
-                    Timber.e("ScrapPostViewModel refreshCount error $it")
-                }
-                .collectLatest { count ->
+                .onSuccess { count ->
                     setState {
                         copy(count = count)
                     }
@@ -77,7 +71,7 @@ class ScrapPostViewModel @Inject constructor(
             val settingPost = getSettingPostUseCase(isScrap)
 
             getSettingPostCountUseCase(isScrap)
-                .collect {
+                .onSuccess {
                     setState {
                         copy(
                             isLoading = false,
