@@ -130,10 +130,7 @@ class PolicyDetailViewModel @Inject constructor(
     private fun postDeleteComment(comment: Comment) {
         viewModelScope.launch {
             postDeleteCommentUseCase(comment.commentId)
-                .catch {
-                    Timber.e("PolicyDetailViewModel postDeleteComment error $it")
-                }
-                .collectLatest {
+                .onSuccess {
                     val newComments = state.value.commentInfo.comments.toMutableList()
                     newComments.remove(comment)
                     setState {

@@ -129,10 +129,7 @@ class CommentViewModel @Inject constructor(
     private fun onDeleteComment(comment: SettingComment) {
         viewModelScope.launch {
             postDeleteCommentUseCase(comment.commentId)
-                .catch {
-                    Timber.e("CommentViewModel onDeleteComment error $it")
-                }
-                .collectLatest {
+                .onSuccess {
                     setState {
                         copy(
                             commentInfo = commentInfo.copy(

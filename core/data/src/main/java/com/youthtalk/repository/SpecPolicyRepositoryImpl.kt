@@ -13,7 +13,6 @@ import com.youthtalk.datasource.policy.PolicyRemoteMediator
 import com.youthtalk.datasource.policy.PolicySearchPagingSource
 import com.youthtalk.datasource.policy.ScrapPolicyRemoteMediator
 import com.youthtalk.datasource.room.YouthDatabase
-import com.youthtalk.dto.PostAddCommentResponse
 import com.youthtalk.dto.specpolicy.CommentRequest
 import com.youthtalk.model.policy.Policy
 import com.youthtalk.model.policy.PolicyType
@@ -91,16 +90,8 @@ class SpecPolicyRepositoryImpl @Inject constructor(
         ).data?.commentId ?: throw NoDataException()
     }
 
-    override fun postDeleteComment(commentId: Long): Flow<String> = flow {
-        runCatching {
-            commentService.postDeleteComment(commentId)
-        }
-            .onSuccess { response ->
-                emit(response.message)
-            }
-            .onFailure {
-                throwableError<PostAddCommentResponse>(it)
-            }
+    override suspend fun postDeleteComment(commentId: Long): Result<String> = createResult {
+        commentService.postDeleteComment(commentId).message
     }
 
     @OptIn(ExperimentalPagingApi::class)

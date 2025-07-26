@@ -6,5 +6,5 @@ import javax.inject.Inject
 class PostDeleteCommentUseCase @Inject constructor(
     private val specPolicyRepository: SpecPolicyRepository
 ) {
-    operator fun invoke(commentId: Long) = specPolicyRepository.postDeleteComment(commentId)
+    suspend operator fun invoke(commentId: Long) = specPolicyRepository.postDeleteComment(commentId)
 }
