@@ -21,7 +21,6 @@ import com.youthtalk.model.Image
 import com.youthtalk.model.post.CreatePost
 import com.youthtalk.model.post.ModifyPost
 import com.youthtalk.model.post.Post
-import com.youthtalk.model.post.PostDetail
 import com.youthtalk.model.post.PostSubject
 import com.youthtalk.model.post.PostType
 import com.youthtalk.model.typeenum.Category
@@ -129,19 +128,8 @@ class CommunityRepositoryImpl @Inject constructor(
         communityService.postCreate(createPost.toData().toRequestBody()).data?.postId ?: throw NoDataException()
     }
 
-    override fun getPostDetail(postId: Long) = flow {
-        runCatching {
-            communityService.getPostDetail(postId)
-        }
-            .onSuccess { response ->
-                response.data?.let { post ->
-                    emit(post.toData())
-                }
-            }
-            .onFailure {
-                Timber.e("postCreatePost getPostDetail $it")
-                throwableError<PostDetail>(it)
-            }
+    override suspend fun getPostDetail(postId: Long) = createResult {
+        communityService.getPostDetail(postId).data?.toData() ?: throw NoDataException()
     }
 
     override fun deletePost(postId: Long): Flow<Long> = flow {

@@ -115,10 +115,7 @@ class CommunityWriteViewModel @Inject constructor(
         postId?.let { id ->
             viewModelScope.launch {
                 getPostDetailUseCase(id)
-                    .catch {
-                        Timber.e("CommunityWriteViewModel initData error $it")
-                    }
-                    .collectLatest { postDetail ->
+                    .onSuccess { postDetail ->
                         setState {
                             copy(
                                 postId = id,

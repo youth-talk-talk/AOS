@@ -25,7 +25,6 @@ import java.time.LocalDateTime
 import javax.inject.Inject
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -228,30 +227,19 @@ class CommunityDetailViewModel @Inject constructor(
     private fun initData(postId: Long) {
         viewModelScope.launch {
             val commentInfo = getPostDetailCommentsUseCase(postId)
+            val postDetail = getPostDetailUseCase(postId)
 
-            if (commentInfo.isFailure) {
-                Timber.e("commentInfoError ${commentInfo.exceptionOrNull()?.message}")
-                return@launch
-            }
-
-            combine(
-                getUserUseCase(),
-                getPostDetailUseCase(postId)
-            ) { user, postDetail ->
-                CommunityDetailUiState(
-                    user = user,
-                    postDetail = postDetail,
-                    comments = commentInfo.getOrThrow(),
-                    detailType = CommunityDetailType.MAIN,
-                    initLoading = false
-                )
-            }
+            getUserUseCase()
                 .catch {
-                    Timber.e("CommunityDetailViewModel initData error $it")
                     setEffect { CommunityDetailUiEffect.InitError("신고한 게시글은 조회할 수 없습니다.") }
-                }
-                .collectLatest { uiState ->
-                    setState { uiState }
+                }.collect { user ->
+                    CommunityDetailUiState(
+                        user = user,
+                        postDetail = postDetail.getOrThrow(),
+                        comments = commentInfo.getOrThrow(),
+                        detailType = CommunityDetailType.MAIN,
+                        initLoading = false
+                    )
                 }
         }
     }
