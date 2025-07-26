@@ -5,7 +5,6 @@ import com.core.datastore.datasource.DataStoreDataSource
 import com.core.exception.NoDataException
 import com.youthtalk.data.UserService
 import com.youthtalk.dto.UserRequest
-import com.youthtalk.dto.UserResponse
 import com.youthtalk.dto.comment.SettingCommentInfoResponse
 import com.youthtalk.mapper.toData
 import com.youthtalk.model.User
@@ -32,19 +31,10 @@ class UserRepositoryImpl @Inject constructor(
         userService.postUser(UserRequest(nickname, region.region).toRequestBody()).data?.toData() ?: throw NoDataException()
     }
 
-    override fun deleteUser(deleteUser: Boolean): Flow<Long> = flow {
+    override suspend fun deleteUser(deleteUser: Boolean): Result<Long> = createResult {
         dataSource.clearData()
-        if (deleteUser) {
-            runCatching { userService.postDeleteUser() }
-                .onSuccess {
-                    emit(0L)
-                }
-                .onFailure {
-                    throwableError<UserResponse>(it)
-                }
-        } else {
-            emit(0L)
-        }
+        userService.postDeleteUser()
+        0L
     }
 
     override suspend fun blockUser(userId: Long): Result<Unit> {

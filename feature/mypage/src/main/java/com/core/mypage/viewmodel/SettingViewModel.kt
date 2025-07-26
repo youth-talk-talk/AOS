@@ -13,8 +13,6 @@ import com.core.mypage.model.setting.SettingUiEvent
 import com.core.mypage.model.setting.SettingUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -102,10 +100,7 @@ class SettingViewModel @Inject constructor(
     private fun postLogout(deleteUser: Boolean) {
         viewModelScope.launch {
             postUserLogoutUseCase(deleteUser)
-                .catch {
-                    Timber.e("SettingViewModel postLogout error " + it.message)
-                }
-                .collectLatest {
+                .onSuccess {
                     setEffect { SettingUiEffect.Logout }
                 }
         }

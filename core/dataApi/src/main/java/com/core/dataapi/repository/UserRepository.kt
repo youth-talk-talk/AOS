@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
 interface UserRepository {
     suspend fun getUser(): Result<User>
     suspend fun postUser(nickname: String, region: Region): Result<User>
-    fun deleteUser(deleteUser: Boolean): Flow<Long>
+    suspend fun deleteUser(deleteUser: Boolean): Result<Long>
     suspend fun blockUser(userId: Long): Result<Unit>
     fun getCategoryList(): Flow<List<Category>>
     fun getReviewCategoryList(): Flow<List<Category>>

@@ -6,5 +6,5 @@ import javax.inject.Inject
 class PostUserLogoutUseCase @Inject constructor(
     private val userRepository: UserRepository
 ) {
-    operator fun invoke(deleteUser: Boolean) = userRepository.deleteUser(deleteUser)
+    suspend operator fun invoke(deleteUser: Boolean) = userRepository.deleteUser(deleteUser)
 }
