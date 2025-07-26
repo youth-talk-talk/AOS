@@ -35,24 +35,22 @@ class SpecPolicyRepositoryImpl @Inject constructor(
 ) : SpecPolicyRepository {
 
     @OptIn(ExperimentalPagingApi::class)
-    override fun getPolicies(searchFilter: SearchFilter, policyType: PolicyType, sortType: SortType): Flow<Flow<PagingData<Policy>>> = flow {
-        emit(
-            Pager(
-                config = PagingConfig(
-                    pageSize = 10,
-                    enablePlaceholders = true
-                ),
-                remoteMediator = PolicyRemoteMediator(
-                    policyService = policyService,
-                    requestBody = searchFilter.toRequestBody(),
-                    policyType = policyType,
-                    sortType = sortType,
-                    youthDatabase = youthDatabase
-                )
-            ) {
-                youthDatabase.policyDao().getPagingSource(policyType = policyType)
-            }.flow
-        )
+    override fun getPolicies(searchFilter: SearchFilter, policyType: PolicyType, sortType: SortType): Flow<PagingData<Policy>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 10,
+                enablePlaceholders = true
+            ),
+            remoteMediator = PolicyRemoteMediator(
+                policyService = policyService,
+                requestBody = searchFilter.toRequestBody(),
+                policyType = policyType,
+                sortType = sortType,
+                youthDatabase = youthDatabase
+            )
+        ) {
+            youthDatabase.policyDao().getPagingSource(policyType = policyType)
+        }.flow
     }
 
     override fun searchPolicyName(policyName: String): Flow<Flow<PagingData<SearchPolicy>>> = flow {

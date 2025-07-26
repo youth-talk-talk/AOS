@@ -17,7 +17,6 @@ import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -45,21 +44,18 @@ class DeadlineViewmodel @Inject constructor(
     private fun changeSortType(sortType: SortType) {
         val selected = DateTimeFormatter.ofPattern("yyyy-MM-dd").format(state.value.selectedDay)
         viewModelScope.launch {
-            combine(
-                postSpecPoliciesUseCase(SearchFilter(applyDue = selected), PolicyType.DEADLINE, sortType),
-                getPolicyCountUseCase(SearchFilter(applyDue = selected), sortType)
-            ) { categoryPolicies, allCount ->
-                Pair(categoryPolicies, allCount)
-            }
+            val policies = postSpecPoliciesUseCase(SearchFilter(applyDue = selected), PolicyType.DEADLINE, sortType).cachedIn(viewModelScope)
+
+            getPolicyCountUseCase(SearchFilter(applyDue = selected), sortType)
                 .onStart {
                     setState {
                         copy(sortType = sortType)
                     }
                 }
                 .catch {
-                    Timber.e("DeadlineViewmodel changeSortType error $it")
+                    Timber.e("error $it")
                 }
-                .collectLatest { (policies, count) ->
+                .collectLatest { count ->
                     setState {
                         copy(
                             policies = policies.cachedIn(viewModelScope),
@@ -73,23 +69,20 @@ class DeadlineViewmodel @Inject constructor(
     private fun changeSelectedDay(selectedDay: LocalDate) {
         val selected = DateTimeFormatter.ofPattern("yyyy-MM-dd").format(selectedDay)
         viewModelScope.launch {
-            combine(
-                postSpecPoliciesUseCase(SearchFilter(applyDue = selected), PolicyType.DEADLINE),
-                getPolicyCountUseCase(SearchFilter(applyDue = selected))
-            ) { specPolicies, count ->
-                Pair(specPolicies, count)
-            }
+            val postSpecPolicies = postSpecPoliciesUseCase(SearchFilter(applyDue = selected), PolicyType.DEADLINE).cachedIn(viewModelScope)
+
+            getPolicyCountUseCase(SearchFilter(applyDue = selected))
                 .onStart {
                     setState { copy(selectedDay = selectedDay) }
                 }
                 .catch {
-                    Timber.e("DeadlineViewmodel changeSelectedDay $it")
+                    Timber.e("changeSelectedDay $it")
                 }
-                .collectLatest { (deadlinePolicies, count) ->
+                .collect { count ->
                     setState {
                         copy(
                             count = count,
-                            policies = deadlinePolicies.cachedIn(viewModelScope)
+                            policies = postSpecPolicies.cachedIn(viewModelScope)
                         )
                     }
                 }
@@ -99,17 +92,14 @@ class DeadlineViewmodel @Inject constructor(
     private fun initData() {
         val today = DateTimeFormatter.ofPattern("yyyy-MM-dd").format(state.value.selectedDay)
         viewModelScope.launch {
-            combine(
-                postSpecPoliciesUseCase(SearchFilter(applyDue = today), PolicyType.DEADLINE),
-                getPolicyCountUseCase(SearchFilter(applyDue = today))
-            ) { deadlinePolicies, count ->
-                Pair(deadlinePolicies, count)
-            }
+            val postSpecPolicies = postSpecPoliciesUseCase(SearchFilter(applyDue = today), PolicyType.DEADLINE).cachedIn(viewModelScope)
+
+            getPolicyCountUseCase(SearchFilter(applyDue = today))
                 .catch {
                     Timber.e("DeadlineViewmodel initData error $it")
                 }
-                .collectLatest { (policies, count) ->
-                    setState { copy(policies = policies, count = count) }
+                .collectLatest { count ->
+                    setState { copy(policies = postSpecPolicies, count = count) }
                 }
         }
     }
