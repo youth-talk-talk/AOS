@@ -20,7 +20,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -67,27 +66,21 @@ class PolicySearchViewModel @Inject constructor(
             specialization = getFilterList(searchFilter.specialization)
         )
         viewModelScope.launch {
-            Timber.e("PolicySearchViewModel search start")
-            combine(
-                getPolicyCountUseCase(search, sortType),
-                postSpecPoliciesUseCase(search, PolicyType.SEARCH, sortType)
-            ) { count, policies ->
-                Pair(count, policies)
-            }
+            val specPolicies = postSpecPoliciesUseCase(search, PolicyType.SEARCH, sortType)
                 .onStart {
                     setState { copy(searchLoading = true) }
                 }
                 .catch {
-                    Timber.e("PolicySearchViewModel search error $it")
                     setState { copy(searchLoading = false) }
                 }
-                .collectLatest { (count, policies) ->
-                    Timber.e("PolicySearchViewModel search success $count $policies")
+
+            getPolicyCountUseCase(search, sortType)
+                .onSuccess { count ->
                     setState {
                         copy(
                             searchLoading = false,
                             count = count,
-                            policies = policies.cachedIn(viewModelScope),
+                            policies = specPolicies.cachedIn(viewModelScope),
                             searchFilter = searchFilter,
                             sortType = sortType
                         )

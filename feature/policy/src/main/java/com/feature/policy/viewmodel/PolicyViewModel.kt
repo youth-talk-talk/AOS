@@ -9,6 +9,7 @@ import com.core.domain.usercase.policy.GetRecentlyViewPolicesUseCase
 import com.core.domain.usercase.specpolicy.GetPolicyCountUseCase
 import com.core.domain.usercase.specpolicy.PostSpecPoliciesUseCase
 import com.core.domain.usercase.user.PostUserUseCase
+import com.core.exception.BadRequestException
 import com.feature.policy.model.policy.PolicyUiEffect
 import com.feature.policy.model.policy.PolicyUiEvent
 import com.feature.policy.model.policy.PolicyUiState
@@ -24,7 +25,6 @@ import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -105,12 +105,7 @@ class PolicyViewModel @Inject constructor(
     private fun changeCategoryPolicies(category: Category, sortType: SortType) {
         val filter = if (category == Category.ALL) null else listOf(category)
         viewModelScope.launch {
-            combine(
-                postSpecPoliciesUseCase(SearchFilter(category = filter), PolicyType.POLICY_TAB_CATEGORY, sortType),
-                getPolicyCountUseCase(SearchFilter(category = filter), sortType)
-            ) { categoryPolicies, allCount ->
-                Pair(categoryPolicies, allCount)
-            }
+            val postSpecPolicies = postSpecPoliciesUseCase(SearchFilter(category = filter), PolicyType.POLICY_TAB_CATEGORY, sortType)
                 .onStart {
                     setState {
                         copy(
@@ -122,10 +117,12 @@ class PolicyViewModel @Inject constructor(
                 .catch {
                     Timber.e("PolicyViewModel changeCategoryPolicies $it")
                 }
-                .collectLatest { (policies, count) ->
+
+            getPolicyCountUseCase(SearchFilter(category = filter), sortType)
+                .onSuccess { count ->
                     setState {
                         copy(
-                            categoryPolicies = policies.cachedIn(viewModelScope),
+                            categoryPolicies = postSpecPolicies.cachedIn(viewModelScope),
                             allCount = count
                         )
                     }
@@ -136,23 +133,20 @@ class PolicyViewModel @Inject constructor(
     private fun changeSelectedDay(selectedDay: LocalDate) {
         val selected = DateTimeFormatter.ofPattern("yyyy-MM-dd").format(selectedDay)
         viewModelScope.launch {
-            combine(
-                postSpecPoliciesUseCase(SearchFilter(applyDue = selected), PolicyType.POLICY_TAB_DEADLINE),
-                getPolicyCountUseCase(SearchFilter(applyDue = selected))
-            ) { specPolicies, count ->
-                Pair(specPolicies, count)
-            }
+            val postSpecPolicies = postSpecPoliciesUseCase(SearchFilter(applyDue = selected), PolicyType.POLICY_TAB_DEADLINE)
                 .onStart {
                     setState { copy(selectedDay = selectedDay) }
                 }
                 .catch {
                     Timber.e("PolicyViewModel changeSelectedDay $it")
                 }
-                .collectLatest { (deadlinePolicies, count) ->
+
+            getPolicyCountUseCase(SearchFilter(applyDue = selected))
+                .onSuccess { count ->
                     setState {
                         copy(
                             deadlineCount = count,
-                            deadlinePolicies = deadlinePolicies.cachedIn(viewModelScope)
+                            deadlinePolicies = postSpecPolicies.cachedIn(viewModelScope)
                         )
                     }
                 }
@@ -162,37 +156,31 @@ class PolicyViewModel @Inject constructor(
     private fun initData() {
         val today = DateTimeFormatter.ofPattern("yyyy-MM-dd").format(state.value.selectedDay)
         viewModelScope.launch {
-            val recentViewPolicies = getRecentlyViewPolicesUseCase()
-            combine(
-                getUserUseCase(),
-                combine(
-                    postSpecPoliciesUseCase(SearchFilter(applyDue = today), PolicyType.POLICY_TAB_DEADLINE),
-                    getPolicyCountUseCase(SearchFilter(applyDue = today))
-                ) { deadlinePolicies, count ->
-                    Pair(deadlinePolicies, count)
-                },
-                combine(
-                    postSpecPoliciesUseCase(SearchFilter(), PolicyType.POLICY_TAB_CATEGORY),
-                    getPolicyCountUseCase(SearchFilter())
-                ) { categoryPolicies, allCount ->
-                    Pair(categoryPolicies, allCount)
-                }
-            ) { user, deadlineInfo, categoryInfo ->
-                PolicyUiState.initState.copy(
-                    user = user,
-                    recentlyPolicies = recentViewPolicies.getOrThrow(),
-                    deadlinePolicies = deadlineInfo.first.cachedIn(viewModelScope),
-                    deadlineCount = deadlineInfo.second,
-                    allCount = categoryInfo.second,
-                    categoryPolicies = categoryInfo.first.cachedIn(viewModelScope)
-                )
+            try {
+                val recentViewPolicies = getRecentlyViewPolicesUseCase()
+
+                val policyCount = getPolicyCountUseCase(SearchFilter(applyDue = today)).getOrThrow()
+                val policyAllCount = getPolicyCountUseCase(SearchFilter()).getOrThrow()
+
+                val deadLinePolicies = postSpecPoliciesUseCase(SearchFilter(applyDue = today), PolicyType.POLICY_TAB_DEADLINE)
+                val categorySpecPolicies = postSpecPoliciesUseCase(SearchFilter(), PolicyType.POLICY_TAB_CATEGORY)
+
+                getUserUseCase()
+                    .collect {
+                        setState {
+                            PolicyUiState.initState.copy(
+                                user = user,
+                                recentlyPolicies = recentViewPolicies.getOrThrow(),
+                                deadlinePolicies = deadLinePolicies.cachedIn(viewModelScope),
+                                deadlineCount = policyCount,
+                                allCount = policyAllCount,
+                                categoryPolicies = categorySpecPolicies.cachedIn(viewModelScope)
+                            )
+                        }
+                    }
+            } catch (e: BadRequestException) {
+                Timber.e("initData $e")
             }
-                .catch {
-                    Timber.e("PolicyViewModel initData $it")
-                }
-                .collectLatest { state ->
-                    setState { state }
-                }
         }
     }
 }

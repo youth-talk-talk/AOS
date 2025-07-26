@@ -15,11 +15,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 @HiltViewModel
 class DeadlineViewmodel @Inject constructor(
@@ -47,15 +43,10 @@ class DeadlineViewmodel @Inject constructor(
             val policies = postSpecPoliciesUseCase(SearchFilter(applyDue = selected), PolicyType.DEADLINE, sortType).cachedIn(viewModelScope)
 
             getPolicyCountUseCase(SearchFilter(applyDue = selected), sortType)
-                .onStart {
+                .onSuccess { count ->
                     setState {
                         copy(sortType = sortType)
                     }
-                }
-                .catch {
-                    Timber.e("error $it")
-                }
-                .collectLatest { count ->
                     setState {
                         copy(
                             policies = policies.cachedIn(viewModelScope),
@@ -72,13 +63,8 @@ class DeadlineViewmodel @Inject constructor(
             val postSpecPolicies = postSpecPoliciesUseCase(SearchFilter(applyDue = selected), PolicyType.DEADLINE).cachedIn(viewModelScope)
 
             getPolicyCountUseCase(SearchFilter(applyDue = selected))
-                .onStart {
+                .onSuccess { count ->
                     setState { copy(selectedDay = selectedDay) }
-                }
-                .catch {
-                    Timber.e("changeSelectedDay $it")
-                }
-                .collect { count ->
                     setState {
                         copy(
                             count = count,
@@ -95,10 +81,7 @@ class DeadlineViewmodel @Inject constructor(
             val postSpecPolicies = postSpecPoliciesUseCase(SearchFilter(applyDue = today), PolicyType.DEADLINE).cachedIn(viewModelScope)
 
             getPolicyCountUseCase(SearchFilter(applyDue = today))
-                .catch {
-                    Timber.e("DeadlineViewmodel initData error $it")
-                }
-                .collectLatest { count ->
+                .onSuccess { count ->
                     setState { copy(policies = postSpecPolicies, count = count) }
                 }
         }

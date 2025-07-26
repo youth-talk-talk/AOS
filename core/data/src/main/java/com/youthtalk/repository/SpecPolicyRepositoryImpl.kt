@@ -15,12 +15,12 @@ import com.youthtalk.datasource.policy.ScrapPolicyRemoteMediator
 import com.youthtalk.datasource.room.YouthDatabase
 import com.youthtalk.dto.PostAddCommentResponse
 import com.youthtalk.dto.specpolicy.CommentRequest
-import com.youthtalk.dto.specpolicy.SpecPoliciesResponse
 import com.youthtalk.model.policy.Policy
 import com.youthtalk.model.policy.PolicyType
 import com.youthtalk.model.policy.SearchPolicy
 import com.youthtalk.model.search.SearchFilter
 import com.youthtalk.model.typeenum.SortType
+import com.youthtalk.utils.ErrorUtils.createResult
 import com.youthtalk.utils.ErrorUtils.throwableError
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
@@ -70,23 +70,13 @@ class SpecPolicyRepositoryImpl @Inject constructor(
         ).flow
     }
 
-    override fun getCount(searchFilter: SearchFilter, sortType: SortType): Flow<Int> = flow {
-        runCatching {
-            policyService.postSpecPolicies(
-                requestBody = searchFilter.toRequestBody(),
-                sort = sortType,
-                page = 0,
-                size = 10
-            )
-        }
-            .onSuccess { response ->
-                response.data?.let { specPolicyInfo ->
-                    emit(specPolicyInfo.totalCount)
-                } ?: throw NoDataException()
-            }
-            .onFailure {
-                throwableError<SpecPoliciesResponse>(it)
-            }
+    override suspend fun getCount(searchFilter: SearchFilter, sortType: SortType): Result<Int> = createResult {
+        policyService.postSpecPolicies(
+            requestBody = searchFilter.toRequestBody(),
+            sort = sortType,
+            page = 0,
+            size = 10
+        ).data?.totalCount ?: throw NoDataException()
     }
 
     override fun postScrap(id: Long, scrap: Boolean): Flow<String> = flow {
