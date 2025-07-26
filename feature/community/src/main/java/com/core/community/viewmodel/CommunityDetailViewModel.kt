@@ -112,10 +112,7 @@ class CommunityDetailViewModel @Inject constructor(
     private fun deletePost(postId: Long) {
         viewModelScope.launch {
             deletePostUseCase(postId)
-                .catch {
-                    Timber.e("CommunityDetailViewModel deletePost error $it")
-                }
-                .collectLatest {
+                .onSuccess {
                     setEffect { CommunityDetailUiEffect.ShowSnackBarDeletePost }
                 }
         }
