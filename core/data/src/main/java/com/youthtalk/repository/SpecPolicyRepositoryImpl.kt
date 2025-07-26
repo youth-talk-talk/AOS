@@ -20,11 +20,8 @@ import com.youthtalk.model.policy.SearchPolicy
 import com.youthtalk.model.search.SearchFilter
 import com.youthtalk.model.typeenum.SortType
 import com.youthtalk.utils.ErrorUtils.createResult
-import com.youthtalk.utils.ErrorUtils.throwableError
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
-import timber.log.Timber
 
 class SpecPolicyRepositoryImpl @Inject constructor(
     private val policyService: PolicyService,
@@ -111,16 +108,8 @@ class SpecPolicyRepositoryImpl @Inject constructor(
         }.flow
     }
 
-    override fun deleteAllRecentlyViewPolicies(): Flow<String> = flow {
-        runCatching {
-            policyService.deleteAllRecentlyViewPolicies()
-        }
-            .onSuccess { response ->
-                emit(response.data ?: response.message)
-            }
-            .onFailure {
-                Timber.e("deleteAll error $it")
-                throwableError<String>(it)
-            }
+    override suspend fun deleteAllRecentlyViewPolicies(): Result<String> = createResult {
+        val response = policyService.deleteAllRecentlyViewPolicies()
+        response.data ?: response.message
     }
 }

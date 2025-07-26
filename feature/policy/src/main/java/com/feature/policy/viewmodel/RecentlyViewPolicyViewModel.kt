@@ -10,8 +10,6 @@ import com.feature.policy.model.recentlyview.RecentlyViewUiEvent
 import com.feature.policy.model.recentlyview.RecentlyViewUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -39,10 +37,7 @@ class RecentlyViewPolicyViewModel @Inject constructor(
     private fun deleteAll() {
         viewModelScope.launch {
             deleteAllRecentlyViewPoliciesUseCase()
-                .catch {
-                    Timber.e("RecentlyViewPolicyViewModel deleteAll error $it")
-                }
-                .collectLatest {
+                .onSuccess {
                     setState { copy(policies = listOf()) }
                 }
         }
