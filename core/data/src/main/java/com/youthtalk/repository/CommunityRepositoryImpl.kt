@@ -15,7 +15,6 @@ import com.youthtalk.data.CommunityService
 import com.youthtalk.datasource.post.MyPageRemoteMediator
 import com.youthtalk.datasource.post.PostRemoteMediator
 import com.youthtalk.datasource.room.YouthDatabase
-import com.youthtalk.dto.MemberId
 import com.youthtalk.mapper.toData
 import com.youthtalk.mapper.toDomain
 import com.youthtalk.model.Image
@@ -26,6 +25,7 @@ import com.youthtalk.model.post.PostDetail
 import com.youthtalk.model.post.PostSubject
 import com.youthtalk.model.post.PostType
 import com.youthtalk.model.typeenum.Category
+import com.youthtalk.utils.ErrorUtils.createResult
 import com.youthtalk.utils.ErrorUtils.throwableError
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
@@ -39,7 +39,7 @@ class CommunityRepositoryImpl @Inject constructor(
     private val youthDatabase: YouthDatabase,
     private val context: Context
 ) : CommunityRepository {
-    override fun getPopularPosts(category: Category, postSubject: PostSubject): Flow<List<Post>> = flow {
+    override suspend fun getPopularPosts(category: Category, postSubject: PostSubject): Result<List<Post>> = createResult {
         val categories = if (category == Category.ALL) {
             Category.entries.filter { it != Category.ALL }.map { it.name }.toList()
         } else {
@@ -47,22 +47,10 @@ class CommunityRepositoryImpl @Inject constructor(
                 category.name
             )
         }
-        runCatching {
-            when (postSubject) {
-                PostSubject.REVIEW -> communityService.getReviewPosts(categories = categories, page = 0, size = 10)
-                PostSubject.POST -> communityService.getPosts(page = 0, size = 10)
-            }
-        }
-            .onSuccess { data ->
-                Timber.e("CommunityRepositoryImpl getPopularPosts Success $data")
-                data.data?.let { postResponse ->
-                    emit(postResponse.popularPosts.map { it.toDomain() })
-                } ?: throw NoDataException()
-            }
-            .onFailure { error ->
-                Timber.e("CommunityRepositoryImpl getPopularPosts error : $error")
-                throwableError<MemberId>(error)
-            }
+        when (postSubject) {
+            PostSubject.REVIEW -> communityService.getReviewPosts(categories = categories, page = 0, size = 10)
+            PostSubject.POST -> communityService.getPosts(page = 0, size = 10)
+        }.data?.popularPosts?.map { it.toDomain() } ?: throw NoDataException()
     }
 
     @OptIn(ExperimentalPagingApi::class)

@@ -12,7 +12,7 @@ import com.youthtalk.model.typeenum.Category
 import kotlinx.coroutines.flow.Flow
 
 interface CommunityRepository {
-    fun getPopularPosts(category: Category, postSubject: PostSubject): Flow<List<Post>>
+    suspend fun getPopularPosts(category: Category, postSubject: PostSubject): Result<List<Post>>
     fun getPosts(category: Category, postType: PostType, postSubject: PostSubject): Flow<Flow<PagingData<Post>>>
     fun getListImage(): Flow<List<Image>>
     fun postCreatePost(createPost: CreatePost): Flow<Long>
