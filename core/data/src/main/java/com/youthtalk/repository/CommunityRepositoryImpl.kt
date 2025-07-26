@@ -25,7 +25,6 @@ import com.youthtalk.model.post.PostSubject
 import com.youthtalk.model.post.PostType
 import com.youthtalk.model.typeenum.Category
 import com.youthtalk.utils.ErrorUtils.createResult
-import com.youthtalk.utils.ErrorUtils.throwableError
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -185,20 +184,11 @@ class CommunityRepositoryImpl @Inject constructor(
         }.data?.total ?: throw NoDataException()
     }
 
-    override fun postModifyPost(postId: Long, modifyPost: ModifyPost): Flow<Long> = flow {
+    override suspend fun postModifyPost(postId: Long, modifyPost: ModifyPost): Result<Long> = createResult {
         val requestBody = modifyPost.toData().toRequestBody()
-        runCatching {
-            communityService.postModifyPost(postId, requestBody)
-        }
-            .onSuccess { response ->
-                response.data?.let { postDetail ->
-                    youthDatabase.postDao().updateModifyPost(postId, postDetail.title, postDetail.contentList[0].content.split("\n").first())
-                    emit(postDetail.postId)
-                }
-            }
-            .onFailure {
-                Timber.e("CommunityRepositoryImpl postModifyPost error $it")
-                throwableError<Int>(it)
-            }
+
+        val postDetail = communityService.postModifyPost(postId, requestBody).data ?: throw NoDataException()
+        youthDatabase.postDao().updateModifyPost(postId, postDetail.title, postDetail.contentList[0].content.split("\n").first())
+        postDetail.postId
     }
 }

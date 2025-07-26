@@ -22,5 +22,5 @@ interface CommunityRepository {
     suspend fun syncPostScrap(reviews: List<Post>, frees: List<Post>): Result<Pair<List<Post>, List<Post>>>
     fun getSettingPosts(isScrapType: Boolean): Flow<PagingData<Post>>
     suspend fun getSettingPostCount(isScrapType: Boolean): Result<Int>
-    fun postModifyPost(postId: Long, modifyPost: ModifyPost): Flow<Long>
+    suspend fun postModifyPost(postId: Long, modifyPost: ModifyPost): Result<Long>
 }

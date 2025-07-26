@@ -101,11 +101,7 @@ class CommunityWriteViewModel @Inject constructor(
 
         viewModelScope.launch {
             postModifyPostUseCase(postId, modifyPost)
-                .catch {
-                    Timber.e("CommunityWriteViewModel postModify error $it")
-                }
-                .collectLatest {
-                    Timber.e("CommunityWriteViewModel postModify success $it")
+                .onSuccess { postId ->
                     setEffect { CommunityWriteUiEffect.Modify(postId) }
                 }
         }
