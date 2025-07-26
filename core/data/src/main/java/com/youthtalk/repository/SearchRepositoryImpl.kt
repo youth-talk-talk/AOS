@@ -32,24 +32,22 @@ class SearchRepositoryImpl @Inject constructor(
     }
 
     @OptIn(ExperimentalPagingApi::class)
-    override fun getKeywordPost(keyword: String, communityType: PostSubject, postType: PostType): Flow<Flow<PagingData<Post>>> = flow {
-        emit(
-            Pager(
-                config = PagingConfig(
-                    pageSize = 10,
-                    enablePlaceholders = true
-                ),
-                remoteMediator = PostKeywordRemoteMediator(
-                    communityService = communityService,
-                    keyword = keyword,
-                    postType = postType,
-                    postSubject = communityType,
-                    youthDatabase = youthDatabase
-                )
-            ) {
-                youthDatabase.postDao().getPagingSource(postType = postType)
-            }.flow
-        )
+    override fun getKeywordPost(keyword: String, communityType: PostSubject, postType: PostType): Flow<PagingData<Post>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 10,
+                enablePlaceholders = true
+            ),
+            remoteMediator = PostKeywordRemoteMediator(
+                communityService = communityService,
+                keyword = keyword,
+                postType = postType,
+                postSubject = communityType,
+                youthDatabase = youthDatabase
+            )
+        ) {
+            youthDatabase.postDao().getPagingSource(postType = postType)
+        }.flow
     }
 
     override fun getKeywordPostCount(keyword: String, communityType: PostSubject): Flow<Int> = flow {

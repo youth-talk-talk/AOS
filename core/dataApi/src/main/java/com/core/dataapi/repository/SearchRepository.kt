@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface SearchRepository {
     fun getRecentList(): Flow<List<String>>
-    fun getKeywordPost(keyword: String, communityType: PostSubject, postType: PostType): Flow<Flow<PagingData<Post>>>
+    fun getKeywordPost(keyword: String, communityType: PostSubject, postType: PostType): Flow<PagingData<Post>>
     fun getKeywordPostCount(keyword: String, communityType: PostSubject): Flow<Int>
     suspend fun postRecentList(recentList: List<String>)
 }
