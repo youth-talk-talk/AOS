@@ -31,7 +31,7 @@ import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 class CommunityRepositoryImpl @Inject constructor(
@@ -81,48 +81,49 @@ class CommunityRepositoryImpl @Inject constructor(
         )
     }
 
-    override fun getListImage(): Flow<List<Image>> = flow {
-        val contentResolver = context.contentResolver
-        val projection = arrayOf(
-            Images.Media._ID,
-            Images.Media.DISPLAY_NAME,
-            Images.Media.SIZE,
-            Images.Media.MIME_TYPE
-        )
+    override suspend fun getListImage(): Result<List<Image>> = runCatching {
+        withContext(Dispatchers.IO) {
+            val contentResolver = context.contentResolver
+            val projection = arrayOf(
+                Images.Media._ID,
+                Images.Media.DISPLAY_NAME,
+                Images.Media.SIZE,
+                Images.Media.MIME_TYPE
+            )
 
-        val collectionUri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL)
-        } else {
-            Images.Media.EXTERNAL_CONTENT_URI
-        }
-
-        val images = mutableListOf<Image>()
-
-        contentResolver.query(
-            collectionUri,
-            projection,
-            null,
-            null,
-            "${Images.Media.DATE_ADDED} DESC"
-        )?.use { cursor ->
-            val idColumn = cursor.getColumnIndexOrThrow(Images.Media._ID)
-            val displayNameColumn = cursor.getColumnIndexOrThrow(Images.Media.DISPLAY_NAME)
-            val sizeColumn = cursor.getColumnIndexOrThrow(Images.Media.SIZE)
-            val mimeTypeColumn = cursor.getColumnIndexOrThrow(Images.Media.MIME_TYPE)
-
-            while (cursor.moveToNext()) {
-                val uri = ContentUris.withAppendedId(collectionUri, cursor.getLong(idColumn))
-                val name = cursor.getString(displayNameColumn)
-                val size = cursor.getLong(sizeColumn)
-                val mimeType = cursor.getString(mimeTypeColumn)
-
-                val image = Image(uri.toString(), name, size, mimeType)
-                images.add(image)
+            val collectionUri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL)
+            } else {
+                Images.Media.EXTERNAL_CONTENT_URI
             }
-        }
 
-        emit(images)
-    }.flowOn(Dispatchers.IO)
+            val images = mutableListOf<Image>()
+
+            contentResolver.query(
+                collectionUri,
+                projection,
+                null,
+                null,
+                "${Images.Media.DATE_ADDED} DESC"
+            )?.use { cursor ->
+                val idColumn = cursor.getColumnIndexOrThrow(Images.Media._ID)
+                val displayNameColumn = cursor.getColumnIndexOrThrow(Images.Media.DISPLAY_NAME)
+                val sizeColumn = cursor.getColumnIndexOrThrow(Images.Media.SIZE)
+                val mimeTypeColumn = cursor.getColumnIndexOrThrow(Images.Media.MIME_TYPE)
+
+                while (cursor.moveToNext()) {
+                    val uri = ContentUris.withAppendedId(collectionUri, cursor.getLong(idColumn))
+                    val name = cursor.getString(displayNameColumn)
+                    val size = cursor.getLong(sizeColumn)
+                    val mimeType = cursor.getString(mimeTypeColumn)
+
+                    val image = Image(uri.toString(), name, size, mimeType)
+                    images.add(image)
+                }
+            }
+            images
+        }
+    }
 
     override fun postCreatePost(createPost: CreatePost): Flow<Long> = flow {
         runCatching {

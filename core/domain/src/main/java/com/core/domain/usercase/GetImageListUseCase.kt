@@ -6,5 +6,5 @@ import javax.inject.Inject
 class GetImageListUseCase @Inject constructor(
     private val communityRepository: CommunityRepository
 ) {
-    operator fun invoke() = communityRepository.getListImage()
+    suspend operator fun invoke() = communityRepository.getListImage()
 }

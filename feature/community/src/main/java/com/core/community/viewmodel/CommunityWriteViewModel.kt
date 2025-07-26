@@ -225,11 +225,7 @@ class CommunityWriteViewModel @Inject constructor(
     private fun getImages() {
         viewModelScope.launch {
             getImageListUseCase()
-                .catch {
-                    Timber.e("CommunityWriteViewModel getImages error $it")
-                }
-                .collectLatest {
-                    Timber.e("CommunityWriteViewModel getImages success $it")
+                .onSuccess {
                     setState { copy(images = it) }
                     setEffect { CommunityWriteUiEffect.GoPictureScreen(it) }
                 }

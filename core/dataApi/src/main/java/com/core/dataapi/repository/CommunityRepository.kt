@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.Flow
 interface CommunityRepository {
     suspend fun getPopularPosts(category: Category, postSubject: PostSubject): Result<List<Post>>
     fun getPosts(category: Category, postType: PostType, postSubject: PostSubject): Flow<Flow<PagingData<Post>>>
-    fun getListImage(): Flow<List<Image>>
+    suspend fun getListImage(): Result<List<Image>>
     fun postCreatePost(createPost: CreatePost): Flow<Long>
     fun getPostDetail(postId: Long): Flow<PostDetail>
     fun deletePost(postId: Long): Flow<Long>
