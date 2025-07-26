@@ -11,6 +11,7 @@ import com.core.domain.usercase.comment.PostCommentLikeUseCase
 import com.core.domain.usercase.comment.PostDeleteCommentUseCase
 import com.core.domain.usercase.policydetail.GetPolicyDetailCommentUseCase
 import com.core.domain.usercase.policydetail.GetPolicyDetailUseCase
+import com.core.exception.BadRequestException
 import com.feature.policydetail.model.PolicyDetailType
 import com.feature.policydetail.model.PolicyDetailUiEffect
 import com.feature.policydetail.model.PolicyDetailUiEvent
@@ -19,8 +20,7 @@ import com.youthtalk.model.comment.Comment
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.LocalDateTime
 import javax.inject.Inject
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -186,21 +186,21 @@ class PolicyDetailViewModel @Inject constructor(
 
     private fun initData(policyId: Long) {
         viewModelScope.launch {
-            val commentInfo = getPolicyDetailCommentUseCase(policyId)
-            val policyDetail = getPolicyDetailUseCase(policyId)
+            try {
+                val commentInfo = async { getPolicyDetailCommentUseCase(policyId) }
+                val policyDetail = async { getPolicyDetailUseCase(policyId) }
+                val userInfo = async { getUserUseCase() }
 
-            getUserUseCase()
-                .catch {
-                    Timber.e("error $it")
-                }.collectLatest { user ->
-                    PolicyDetailUiState(
-                        isLoading = false,
-                        user = user,
-                        policyDetail = policyDetail.getOrThrow(),
-                        commentInfo = commentInfo.getOrThrow(),
-                        policyId = policyId
-                    )
-                }
+                PolicyDetailUiState(
+                    isLoading = false,
+                    user = userInfo.await().getOrThrow(),
+                    policyDetail = policyDetail.await().getOrThrow(),
+                    commentInfo = commentInfo.await().getOrThrow(),
+                    policyId = policyId
+                )
+            } catch (badRequestE: BadRequestException) {
+                Timber.e("error $badRequestE")
+            }
         }
     }
 }

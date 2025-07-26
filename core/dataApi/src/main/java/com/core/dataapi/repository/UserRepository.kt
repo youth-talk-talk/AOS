@@ -7,7 +7,7 @@ import com.youthtalk.model.typeenum.Region
 import kotlinx.coroutines.flow.Flow
 
 interface UserRepository {
-    fun getUser(): Flow<User>
+    suspend fun getUser(): Result<User>
     fun postUser(nickname: String, region: Region): Flow<User>
     fun deleteUser(deleteUser: Boolean): Flow<Long>
     suspend fun blockUser(userId: Long): Result<Unit>

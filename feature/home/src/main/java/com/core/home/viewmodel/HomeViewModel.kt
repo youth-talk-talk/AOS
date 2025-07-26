@@ -8,6 +8,7 @@ import com.core.domain.usercase.home.GetHomeDataUseCase
 import com.core.domain.usercase.home.GetNewPolicesUseCase
 import com.core.domain.usercase.post.PostPostScrapUseCase
 import com.core.domain.usercase.user.PostUserUseCase
+import com.core.exception.BadRequestException
 import com.core.home.model.home.HomeUiEffect
 import com.core.home.model.home.HomeUiEvent
 import com.core.home.model.home.HomeUiState
@@ -15,9 +16,9 @@ import com.youthtalk.model.User
 import com.youthtalk.model.typeenum.Region
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -171,24 +172,21 @@ class HomeViewModel @Inject constructor(
 
     private fun getHomeData(isLoading: Boolean = true) {
         viewModelScope.launch {
-            val homeData = getHomeDataUseCase()
-            val newPolicies = getNewPolicesUseCase()
+            setState { copy(isLoading = isLoading) }
+            try {
+                val homeData = async { getHomeDataUseCase() }
+                val newPolicies = async { getNewPolicesUseCase() }
+                val userInfo = async { getUserUseCase() }
 
-            getUserUseCase()
-                .onStart {
-                    setState { copy(isLoading = isLoading) }
-                }.catch {
-                    Timber.e("error : $it")
-                }.collectLatest { user ->
-                    setState {
-                        HomeUiState(
-                            isLoading = false,
-                            user = user,
-                            homeData = homeData.getOrThrow(),
-                            newPolicies = newPolicies.getOrThrow()
-                        )
-                    }
-                }
+                HomeUiState(
+                    isLoading = false,
+                    user = userInfo.await().getOrThrow(),
+                    homeData = homeData.await().getOrThrow(),
+                    newPolicies = newPolicies.await().getOrThrow()
+                )
+            } catch (badRequestE: BadRequestException) {
+                Timber.e("error : $badRequestE")
+            }
         }
     }
 }

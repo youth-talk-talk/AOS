@@ -19,11 +19,12 @@ import com.core.domain.usercase.post.PostPostScrapUseCase
 import com.core.domain.usercase.report.ReportCommentUseCase
 import com.core.domain.usercase.report.ReportPostUseCase
 import com.core.domain.usercase.user.BlockUserUseCase
+import com.core.exception.BadRequestException
 import com.youthtalk.model.comment.Comment
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.LocalDateTime
 import javax.inject.Inject
-import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -216,21 +217,22 @@ class CommunityDetailViewModel @Inject constructor(
 
     private fun initData(postId: Long) {
         viewModelScope.launch {
-            val commentInfo = getPostDetailCommentsUseCase(postId)
-            val postDetail = getPostDetailUseCase(postId)
+            try {
+                val commentInfo = async { getPostDetailCommentsUseCase(postId) }
+                val postDetail = async { getPostDetailUseCase(postId) }
+                val userInfo = async { getUserUseCase() }
 
-            getUserUseCase()
-                .catch {
-                    setEffect { CommunityDetailUiEffect.InitError("신고한 게시글은 조회할 수 없습니다.") }
-                }.collect { user ->
-                    CommunityDetailUiState(
-                        user = user,
-                        postDetail = postDetail.getOrThrow(),
-                        comments = commentInfo.getOrThrow(),
-                        detailType = CommunityDetailType.MAIN,
-                        initLoading = false
-                    )
-                }
+                CommunityDetailUiState(
+                    user = userInfo.await().getOrThrow(),
+                    postDetail = postDetail.await().getOrThrow(),
+                    comments = commentInfo.await().getOrThrow(),
+                    detailType = CommunityDetailType.MAIN,
+                    initLoading = false
+                )
+            } catch (badRequestE: BadRequestException) {
+                Timber.e("error : $badRequestE")
+                setEffect { CommunityDetailUiEffect.InitError("신고한 게시글은 조회할 수 없습니다.") }
+            }
         }
     }
 }

@@ -2,6 +2,7 @@ package com.youthtalk.repository
 
 import com.core.dataapi.repository.UserRepository
 import com.core.datastore.datasource.DataStoreDataSource
+import com.core.exception.NoDataException
 import com.youthtalk.data.UserService
 import com.youthtalk.dto.UserRequest
 import com.youthtalk.dto.UserResponse
@@ -23,16 +24,8 @@ class UserRepositoryImpl @Inject constructor(
     private val dataSource: DataStoreDataSource
 ) : UserRepository {
 
-    override fun getUser(): Flow<User> = flow {
-        runCatching { userService.getUser() }
-            .onSuccess { response ->
-                response.data?.let { userResponse ->
-                    emit(userResponse.toData())
-                }
-            }
-            .onFailure {
-                throwableError<UserResponse>(it)
-            }
+    override suspend fun getUser(): Result<User> = createResult {
+        userService.getUser().data?.toData() ?: throw NoDataException()
     }
 
     override fun postUser(nickname: String, region: Region): Flow<User> = flow {

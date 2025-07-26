@@ -96,10 +96,7 @@ class SettingViewModel @Inject constructor(
     private fun initData() {
         viewModelScope.launch {
             getUserUseCase()
-                .catch {
-                    Timber.e("SettingViewModel initData error $it")
-                }
-                .collectLatest {
+                .onSuccess {
                     setState { copy(user = it) }
                 }
         }

@@ -23,6 +23,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.onStart
@@ -154,27 +155,28 @@ class PolicyViewModel @Inject constructor(
         val today = DateTimeFormatter.ofPattern("yyyy-MM-dd").format(state.value.selectedDay)
         viewModelScope.launch {
             try {
-                val recentViewPolicies = getRecentlyViewPolicesUseCase()
+                val recentViewPolicies = async { getRecentlyViewPolicesUseCase() }
 
-                val policyCount = getPolicyCountUseCase(SearchFilter(applyDue = today)).getOrThrow()
-                val policyAllCount = getPolicyCountUseCase(SearchFilter()).getOrThrow()
+                val policyCount = async { getPolicyCountUseCase(SearchFilter(applyDue = today)) }
+                val policyAllCount = async { getPolicyCountUseCase(SearchFilter()) }
 
                 val deadLinePolicies = postSpecPoliciesUseCase(SearchFilter(applyDue = today), PolicyType.POLICY_TAB_DEADLINE)
                 val categorySpecPolicies = postSpecPoliciesUseCase(SearchFilter(), PolicyType.POLICY_TAB_CATEGORY)
 
-                getUserUseCase()
-                    .collect {
-                        setState {
-                            PolicyUiState.initState.copy(
-                                user = user,
-                                recentlyPolicies = recentViewPolicies.getOrThrow(),
-                                deadlinePolicies = deadLinePolicies.cachedIn(viewModelScope),
-                                deadlineCount = policyCount,
-                                allCount = policyAllCount,
-                                categoryPolicies = categorySpecPolicies.cachedIn(viewModelScope)
-                            )
-                        }
-                    }
+                val userInfo = async { getUserUseCase() }
+
+                val initState = PolicyUiState.initState.copy(
+                    user = userInfo.await().getOrThrow(),
+                    recentlyPolicies = recentViewPolicies.await().getOrThrow(),
+                    deadlinePolicies = deadLinePolicies.cachedIn(viewModelScope),
+                    deadlineCount = policyCount.await().getOrThrow(),
+                    allCount = policyAllCount.await().getOrThrow(),
+                    categoryPolicies = categorySpecPolicies.cachedIn(viewModelScope)
+                )
+
+                setState {
+                    initState
+                }
             } catch (e: BadRequestException) {
                 Timber.e("initData $e")
             }
