@@ -60,11 +60,8 @@ class PolicyViewModel @Inject constructor(
     private fun postPolicyScrap(policyId: Long, scrap: Boolean) {
         viewModelScope.launch {
             postPolicyScrapUseCase(policyId, scrap)
-                .catch {
-                    Timber.e("PolicyViewModel postPolicyScrap error $it")
-                }
-                .collectLatest {
-                    Timber.e("PolicyViewModel postPolicyScrap success $it")
+                .onSuccess {
+                    Timber.i("PolicyViewModel postPolicyScrap success $it")
                     setState {
                         copy(
                             recentlyPolicies = recentlyPolicies

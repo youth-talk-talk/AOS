@@ -52,11 +52,8 @@ class PolicySearchViewModel @Inject constructor(
     private fun postPolicyScrap(policyId: Long, scrap: Boolean) {
         viewModelScope.launch {
             postPolicyScrapUseCase(policyId, scrap)
-                .catch {
-                    Timber.e("PolicySearchViewModel postPostScrap error $it")
-                }
-                .collectLatest {
-                    Timber.e("PolicySearchViewModel postPostScrap Success $it")
+                .onSuccess {
+                    Timber.i("Success $it")
                 }
         }
     }

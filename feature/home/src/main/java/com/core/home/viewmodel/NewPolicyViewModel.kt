@@ -11,8 +11,6 @@ import com.core.home.model.newpolicy.NewPolicyUiState
 import com.youthtalk.model.typeenum.SortType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -140,10 +138,7 @@ class NewPolicyViewModel @Inject constructor(
     private fun postPolicyScrap(policyId: Long, scrap: Boolean) {
         viewModelScope.launch {
             postPolicyScrapUseCase(policyId, scrap)
-                .catch {
-                    Timber.e("NewPolicyViewModel postPostScrap error $it")
-                }
-                .collectLatest {
+                .onSuccess {
                     setState {
                         copy(
                             newPolicies = newPolicies.copy(

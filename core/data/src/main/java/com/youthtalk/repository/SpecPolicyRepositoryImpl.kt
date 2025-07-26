@@ -79,17 +79,10 @@ class SpecPolicyRepositoryImpl @Inject constructor(
         ).data?.totalCount ?: throw NoDataException()
     }
 
-    override fun postScrap(id: Long, scrap: Boolean): Flow<String> = flow {
-        runCatching {
-            policyService.postPolicyScrap(id)
-        }
-            .onSuccess { response ->
-                youthDatabase.policyDao().updatePostScrap(id, !scrap)
-                emit(response.message)
-            }
-            .onFailure {
-                throwableError<Unit>(it)
-            }
+    override suspend fun postScrap(id: Long, scrap: Boolean): Result<String> = createResult {
+        val response = policyService.postPolicyScrap(id)
+        youthDatabase.policyDao().updatePostScrap(id, !scrap)
+        response.message
     }
 
     override fun postAddComment(policyId: Long, text: String): Flow<Long> = flow {
