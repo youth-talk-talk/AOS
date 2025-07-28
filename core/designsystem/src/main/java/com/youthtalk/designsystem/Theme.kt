@@ -57,6 +57,7 @@ fun YongProjectTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Compo
             val window = (view.context as Activity).window
             window.navigationBarColor = Color.Transparent.toArgb()
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = true
+            WindowCompat.getInsetsController(window, view).isAppearanceLightNavigationBars = true
         }
     }
 
