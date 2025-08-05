@@ -19,13 +19,12 @@ import com.core.domain.usercase.post.PostPostScrapUseCase
 import com.core.domain.usercase.report.ReportCommentUseCase
 import com.core.domain.usercase.report.ReportPostUseCase
 import com.core.domain.usercase.user.BlockUserUseCase
+import com.core.exception.BadRequestException
 import com.youthtalk.model.comment.Comment
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.LocalDateTime
 import javax.inject.Inject
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -72,10 +71,7 @@ class CommunityDetailViewModel @Inject constructor(
     private fun postCommentLike(commentId: Long, isLike: Boolean) {
         viewModelScope.launch {
             postCommentLikeUseCase(commentId, isLike)
-                .catch {
-                    Timber.e("CommunityDetailViewModel postCommentLike error $it")
-                }
-                .collectLatest {
+                .onSuccess {
                     setState {
                         copy(
                             comments = comments.copy(
@@ -91,6 +87,8 @@ class CommunityDetailViewModel @Inject constructor(
                             )
                         )
                     }
+                }.onFailure {
+                    Timber.e("error $it")
                 }
         }
     }
@@ -98,10 +96,7 @@ class CommunityDetailViewModel @Inject constructor(
     private fun postPostScrap(postId: Long, scrap: Boolean) {
         viewModelScope.launch {
             postPostScrapUseCase(postId, scrap)
-                .catch {
-                    Timber.e("CommunityDetailViewModel postPostScrap error $it")
-                }
-                .collectLatest {
+                .onSuccess {
                     setState {
                         copy(
                             postDetail = state.value.postDetail.copy(scrap = !scrap)
@@ -114,10 +109,7 @@ class CommunityDetailViewModel @Inject constructor(
     private fun deletePost(postId: Long) {
         viewModelScope.launch {
             deletePostUseCase(postId)
-                .catch {
-                    Timber.e("CommunityDetailViewModel deletePost error $it")
-                }
-                .collectLatest {
+                .onSuccess {
                     setEffect { CommunityDetailUiEffect.ShowSnackBarDeletePost }
                 }
         }
@@ -126,10 +118,7 @@ class CommunityDetailViewModel @Inject constructor(
     private fun patchModifyComment(commentId: Long, message: String) {
         viewModelScope.launch {
             patchCommentUseCase(commentId, message)
-                .catch {
-                    Timber.e("CommunityDetailViewModel patchModifyComment error $it")
-                }
-                .collectLatest {
+                .onSuccess {
                     val newComments = state.value.comments.comments
                         .map { comment -> if (comment.commentId == commentId) comment.copy(content = message) else comment }
                     setState {
@@ -141,6 +130,8 @@ class CommunityDetailViewModel @Inject constructor(
                         )
                     }
                     setEffect { CommunityDetailUiEffect.ShowSnackBarModifyComment }
+                }.onFailure {
+                    Timber.e("error : $it")
                 }
         }
     }
@@ -148,10 +139,7 @@ class CommunityDetailViewModel @Inject constructor(
     private fun postDeleteComment(comment: Comment) {
         viewModelScope.launch {
             postDeleteCommentUseCase(comment.commentId)
-                .catch {
-                    Timber.e("CommunityDetailViewModel postDeleteComment error $it")
-                }
-                .collectLatest {
+                .onSuccess {
                     val newComments = state.value.comments.comments.toMutableList()
                     newComments.remove(comment)
                     setState {
@@ -170,10 +158,7 @@ class CommunityDetailViewModel @Inject constructor(
     private fun postAddPostComment(postId: Long, message: String) {
         viewModelScope.launch {
             postAddPostCommentUseCase(postId, message)
-                .catch {
-                    Timber.e("CommunityDetailViewModel postAddPostComment error $it")
-                }
-                .collectLatest {
+                .onSuccess {
                     val newComment = Comment(
                         commentId = it,
                         writerId = state.value.user.memberId,
@@ -192,6 +177,8 @@ class CommunityDetailViewModel @Inject constructor(
                             )
                         )
                     }
+                }.onFailure {
+                    Timber.e("error : $it")
                 }
         }
     }
@@ -227,29 +214,24 @@ class CommunityDetailViewModel @Inject constructor(
                 }
         }
     }
-    
     private fun initData(postId: Long) {
         viewModelScope.launch {
-            combine(
-                getUserUseCase(),
-                getPostDetailUseCase(postId),
-                getPostDetailCommentsUseCase(postId)
-            ) { user, postDetail, comments ->
+            try {
+                val commentInfo = async { getPostDetailCommentsUseCase(postId) }
+                val postDetail = async { getPostDetailUseCase(postId) }
+                val userInfo = async { getUserUseCase() }
+
                 CommunityDetailUiState(
-                    user = user,
-                    postDetail = postDetail,
-                    comments = comments,
+                    user = userInfo.await().getOrThrow(),
+                    postDetail = postDetail.await().getOrThrow(),
+                    comments = commentInfo.await().getOrThrow(),
                     detailType = CommunityDetailType.MAIN,
                     initLoading = false
                 )
+            } catch (badRequestE: BadRequestException) {
+                Timber.e("error : $badRequestE")
+                setEffect { CommunityDetailUiEffect.InitError("신고한 게시글은 조회할 수 없습니다.") }
             }
-                .catch {
-                    Timber.e("CommunityDetailViewModel initData error $it")
-                    setEffect { CommunityDetailUiEffect.InitError("신고한 게시글은 조회할 수 없습니다.") }
-                }
-                .collectLatest { uiState ->
-                    setState { uiState }
-                }
         }
     }
 }

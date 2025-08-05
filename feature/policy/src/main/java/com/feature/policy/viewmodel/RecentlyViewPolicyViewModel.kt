@@ -10,8 +10,6 @@ import com.feature.policy.model.recentlyview.RecentlyViewUiEvent
 import com.feature.policy.model.recentlyview.RecentlyViewUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -39,10 +37,7 @@ class RecentlyViewPolicyViewModel @Inject constructor(
     private fun deleteAll() {
         viewModelScope.launch {
             deleteAllRecentlyViewPoliciesUseCase()
-                .catch {
-                    Timber.e("RecentlyViewPolicyViewModel deleteAll error $it")
-                }
-                .collectLatest {
+                .onSuccess {
                     setState { copy(policies = listOf()) }
                 }
         }
@@ -51,16 +46,12 @@ class RecentlyViewPolicyViewModel @Inject constructor(
     private fun postPolicyScrap(policyId: Long, scrap: Boolean) {
         viewModelScope.launch {
             postPolicyScrapUseCase(policyId, scrap)
-                .catch {
-                    Timber.e("RecentlyViewPolicyViewModel postPolicyScrap error $it")
-                }
-                .collectLatest {
-                    Timber.e("RecentlyViewPolicyViewModel postPolicyScrap success $it")
+                .onSuccess {
+                    Timber.i("success $it")
                     setState {
                         copy(
                             policies = policies
-                                .map {
-                                        policy ->
+                                .map { policy ->
                                     if (policy.policyId == policyId) policy.copy(scrap = !scrap) else policy
                                 }
                         )
@@ -72,11 +63,10 @@ class RecentlyViewPolicyViewModel @Inject constructor(
     private fun initData() {
         viewModelScope.launch {
             getRecentlyViewPolicesUseCase()
-                .catch {
-                    Timber.e("RecentlyViewPolicyViewModel initData error $it")
-                }
-                .collectLatest {
+                .onSuccess {
                     setState { copy(isLoading = false, policies = it) }
+                }.onFailure {
+                    Timber.e("error : $it")
                 }
         }
     }

@@ -1,6 +1,7 @@
 # 청년톡톡
 
-![app_background](https://github.com/user-attachments/assets/e2d4d36b-63a9-45fb-831f-105272823d8b)
+![app_image](https://github.com/user-attachments/assets/ca253968-866d-43c6-8d6c-22681dfb0017)
+
 
 #### 플레이 스토어 주소: https://play.google.com/store/apps/details?id=com.youth.yongproject.app
 #### 피그마: https://www.figma.com/design/WdIeTwgrJ9YcSFmLdWLp5G/%EC%B2%AD%EB%85%84%ED%86%A1%ED%86%A1_%EC%99%84_%EB%94%94%EC%9E%90%EC%9D%B8?node-id=1-901&node-type=canvas&t=z3dLg6iuYpneYdEF-0

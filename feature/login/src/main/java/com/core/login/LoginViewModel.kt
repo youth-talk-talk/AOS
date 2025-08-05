@@ -13,10 +13,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.onCompletion
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -36,7 +32,7 @@ class LoginViewModel @Inject constructor(
     var uiEffect = MutableSharedFlow<LoginUiEffect>()
         private set
 
-    var loading = MutableStateFlow<Boolean>(false)
+    var loading = MutableStateFlow(false)
 
     init {
         checkToken()
@@ -45,13 +41,12 @@ class LoginViewModel @Inject constructor(
     private fun checkToken() {
         viewModelScope.launch {
             getUserUseCase()
-                .catch {
+                .onSuccess {
+                    uiEffect.emit(LoginUiEffect.GoMainActivity)
+                }.onFailure {
                     Timber.e("checkToken not User")
                     delay(500L)
                     uiEffect.emit(LoginUiEffect.GoLoginActivity)
-                }
-                .collectLatest {
-                    uiEffect.emit(LoginUiEffect.GoMainActivity)
                 }
         }
     }
@@ -60,32 +55,24 @@ class LoginViewModel @Inject constructor(
         socialId = "$userId"
         viewModelScope.launch {
             postLoginUseCase(socialId)
-                .catch {
-                    Timber.e("viewModel postLogin error $it")
-                    _error.emit(it)
-                }
-                .collectLatest {
+                .onSuccess {
                     uiEffect.emit(LoginUiEffect.GoMainActivity)
+                }.onFailure {
+                    _error.emit(it)
                 }
         }
     }
 
     fun postSign(nickname: String, region: String) {
-        Timber.e("postSign Start")
         viewModelScope.launch {
+            loading.value = true
             postSignUseCase(socialId, nickname, region)
-                .onStart {
-                    loading.value = true
-                }
-                .onCompletion {
+                .onSuccess {
                     loading.value = false
-                }
-                .catch {
-                    Timber.e("viewModel sign error $it")
-                    _error.emit(it)
-                }
-                .collectLatest {
                     uiEffect.emit(LoginUiEffect.GoMainActivity)
+                }.onFailure {
+                    loading.value = false
+                    _error.emit(it)
                 }
         }
     }

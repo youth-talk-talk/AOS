@@ -11,9 +11,6 @@ import com.core.home.model.newpolicy.NewPolicyUiState
 import com.youthtalk.model.typeenum.SortType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -45,15 +42,12 @@ class NewPolicyViewModel @Inject constructor(
 
     private fun getPolices(sortType: SortType) {
         viewModelScope.launch {
+            setState { copy(isLoading = true, sortType = sortType) }
             getNewPolicesUseCase(sortType)
-                .onStart {
-                    setState { copy(isLoading = true, sortType = sortType) }
-                }
-                .catch {
-                    Timber.e("NewPolicyViewModel getPolices error $it")
-                }
-                .collectLatest { newPolies ->
+                .onSuccess { newPolies ->
                     setState { copy(isLoading = false, newPolicies = newPolies, sortType = sortType) }
+                }.onFailure {
+                    Timber.e("error : $it")
                 }
         }
     }
@@ -62,10 +56,7 @@ class NewPolicyViewModel @Inject constructor(
         viewModelScope.launch {
             state.value.policyId?.let { policyId ->
                 getPolicyDetailUseCase(policyId)
-                    .catch {
-                        Timber.e("NewPolicyViewModel refresh error $it")
-                    }
-                    .collectLatest { policyDetail ->
+                    .onSuccess { policyDetail ->
                         setState {
                             copy(
                                 newPolicies = newPolicies.copy(
@@ -147,10 +138,7 @@ class NewPolicyViewModel @Inject constructor(
     private fun postPolicyScrap(policyId: Long, scrap: Boolean) {
         viewModelScope.launch {
             postPolicyScrapUseCase(policyId, scrap)
-                .catch {
-                    Timber.e("NewPolicyViewModel postPostScrap error $it")
-                }
-                .collectLatest {
+                .onSuccess {
                     setState {
                         copy(
                             newPolicies = newPolicies.copy(

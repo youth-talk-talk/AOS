@@ -7,5 +7,5 @@ import javax.inject.Inject
 class GetNewPolicesUseCase @Inject constructor(
     private val homeRepository: HomeRepository
 ) {
-    operator fun invoke(sortType: SortType = SortType.RECENT) = homeRepository.getNewPolicies(sortType)
+    suspend operator fun invoke(sortType: SortType = SortType.RECENT) = homeRepository.getNewPolicies(sortType)
 }

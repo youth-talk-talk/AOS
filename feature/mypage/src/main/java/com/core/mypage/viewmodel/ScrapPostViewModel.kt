@@ -13,11 +13,7 @@ import com.core.mypage.model.scrappost.ScrapPostUiState
 import com.core.navigation.model.ScrapPostType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 @HiltViewModel
 class ScrapPostViewModel @Inject constructor(
@@ -46,10 +42,7 @@ class ScrapPostViewModel @Inject constructor(
     private fun postScrapPost(postId: Long, scrap: Boolean) {
         viewModelScope.launch {
             postPostScrapUseCase(postId, scrap)
-                .catch {
-                    Timber.e("ScrapPostViewModel postScrapPost error $it")
-                }
-                .collectLatest {
+                .onSuccess {
                     val newCount = if (state.value.type == ScrapPostType.SCRAP) {
                         state.value.count - 1
                     } else {
@@ -65,10 +58,7 @@ class ScrapPostViewModel @Inject constructor(
     private fun refreshCount() {
         viewModelScope.launch {
             getSettingPostCountUseCase(state.value.type == ScrapPostType.SCRAP)
-                .catch {
-                    Timber.e("ScrapPostViewModel refreshCount error $it")
-                }
-                .collectLatest { count ->
+                .onSuccess { count ->
                     setState {
                         copy(count = count)
                     }
@@ -78,20 +68,14 @@ class ScrapPostViewModel @Inject constructor(
 
     private fun initData(isScrap: Boolean, type: ScrapPostType) {
         viewModelScope.launch {
-            combine(
-                getSettingPostUseCase(isScrap),
-                getSettingPostCountUseCase(isScrap)
-            ) { posts, count ->
-                Pair(posts, count)
-            }
-                .catch {
-                    Timber.e("ScrapPostViewModel initData error $it")
-                }
-                .collectLatest { (posts, count) ->
+            val settingPost = getSettingPostUseCase(isScrap)
+
+            getSettingPostCountUseCase(isScrap)
+                .onSuccess {
                     setState {
                         copy(
                             isLoading = false,
-                            posts = posts.cachedIn(viewModelScope),
+                            posts = settingPost.cachedIn(viewModelScope),
                             type = type,
                             count = count
                         )

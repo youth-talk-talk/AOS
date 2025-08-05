@@ -1,11 +1,9 @@
 package com.youthtalk.di
 
-import com.core.dataapi.repository.AnnounceRepository
 import com.core.dataapi.repository.CommentRepository
 import com.core.dataapi.repository.CommunityRepository
 import com.core.dataapi.repository.HomeRepository
 import com.core.dataapi.repository.LoginRepository
-import com.core.dataapi.repository.MyPageRepository
 import com.core.dataapi.repository.PolicyRepository
 import com.core.dataapi.repository.ReportRepository
 import com.core.dataapi.repository.SearchRepository
@@ -13,12 +11,10 @@ import com.core.dataapi.repository.SpecPolicyRepository
 import com.core.dataapi.repository.UserRepository
 import com.core.datastore.datasource.DataSource
 import com.core.datastore.datasource.DataStoreDataSource
-import com.youthtalk.repository.AnnounceRepositoryImpl
 import com.youthtalk.repository.CommentRepositoryImpl
 import com.youthtalk.repository.CommunityRepositoryImpl
 import com.youthtalk.repository.HomeRepositoryImpl
 import com.youthtalk.repository.LoginRepositoryImpl
-import com.youthtalk.repository.MyPageRepositoryImpl
 import com.youthtalk.repository.PolicyRepositoryImpl
 import com.youthtalk.repository.ReportRepositoryImpl
 import com.youthtalk.repository.SearchRepositoryImpl
@@ -58,13 +54,7 @@ abstract class DataModule {
     abstract fun bindsSpecPolicyRepository(repository: SpecPolicyRepositoryImpl): SpecPolicyRepository
 
     @Binds
-    abstract fun bindsMyPageRepository(repository: MyPageRepositoryImpl): MyPageRepository
-
-    @Binds
     abstract fun bindsSearchRepository(repository: SearchRepositoryImpl): SearchRepository
-
-    @Binds
-    abstract fun bindsAnnounceRepository(repository: AnnounceRepositoryImpl): AnnounceRepository
 
     @Binds
     abstract fun bindsReportRepository(repository: ReportRepositoryImpl): ReportRepository

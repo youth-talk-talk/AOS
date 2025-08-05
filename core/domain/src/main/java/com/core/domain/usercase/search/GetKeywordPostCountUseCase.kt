@@ -7,5 +7,5 @@ import javax.inject.Inject
 class GetKeywordPostCountUseCase @Inject constructor(
     private val searchRepository: SearchRepository
 ) {
-    operator fun invoke(keyword: String, communityType: PostSubject) = searchRepository.getKeywordPostCount(keyword, communityType)
+    suspend operator fun invoke(keyword: String, communityType: PostSubject) = searchRepository.getKeywordPostCount(keyword, communityType)
 }

@@ -7,5 +7,5 @@ import javax.inject.Inject
 class PostUserUseCase @Inject constructor(
     private val userRepository: UserRepository
 ) {
-    operator fun invoke(nickname: String, region: Region) = userRepository.postUser(nickname, region)
+    suspend operator fun invoke(nickname: String, region: Region) = userRepository.postUser(nickname, region)
 }

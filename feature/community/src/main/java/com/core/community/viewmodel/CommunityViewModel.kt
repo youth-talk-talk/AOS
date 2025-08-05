@@ -10,14 +10,14 @@ import com.core.domain.usercase.post.GetPopularPostsUseCase
 import com.core.domain.usercase.post.GetPostsUseCase
 import com.core.domain.usercase.post.PostPostScrapUseCase
 import com.core.domain.usercase.post.SyncPopularPostUseCase
+import com.core.exception.BadRequestException
 import com.youthtalk.model.post.PostSubject
 import com.youthtalk.model.post.PostType
 import com.youthtalk.model.typeenum.Category
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -47,10 +47,7 @@ class CommunityViewModel @Inject constructor(
     private fun postPostScrap(postId: Long, scrap: Boolean) {
         viewModelScope.launch {
             postPostScrapUseCase(postId, scrap)
-                .catch {
-                    Timber.e("CommunityViewModel postPostScrap error $it")
-                }
-                .collectLatest {
+                .onSuccess {
                     setState {
                         copy(
                             popularFrees = popularFrees.map { post ->
@@ -82,15 +79,11 @@ class CommunityViewModel @Inject constructor(
     private fun syncPopularPost() {
         viewModelScope.launch {
             syncPopularPostUseCase(state.value.popularReviews, state.value.popularFrees)
-                .catch {
-                    Timber.e("CommunityViewModel syncPopularPost error $it")
-                }
-                .collectLatest { (reviews, frees) ->
-                    Timber.e("CommunityViewModel syncPopularPost success $reviews $frees")
+                .onSuccess {
                     setState {
                         copy(
-                            popularReviews = reviews,
-                            popularFrees = frees
+                            popularReviews = it.first,
+                            popularFrees = it.second
                         )
                     }
                 }
@@ -99,47 +92,42 @@ class CommunityViewModel @Inject constructor(
 
     private fun changeCategory(category: Category) {
         viewModelScope.launch {
-            getPostsUseCase(category, PostType.COMMUNITY_TAB_REVIEW, PostSubject.REVIEW)
+            val posts = getPostsUseCase(category, PostType.COMMUNITY_TAB_REVIEW, PostSubject.REVIEW)
                 .onStart { setState { copy(category = category) } }
                 .catch {
-                    Timber.e("CommunityViewModel changeCategory error $it")
+                    Timber.e("error $it")
                 }
-                .collectLatest {
-                    setState { copy(reviews = it.cachedIn(viewModelScope)) }
-                }
+
+            setState {
+                copy(reviews = posts.cachedIn(viewModelScope))
+            }
         }
     }
 
     private fun initData() {
         val currentCategory = state.value.category
         viewModelScope.launch {
-            combine(
-                combine(
-                    getPostsUseCase(currentCategory, PostType.COMMUNITY_TAB_REVIEW, PostSubject.REVIEW),
-                    getPopularPostsUseCase(category = currentCategory, PostSubject.REVIEW)
-                ) { reviewPosts, popularReviewPost ->
-                    Pair(reviewPosts, popularReviewPost)
-                },
-                combine(
-                    getPostsUseCase(currentCategory, PostType.COMMUNITY_TAB_FREE, PostSubject.POST),
-                    getPopularPostsUseCase(category = currentCategory, PostSubject.POST)
-                ) { reviewPosts, popularReviewPost ->
-                    Pair(reviewPosts, popularReviewPost)
+            try {
+                val popularReviewPostsAsync = async { getPopularPostsUseCase(category = currentCategory, PostSubject.REVIEW) }
+                val popularPostsAsync = async { getPopularPostsUseCase(currentCategory, PostSubject.POST) }
+
+                val reviewPosts = getPostsUseCase(currentCategory, PostType.COMMUNITY_TAB_REVIEW, PostSubject.REVIEW)
+                val posts = getPostsUseCase(currentCategory, PostType.COMMUNITY_TAB_FREE, PostSubject.POST)
+
+                val popularReviewPosts = popularReviewPostsAsync.await()
+                val popularPosts = popularPostsAsync.await()
+
+                setState {
+                    CommunityUiState.initState.copy(
+                        reviews = reviewPosts.cachedIn(viewModelScope),
+                        popularReviews = popularReviewPosts.getOrThrow(),
+                        frees = posts.cachedIn(viewModelScope),
+                        popularFrees = popularPosts.getOrThrow()
+                    )
                 }
-            ) { reviewInfo, freeInfo ->
-                CommunityUiState.initState.copy(
-                    reviews = reviewInfo.first.cachedIn(viewModelScope),
-                    popularReviews = reviewInfo.second,
-                    frees = freeInfo.first.cachedIn(viewModelScope),
-                    popularFrees = freeInfo.second
-                )
+            } catch (e: BadRequestException) {
+                Timber.e("error : $e")
             }
-                .catch {
-                    Timber.e("CommunityViewModel initData error $it")
-                }
-                .collectLatest {
-                    setState { it }
-                }
         }
     }
 }

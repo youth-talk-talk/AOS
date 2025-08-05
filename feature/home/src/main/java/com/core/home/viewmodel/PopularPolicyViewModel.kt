@@ -10,11 +10,8 @@ import com.core.home.model.popular.PopularPolicyUiEvent
 import com.core.home.model.popular.PopularPolicyUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
-import timber.log.Timber
 
 @HiltViewModel
 class PopularPolicyViewModel @Inject constructor(
@@ -50,10 +47,7 @@ class PopularPolicyViewModel @Inject constructor(
         viewModelScope.launch {
             state.value.policyId?.let { policyId ->
                 getPolicyDetailUseCase(policyId)
-                    .catch {
-                        Timber.e("PopularPolicyViewModel refresh error $it")
-                    }
-                    .collectLatest { policyDetail ->
+                    .onSuccess { policyDetail ->
                         setState {
                             copy(
                                 policies = policies.map { policy ->
@@ -77,10 +71,7 @@ class PopularPolicyViewModel @Inject constructor(
     private fun postPolicyScrap(policyId: Long, scrap: Boolean) {
         viewModelScope.launch {
             postPolicyScrapUseCase(policyId, scrap)
-                .catch {
-                    Timber.e("PopularPolicyViewModel postPostScrap error $it")
-                }
-                .collectLatest {
+                .onSuccess {
                     setState {
                         copy(
                             policies = policies.map { policy ->

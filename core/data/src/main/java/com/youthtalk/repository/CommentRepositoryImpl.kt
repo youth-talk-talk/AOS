@@ -5,80 +5,36 @@ import com.core.exception.NoDataException
 import com.youthtalk.data.CommentService
 import com.youthtalk.dto.comment.AddCommentRequest
 import com.youthtalk.dto.comment.CommentLikeRequest
-import com.youthtalk.dto.comment.CommentResponse
 import com.youthtalk.dto.comment.ModifyCommentRequest
 import com.youthtalk.mapper.toData
 import com.youthtalk.model.comment.CommentInfo
-import com.youthtalk.utils.ErrorUtils.throwableError
+import com.youthtalk.utils.ErrorUtils.createResult
 import javax.inject.Inject
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 
 class CommentRepositoryImpl @Inject constructor(
     private val commentService: CommentService
 ) : CommentRepository {
-    override fun getPolicyComment(policyId: Long): Flow<CommentInfo> = flow {
-        runCatching {
-            commentService.getPolicyComment(policyId)
-        }
-            .onSuccess { response ->
-                emit(response.data?.toData() ?: CommentInfo(0, listOf()))
-            }
-            .onFailure {
-                throwableError<List<CommentResponse>>(it)
-            }
+    override suspend fun getPolicyComment(policyId: Long): Result<CommentInfo> = createResult {
+        commentService.getPolicyComment(policyId).data?.toData() ?: CommentInfo(0, listOf())
     }
 
-    override fun getPostDetailComments(postId: Long): Flow<CommentInfo> = flow {
-        runCatching {
-            commentService.getPostDetailComments(postId)
-        }
-            .onSuccess { response ->
-                emit(response.data?.toData() ?: CommentInfo(0, listOf()))
-            }
-            .onFailure {
-                throwableError<List<CommentResponse>>(it)
-            }
+    override suspend fun getPostDetailComments(postId: Long): Result<CommentInfo> = createResult {
+        commentService.getPostDetailComments(postId).data?.toData() ?: CommentInfo(0, listOf())
     }
 
-    override fun postPostAddComment(postId: Long, message: String): Flow<Long> = flow {
+    override suspend fun postPostAddComment(postId: Long, message: String): Result<Long> = createResult {
         val requestBody = AddCommentRequest(postId, message).toRequestBody()
-        runCatching {
-            commentService.postPostAddComment(requestBody)
-        }
-            .onSuccess { response ->
-                response.data?.let { data ->
-                    emit(data.commentId)
-                } ?: throw NoDataException()
-            }
-            .onFailure {
-                throwableError<List<CommentResponse>>(it)
-            }
+        commentService.postPostAddComment(requestBody).data?.commentId ?: throw NoDataException()
     }
 
-    override fun patchComment(commentId: Long, message: String): Flow<Long> = flow {
+    override suspend fun patchComment(commentId: Long, message: String): Result<Long> = createResult {
         val requestBody = ModifyCommentRequest(commentId, message).toRequestBody()
-        runCatching {
-            commentService.patchComment(requestBody)
-        }
-            .onSuccess { _ ->
-                emit(commentId)
-            }
-            .onFailure {
-                throwableError<List<CommentResponse>>(it)
-            }
+        commentService.patchComment(requestBody)
+        commentId
     }
 
-    override fun postLikes(commentId: Long, isLike: Boolean): Flow<String> = flow {
+    override suspend fun postLikes(commentId: Long, isLike: Boolean): Result<String> = createResult {
         val requestBody = CommentLikeRequest(commentId, !isLike).toRequestBody()
-        runCatching {
-            commentService.postLikes(requestBody)
-        }
-            .onSuccess { response ->
-                emit(response.message)
-            }
-            .onFailure {
-                throwableError<Unit>(it)
-            }
+        commentService.postLikes(requestBody).message
     }
 }

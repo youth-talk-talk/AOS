@@ -8,6 +8,7 @@ import com.core.domain.usercase.home.GetHomeDataUseCase
 import com.core.domain.usercase.home.GetNewPolicesUseCase
 import com.core.domain.usercase.post.PostPostScrapUseCase
 import com.core.domain.usercase.user.PostUserUseCase
+import com.core.exception.BadRequestException
 import com.core.home.model.home.HomeUiEffect
 import com.core.home.model.home.HomeUiEvent
 import com.core.home.model.home.HomeUiState
@@ -15,10 +16,7 @@ import com.youthtalk.model.User
 import com.youthtalk.model.typeenum.Region
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -50,10 +48,7 @@ class HomeViewModel @Inject constructor(
     private fun postPostScrap(postId: Long, scrap: Boolean) {
         viewModelScope.launch {
             postPostScrapUseCase(postId, scrap)
-                .catch {
-                    Timber.e("HomeViewModel postPostScrap error $it")
-                }
-                .collectLatest {
+                .onSuccess {
                     setState {
                         copy(
                             homeData = homeData.copy(
@@ -91,11 +86,7 @@ class HomeViewModel @Inject constructor(
     private fun postPolicyScrap(policyId: Long, scrap: Boolean) {
         viewModelScope.launch {
             postPolicyScrapUseCase(policyId, scrap)
-                .catch {
-                    Timber.e("HomeViewModel postPolicyScrap error $it")
-                }
-                .collectLatest {
-                    Timber.e("HomeViewModel postPolicyScrap success $it")
+                .onSuccess {
                     setState {
                         copy(
                             homeData = homeData.copy(
@@ -168,10 +159,7 @@ class HomeViewModel @Inject constructor(
     private fun postUser(user: User, region: Region) {
         viewModelScope.launch {
             postUserUseCase(user.nickname, region)
-                .catch {
-                    Timber.e("HomeViewModel postUser error $it")
-                }
-                .collectLatest {
+                .onSuccess {
                     setEvent(HomeUiEvent.GetHomeData())
                 }
         }
@@ -179,27 +167,24 @@ class HomeViewModel @Inject constructor(
 
     private fun getHomeData(isLoading: Boolean = true) {
         viewModelScope.launch {
-            combine(
-                getUserUseCase(),
-                getHomeDataUseCase(),
-                getNewPolicesUseCase()
-            ) { user, homeData, newPolices ->
-                HomeUiState(
+            setState { copy(isLoading = isLoading) }
+            try {
+                val homeData = async { getHomeDataUseCase() }
+                val newPolicies = async { getNewPolicesUseCase() }
+                val userInfo = async { getUserUseCase() }
+
+                val homeState = HomeUiState(
                     isLoading = false,
-                    user = user,
-                    homeData = homeData,
-                    newPolicies = newPolices
+                    user = userInfo.await().getOrThrow(),
+                    homeData = homeData.await().getOrThrow(),
+                    newPolicies = newPolicies.await().getOrThrow()
                 )
+                setState {
+                    homeState
+                }
+            } catch (badRequestE: BadRequestException) {
+                Timber.e("error : $badRequestE")
             }
-                .onStart {
-                    setState { copy(isLoading = isLoading) }
-                }
-                .catch {
-                    Timber.e("HomeViewModel getHomeData error $it")
-                }
-                .collectLatest { uiState ->
-                    setState { uiState }
-                }
         }
     }
 }

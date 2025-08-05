@@ -7,5 +7,5 @@ import javax.inject.Inject
 class PostCreatePostUseCase @Inject constructor(
     private val communityRepository: CommunityRepository
 ) {
-    operator fun invoke(createPost: CreatePost) = communityRepository.postCreatePost(createPost)
+    suspend operator fun invoke(createPost: CreatePost) = communityRepository.postCreatePost(createPost)
 }

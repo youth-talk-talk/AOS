@@ -8,10 +8,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 @HiltViewModel
 class EtcViewModel @Inject constructor(
@@ -23,10 +20,7 @@ class EtcViewModel @Inject constructor(
     fun postLogout(deleteUser: Boolean) {
         viewModelScope.launch {
             postUserLogoutUseCase(deleteUser)
-                .catch {
-                    Timber.e("EtcViewModel postLogout error " + it.message)
-                }
-                .collectLatest {
+                .onSuccess {
                     _uiEffect.emit(EtcUiEffect.Logout)
                 }
         }

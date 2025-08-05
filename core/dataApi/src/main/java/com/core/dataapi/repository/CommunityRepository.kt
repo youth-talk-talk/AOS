@@ -12,15 +12,15 @@ import com.youthtalk.model.typeenum.Category
 import kotlinx.coroutines.flow.Flow
 
 interface CommunityRepository {
-    fun getPopularPosts(category: Category, postSubject: PostSubject): Flow<List<Post>>
-    fun getPosts(category: Category, postType: PostType, postSubject: PostSubject): Flow<Flow<PagingData<Post>>>
-    fun getListImage(): Flow<List<Image>>
-    fun postCreatePost(createPost: CreatePost): Flow<Long>
-    fun getPostDetail(postId: Long): Flow<PostDetail>
-    fun deletePost(postId: Long): Flow<Long>
-    fun postPostScrap(postId: Long, scrap: Boolean): Flow<Long>
-    fun syncPostScrap(reviews: List<Post>, frees: List<Post>): Flow<Pair<List<Post>, List<Post>>>
-    fun getSettingPosts(isScrapType: Boolean): Flow<Flow<PagingData<Post>>>
-    fun getSettingPostCount(isScrapType: Boolean): Flow<Int>
-    fun postModifyPost(postId: Long, modifyPost: ModifyPost): Flow<Long>
+    suspend fun getPopularPosts(category: Category, postSubject: PostSubject): Result<List<Post>>
+    fun getPosts(category: Category, postType: PostType, postSubject: PostSubject): Flow<PagingData<Post>>
+    suspend fun getListImage(): Result<List<Image>>
+    suspend fun postCreatePost(createPost: CreatePost): Result<Long>
+    suspend fun getPostDetail(postId: Long): Result<PostDetail>
+    suspend fun deletePost(postId: Long): Result<Long>
+    suspend fun postPostScrap(postId: Long, scrap: Boolean): Result<Long>
+    suspend fun syncPostScrap(reviews: List<Post>, frees: List<Post>): Result<Pair<List<Post>, List<Post>>>
+    fun getSettingPosts(isScrapType: Boolean): Flow<PagingData<Post>>
+    suspend fun getSettingPostCount(isScrapType: Boolean): Result<Int>
+    suspend fun postModifyPost(postId: Long, modifyPost: ModifyPost): Result<Long>
 }

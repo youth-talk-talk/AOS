@@ -6,5 +6,5 @@ import javax.inject.Inject
 class PostPolicyScrapUseCase @Inject constructor(
     private val specPolicyRepository: SpecPolicyRepository
 ) {
-    operator fun invoke(id: Long, scrap: Boolean) = specPolicyRepository.postScrap(id, scrap)
+    suspend operator fun invoke(id: Long, scrap: Boolean) = specPolicyRepository.postScrap(id, scrap)
 }

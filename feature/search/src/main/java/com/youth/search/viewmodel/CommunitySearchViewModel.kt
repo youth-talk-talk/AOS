@@ -19,8 +19,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -54,11 +52,8 @@ class CommunitySearchViewModel @Inject constructor(
     private fun postPostScrap(postId: Long, scrap: Boolean) {
         viewModelScope.launch {
             postPostScrapUseCase(postId, scrap)
-                .catch {
-                    Timber.e("HomeViewModel postPostScrap error $it")
-                }
-                .collectLatest {
-                    Timber.e("HomeViewModel postPostScrap success $it")
+                .onSuccess {
+                    Timber.e("success $it")
                 }
         }
     }
@@ -72,26 +67,19 @@ class CommunitySearchViewModel @Inject constructor(
             list.add(0, search)
             setRecentlyListUseCase(list)
 
-            combine(
-                getKeywordPostUseCase(search, postSubject = communityType, postType = PostType.SEARCH),
-                getKeywordPostCountUseCase(keyword = search, communityType = communityType)
-            ) { posts, count ->
-                Pair(posts, count)
+            setState { copy(searchState = SearchState.SEARCH) }
+
+            val keywordPost = getKeywordPostUseCase(search, postSubject = communityType, postType = PostType.SEARCH)
+            getKeywordPostCountUseCase(keyword = search, communityType = communityType).onSuccess { keywordCount ->
+                setState {
+                    copy(
+                        searchPost = keywordPost.cachedIn(viewModelScope),
+                        totalCount = keywordCount
+                    )
+                }
+            }.onFailure {
+                Timber.e("error : $it")
             }
-                .onStart {
-                    setState { copy(searchState = SearchState.SEARCH) }
-                }
-                .catch {
-                    Timber.e("CommunitySearchViewModel search error $it")
-                }
-                .collectLatest { (posts, count) ->
-                    setState {
-                        copy(
-                            searchPost = posts.cachedIn(viewModelScope),
-                            totalCount = count
-                        )
-                    }
-                }
         }
     }
 

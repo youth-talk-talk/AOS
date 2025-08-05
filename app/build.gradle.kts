@@ -11,8 +11,8 @@ android {
     defaultConfig {
         applicationId = "com.youth.yongproject.app"
         targetSdk = 35
-        versionCode = 20100
-        versionName = "2.1.0"
+        versionCode = 20200
+        versionName = "2.2.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -47,6 +47,8 @@ dependencies {
     implementation(projects.feature.main)
     implementation(projects.feature.login)
     implementation(projects.core.designsystem)
+    implementation(projects.core.data)
+    implementation(projects.core.domain)
     implementation(platform(libs.firebase.bom))
     //noinspection UseTomlInstead
     implementation("com.google.firebase:firebase-analytics")

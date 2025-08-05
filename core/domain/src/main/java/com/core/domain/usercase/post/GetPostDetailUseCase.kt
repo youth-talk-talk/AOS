@@ -6,5 +6,5 @@ import javax.inject.Inject
 class GetPostDetailUseCase @Inject constructor(
     private val communityRepository: CommunityRepository
 ) {
-    operator fun invoke(postId: Long) = communityRepository.getPostDetail(postId)
+    suspend operator fun invoke(postId: Long) = communityRepository.getPostDetail(postId)
 }

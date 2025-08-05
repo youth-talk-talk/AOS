@@ -17,9 +17,6 @@ import com.youthtalk.model.comment.ArticleType
 import com.youthtalk.model.comment.SettingComment
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -66,10 +63,7 @@ class CommentViewModel @Inject constructor(
     private fun refreshData() {
         viewModelScope.launch {
             getSettingCommentUseCase(state.value.commentType == CommentType.LIKE)
-                .catch {
-                    Timber.e("CommentViewModel refreshData error $it")
-                }
-                .collectLatest { commentInfo ->
+                .onSuccess { commentInfo ->
                     setState { copy(commentInfo = commentInfo) }
                 }
         }
@@ -78,10 +72,7 @@ class CommentViewModel @Inject constructor(
     private fun postCommentLike(commentId: Long, isLike: Boolean) {
         viewModelScope.launch {
             postCommentLikeUseCase(commentId, isLike)
-                .catch {
-                    Timber.e("CommentViewModel postCommentLike error $it")
-                }
-                .collectLatest {
+                .onSuccess {
                     setState {
                         copy(
                             commentInfo = commentInfo.copy(
@@ -98,6 +89,8 @@ class CommentViewModel @Inject constructor(
                             )
                         )
                     }
+                }.onFailure {
+                    Timber.e("error $it")
                 }
         }
     }
@@ -105,10 +98,7 @@ class CommentViewModel @Inject constructor(
     private fun onPatchComment(commentId: Long, content: String) {
         viewModelScope.launch {
             patchCommentUseCase(commentId, content)
-                .catch {
-                    Timber.e("CommentViewModel onPatchComment error $it")
-                }
-                .collectLatest {
+                .onSuccess {
                     setState {
                         copy(
                             commentScreenType = SettingCommentScreenType.MAIN,
@@ -124,6 +114,8 @@ class CommentViewModel @Inject constructor(
                         )
                     }
                     setEffect { CommentUiEffect.ModifyInfo(0, "") }
+                }.onFailure {
+                    Timber.e("error $it")
                 }
         }
     }
@@ -131,10 +123,7 @@ class CommentViewModel @Inject constructor(
     private fun onDeleteComment(comment: SettingComment) {
         viewModelScope.launch {
             postDeleteCommentUseCase(comment.commentId)
-                .catch {
-                    Timber.e("CommentViewModel onDeleteComment error $it")
-                }
-                .collectLatest {
+                .onSuccess {
                     setState {
                         copy(
                             commentInfo = commentInfo.copy(
@@ -155,16 +144,8 @@ class CommentViewModel @Inject constructor(
 
     private fun initData(type: CommentType) {
         viewModelScope.launch {
-            combine(
-                getSettingCommentUseCase(type == CommentType.LIKE),
-                getUserUseCase()
-            ) { commentInfo, user ->
-                Pair(commentInfo, user)
-            }
-                .catch {
-                    Timber.e("CommentViewModel initData error $it")
-                }
-                .collectLatest { (commentInfo, user) ->
+            getUserUseCase()
+                .onSuccess { user ->
                     setState { copy(isLoading = false, commentInfo = commentInfo, commentType = type, user = user) }
                 }
         }

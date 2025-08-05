@@ -16,8 +16,6 @@ import com.youthtalk.model.typeenum.SortType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -48,21 +46,18 @@ class PolicyOverviewViewModel @Inject constructor(
     private fun changeCategory(category: Category) {
         val filter = if (category == Category.ALL) null else listOf(category)
         viewModelScope.launch {
-            combine(
-                postSpecPoliciesUseCase(SearchFilter(category = filter), PolicyType.OVERVIEW),
-                getPolicyCountUseCase(SearchFilter(category = filter))
-            ) { categoryPolicies, allCount ->
-                Pair(categoryPolicies, allCount)
-            }
+            val postSpecPolicies = postSpecPoliciesUseCase(SearchFilter(category = filter), PolicyType.OVERVIEW)
                 .onStart { setState { copy(category = category) } }
                 .catch {
-                    Timber.e("PolicyOverviewViewModel changeCategory error $it")
+                    Timber.e("error $it")
                 }
-                .collectLatest { (policies, count) ->
+
+            getPolicyCountUseCase(SearchFilter(category = filter))
+                .onSuccess { policyCount ->
                     setState {
                         copy(
-                            policies = policies.cachedIn(viewModelScope),
-                            count = count
+                            policies = postSpecPolicies.cachedIn(viewModelScope),
+                            count = policyCount
                         )
                     }
                 }
@@ -72,21 +67,18 @@ class PolicyOverviewViewModel @Inject constructor(
     private fun changeSortType(category: Category, sortType: SortType) {
         val filter = if (category == Category.ALL) null else listOf(category)
         viewModelScope.launch {
-            combine(
-                postSpecPoliciesUseCase(SearchFilter(category = filter), PolicyType.OVERVIEW, sortType = sortType),
-                getPolicyCountUseCase(SearchFilter(category = filter), sortType = sortType)
-            ) { categoryPolicies, allCount ->
-                Pair(categoryPolicies, allCount)
-            }
+            val postSpecPolicies = postSpecPoliciesUseCase(SearchFilter(category = filter), PolicyType.OVERVIEW)
                 .onStart { setState { copy(category = category, sortType = sortType) } }
                 .catch {
-                    Timber.e("PolicyOverviewViewModel changeSortType error $it")
+                    Timber.e("error $it")
                 }
-                .collectLatest { (policies, count) ->
+
+            getPolicyCountUseCase(SearchFilter(category = filter))
+                .onSuccess { policyCount ->
                     setState {
                         copy(
-                            policies = policies.cachedIn(viewModelScope),
-                            count = count
+                            policies = postSpecPolicies.cachedIn(viewModelScope),
+                            count = policyCount
                         )
                     }
                 }
@@ -96,21 +88,18 @@ class PolicyOverviewViewModel @Inject constructor(
     private fun initData(category: Category) {
         val filter = if (category == Category.ALL) null else listOf(category)
         viewModelScope.launch {
-            combine(
-                postSpecPoliciesUseCase(SearchFilter(category = filter), PolicyType.OVERVIEW),
-                getPolicyCountUseCase(SearchFilter(category = filter))
-            ) { categoryPolicies, allCount ->
-                Pair(categoryPolicies, allCount)
-            }
+            val postSpecPolicies = postSpecPoliciesUseCase(SearchFilter(category = filter), PolicyType.OVERVIEW)
                 .onStart { setState { copy(category = category) } }
                 .catch {
                     Timber.e("PolicyOverviewViewModel initData error $it")
                 }
-                .collectLatest { (policies, count) ->
+
+            getPolicyCountUseCase(SearchFilter(category = filter))
+                .onSuccess { policyCount ->
                     setState {
                         copy(
-                            policies = policies.cachedIn(viewModelScope),
-                            count = count
+                            policies = postSpecPolicies.cachedIn(viewModelScope),
+                            count = policyCount
                         )
                     }
                 }

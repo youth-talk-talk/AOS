@@ -23,7 +23,6 @@ import com.youthtalk.model.post.PostSubject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -101,11 +100,7 @@ class CommunityWriteViewModel @Inject constructor(
 
         viewModelScope.launch {
             postModifyPostUseCase(postId, modifyPost)
-                .catch {
-                    Timber.e("CommunityWriteViewModel postModify error $it")
-                }
-                .collectLatest {
-                    Timber.e("CommunityWriteViewModel postModify success $it")
+                .onSuccess { postId ->
                     setEffect { CommunityWriteUiEffect.Modify(postId) }
                 }
         }
@@ -115,10 +110,7 @@ class CommunityWriteViewModel @Inject constructor(
         postId?.let { id ->
             viewModelScope.launch {
                 getPostDetailUseCase(id)
-                    .catch {
-                        Timber.e("CommunityWriteViewModel initData error $it")
-                    }
-                    .collectLatest { postDetail ->
+                    .onSuccess { postDetail ->
                         setState {
                             copy(
                                 postId = id,
@@ -187,11 +179,7 @@ class CommunityWriteViewModel @Inject constructor(
         )
         viewModelScope.launch {
             postCreatePostUseCase(createPost)
-                .catch {
-                    Timber.e("CommunityWriteViewModel postCreatePost error $it")
-                }
-                .collectLatest {
-                    Timber.e("CommunityWriteViewModel postCreatePost success $it")
+                .onSuccess {
                     setEffect { CommunityWriteUiEffect.CreatePost }
                 }
         }
@@ -199,13 +187,11 @@ class CommunityWriteViewModel @Inject constructor(
 
     private fun postSearchPolicy(searchPolicy: String) {
         viewModelScope.launch {
-            postSearchPolicyUseCase(searchPolicy)
+            val searchPolicies = postSearchPolicyUseCase(searchPolicy)
                 .catch {
                     Timber.e("CommunityWriteViewModel postSearchPolicy error $it")
                 }
-                .collectLatest {
-                    setState { copy(searchPolicies = it.cachedIn(viewModelScope)) }
-                }
+            setState { copy(searchPolicies = searchPolicies.cachedIn(viewModelScope)) }
         }
     }
 
@@ -225,11 +211,7 @@ class CommunityWriteViewModel @Inject constructor(
     private fun getImages() {
         viewModelScope.launch {
             getImageListUseCase()
-                .catch {
-                    Timber.e("CommunityWriteViewModel getImages error $it")
-                }
-                .collectLatest {
-                    Timber.e("CommunityWriteViewModel getImages success $it")
+                .onSuccess {
                     setState { copy(images = it) }
                     setEffect { CommunityWriteUiEffect.GoPictureScreen(it) }
                 }

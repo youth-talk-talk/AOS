@@ -6,5 +6,5 @@ import javax.inject.Inject
 class GetRecentlyViewPolicesUseCase @Inject constructor(
     private val policyRepository: PolicyRepository
 ) {
-    operator fun invoke() = policyRepository.getRecentlyViewPolicies()
+    suspend operator fun invoke() = policyRepository.getRecentlyViewPolicies()
 }
