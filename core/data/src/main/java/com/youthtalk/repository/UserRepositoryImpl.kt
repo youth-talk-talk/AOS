@@ -39,12 +39,6 @@ class UserRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun blockUser(userId: Long): Result<Unit> {
-        return createResult {
-            userService.blockUser(userId)
-        }
-    }
-
     override fun getCategoryList(): Flow<List<Category>> = dataSource.getCategoryFilter()
 
     override suspend fun setCategoryList(categories: List<Category>) {
