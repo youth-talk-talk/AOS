@@ -191,7 +191,6 @@ class CommunityWriteViewModel @Inject constructor(
                 .catch {
                     Timber.e("CommunityWriteViewModel postSearchPolicy error $it")
                 }
-
             setState { copy(searchPolicies = searchPolicies.cachedIn(viewModelScope)) }
         }
     }
