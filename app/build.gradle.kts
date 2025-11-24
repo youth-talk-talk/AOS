@@ -11,8 +11,8 @@ android {
     defaultConfig {
         applicationId = "com.youth.yongproject.app"
         targetSdk = 35
-        versionCode = 20200
-        versionName = "2.2.0"
+        versionCode = 20251124
+        versionName = "2.3.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
