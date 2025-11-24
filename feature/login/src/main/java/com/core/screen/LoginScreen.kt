@@ -1,8 +1,6 @@
 package com.core.screen
 
-import android.content.Context
 import android.os.Build.VERSION.SDK_INT
-import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -13,7 +11,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -29,92 +26,10 @@ import coil3.compose.rememberAsyncImagePainter
 import coil3.gif.AnimatedImageDecoder
 import coil3.gif.GifDecoder
 import coil3.request.ImageRequest
-import com.core.exception.UnAuthorizedException
-import com.core.login.LoginViewModel
-import com.kakao.sdk.auth.model.OAuthToken
-import com.kakao.sdk.common.model.ClientError
-import com.kakao.sdk.common.model.ClientErrorCause
-import com.kakao.sdk.user.UserApiClient
 import com.youth.app.feature.login.R
+import com.youthtalk.component.dialog.ModalDialog
 import com.youthtalk.designsystem.YongProjectTheme
 import com.youthtalk.designsystem.gray100
-import kotlinx.coroutines.flow.collectLatest
-import timber.log.Timber
-
-@Composable
-fun LoginScreen(viewModel: LoginViewModel, goAgreeScreen: () -> Unit) {
-    val context = LocalContext.current
-
-    LaunchedEffect(Unit) {
-        viewModel.error.collectLatest {
-            when (it) {
-                is UnAuthorizedException -> {
-                    goAgreeScreen()
-                }
-
-                else -> {
-                    Toast.makeText(context, "${it.message}", Toast.LENGTH_SHORT).show()
-                }
-            }
-            UserApiClient.instance.logout {
-                Timber.e("Kakao Login 실패")
-            }
-        }
-    }
-
-    LoginScreen(
-        onClick = {
-            // 카카오톡으로 로그인
-            kakaoLogin(
-                context,
-                onSuccess = { userId ->
-                    viewModel.postLogin(userId)
-                }
-            )
-        }
-    )
-}
-
-private fun kakaoLogin(context: Context, onSuccess: (Long) -> Unit) {
-    val callback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
-        if (error != null) {
-            Timber.e(error, "카카오계정으로 로그인 실패")
-        } else if (token != null) {
-            Timber.i("카카오계정으로 로그인 성공 " + token.accessToken)
-            UserApiClient.instance.accessTokenInfo { tokenInfo, error ->
-                if (error != null) {
-                    Timber.e("카카오 계정 정보 가져오기 실패")
-                } else if (tokenInfo != null) {
-                    onSuccess(tokenInfo.id ?: -1)
-                }
-            }
-        }
-    }
-
-    if (UserApiClient.instance.isKakaoTalkLoginAvailable(context)) {
-        UserApiClient.instance.loginWithKakaoTalk(context) { token, error ->
-            if (error != null) {
-                Timber.e(error, "카카오톡으로 로그인 실패")
-                if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
-                    return@loginWithKakaoTalk
-                }
-
-                UserApiClient.instance.loginWithKakaoAccount(context, callback = callback)
-            } else if (token != null) {
-                Timber.i("카카오톡으로 로그인 성공 " + token.accessToken + " " + token.accessTokenExpiresAt)
-                UserApiClient.instance.me { user, error ->
-                    if (error != null) {
-                        Timber.e(error, "사용자 정보 요청 실패")
-                    } else if (user != null) {
-                        onSuccess(user.id ?: -1)
-                    }
-                }
-            }
-        }
-    } else {
-        UserApiClient.instance.loginWithKakaoAccount(context, callback = callback)
-    }
-}
 
 @Composable
 fun LoginScreen(onClick: () -> Unit) {
@@ -130,6 +45,16 @@ fun LoginScreen(onClick: () -> Unit) {
         }
         .build()
 
+    ModalDialog(
+        title = "내부 사정으로 인해 더 이상 청년톡톡 지원이 불가합니다.",
+        subTitle = "그 동안 청년톡톡을 사랑해주셔서 감사합니다.",
+        cancelText = "",
+        confirmText = "종료하기",
+        onDismissRequest = {},
+        onClickConfirm = {
+            onClick()
+        }
+    )
     Surface(
         modifier =
         Modifier
