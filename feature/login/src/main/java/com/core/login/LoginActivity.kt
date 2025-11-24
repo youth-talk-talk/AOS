@@ -29,12 +29,14 @@ class LoginActivity : ComponentActivity() {
         enableEdgeToEdge()
         splashScreen = installSplashScreen()
         splashScreen.setKeepOnScreenCondition { true }
+        splashScreen.setKeepOnScreenCondition { false }
         setContent {
             YongProjectTheme {
                 Scaffold { innerPadding ->
                     LoginNavHostScreen(
                         modifier = Modifier.padding(innerPadding),
-                        viewModel = viewModel
+                        viewModel = viewModel,
+                        onFinish = { this.finishAffinity() }
                     )
                 }
             }
