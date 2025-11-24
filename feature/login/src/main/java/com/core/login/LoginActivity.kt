@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.viewModels
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
@@ -18,7 +17,6 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class LoginActivity : ComponentActivity() {
-    private val viewModel: LoginViewModel by viewModels()
     private lateinit var splashScreen: SplashScreen
 
     @Inject
@@ -35,7 +33,6 @@ class LoginActivity : ComponentActivity() {
                 Scaffold { innerPadding ->
                     LoginNavHostScreen(
                         modifier = Modifier.padding(innerPadding),
-                        viewModel = viewModel,
                         onFinish = { this.finishAffinity() }
                     )
                 }

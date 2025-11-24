@@ -31,7 +31,7 @@
         <activity
             android:name="com.core.login.LoginActivity"
             android:exported="true"
-            android:theme="@style/Theme.Youth.Splash">
+            android:theme="@style/Theme.Youth.Theme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
